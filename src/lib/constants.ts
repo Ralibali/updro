@@ -124,7 +124,7 @@ export const PLANS = [
     per: '/månad',
     credits: 10,
     features: [
-      '10 leads per månad',
+      'Tio leads per månad',
       'Profilsida med logotyp & portfolio',
       'Statistik & insikter',
       'Prioriterad support',
