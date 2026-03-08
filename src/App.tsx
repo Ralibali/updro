@@ -57,8 +57,8 @@ const App = () => (
             <Route path="/priser" element={<PricingPage />} />
             <Route path="/om-oss" element={<PlaceholderPage title="Om Updro" />} />
             <Route path="/support" element={<PlaceholderPage title="Support" />} />
-            <Route path="/integritetspolicy" element={<PlaceholderPage title="Integritetspolicy" />} />
-            <Route path="/villkor" element={<PlaceholderPage title="Villkor" />} />
+            <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />
+            <Route path="/villkor" element={<TermsPage />} />
             <Route path="/logga-in" element={<LoginPage />} />
             <Route path="/registrera" element={<RegisterPage />} />
             <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
