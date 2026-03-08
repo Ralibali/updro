@@ -4,12 +4,37 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/ProtectedRoute";
+
 import Index from "./pages/Index";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import RegisterSupplierPage from "./pages/RegisterSupplierPage";
+import ProjectWizard from "./pages/ProjectWizard";
+import PricingPage from "./pages/PricingPage";
+import BrowseAgenciesPage from "./pages/BrowseAgenciesPage";
+import AgencyProfilePage from "./pages/AgencyProfilePage";
+import ChatPage from "./pages/ChatPage";
+import ProfilePage from "./pages/ProfilePage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import NotFound from "./pages/NotFound";
+
+// Buyer pages
+import BuyerDashboard from "./pages/buyer/BuyerDashboard";
+import BuyerProjects from "./pages/buyer/BuyerProjects";
+import ProjectDetail from "./pages/buyer/ProjectDetail";
+
+// Supplier pages
+import SupplierDashboard from "./pages/supplier/SupplierDashboard";
+import BrowseProjects from "./pages/supplier/BrowseProjects";
+import ProjectUnlock from "./pages/supplier/ProjectUnlock";
+import SupplierOffers from "./pages/supplier/SupplierOffers";
+import BillingPage from "./pages/supplier/BillingPage";
+
+// Admin pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminProjects from "./pages/admin/AdminProjects";
 
 const queryClient = new QueryClient();
 
@@ -21,10 +46,12 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Public */}
             <Route path="/" element={<Index />} />
-            <Route path="/publicera" element={<PlaceholderPage title="Publicera uppdrag" description="Beskriv ditt uppdrag och ta emot offerter gratis." />} />
-            <Route path="/byraer" element={<PlaceholderPage title="Hitta byråer" description="Sök bland kvalificerade byråer i Sverige." />} />
-            <Route path="/priser" element={<PlaceholderPage title="Priser" description="Transparent prissättning – 40% billigare." />} />
+            <Route path="/publicera" element={<ProjectWizard />} />
+            <Route path="/byraer" element={<BrowseAgenciesPage />} />
+            <Route path="/byraer/:slug" element={<AgencyProfilePage />} />
+            <Route path="/priser" element={<PricingPage />} />
             <Route path="/om-oss" element={<PlaceholderPage title="Om Updro" />} />
             <Route path="/support" element={<PlaceholderPage title="Support" />} />
             <Route path="/integritetspolicy" element={<PlaceholderPage title="Integritetspolicy" />} />
@@ -33,8 +60,28 @@ const App = () => (
             <Route path="/registrera" element={<RegisterPage />} />
             <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
             <Route path="/aterstall-losenord" element={<PlaceholderPage title="Återställ lösenord" />} />
-            <Route path="/dashboard/buyer" element={<PlaceholderPage title="Beställar-dashboard" />} />
-            <Route path="/dashboard/supplier" element={<PlaceholderPage title="Byrå-dashboard" />} />
+
+            {/* Buyer dashboard */}
+            <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerDashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/buyer/uppdrag" element={<ProtectedRoute role="buyer"><BuyerProjects /></ProtectedRoute>} />
+            <Route path="/dashboard/buyer/uppdrag/:id" element={<ProtectedRoute role="buyer"><ProjectDetail /></ProtectedRoute>} />
+            <Route path="/dashboard/buyer/chatt" element={<ProtectedRoute role="buyer"><ChatPage /></ProtectedRoute>} />
+            <Route path="/dashboard/buyer/profil" element={<ProtectedRoute role="buyer"><ProfilePage /></ProtectedRoute>} />
+
+            {/* Supplier dashboard */}
+            <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierDashboard /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/uppdrag" element={<ProtectedRoute role="supplier"><BrowseProjects /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/uppdrag/:id" element={<ProtectedRoute role="supplier"><ProjectUnlock /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/offerter" element={<ProtectedRoute role="supplier"><SupplierOffers /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/chatt" element={<ProtectedRoute role="supplier"><ChatPage /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/profil" element={<ProtectedRoute role="supplier"><ProfilePage /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/fakturering" element={<ProtectedRoute role="supplier"><BillingPage /></ProtectedRoute>} />
+
+            {/* Admin */}
+            <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/anvandare" element={<ProtectedRoute role="admin"><AdminUsers /></ProtectedRoute>} />
+            <Route path="/admin/uppdrag" element={<ProtectedRoute role="admin"><AdminProjects /></ProtectedRoute>} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
