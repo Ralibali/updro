@@ -77,9 +77,9 @@ const HeroSection = () => {
           >
             {[
               'Gratis för beställare',
-              '5 gratis leads vid start',
+              'Fem gratis leads vid start',
               '40% lägre pris per lead',
-              'Max 5 byråer per uppdrag',
+              'Max fem byråer per uppdrag',
             ].map((text) => (
               <span key={text} className="flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5 text-accent" />

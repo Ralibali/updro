@@ -84,15 +84,15 @@ export const BUDGET_OPTIONS = [
 
 export const START_TIME_OPTIONS = [
   { value: 'asap', label: 'Snarast möjligt', icon: '🚀' },
-  { value: 'within_month', label: 'Inom 1 månad', icon: '📅' },
-  { value: 'within_3months', label: 'Inom 3 månader', icon: '🗓️' },
+  { value: 'within_month', label: 'Inom en månad', icon: '📅' },
+  { value: 'within_3months', label: 'Inom tre månader', icon: '🗓️' },
   { value: 'flexible', label: 'Flexibelt', icon: '🕐' },
 ]
 
 export const START_TIME_LABELS: Record<string, string> = {
   asap: 'Snarast möjligt',
-  within_month: 'Inom 1 månad',
-  within_3months: 'Inom 3 månader',
+  within_month: 'Inom en månad',
+  within_3months: 'Inom tre månader',
   flexible: 'Flexibelt',
 }
 
@@ -124,7 +124,7 @@ export const PLANS = [
     per: '/månad',
     credits: 10,
     features: [
-      '10 leads per månad',
+      'Tio leads per månad',
       'Profilsida med logotyp & portfolio',
       'Statistik & insikter',
       'Prioriterad support',

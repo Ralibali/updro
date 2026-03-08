@@ -4,8 +4,8 @@ import { Gift, Calendar, CreditCard, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const items = [
-  { icon: Gift, text: '5 gratis leads direkt vid registrering' },
-  { icon: Calendar, text: '14 dagars fri provperiod' },
+  { icon: Gift, text: 'Fem gratis leads direkt vid registrering' },
+  { icon: Calendar, text: 'Fjorton dagars fri provperiod' },
   { icon: CreditCard, text: 'Inget kreditkort krävs' },
 ]
 
