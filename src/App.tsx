@@ -34,6 +34,7 @@ import BrowseProjects from "./pages/supplier/BrowseProjects";
 import ProjectUnlock from "./pages/supplier/ProjectUnlock";
 import SupplierOffers from "./pages/supplier/SupplierOffers";
 import BillingPage from "./pages/supplier/BillingPage";
+import ReferralPage from "./pages/supplier/ReferralPage";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
