@@ -9,6 +9,8 @@ export type Category =
   | 'Webbutveckling' | 'E-handel' | 'Digital marknadsföring'
   | 'Grafisk design/UX' | 'SEO' | 'App-utveckling'
   | 'IT-konsult' | 'Sociala medier'
+  | 'Mjukvaruutveckling' | 'Video & foto' | 'Varumärke & PR'
+  | 'UX/Webbdesign' | 'Underhåll/IT Support' | 'Affärsutveckling' | 'AI-utveckling'
 
 export interface Profile {
   id: string
