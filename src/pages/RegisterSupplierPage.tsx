@@ -223,7 +223,18 @@ const RegisterSupplierPage = () => {
                   />
                   <label htmlFor="terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
                     Jag godkänner <Link to="/villkor" className="text-brand-blue hover:underline">villkoren</Link> och{' '}
-                    <Link to="/integritetspolicy" className="text-brand-blue hover:underline">integritetspolicyn</Link>
+                    <Link to="/integritetspolicy" className="text-brand-blue hover:underline">integritetspolicyn</Link> *
+                  </label>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="newsletter"
+                    checked={form.newsletter || false}
+                    onCheckedChange={(v) => setForm(prev => ({ ...prev, newsletter: v === true }))}
+                  />
+                  <label htmlFor="newsletter" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                    Ja, jag vill ta emot nyheter och tips via e-post
                   </label>
                 </div>
 
