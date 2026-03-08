@@ -17,6 +17,9 @@ import AgencyProfilePage from "./pages/AgencyProfilePage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import PlaceholderPage from "./pages/PlaceholderPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsPage from "./pages/TermsPage";
+import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 
 // Buyer pages
@@ -54,8 +57,8 @@ const App = () => (
             <Route path="/priser" element={<PricingPage />} />
             <Route path="/om-oss" element={<PlaceholderPage title="Om Updro" />} />
             <Route path="/support" element={<PlaceholderPage title="Support" />} />
-            <Route path="/integritetspolicy" element={<PlaceholderPage title="Integritetspolicy" />} />
-            <Route path="/villkor" element={<PlaceholderPage title="Villkor" />} />
+            <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />
+            <Route path="/villkor" element={<TermsPage />} />
             <Route path="/logga-in" element={<LoginPage />} />
             <Route path="/registrera" element={<RegisterPage />} />
             <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
@@ -84,6 +87,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <CookieConsent />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
