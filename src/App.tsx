@@ -23,6 +23,10 @@ import TermsPage from "./pages/TermsPage";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 
+// SEO pages
+import PillarPage from "./components/seo/PillarPage";
+import SubPage from "./components/seo/SubPage";
+
 // Buyer pages
 import BuyerDashboard from "./pages/buyer/BuyerDashboard";
 import BuyerProjects from "./pages/buyer/BuyerProjects";
@@ -97,6 +101,10 @@ const App = () => (
             <Route path="/admin/offerter" element={<ProtectedRoute role="admin"><AdminOffers /></ProtectedRoute>} />
             <Route path="/admin/notifikationer" element={<ProtectedRoute role="admin"><AdminNotifications /></ProtectedRoute>} />
             <Route path="/admin/installningar" element={<ProtectedRoute role="admin"><AdminSettings /></ProtectedRoute>} />
+
+            {/* SEO pillar + sub pages */}
+            <Route path="/:category" element={<PillarPage />} />
+            <Route path="/:category/:sub" element={<SubPage />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>
