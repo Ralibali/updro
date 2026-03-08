@@ -58,6 +58,8 @@ export default {
           mint: "hsl(var(--brand-mint))",
           "mint-hover": "hsl(var(--brand-mint-hover))",
           coral: "hsl(var(--brand-coral))",
+          amber: "hsl(var(--brand-amber))",
+          "amber-glow": "hsl(var(--brand-amber-glow))",
         },
         surface: {
           DEFAULT: "hsl(0 0% 100%)",

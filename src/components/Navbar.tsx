@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Menu, X, Zap } from 'lucide-react'
+import { Menu, X, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from '@/components/Logo'
 import { useAuth } from '@/hooks/useAuth'
@@ -22,7 +22,7 @@ const Navbar = () => {
   const initials = (profile?.full_name || 'U').slice(0, 2).toUpperCase()
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container flex h-16 items-center justify-between">
         <Logo />
 
@@ -38,8 +38,8 @@ const Navbar = () => {
           {isAuthenticated ? (
             <>
               {isSupplier && isOnTrial && (
-                <span className="text-xs font-semibold bg-primary/10 text-primary rounded-full px-3 py-1 flex items-center gap-1">
-                  <Zap className="h-3 w-3" /> Trial: {trialLeadsLeft} leads
+                <span className="text-xs font-semibold bg-accent/10 text-accent rounded-full px-3 py-1 flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" /> Trial: {trialLeadsLeft} leads
                 </span>
               )}
               <NotificationBell />
@@ -62,8 +62,8 @@ const Navbar = () => {
             <>
               <Link to="/logga-in"><Button variant="ghost" size="sm">Logga in</Button></Link>
               <Link to="/registrera/byra">
-                <Button size="sm" className="bg-brand-blue hover:bg-brand-blue-hover text-primary-foreground rounded-full px-5 shadow-blue">
-                  <Zap className="mr-1.5 h-3.5 w-3.5" /> Prova gratis
+                <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 shadow-blue">
+                  <Sparkles className="mr-1.5 h-3.5 w-3.5" /> Prova gratis
                 </Button>
               </Link>
             </>
@@ -76,7 +76,7 @@ const Navbar = () => {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 top-16 z-50 bg-card">
+        <div className="md:hidden fixed inset-0 top-16 z-50 bg-background">
           <nav className="flex flex-col p-6 gap-4">
             {navLinks.map((link) => (
               <Link key={link.href} to={link.href} className="text-lg font-medium text-foreground py-2" onClick={() => setMobileOpen(false)}>
@@ -97,8 +97,8 @@ const Navbar = () => {
                     <Button variant="outline" className="w-full">Logga in</Button>
                   </Link>
                   <Link to="/registrera/byra" onClick={() => setMobileOpen(false)}>
-                    <Button className="w-full bg-brand-blue hover:bg-brand-blue-hover text-primary-foreground">
-                      <Zap className="mr-1.5 h-4 w-4" /> Prova gratis
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                      <Sparkles className="mr-1.5 h-4 w-4" /> Prova gratis
                     </Button>
                   </Link>
                 </>

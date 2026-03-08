@@ -28,7 +28,6 @@ const ProjectWizard = () => {
     start_time: '',
     is_company: true,
     company_name: '',
-    city: '',
     // Auth fields (step 3)
     full_name: '',
     email: '',
@@ -48,7 +47,6 @@ const ProjectWizard = () => {
   }
 
   const canNext1 = form.category && form.title.length >= 5 && form.description.length >= 20 && form.budget_range && form.start_time
-  const canNext2 = form.city.length >= 2
 
   const handlePublish = async () => {
     setLoading(true)
@@ -61,7 +59,6 @@ const ProjectWizard = () => {
         password: form.password,
         role: 'buyer',
         full_name: form.full_name,
-        city: form.city,
         company_name: form.is_company ? form.company_name : undefined,
       })
       if (error) {
@@ -87,7 +84,6 @@ const ProjectWizard = () => {
       category: form.category,
       budget_range: form.budget_range,
       start_time: form.start_time,
-      city: form.city,
       is_company: form.is_company,
       status: 'active',
     })
@@ -269,24 +265,14 @@ const ProjectWizard = () => {
                 </div>
               )}
 
-              <div>
-                <Label>Stad/region *</Label>
-                <Input
-                  value={form.city}
-                  onChange={e => setForm(prev => ({ ...prev, city: e.target.value }))}
-                  className="rounded-xl mt-1"
-                  required
-                />
-              </div>
-
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(1)} className="rounded-xl">
                   <ArrowLeft className="mr-2 h-4 w-4" /> Tillbaka
                 </Button>
                 <Button
                   onClick={() => isAuthenticated ? handlePublish() : setStep(3)}
-                  disabled={!canNext2 || loading}
-                  className="flex-1 bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5"
+                  disabled={loading}
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-5"
                 >
                   {isAuthenticated ? (loading ? 'Publicerar...' : 'Publicera uppdrag gratis →') : 'Nästa →'}
                 </Button>
