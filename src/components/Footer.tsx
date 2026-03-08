@@ -62,7 +62,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/10 mt-12 pt-6 text-center text-xs text-primary-foreground/40">
-          © {new Date().getFullYear()} Updro.se – Aurora Media AB
+          © {new Date().getFullYear()} Updro.se – Aurora Media AB (559272-0220)
         </div>
       </div>
     </footer>

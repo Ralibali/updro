@@ -13,7 +13,7 @@ const PrivacyPolicyPage = () => {
           <section className="space-y-6 text-sm leading-relaxed text-foreground/80">
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">1. Personuppgiftsansvarig</h2>
-              <p>Aurora Media AB (org.nr. XXX-XXXXXX), nedan "Updro", "vi" eller "oss", är personuppgiftsansvarig för behandlingen av dina personuppgifter på updro.se.</p>
+              <p>Aurora Media AB (org.nr. 559272-0220), nedan "Updro", "vi" eller "oss", är personuppgiftsansvarig för behandlingen av dina personuppgifter på updro.se.</p>
               <p className="mt-1">Kontakt: <a href="mailto:gdpr@updro.se" className="text-primary hover:underline">gdpr@updro.se</a></p>
             </div>
 
