@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/home/HeroSection'
@@ -7,8 +8,17 @@ import USPSection from '@/components/home/USPSection'
 import LatestProjectsSection from '@/components/home/LatestProjectsSection'
 import StatsSection from '@/components/home/StatsSection'
 import CTASection from '@/components/home/CTASection'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const Index = () => {
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Updro – Jämför offerter från digitala byråer | Gratis',
+      description: 'Jämför offerter från kvalitetssäkrade digitala byråer i Sverige. Webbutveckling, SEO, e-handel, apputveckling – helt gratis och utan förpliktelser.',
+      canonical: 'https://updro.se/',
+    })
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
