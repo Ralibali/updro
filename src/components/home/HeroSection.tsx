@@ -44,7 +44,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Kvalitetssäkrade uppdrag med beställare som faktiskt engagerar sig. Max 5 byråer per uppdrag – varje lead räknas.
+            Kvalitetssäkrade uppdrag med beställare som faktiskt engagerar sig. Max fem byråer per uppdrag – varje lead räknas.
           </motion.p>
 
           {/* CTAs */}
