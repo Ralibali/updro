@@ -656,6 +656,20 @@ export const SEO_PAGES: SEOPillarPage[] = [
   },
 ]
 
+// Merge expanded sub-pages
+import { EXTRA_SUB_PAGES } from './seoDataExpanded'
+for (const page of SEO_PAGES) {
+  const extra = EXTRA_SUB_PAGES[page.categorySlug]
+  if (extra) {
+    // Only add pages that don't already exist
+    for (const sub of extra) {
+      if (!page.subPages.find(s => s.slug === sub.slug)) {
+        page.subPages.push(sub)
+      }
+    }
+  }
+}
+
 // Helper: Find pillar page by slug
 export const findPillarPage = (slug: string) => SEO_PAGES.find(p => p.categorySlug === slug)
 

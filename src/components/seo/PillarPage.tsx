@@ -4,10 +4,11 @@ import { findPillarPage } from '@/lib/seoData'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, CheckCircle2, ChevronRight } from 'lucide-react'
+import { ArrowRight, ChevronRight } from 'lucide-react'
 import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const PillarPage = () => {
   const { category } = useParams<{ category: string }>()
@@ -15,15 +16,11 @@ const PillarPage = () => {
 
   useEffect(() => {
     if (page) {
-      document.title = page.metaTitle
-      const meta = document.querySelector('meta[name="description"]')
-      if (meta) meta.setAttribute('content', page.metaDesc)
-      else {
-        const m = document.createElement('meta')
-        m.name = 'description'
-        m.content = page.metaDesc
-        document.head.appendChild(m)
-      }
+      setSEOMeta({
+        title: page.metaTitle,
+        description: page.metaDesc,
+        canonical: `https://updro.se/${page.categorySlug}`,
+      })
     }
     window.scrollTo(0, 0)
   }, [page])
@@ -75,7 +72,6 @@ const PillarPage = () => {
         </div>
       </div>
 
-      {/* Mid CTA */}
       <SEOLeadCTA categoryName={page.categoryName} />
 
       {/* Sub pages grid */}

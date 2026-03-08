@@ -22,6 +22,7 @@ import AboutPage from "./pages/AboutPage";
 import TermsPage from "./pages/TermsPage";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
+import SitemapPage from "./pages/SitemapPage";
 
 // SEO pages
 import PillarPage from "./components/seo/PillarPage";
@@ -85,6 +86,7 @@ const App = () => (
             <Route path="/registrera" element={<RegisterPage />} />
             <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
             <Route path="/aterstall-losenord" element={<PlaceholderPage title="Återställ lösenord" />} />
+            <Route path="/sitemap" element={<SitemapPage />} />
 
             {/* Content hubs */}
             <Route path="/artiklar" element={<ArticlesIndex />} />
