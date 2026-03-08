@@ -81,6 +81,7 @@ const App = () => (
             <Route path="/dashboard/supplier/chatt" element={<ProtectedRoute role="supplier"><ChatPage /></ProtectedRoute>} />
             <Route path="/dashboard/supplier/profil" element={<ProtectedRoute role="supplier"><ProfilePage /></ProtectedRoute>} />
             <Route path="/dashboard/supplier/fakturering" element={<ProtectedRoute role="supplier"><BillingPage /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/bjud-in" element={<ProtectedRoute role="supplier"><ReferralPage /></ProtectedRoute>} />
 
             {/* Admin */}
             <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
