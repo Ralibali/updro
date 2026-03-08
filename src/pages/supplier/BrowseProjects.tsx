@@ -99,6 +99,7 @@ const BrowseProjects = () => {
           <div className="space-y-4">
             {filtered.map(p => {
               const isUnlocked = unlocked.has(p.id)
+              const isClosed = (p.offer_count || 0) >= (p.max_offers || 5) || p.status === 'closed'
               return (
                 <div key={p.id} className={`bg-card rounded-xl border p-5 transition-all ${isUnlocked ? 'border-accent/30' : ''}`}>
                   <div className="flex items-start justify-between mb-2">
