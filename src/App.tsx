@@ -23,6 +23,8 @@ import TermsPage from "./pages/TermsPage";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 import SitemapPage from "./pages/SitemapPage";
+import GuidesIndex from "./pages/GuidesIndex";
+import GuidePage from "./pages/GuidePage";
 
 // SEO pages
 import PillarPage from "./components/seo/PillarPage";
