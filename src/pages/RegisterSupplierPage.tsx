@@ -20,10 +20,10 @@ const RegisterSupplierPage = () => {
     full_name: '',
     email: '',
     password: '',
-    city: '',
     phone: '',
     categories: [] as string[],
     accepted: false,
+    newsletter: false,
   })
 
   const toggleCategory = (cat: string) => {
@@ -53,7 +53,6 @@ const RegisterSupplierPage = () => {
       role: 'supplier',
       full_name: form.full_name,
       company_name: form.company_name,
-      city: form.city,
       phone: form.phone || undefined,
       categories: form.categories,
     })
@@ -183,24 +182,13 @@ const RegisterSupplierPage = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Stad *</Label>
-                    <Input
-                      value={form.city}
-                      onChange={(e) => setForm(prev => ({ ...prev, city: e.target.value }))}
-                      className="rounded-xl mt-1"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label>Telefon</Label>
-                    <Input
-                      value={form.phone}
-                      onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                      className="rounded-xl mt-1"
-                    />
-                  </div>
+                <div>
+                  <Label>Telefon</Label>
+                  <Input
+                    value={form.phone}
+                    onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                    className="rounded-xl mt-1"
+                  />
                 </div>
 
                 {/* Category chips */}
@@ -234,7 +222,18 @@ const RegisterSupplierPage = () => {
                   />
                   <label htmlFor="terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
                     Jag godkänner <Link to="/villkor" className="text-brand-blue hover:underline">villkoren</Link> och{' '}
-                    <Link to="/integritetspolicy" className="text-brand-blue hover:underline">integritetspolicyn</Link>
+                    <Link to="/integritetspolicy" className="text-brand-blue hover:underline">integritetspolicyn</Link> *
+                  </label>
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    id="newsletter"
+                    checked={form.newsletter || false}
+                    onCheckedChange={(v) => setForm(prev => ({ ...prev, newsletter: v === true }))}
+                  />
+                  <label htmlFor="newsletter" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                    Ja, jag vill ta emot nyheter och tips via e-post
                   </label>
                 </div>
 

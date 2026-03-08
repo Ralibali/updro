@@ -5,19 +5,19 @@ const features = [
   { icon: MessageCircleReply, text: 'Beställare måste svara – vi följer upp varje offert aktivt' },
   { icon: ShieldCheck, text: 'Kvalitetskontrollerade uppdrag – vi granskar varje projekt innan publicering' },
   { icon: TrendingDown, text: '40% lägre pris per lead – mer valuta för pengarna' },
-  { icon: Gift, text: '5 gratis leads vid start – helt utan kreditkort' },
+  { icon: Gift, text: 'Fem gratis leads vid start – helt utan kreditkort' },
   { icon: Timer, text: 'Inga utdaterade uppdrag – avslutade projekt tas bort direkt' },
   { icon: Ban, text: 'Inga dolda avgifter eller automatisk förnyelse utan varning' },
 ]
 
 const comparison = [
   { label: 'Lead-pris', updro: '299 kr', competitor: '490 kr', updroGood: true, competitorBad: true },
-  { label: 'Gratis leads', updro: '5 st', competitor: '0 st', updroGood: true, competitorBad: true },
-  { label: 'Provperiod', updro: '14 dagar', competitor: 'Nej', updroGood: true, competitorBad: true },
+  { label: 'Gratis leads', updro: 'Fem st', competitor: 'Noll st', updroGood: true, competitorBad: true },
+  { label: 'Provperiod', updro: 'Fjorton dagar', competitor: 'Nej', updroGood: true, competitorBad: true },
   { label: 'Svarsgaranti', updro: 'Ja, aktiv uppföljning', competitor: 'Nej', updroGood: true, competitorBad: true },
   { label: 'Kvalitetskontroll', updro: 'Manuell granskning', competitor: 'Grundläggande', updroGood: true, competitorBad: false },
   { label: 'Bindningstid', updro: 'Nej', competitor: 'Auto-förnyelse', updroGood: true, competitorBad: true },
-  { label: 'Max byråer/uppdrag', updro: '5 st', competitor: 'Obegränsat', updroGood: true, competitorBad: true },
+  { label: 'Max byråer/uppdrag', updro: 'Fem st', competitor: 'Obegränsat', updroGood: true, competitorBad: true },
 ]
 
 const USPSection = () => {

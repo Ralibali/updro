@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 import { Mail, Lock } from 'lucide-react'
 
 const LoginPage = () => {
-  const { signIn, signInWithGoogle } = useAuth()
+  const { signIn, signInWithGoogle, profile } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -26,9 +26,19 @@ const LoginPage = () => {
       toast.error('Kunde inte logga in. Kontrollera uppgifterna.')
     } else {
       toast.success('Inloggad!')
-      navigate('/')
+      // Redirect will happen in useEffect below after profile loads
     }
   }
+
+  // Redirect based on role once profile is loaded after login
+  useEffect(() => {
+    if (profile) {
+      if (profile.role === 'admin') navigate('/admin', { replace: true })
+      else if (profile.role === 'supplier') navigate('/dashboard/supplier', { replace: true })
+      else if (profile.role === 'buyer') navigate('/dashboard/buyer', { replace: true })
+      else navigate('/', { replace: true })
+    }
+  }, [profile, navigate])
 
   return (
     <div className="min-h-screen flex flex-col">
