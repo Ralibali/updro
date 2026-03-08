@@ -59,7 +59,6 @@ const ProjectWizard = () => {
         password: form.password,
         role: 'buyer',
         full_name: form.full_name,
-        city: form.city,
         company_name: form.is_company ? form.company_name : undefined,
       })
       if (error) {
