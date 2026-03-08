@@ -84,7 +84,6 @@ const ProjectWizard = () => {
       category: form.category,
       budget_range: form.budget_range,
       start_time: form.start_time,
-      city: form.city,
       is_company: form.is_company,
       status: 'active',
     })
