@@ -26,6 +26,14 @@ import NotFound from "./pages/NotFound";
 // SEO pages
 import PillarPage from "./components/seo/PillarPage";
 import SubPage from "./components/seo/SubPage";
+import CityHubPage from "./components/seo/CityHubPage";
+import CitiesIndex from "./components/seo/CitiesIndex";
+import ComparisonPage from "./components/seo/ComparisonPage";
+import ComparisonsIndex from "./components/seo/ComparisonsIndex";
+import ArticlePage from "./components/seo/ArticlePage";
+import ArticlesIndex from "./components/seo/ArticlesIndex";
+import ToolPage from "./components/seo/ToolPage";
+import ToolsIndex from "./components/seo/ToolsIndex";
 
 // Buyer pages
 import BuyerDashboard from "./pages/buyer/BuyerDashboard";
@@ -49,6 +57,9 @@ import AdminSuppliers from "./pages/admin/AdminSuppliers";
 import AdminOffers from "./pages/admin/AdminOffers";
 import AdminNotifications from "./pages/admin/AdminNotifications";
 import AdminSettings from "./pages/admin/AdminSettings";
+
+// Comparison page slugs for explicit routing
+import { COMPARISON_PAGES } from "./lib/seoComparisons";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +85,20 @@ const App = () => (
             <Route path="/registrera" element={<RegisterPage />} />
             <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
             <Route path="/aterstall-losenord" element={<PlaceholderPage title="Återställ lösenord" />} />
+
+            {/* Content hubs */}
+            <Route path="/artiklar" element={<ArticlesIndex />} />
+            <Route path="/artiklar/:slug" element={<ArticlePage />} />
+            <Route path="/verktyg" element={<ToolsIndex />} />
+            <Route path="/verktyg/:slug" element={<ToolPage />} />
+            <Route path="/stader" element={<CitiesIndex />} />
+            <Route path="/stader/:city" element={<CityHubPage />} />
+            <Route path="/jamfor" element={<ComparisonsIndex />} />
+
+            {/* Comparison pages (explicit routes before catch-all) */}
+            {COMPARISON_PAGES.map(p => (
+              <Route key={p.slug} path={`/${p.slug}`} element={<ComparisonPage />} />
+            ))}
 
             {/* Buyer dashboard */}
             <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerDashboard /></ProtectedRoute>} />
@@ -102,7 +127,7 @@ const App = () => (
             <Route path="/admin/notifikationer" element={<ProtectedRoute role="admin"><AdminNotifications /></ProtectedRoute>} />
             <Route path="/admin/installningar" element={<ProtectedRoute role="admin"><AdminSettings /></ProtectedRoute>} />
 
-            {/* SEO pillar + sub pages */}
+            {/* SEO pillar + sub pages (catch-all for /:category and /:category/:sub) */}
             <Route path="/:category" element={<PillarPage />} />
             <Route path="/:category/:sub" element={<SubPage />} />
 

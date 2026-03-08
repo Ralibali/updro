@@ -1,0 +1,214 @@
+export interface ComparisonPage {
+  slug: string
+  metaTitle: string
+  metaDesc: string
+  h1: string
+  intro: string
+  sections: { heading: string; content: string }[]
+  faq: { q: string; a: string }[]
+  relatedLinks: { label: string; href: string }[]
+}
+
+export const COMPARISON_PAGES: ComparisonPage[] = [
+  {
+    slug: 'basta-seo-byran',
+    metaTitle: 'Bästa SEO-byrån 2026 – Topp 10 i Sverige | Updro',
+    metaDesc: 'Vi jämför de bästa SEO-byråerna i Sverige 2026. Priser, tjänster och recensioner – hitta rätt SEO-partner.',
+    h1: 'Bästa SEO-byrån 2026 – Topp 10 i Sverige',
+    intro: 'Att hitta rätt SEO-byrå kan vara avgörande för ditt företags digitala tillväxt. Vi har utvärderat och jämfört de bästa SEO-byråerna i Sverige baserat på resultat, kundrecensioner och specialistkunskap.',
+    sections: [
+      { heading: 'Hur vi valt ut de bästa SEO-byråerna', content: 'Vår ranking baseras på:\n\n- **Dokumenterade resultat** – Bevisbar trafikökning och ranking-förbättringar\n- **Kundrecensioner** – Omdömen från verifierade kunder på Updro\n- **Specialistkompetens** – Teknisk SEO, content och länkbyggande\n- **Transparens** – Tydlig rapportering och kommunikation\n- **Prisvärdighet** – Bra förhållande mellan pris och kvalitet' },
+      { heading: 'Vad kostar en SEO-byrå?', content: 'Priserna varierar kraftigt beroende på byråns storlek och tjänsteomfattning:\n\n| Paket | Pris/månad |\n|---|---|\n| Grundpaket | 5 000 – 12 000 kr |\n| Standardpaket | 10 000 – 25 000 kr |\n| Premiumpaket | 20 000 – 50 000 kr |\n| Enterprise | 40 000 – 100 000+ kr |\n\nDet billigaste alternativet är sällan det bästa. En byrå som tar 5 000 kr/månad kan sällan leverera de resultat som en byrå med kapacitet och erfarenhet ger.' },
+      { heading: 'Så väljer du rätt SEO-byrå', content: '1. **Definiera dina mål** – Vad vill du uppnå? Mer trafik? Fler leads? Bättre ranking?\n2. **Jämför minst 3 offerter** – Använd Updro för att få jämförbara offerter\n3. **Granska case studies** – Be om dokumenterade resultat från tidigare kunder\n4. **Fråga om rapportering** – Hur ofta rapporterar de? Vilka KPI:er följer de?\n5. **Kontrollera avtalsvillkor** – Undvik långa bindningstider\n6. **Be om referenser** – Ring och prata med befintliga kunder' },
+      { heading: 'Vanliga misstag vid val av SEO-byrå', content: '- Välja den billigaste byrån\n- Inte fråga om rapportering och transparens\n- Binda sig för långa avtal utan uppföljning\n- Förvänta sig resultat inom veckor istället för månader\n- Inte kontrollera att byrån använder etiska (white-hat) metoder' },
+    ],
+    faq: [
+      { q: 'Hur lång tid tar det att se SEO-resultat?', a: 'Vanligtvis 3–6 månader för märkbara förbättringar och 6–12 månader för signifikant trafikökning. SEO är en långsiktig investering.' },
+      { q: 'Kan jag göra SEO själv?', a: 'Grundläggande SEO kan du göra själv, men för konkurrenskraftiga sökord behövs specialistkompetens inom teknisk SEO, content och länkbyggande.' },
+      { q: 'SEO eller Google Ads?', a: 'SEO ger långsiktig, kostnadsfri trafik. Google Ads ger omedelbar men betald trafik. Bäst resultat med en kombination.' },
+      { q: 'Vad är en rimlig SEO-budget?', a: 'Minst 8 000–15 000 kr/månad för att se resultat. Under 5 000 kr/månad är sällan tillräckligt för att konkurrera.' },
+    ],
+    relatedLinks: [
+      { label: 'SEO', href: '/seo' },
+      { label: 'SEO pris', href: '/seo/pris' },
+      { label: 'SEO Stockholm', href: '/seo/stockholm' },
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
+    ]
+  },
+  {
+    slug: 'basta-webbyran',
+    metaTitle: 'Bästa webbyrån 2026 – Topp 10 i Sverige | Updro',
+    metaDesc: 'Jämför de bästa webbbyråerna i Sverige 2026. Design, utveckling, pris – hitta rätt webbyrå för ditt projekt.',
+    h1: 'Bästa webbyrån 2026 – Topp 10 i Sverige',
+    intro: 'Att välja rätt webbyrå är en av de viktigaste besluten för ditt företags digitala närvaro. Vi har jämfört Sveriges bästa webbbyråer baserat på design, teknisk kompetens, kundnöjdhet och prisvärdighet.',
+    sections: [
+      { heading: 'Vad gör en webbyrå bäst?', content: 'De bästa webbbyråerna utmärker sig genom:\n\n- **Stark portfolio** – Imponerande webbplatser som konverterar\n- **Teknisk bredd** – WordPress, React, Webflow, custom\n- **UX-fokus** – Användarvänlig design som driver resultat\n- **Projektledning** – Tydlig process och kommunikation\n- **Efterservice** – Löpande support och underhåll' },
+      { heading: 'Prisöversikt', content: '| Projekt | Prisintervall |\n|---|---|\n| Enkel företagssida | 15 000 – 50 000 kr |\n| Avancerad hemsida | 30 000 – 120 000 kr |\n| E-handelsplattform | 40 000 – 200 000 kr |\n| Webbapplikation | 80 000 – 500 000+ kr |' },
+    ],
+    faq: [
+      { q: 'Vad kostar det att anlita en webbyrå?', a: 'En enkel företagssida kostar 15 000–50 000 kr. Mer avancerade projekt kostar 50 000–200 000+ kr beroende på funktionalitet.' },
+      { q: 'Hur lång tid tar det att bygga en hemsida?', a: 'En enkel sida tar 3–6 veckor, avancerade projekt 8–16 veckor.' },
+    ],
+    relatedLinks: [
+      { label: 'Webbutveckling', href: '/webbutveckling' },
+      { label: 'Webbutveckling pris', href: '/webbutveckling/pris' },
+      { label: 'Webbutveckling Stockholm', href: '/webbutveckling/stockholm' },
+      { label: 'Webbdesign', href: '/webbdesign' },
+    ]
+  },
+  {
+    slug: 'basta-webbyran-stockholm',
+    metaTitle: 'Bästa webbyrån i Stockholm 2026 | Updro',
+    metaDesc: 'Jämför de bästa webbbyråerna i Stockholm. Topp 10 listan med priser, specialiteter och recensioner.',
+    h1: 'Bästa webbyrån i Stockholm 2026',
+    intro: 'Stockholm har Sveriges bredaste urval av webbbyråer – från boutique-studios till stora fullservice-byråer. Vi har utvärderat marknaden och presenterar de bästa alternativen för ditt projekt.',
+    sections: [
+      { heading: 'Stockholms webbyrå-landskap', content: 'Med över 500 webbbyråer i Stockholmsregionen finns det en byrå för varje behov och budget. De vanligaste områdena för webbbyråer är Södermalm, Kungsholmen och Vasastan.' },
+      { heading: 'Priser i Stockholm', content: 'Stockholmsbyråer ligger generellt 10–20% högre i pris än rikssnittet. En enkel företagssida kostar typiskt 20 000–60 000 kr, medan avancerade projekt kostar 80 000–300 000 kr.' },
+    ],
+    faq: [
+      { q: 'Är webbbyråer i Stockholm dyrare?', a: 'Ja, typiskt 10–20% högre än rikssnittet. Men kvaliteten och utbudet är också störst.' },
+    ],
+    relatedLinks: [
+      { label: 'Webbutveckling Stockholm', href: '/webbutveckling/stockholm' },
+      { label: 'SEO Stockholm', href: '/seo/stockholm' },
+      { label: 'Bästa webbyrån', href: '/basta-webbyran' },
+    ]
+  },
+  {
+    slug: 'basta-ehandel-byran',
+    metaTitle: 'Bästa e-handelsbyrån 2026 – Topp 10 | Updro',
+    metaDesc: 'Jämför de bästa e-handelsbyråerna i Sverige. Shopify, WooCommerce, Magento – hitta rätt byrå för din webbutik.',
+    h1: 'Bästa e-handelsbyrån 2026 – Topp 10 i Sverige',
+    intro: 'Rätt e-handelsbyrå kan vara skillnaden mellan en medelmåttig och en framgångsrik webbutik. Vi jämför de bästa e-handelsbyråerna i Sverige baserat på plattformsexpertis, resultat och kundnöjdhet.',
+    sections: [
+      { heading: 'Hur vi utvärderar', content: 'Vi bedömer byråerna baserat på:\n- Plattformskompetens (Shopify, WooCommerce, Magento)\n- Konverteringsoptimering\n- UX/UI-design för e-handel\n- Integrationer och betallösningar\n- Kundrecensioner och case studies' },
+      { heading: 'Kostnader för e-handelsutveckling', content: '| Plattform | Prisintervall |\n|---|---|\n| Shopify Basic | 15 000 – 40 000 kr |\n| Shopify Plus | 100 000 – 300 000 kr |\n| WooCommerce | 20 000 – 80 000 kr |\n| Magento | 200 000 – 1 000 000+ kr |' },
+    ],
+    faq: [
+      { q: 'Vilken e-handelsplattform ska jag välja?', a: 'Shopify för enkelhet, WooCommerce för flexibilitet, Magento för stora volymer.' },
+    ],
+    relatedLinks: [
+      { label: 'E-handel', href: '/ehandel' },
+      { label: 'E-handel Shopify', href: '/ehandel/shopify' },
+      { label: 'E-handel WooCommerce', href: '/ehandel/woocommerce' },
+    ]
+  },
+  {
+    slug: 'basta-apputvecklare',
+    metaTitle: 'Bästa apputvecklare 2026 – Topp 10 Sverige | Updro',
+    metaDesc: 'Jämför de bästa apputvecklarna i Sverige. iOS, Android, cross-platform – hitta rätt partner för din app.',
+    h1: 'Bästa apputvecklare 2026 – Topp 10 i Sverige',
+    intro: 'Att bygga en app kräver rätt partner. Vi har utvärderat Sveriges bästa apputvecklare baserat på teknisk kompetens, design, projektleverans och kundnöjdhet.',
+    sections: [
+      { heading: 'Vad utmärker toppbyråerna?', content: '- Native utveckling (Swift/Kotlin) och cross-platform (React Native/Flutter)\n- Stark UX/UI-design för mobil\n- Agil projektmetodik\n- App Store-optimering\n- Löpande underhåll och vidareutveckling' },
+      { heading: 'Apputveckling priser', content: '| Typ | Pris |\n|---|---|\n| Enkel app (en plattform) | 100 000 – 300 000 kr |\n| Avancerad app | 300 000 – 800 000 kr |\n| Enterprise-app | 500 000 – 2 000 000+ kr |' },
+    ],
+    faq: [
+      { q: 'Hur lång tid tar apputveckling?', a: 'En enkel app tar 2–4 månader, avancerade appar 4–12 månader.' },
+    ],
+    relatedLinks: [
+      { label: 'App-utveckling', href: '/app-utveckling' },
+      { label: 'App-utveckling pris', href: '/app-utveckling/pris' },
+      { label: 'Mjukvaruutveckling', href: '/mjukvaruutveckling' },
+    ]
+  },
+  {
+    slug: 'basta-marknadsforingsbyra',
+    metaTitle: 'Bästa marknadsföringsbyrån 2026 – Topp 10 | Updro',
+    metaDesc: 'Jämför de bästa marknadsföringsbyråerna i Sverige. SEO, Google Ads, sociala medier – hitta rätt partner.',
+    h1: 'Bästa marknadsföringsbyrån 2026 – Topp 10 i Sverige',
+    intro: 'Digital marknadsföring är komplext och rätt byrå kan göra enorm skillnad för dina resultat. Vi jämför de bästa marknadsföringsbyråerna i Sverige.',
+    sections: [
+      { heading: 'Utvärderingskriterier', content: '- Bredd av tjänster (SEO, SEM, sociala medier, content)\n- ROI och dokumenterade resultat\n- Transparens i rapportering\n- Branschexpertis\n- Kundnöjdhet och långsiktiga samarbeten' },
+      { heading: 'Prisöversikt', content: '| Tjänst | Månadspris |\n|---|---|\n| SEO | 5 000 – 30 000 kr |\n| Google Ads | 5 000 – 25 000 kr + annonsbudget |\n| Sociala medier | 8 000 – 25 000 kr |\n| Fullservice | 20 000 – 80 000 kr |' },
+    ],
+    faq: [
+      { q: 'Nischad eller fullservice-byrå?', a: 'Nischad för specifika behov (t.ex. bara SEO), fullservice om du vill ha allt under ett tak.' },
+    ],
+    relatedLinks: [
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
+      { label: 'SEO', href: '/seo' },
+      { label: 'Sociala medier', href: '/sociala-medier' },
+    ]
+  },
+  {
+    slug: 'basta-designbyran',
+    metaTitle: 'Bästa designbyrån 2026 – Topp 10 Sverige | Updro',
+    metaDesc: 'Jämför de bästa designbyråerna i Sverige. Logotyper, grafisk profil, UX/UI – hitta rätt byrå.',
+    h1: 'Bästa designbyrån 2026 – Topp 10 i Sverige',
+    intro: 'Design är grunden för hur ditt varumärke uppfattas. Vi har utvärderat de bästa designbyråerna i Sverige baserat på kreativitet, teknisk kompetens och kundnöjdhet.',
+    sections: [
+      { heading: 'Vad utmärker toppbyråerna?', content: '- Stark och varierad portfolio\n- UX/UI-kompetens\n- Strategiskt tänkande, inte bara estetik\n- Tydlig designprocess\n- Bra kommunikation och samarbete' },
+    ],
+    faq: [
+      { q: 'Vad kostar en designbyrå?', a: 'Logotyp 5 000–30 000 kr, grafisk profil 15 000–60 000 kr, UX/UI-design 20 000–100 000 kr.' },
+    ],
+    relatedLinks: [
+      { label: 'Grafisk design', href: '/grafisk-design' },
+      { label: 'Webbdesign', href: '/webbdesign' },
+      { label: 'Webbutveckling', href: '/webbutveckling' },
+    ]
+  },
+  {
+    slug: 'basta-it-konsulten',
+    metaTitle: 'Bästa IT-konsulten 2026 – Topp 10 | Updro',
+    metaDesc: 'Jämför de bästa IT-konsulterna i Sverige. Strategi, implementation, support – hitta rätt IT-partner.',
+    h1: 'Bästa IT-konsulten 2026 – Topp 10 i Sverige',
+    intro: 'Rätt IT-konsult hjälper ditt företag att navigera den digitala transformationen. Vi jämför de bästa IT-konsulterna baserat på kompetens, erfarenhet och kundnöjdhet.',
+    sections: [
+      { heading: 'Utvärderingskriterier', content: '- Teknisk bredd och djup\n- Branscherfarenhet\n- Projektleverans och tidshållning\n- Support och tillgänglighet\n- Pris/kvalitet-förhållande' },
+    ],
+    faq: [
+      { q: 'Vad kostar en IT-konsult?', a: 'Timpris 800–2 000 kr beroende på specialisering och erfarenhet.' },
+    ],
+    relatedLinks: [
+      { label: 'IT-konsult', href: '/it-konsult' },
+      { label: 'IT-support', href: '/it-support' },
+      { label: 'Mjukvaruutveckling', href: '/mjukvaruutveckling' },
+    ]
+  },
+  {
+    slug: 'basta-sociala-medier-byran',
+    metaTitle: 'Bästa byrån för sociala medier 2026 | Updro',
+    metaDesc: 'Jämför de bästa byråerna för sociala medier i Sverige. Strategi, annonsering, content – hitta rätt partner.',
+    h1: 'Bästa byrån för sociala medier 2026',
+    intro: 'Sociala medier är en avgörande kanal för de flesta företag. Vi jämför de bästa social media-byråerna baserat på strategi, kreativitet och dokumenterade resultat.',
+    sections: [
+      { heading: 'Vad utmärker de bästa?', content: '- Stark content-produktion\n- Datadriven annonsering\n- Plattformsexpertis (Instagram, TikTok, LinkedIn)\n- Influencer-samarbeten\n- ROI-fokuserad rapportering' },
+    ],
+    faq: [
+      { q: 'Vad kostar en social media-byrå?', a: 'Räkna med 8 000–25 000 kr/månad beroende på antal kanaler och tjänsteomfattning.' },
+    ],
+    relatedLinks: [
+      { label: 'Sociala medier', href: '/sociala-medier' },
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
+      { label: 'Video & Foto', href: '/video-foto' },
+    ]
+  },
+  {
+    slug: 'basta-ai-byran',
+    metaTitle: 'Bästa AI-byrån 2026 – Topp 10 Sverige | Updro',
+    metaDesc: 'Jämför de bästa AI-byråerna och AI-utvecklarna i Sverige. Chatbots, automation, maskininlärning.',
+    h1: 'Bästa AI-byrån 2026 – Topp 10 i Sverige',
+    intro: 'AI revolutionerar företag i alla branscher. Hitta rätt AI-partner för chatbots, automation, dataanalys och maskininlärning.',
+    sections: [
+      { heading: 'AI-tjänster att jämföra', content: '- Chatbots och virtuella assistenter\n- Processautomation\n- Prediktiv analys\n- NLP och textanalys\n- Datorseende\n- AI-strategi och rådgivning' },
+    ],
+    faq: [
+      { q: 'Vad kostar AI-utveckling?', a: 'Chatbot 30 000–150 000 kr. Custom AI-lösning 100 000–1 000 000+ kr.' },
+    ],
+    relatedLinks: [
+      { label: 'AI-utveckling', href: '/ai-utveckling' },
+      { label: 'Mjukvaruutveckling', href: '/mjukvaruutveckling' },
+      { label: 'IT-konsult', href: '/it-konsult' },
+    ]
+  },
+]
+
+export const findComparisonPage = (slug: string) => COMPARISON_PAGES.find(p => p.slug === slug)
+
+export const getComparisonNavLinks = () => COMPARISON_PAGES.map(p => ({
+  label: p.h1.replace(' – Topp 10 i Sverige', '').replace(' – Topp 10 Sverige', '').replace(' 2026', ''),
+  href: `/${p.slug}`,
+}))

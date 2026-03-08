@@ -16,6 +16,13 @@ const navLinks = [
   { label: 'Priser', href: '/priser' },
 ]
 
+const extraLinks = [
+  { label: 'Jämför byråer', href: '/jamfor' },
+  { label: 'Städer', href: '/stader' },
+  { label: 'Artiklar', href: '/artiklar' },
+  { label: 'Verktyg', href: '/verktyg' },
+]
+
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
@@ -54,6 +61,10 @@ const Navbar = () => {
 
           <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Hitta byråer
+          </Link>
+
+          <Link to="/jamfor" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Jämför
           </Link>
 
           {navLinks.map((link) => (
@@ -119,6 +130,11 @@ const Navbar = () => {
               <Link to="/byraer" className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
                 Hitta byråer
               </Link>
+              {extraLinks.map((link) => (
+                <Link key={link.href} to={link.href} className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
+                  {link.label}
+                </Link>
+              ))}
               {navLinks.map((link) => (
                 <Link key={link.href} to={link.href} className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
                   {link.label}
