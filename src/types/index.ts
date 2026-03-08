@@ -9,6 +9,8 @@ export type Category =
   | 'Webbutveckling' | 'E-handel' | 'Digital marknadsföring'
   | 'Grafisk design/UX' | 'SEO' | 'App-utveckling'
   | 'IT-konsult' | 'Sociala medier'
+  | 'Mjukvaruutveckling' | 'Video & foto' | 'Varumärke & PR'
+  | 'UX/Webbdesign' | 'Underhåll/IT Support' | 'Affärsutveckling' | 'AI-utveckling'
 
 export interface Profile {
   id: string
@@ -19,6 +21,8 @@ export interface Profile {
   city: string | null
   phone: string | null
   avatar_url: string | null
+  is_bankid_verified: boolean
+  is_phone_verified: boolean
   created_at: string
 }
 
@@ -56,6 +60,7 @@ export interface Project {
   is_company: boolean
   status: ProjectStatus
   offer_count: number
+  max_offers: number
   view_count: number
   created_at: string
   buyer?: Profile

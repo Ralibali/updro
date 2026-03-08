@@ -34,6 +34,7 @@ import BrowseProjects from "./pages/supplier/BrowseProjects";
 import ProjectUnlock from "./pages/supplier/ProjectUnlock";
 import SupplierOffers from "./pages/supplier/SupplierOffers";
 import BillingPage from "./pages/supplier/BillingPage";
+import ReferralPage from "./pages/supplier/ReferralPage";
 
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -80,6 +81,7 @@ const App = () => (
             <Route path="/dashboard/supplier/chatt" element={<ProtectedRoute role="supplier"><ChatPage /></ProtectedRoute>} />
             <Route path="/dashboard/supplier/profil" element={<ProtectedRoute role="supplier"><ProfilePage /></ProtectedRoute>} />
             <Route path="/dashboard/supplier/fakturering" element={<ProtectedRoute role="supplier"><BillingPage /></ProtectedRoute>} />
+            <Route path="/dashboard/supplier/bjud-in" element={<ProtectedRoute role="supplier"><ReferralPage /></ProtectedRoute>} />
 
             {/* Admin */}
             <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />

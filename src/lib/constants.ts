@@ -2,7 +2,15 @@ export const CATEGORIES = [
   'Webbutveckling', 'E-handel', 'Digital marknadsföring',
   'Grafisk design/UX', 'SEO', 'App-utveckling',
   'IT-konsult', 'Sociala medier',
+  // New categories
+  'Mjukvaruutveckling', 'Video & foto', 'Varumärke & PR',
+  'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling',
 ] as const
+
+export const NEW_CATEGORIES = new Set([
+  'Mjukvaruutveckling', 'Video & foto', 'Varumärke & PR',
+  'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling',
+])
 
 export const CATEGORY_ICONS: Record<string, string> = {
   'Webbutveckling': '🌐',
@@ -13,6 +21,13 @@ export const CATEGORY_ICONS: Record<string, string> = {
   'App-utveckling': '📱',
   'IT-konsult': '💻',
   'Sociala medier': '📣',
+  'Mjukvaruutveckling': '⚙️',
+  'Video & foto': '🎬',
+  'Varumärke & PR': '📰',
+  'UX/Webbdesign': '✏️',
+  'Underhåll/IT Support': '🛠️',
+  'Affärsutveckling': '🚀',
+  'AI-utveckling': '🤖',
 }
 
 export const CATEGORY_STYLES: Record<string, string> = {
@@ -24,6 +39,31 @@ export const CATEGORY_STYLES: Record<string, string> = {
   'App-utveckling': 'bg-indigo-50 text-indigo-700 border border-indigo-200',
   'IT-konsult': 'bg-slate-50 text-slate-700 border border-slate-200',
   'Sociala medier': 'bg-rose-50 text-rose-700 border border-rose-200',
+  'Mjukvaruutveckling': 'bg-cyan-50 text-cyan-700 border border-cyan-200',
+  'Video & foto': 'bg-amber-50 text-amber-700 border border-amber-200',
+  'Varumärke & PR': 'bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-200',
+  'UX/Webbdesign': 'bg-teal-50 text-teal-700 border border-teal-200',
+  'Underhåll/IT Support': 'bg-gray-50 text-gray-700 border border-gray-200',
+  'Affärsutveckling': 'bg-lime-50 text-lime-700 border border-lime-200',
+  'AI-utveckling': 'bg-purple-50 text-purple-700 border border-purple-200',
+}
+
+export const CATEGORY_COVER_IMAGES: Record<string, string> = {
+  'Webbutveckling': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=300&fit=crop',
+  'E-handel': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=300&fit=crop',
+  'Digital marknadsföring': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=300&fit=crop',
+  'Grafisk design/UX': 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=300&fit=crop',
+  'SEO': 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=600&h=300&fit=crop',
+  'App-utveckling': 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=300&fit=crop',
+  'IT-konsult': 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=300&fit=crop',
+  'Sociala medier': 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=300&fit=crop',
+  'Mjukvaruutveckling': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=300&fit=crop',
+  'Video & foto': 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=300&fit=crop',
+  'Varumärke & PR': 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&h=300&fit=crop',
+  'UX/Webbdesign': 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=300&fit=crop',
+  'Underhåll/IT Support': 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=300&fit=crop',
+  'Affärsutveckling': 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=300&fit=crop',
+  'AI-utveckling': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=300&fit=crop',
 }
 
 export const BUDGET_LABELS: Record<string, string> = {
@@ -58,6 +98,8 @@ export const START_TIME_LABELS: Record<string, string> = {
 
 export const TRIAL_LEADS = 5
 export const TRIAL_DAYS = 14
+export const REFERRAL_CREDITS = 3
+export const MAX_OFFERS_PER_PROJECT = 5
 
 export const PLANS = [
   {
@@ -219,6 +261,16 @@ export const PROJECT_TEMPLATES: Record<string, { id: string; name: string; icon:
       title: 'Innehållsproduktion för sociala medier',
       description: `Vi behöver löpande innehåll till våra sociala kanaler.\n\nVi söker:\n- Planering av innehållskalender\n- Produktion av inlägg\n- Copywriting\n- Stories/reels-produktion`,
       budget_hint: '10k_50k',
+    },
+  ],
+  'AI-utveckling': [
+    {
+      id: 'ai_chatbot',
+      name: 'AI-chatbot',
+      icon: '🤖',
+      title: 'AI-chatbot för kundtjänst',
+      description: `Vi vill bygga en AI-driven chatbot.\n\nFunktioner:\n- Automatiserad kundtjänst\n- Integration med befintligt CRM\n- Flerspråkigt stöd\n- Eskalering till människa`,
+      budget_hint: '50k_150k',
     },
   ],
 }
