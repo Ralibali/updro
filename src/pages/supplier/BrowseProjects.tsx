@@ -131,7 +131,7 @@ const BrowseProjects = () => {
                   ) : (
                     <>
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-2 blur-sm select-none">{p.description}</p>
-                      <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {p.city} · {timeAgo(p.created_at)}</p>
+                      <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {timeAgo(p.created_at)}</p>
                       <Button
                         size="sm"
                         className="mt-3"

@@ -265,24 +265,14 @@ const ProjectWizard = () => {
                 </div>
               )}
 
-              <div>
-                <Label>Stad/region *</Label>
-                <Input
-                  value={form.city}
-                  onChange={e => setForm(prev => ({ ...prev, city: e.target.value }))}
-                  className="rounded-xl mt-1"
-                  required
-                />
-              </div>
-
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setStep(1)} className="rounded-xl">
                   <ArrowLeft className="mr-2 h-4 w-4" /> Tillbaka
                 </Button>
                 <Button
                   onClick={() => isAuthenticated ? handlePublish() : setStep(3)}
-                  disabled={!canNext2 || loading}
-                  className="flex-1 bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5"
+                  disabled={loading}
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-5"
                 >
                   {isAuthenticated ? (loading ? 'Publicerar...' : 'Publicera uppdrag gratis →') : 'Nästa →'}
                 </Button>
