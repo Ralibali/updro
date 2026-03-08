@@ -170,6 +170,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          is_bankid_verified: boolean | null
+          is_phone_verified: boolean | null
           phone: string | null
           role: string
           updated_at: string | null
@@ -182,6 +184,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          is_bankid_verified?: boolean | null
+          is_phone_verified?: boolean | null
           phone?: string | null
           role: string
           updated_at?: string | null
@@ -194,6 +198,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_bankid_verified?: boolean | null
+          is_phone_verified?: boolean | null
           phone?: string | null
           role?: string
           updated_at?: string | null
@@ -210,6 +216,7 @@ export type Database = {
           description: string
           id: string
           is_company: boolean | null
+          max_offers: number | null
           offer_count: number | null
           start_time: string | null
           status: string | null
@@ -226,6 +233,7 @@ export type Database = {
           description: string
           id?: string
           is_company?: boolean | null
+          max_offers?: number | null
           offer_count?: number | null
           start_time?: string | null
           status?: string | null
@@ -242,6 +250,7 @@ export type Database = {
           description?: string
           id?: string
           is_company?: boolean | null
+          max_offers?: number | null
           offer_count?: number | null
           start_time?: string | null
           status?: string | null
@@ -253,6 +262,51 @@ export type Database = {
           {
             foreignKeyName: "projects_buyer_id_fkey"
             columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          created_at: string | null
+          credits_awarded: boolean | null
+          id: string
+          referred_email: string
+          referred_id: string | null
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_awarded?: boolean | null
+          id?: string
+          referred_email: string
+          referred_id?: string | null
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_awarded?: boolean | null
+          id?: string
+          referred_email?: string
+          referred_id?: string | null
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referred_id_fkey"
+            columns: ["referred_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
