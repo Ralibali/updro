@@ -39,7 +39,12 @@ import ReferralPage from "./pages/supplier/ReferralPage";
 // Admin pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminUserDetail from "./pages/admin/AdminUserDetail";
 import AdminProjects from "./pages/admin/AdminProjects";
+import AdminSuppliers from "./pages/admin/AdminSuppliers";
+import AdminOffers from "./pages/admin/AdminOffers";
+import AdminNotifications from "./pages/admin/AdminNotifications";
+import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
