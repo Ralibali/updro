@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { setSEOMeta } from '@/lib/seoHelpers'
-
-const SITE_URL = 'https://updro.se'
 
 const SitemapPage = () => {
   useEffect(() => {
