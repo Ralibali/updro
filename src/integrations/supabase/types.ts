@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      guides: {
+        Row: {
+          category: string | null
+          content: string
+          description: string
+          id: string
+          is_published: boolean | null
+          published_at: string | null
+          reading_time_minutes: number | null
+          slug: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          description: string
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          description?: string
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          reading_time_minutes?: number | null
+          slug?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
