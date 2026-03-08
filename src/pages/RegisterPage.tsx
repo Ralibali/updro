@@ -34,7 +34,6 @@ const RegisterPage = () => {
       password: form.password,
       role: 'buyer',
       full_name: form.full_name,
-      city: form.city,
     })
     setLoading(false)
 
