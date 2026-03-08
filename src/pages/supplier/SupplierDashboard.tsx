@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import DashboardLayout from '@/components/DashboardLayout'
 import TrialBanner from '@/components/TrialBanner'
-import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard, ArrowRight } from 'lucide-react'
+import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard, ArrowRight, Gift } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
@@ -16,6 +16,7 @@ const navItems = [
   { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
   { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
   { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },
+  { label: 'Bjud in', href: '/dashboard/supplier/bjud-in', icon: Gift },
 ]
 
 const SupplierDashboard = () => {
