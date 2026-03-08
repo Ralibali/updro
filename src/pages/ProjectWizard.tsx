@@ -28,7 +28,6 @@ const ProjectWizard = () => {
     start_time: '',
     is_company: true,
     company_name: '',
-    city: '',
     // Auth fields (step 3)
     full_name: '',
     email: '',
