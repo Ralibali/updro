@@ -5,7 +5,7 @@ const features = [
   { icon: MessageCircleReply, text: 'Beställare måste svara – vi följer upp varje offert aktivt' },
   { icon: ShieldCheck, text: 'Kvalitetskontrollerade uppdrag – vi granskar varje projekt innan publicering' },
   { icon: TrendingDown, text: '40% lägre pris per lead – mer valuta för pengarna' },
-  { icon: Gift, text: '5 gratis leads vid start – helt utan kreditkort' },
+  { icon: Gift, text: 'Fem gratis leads vid start – helt utan kreditkort' },
   { icon: Timer, text: 'Inga utdaterade uppdrag – avslutade projekt tas bort direkt' },
   { icon: Ban, text: 'Inga dolda avgifter eller automatisk förnyelse utan varning' },
 ]

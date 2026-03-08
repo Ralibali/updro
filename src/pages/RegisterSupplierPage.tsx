@@ -53,7 +53,6 @@ const RegisterSupplierPage = () => {
       role: 'supplier',
       full_name: form.full_name,
       company_name: form.company_name,
-      city: form.city,
       phone: form.phone || undefined,
       categories: form.categories,
     })

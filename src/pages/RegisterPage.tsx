@@ -94,10 +94,29 @@ const RegisterPage = () => {
                 <Label>Lösenord *</Label>
                 <Input type="password" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} className="rounded-xl mt-1" minLength={6} required />
               </div>
-              <div>
-                <Label>Stad *</Label>
-                <Input value={form.city} onChange={e => setForm(p => ({ ...p, city: e.target.value }))} className="rounded-xl mt-1" required />
+              <div className="flex items-start gap-2 pt-2">
+                <Checkbox
+                  id="buyer-terms"
+                  checked={form.acceptedTerms}
+                  onCheckedChange={(v) => setForm(p => ({ ...p, acceptedTerms: v === true }))}
+                />
+                <label htmlFor="buyer-terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                  Jag godkänner <Link to="/villkor" className="text-brand-blue hover:underline">villkoren</Link> och{' '}
+                  <Link to="/integritetspolicy" className="text-brand-blue hover:underline">integritetspolicyn</Link> *
+                </label>
               </div>
+
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="buyer-newsletter"
+                  checked={form.newsletter}
+                  onCheckedChange={(v) => setForm(p => ({ ...p, newsletter: v === true }))}
+                />
+                <label htmlFor="buyer-newsletter" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                  Ja, jag vill ta emot nyheter och tips via e-post
+                </label>
+              </div>
+
               <Button type="submit" disabled={loading} className="w-full bg-brand-blue hover:bg-brand-blue-hover text-primary-foreground rounded-xl py-5">
                 {loading ? 'Skapar konto...' : 'Skapa beställarkonto'}
               </Button>
