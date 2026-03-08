@@ -154,7 +154,7 @@ const TermsPage = () => {
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">13. Kontakt</h2>
               <p>Aurora Media AB<br />
               E-post: <a href="mailto:support@updro.se" className="text-primary hover:underline">support@updro.se</a><br />
-              Organisationsnummer: XXX-XXXXXX</p>
+              Organisationsnummer: 559272-0220</p>
             </div>
           </section>
         </article>
