@@ -34,6 +34,21 @@ export const BUDGET_LABELS: Record<string, string> = {
   unknown: 'Vet ej / Diskuteras',
 }
 
+export const BUDGET_OPTIONS = [
+  { value: 'under_10k', label: 'Under 10 000 kr', icon: '💰' },
+  { value: '10k_50k', label: '10 000 – 50 000 kr', icon: '💰💰' },
+  { value: '50k_150k', label: '50 000 – 150 000 kr', icon: '💰💰💰' },
+  { value: 'over_150k', label: 'Över 150 000 kr', icon: '💰💰💰💰' },
+  { value: 'unknown', label: 'Vet ej / Diskuteras', icon: '🤷' },
+]
+
+export const START_TIME_OPTIONS = [
+  { value: 'asap', label: 'Snarast möjligt', icon: '🚀' },
+  { value: 'within_month', label: 'Inom 1 månad', icon: '📅' },
+  { value: 'within_3months', label: 'Inom 3 månader', icon: '🗓️' },
+  { value: 'flexible', label: 'Flexibelt', icon: '🕐' },
+]
+
 export const START_TIME_LABELS: Record<string, string> = {
   asap: 'Snarast möjligt',
   within_month: 'Inom 1 månad',
@@ -92,3 +107,118 @@ export const PLANS = [
     highlighted: false,
   },
 ]
+
+export const PROJECT_TEMPLATES: Record<string, { id: string; name: string; icon: string; title: string; description: string; budget_hint: string }[]> = {
+  'Webbutveckling': [
+    {
+      id: 'web_basic',
+      name: 'Grundläggande hemsida',
+      icon: '🌐',
+      title: 'Ny hemsida för mitt företag',
+      description: `Vi behöver en ny hemsida för vårt företag.\n\nVad vi behöver:\n- Startsida med presentation av företaget\n- Om oss-sida\n- Tjänster/produktsida\n- Kontaktsida med formulär\n- Responsiv design (mobil + desktop)\n- Grundläggande SEO-optimering`,
+      budget_hint: '10k_50k',
+    },
+    {
+      id: 'web_redesign',
+      name: 'Omdesign av befintlig site',
+      icon: '🔄',
+      title: 'Omdesign av vår befintliga hemsida',
+      description: `Vi vill modernisera vår befintliga hemsida.\n\nVad vi vill förbättra:\n- Modern, fräsch design\n- Bättre användarupplevelse (UX)\n- Snabbare laddtider\n- Bättre mobilanpassning`,
+      budget_hint: '10k_50k',
+    },
+    {
+      id: 'web_landing',
+      name: 'Landningssida',
+      icon: '🎯',
+      title: 'Landningssida för kampanj',
+      description: `Vi behöver en konverteringsoptimerad landningssida.\n\nInnehåll:\n- Hero-sektion med tydlig CTA\n- Fördelar/features-sektion\n- Testimonials/omdömen\n- FAQ\n- Kontaktformulär`,
+      budget_hint: 'under_10k',
+    },
+  ],
+  'E-handel': [
+    {
+      id: 'ecom_new',
+      name: 'Ny webbutik',
+      icon: '🛒',
+      title: 'Ny e-handelssajt',
+      description: `Vi vill starta en webbutik.\n\nFunktioner vi behöver:\n- Produktkatalog med kategorier\n- Varukorg och checkout\n- Betalning via Swish, kort, Klarna\n- Fraktintegration\n- Lagerhantering`,
+      budget_hint: '10k_50k',
+    },
+    {
+      id: 'ecom_optimize',
+      name: 'Optimera befintlig butik',
+      icon: '📈',
+      title: 'Optimering av befintlig e-handel',
+      description: `Vi har en befintlig webbutik som behöver förbättras.\n\nUtmaningar:\n- Låg konverteringsgrad\n- Krånglig checkout\n- Dålig mobilupplevelse\n- Långsam laddning`,
+      budget_hint: '10k_50k',
+    },
+  ],
+  'Digital marknadsföring': [
+    {
+      id: 'marketing_google',
+      name: 'Google Ads-kampanj',
+      icon: '🎯',
+      title: 'Google Ads-hantering',
+      description: `Vi vill köra Google Ads för att generera fler leads.\n\nMål:\n- Generera leads via kontaktformulär\n- Öka försäljning\n- Driva trafik till specifik landningssida`,
+      budget_hint: '10k_50k',
+    },
+    {
+      id: 'marketing_social',
+      name: 'Social media-strategi',
+      icon: '📣',
+      title: 'Social media-hantering',
+      description: `Vi behöver hjälp med vår närvaro på sociala medier.\n\nVad vi söker:\n- Strategi och innehållsplan\n- Produktion av inlägg\n- Schemaläggning och publicering\n- Löpande analys och optimering`,
+      budget_hint: '10k_50k',
+    },
+  ],
+  'SEO': [
+    {
+      id: 'seo_full',
+      name: 'Komplett SEO-paket',
+      icon: '🔍',
+      title: 'SEO-optimering för vår webbplats',
+      description: `Vi vill förbättra vår synlighet i Google.\n\nVad vi söker:\n- Teknisk SEO-analys\n- Sökordsanalys\n- On-page optimering\n- Innehållsstrategi\n- Länkbyggande\n- Löpande rapportering`,
+      budget_hint: '10k_50k',
+    },
+  ],
+  'Grafisk design/UX': [
+    {
+      id: 'design_brand',
+      name: 'Grafisk profil',
+      icon: '🎨',
+      title: 'Grafisk profil för vårt företag',
+      description: `Vi behöver en komplett grafisk profil.\n\nVad vi behöver:\n- Logotyp (primär + varianter)\n- Färgpalett\n- Typografi\n- Grafiska element\n- Visitkort\n- Briefmall`,
+      budget_hint: '10k_50k',
+    },
+  ],
+  'App-utveckling': [
+    {
+      id: 'app_mvp',
+      name: 'MVP-app',
+      icon: '📱',
+      title: 'MVP-app för vår idé',
+      description: `Vi vill bygga en mobilapp.\n\nPlattform: iOS / Android / Båda\n\nKärnfunktioner för MVP:\n1. [Funktion 1]\n2. [Funktion 2]\n3. [Funktion 3]`,
+      budget_hint: '50k_150k',
+    },
+  ],
+  'IT-konsult': [
+    {
+      id: 'it_consulting',
+      name: 'IT-konsult',
+      icon: '💻',
+      title: 'IT-konsult för vårt projekt',
+      description: `Vi söker en IT-konsult.\n\nUppdragstyp: Löpande / Projektbaserat / Teknisk rådgivning\n\nOmråde:\n- Systemarkitektur\n- Molnmigrering\n- Säkerhet\n- Integrationer`,
+      budget_hint: '50k_150k',
+    },
+  ],
+  'Sociala medier': [
+    {
+      id: 'social_content',
+      name: 'Innehållsproduktion',
+      icon: '📸',
+      title: 'Innehållsproduktion för sociala medier',
+      description: `Vi behöver löpande innehåll till våra sociala kanaler.\n\nVi söker:\n- Planering av innehållskalender\n- Produktion av inlägg\n- Copywriting\n- Stories/reels-produktion`,
+      budget_hint: '10k_50k',
+    },
+  ],
+}
