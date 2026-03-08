@@ -23,6 +23,10 @@ import TermsPage from "./pages/TermsPage";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
 
+// SEO pages
+import PillarPage from "./components/seo/PillarPage";
+import SubPage from "./components/seo/SubPage";
+
 // Buyer pages
 import BuyerDashboard from "./pages/buyer/BuyerDashboard";
 import BuyerProjects from "./pages/buyer/BuyerProjects";
