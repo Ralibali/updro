@@ -18,7 +18,8 @@ const RegisterPage = () => {
     full_name: '',
     email: '',
     password: '',
-    city: '',
+    acceptedTerms: false,
+    newsletter: false,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
