@@ -24,6 +24,10 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!form.acceptedTerms) {
+      toast.error('Du måste godkänna villkoren.')
+      return
+    }
     setLoading(true)
     const { error } = await signUp({
       email: form.email,
