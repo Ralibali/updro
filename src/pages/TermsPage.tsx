@@ -13,7 +13,7 @@ const TermsPage = () => {
           <section className="space-y-6 text-sm leading-relaxed text-foreground/80">
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">1. Om tjänsten</h2>
-              <p>Updro.se ("Tjänsten") drivs av Aurora Media AB, org.nr. XXX-XXXXXX, och är en marknadsplats som förmedlar kontakt mellan beställare av digitala tjänster och byråer/konsulter ("Leverantörer").</p>
+              <p>Updro.se ("Tjänsten") drivs av Aurora Media AB, org.nr. 559272-0220, och är en marknadsplats som förmedlar kontakt mellan beställare av digitala tjänster och byråer/konsulter ("Leverantörer").</p>
               <p className="mt-2">Updro är en förmedlingsplattform och inte part i avtal som ingås mellan beställare och leverantörer. Ansvaret för leverans, kvalitet och betalning ligger hos respektive part.</p>
             </div>
 
