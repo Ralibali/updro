@@ -183,24 +183,13 @@ const RegisterSupplierPage = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>Stad *</Label>
-                    <Input
-                      value={form.city}
-                      onChange={(e) => setForm(prev => ({ ...prev, city: e.target.value }))}
-                      className="rounded-xl mt-1"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label>Telefon</Label>
-                    <Input
-                      value={form.phone}
-                      onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                      className="rounded-xl mt-1"
-                    />
-                  </div>
+                <div>
+                  <Label>Telefon</Label>
+                  <Input
+                    value={form.phone}
+                    onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                    className="rounded-xl mt-1"
+                  />
                 </div>
 
                 {/* Category chips */}
