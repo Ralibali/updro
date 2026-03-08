@@ -84,8 +84,8 @@ export const BUDGET_OPTIONS = [
 
 export const START_TIME_OPTIONS = [
   { value: 'asap', label: 'Snarast möjligt', icon: '🚀' },
-  { value: 'within_month', label: 'Inom 1 månad', icon: '📅' },
-  { value: 'within_3months', label: 'Inom 3 månader', icon: '🗓️' },
+  { value: 'within_month', label: 'Inom en månad', icon: '📅' },
+  { value: 'within_3months', label: 'Inom tre månader', icon: '🗓️' },
   { value: 'flexible', label: 'Flexibelt', icon: '🕐' },
 ]
 
