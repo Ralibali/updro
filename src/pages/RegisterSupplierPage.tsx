@@ -20,10 +20,10 @@ const RegisterSupplierPage = () => {
     full_name: '',
     email: '',
     password: '',
-    city: '',
     phone: '',
     categories: [] as string[],
     accepted: false,
+    newsletter: false,
   })
 
   const toggleCategory = (cat: string) => {
