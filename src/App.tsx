@@ -102,6 +102,10 @@ const App = () => (
             <Route path="/admin/notifikationer" element={<ProtectedRoute role="admin"><AdminNotifications /></ProtectedRoute>} />
             <Route path="/admin/installningar" element={<ProtectedRoute role="admin"><AdminSettings /></ProtectedRoute>} />
 
+            {/* SEO pillar + sub pages */}
+            <Route path="/:category" element={<PillarPage />} />
+            <Route path="/:category/:sub" element={<SubPage />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieConsent />
