@@ -58,6 +58,7 @@ export interface Project {
   is_company: boolean
   status: ProjectStatus
   offer_count: number
+  max_offers: number
   view_count: number
   created_at: string
   buyer?: Profile
