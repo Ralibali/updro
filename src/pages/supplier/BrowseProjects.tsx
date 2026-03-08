@@ -119,6 +119,14 @@ const BrowseProjects = () => {
                         <Button size="sm" className="mt-3 bg-primary hover:bg-primary/90">Svara med offert</Button>
                       </Link>
                     </>
+                  ) : isClosed ? (
+                    <>
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2 blur-sm select-none">{p.description}</p>
+                      <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {p.city} · {timeAgo(p.created_at)}</p>
+                      <span className="inline-block mt-3 text-xs font-semibold text-muted-foreground bg-muted px-3 py-1.5 rounded-full">
+                        Uppdraget är fullbokat
+                      </span>
+                    </>
                   ) : (
                     <>
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-2 blur-sm select-none">{p.description}</p>
