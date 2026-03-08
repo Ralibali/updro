@@ -47,7 +47,6 @@ const ProjectWizard = () => {
   }
 
   const canNext1 = form.category && form.title.length >= 5 && form.description.length >= 20 && form.budget_range && form.start_time
-  const canNext2 = form.city.length >= 2
 
   const handlePublish = async () => {
     setLoading(true)
