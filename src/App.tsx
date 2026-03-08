@@ -18,6 +18,7 @@ import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import AboutPage from "./pages/AboutPage";
 import TermsPage from "./pages/TermsPage";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
