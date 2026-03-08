@@ -24,7 +24,7 @@ const HeroSection = () => {
           >
             <span className="inline-flex items-center gap-2 rounded-full border border-brand-blue/30 bg-brand-blue/10 px-4 py-1.5 text-sm font-medium text-brand-blue backdrop-blur">
               <Zap className="h-3.5 w-3.5" />
-              Updro.se – Sveriges nya standard för digitala uppdrag
+              Sveriges smartare marknadsplats för digitala uppdrag
             </span>
           </motion.div>
 
@@ -35,9 +35,9 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            Hitta rätt byrå.
+            Seriösa uppdrag.
             <br />
-            <span className="text-accent">Sluta överkasta pengar.</span>
+            <span className="text-accent">Beställare som svarar.</span>
           </motion.h1>
 
           {/* Subtext */}
@@ -47,7 +47,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Publicera ditt uppdrag gratis och ta emot offerter från kvalificerade byråer inom 24 timmar.
+            Sluta betala för leads som aldrig leder någonstans. Updro kvalitetssäkrar varje uppdrag och ser till att beställare faktiskt engagerar sig.
           </motion.p>
 
           {/* CTAs */}
@@ -79,7 +79,8 @@ const HeroSection = () => {
           >
             {[
               'Alltid gratis för beställare',
-              'Byråer: 5 gratis leads',
+              '5 gratis leads för byråer',
+              '40% lägre pris per lead',
               'Inga bindningstider',
             ].map((text) => (
               <span key={text} className="flex items-center gap-1.5">
