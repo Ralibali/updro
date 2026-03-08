@@ -91,8 +91,8 @@ export const START_TIME_OPTIONS = [
 
 export const START_TIME_LABELS: Record<string, string> = {
   asap: 'Snarast möjligt',
-  within_month: 'Inom 1 månad',
-  within_3months: 'Inom 3 månader',
+  within_month: 'Inom en månad',
+  within_3months: 'Inom tre månader',
   flexible: 'Flexibelt',
 }
 
