@@ -11,7 +11,7 @@ const items = [
 
 const CTASection = () => {
   return (
-    <section className="bg-mint-gradient py-20">
+    <section className="py-20">
       <motion.div
         className="container text-center max-w-2xl mx-auto"
         initial={{ opacity: 0, y: 20 }}
@@ -33,7 +33,7 @@ const CTASection = () => {
         </div>
 
         <Link to="/registrera/byra">
-          <Button size="lg" className="bg-brand-blue hover:bg-brand-blue-hover text-primary-foreground rounded-full px-8 py-6 text-base font-semibold shadow-blue transition-all active:scale-95">
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-6 text-base font-semibold shadow-blue transition-all active:scale-[0.98]">
             Registrera din byrå gratis
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

@@ -9,7 +9,7 @@ const stats = [
 
 const StatsSection = () => {
   return (
-    <section className="bg-foreground py-16">
+    <section className="py-16 border-y bg-card">
       <div className="container">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
@@ -21,10 +21,10 @@ const StatsSection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
             >
-              <div className="font-display text-3xl md:text-4xl font-extrabold text-primary-foreground">
+              <div className="font-display text-3xl md:text-4xl font-bold text-foreground">
                 {stat.value}
               </div>
-              <div className="mt-1 text-sm text-primary-foreground/60">{stat.label}</div>
+              <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
             </motion.div>
           ))}
         </div>
