@@ -14,15 +14,9 @@ const ComparisonPage = () => {
 
   useEffect(() => {
     if (page) {
-      document.title = page.metaTitle
-      const meta = document.querySelector('meta[name="description"]')
-      if (meta) meta.setAttribute('content', page.metaDesc)
-      else {
-        const m = document.createElement('meta')
-        m.name = 'description'
-        m.content = page.metaDesc
-        document.head.appendChild(m)
-      }
+      import('@/lib/seoHelpers').then(({ setSEOMeta }) => {
+        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/${page.slug}` })
+      })
     }
     window.scrollTo(0, 0)
   }, [page])

@@ -86,6 +86,7 @@ const App = () => (
             <Route path="/registrera" element={<RegisterPage />} />
             <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
             <Route path="/aterstall-losenord" element={<PlaceholderPage title="Återställ lösenord" />} />
+            <Route path="/sitemap" element={<SitemapPage />} />
 
             {/* Content hubs */}
             <Route path="/artiklar" element={<ArticlesIndex />} />
