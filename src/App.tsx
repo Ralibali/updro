@@ -18,6 +18,7 @@ import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import PlaceholderPage from "./pages/PlaceholderPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import AboutPage from "./pages/AboutPage";
 import TermsPage from "./pages/TermsPage";
 import CookieConsent from "./components/CookieConsent";
 import NotFound from "./pages/NotFound";
@@ -55,7 +56,7 @@ const App = () => (
             <Route path="/byraer" element={<BrowseAgenciesPage />} />
             <Route path="/byraer/:slug" element={<AgencyProfilePage />} />
             <Route path="/priser" element={<PricingPage />} />
-            <Route path="/om-oss" element={<PlaceholderPage title="Om Updro" />} />
+            <Route path="/om-oss" element={<AboutPage />} />
             <Route path="/support" element={<PlaceholderPage title="Support" />} />
             <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />
             <Route path="/villkor" element={<TermsPage />} />
