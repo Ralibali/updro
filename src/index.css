@@ -2,89 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 240 15% 9%;
+    --background: 220 20% 97%;
+    --foreground: 220 25% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 15% 9%;
+    --card-foreground: 220 25% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 15% 9%;
+    --popover-foreground: 220 25% 10%;
 
-    --primary: 245 58% 51%;
+    --primary: 220 90% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 245 30% 96%;
-    --secondary-foreground: 240 15% 9%;
+    --secondary: 220 20% 95%;
+    --secondary-foreground: 220 25% 10%;
 
-    --muted: 240 10% 92%;
-    --muted-foreground: 240 8% 55%;
+    --muted: 220 15% 91%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 32 95% 52%;
+    --accent: 160 84% 44%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 90%;
-    --input: 240 10% 90%;
-    --ring: 245 58% 51%;
+    --border: 220 15% 89%;
+    --input: 220 15% 89%;
+    --ring: 220 90% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
     /* Updro custom tokens */
-    --brand-dark: 240 15% 9%;
-    --brand-blue: 245 58% 51%;
-    --brand-blue-hover: 245 58% 44%;
-    --brand-mint: 32 95% 52%;
-    --brand-mint-hover: 32 95% 45%;
-    --brand-coral: 0 84% 60%;
-    --brand-amber: 32 95% 52%;
-    --brand-amber-glow: 38 100% 60%;
-    --surface-2: 245 20% 98%;
-    --surface-3: 245 20% 96%;
-    --text-secondary: 240 8% 35%;
-    --border-strong: 240 10% 82%;
+    --brand-dark: 220 25% 7%;
+    --brand-blue: 220 90% 50%;
+    --brand-blue-hover: 220 90% 42%;
+    --brand-mint: 160 84% 44%;
+    --brand-mint-hover: 160 84% 36%;
+    --brand-coral: 0 72% 51%;
+    --brand-amber: 42 100% 50%;
+    --brand-amber-glow: 48 100% 58%;
+    --surface-2: 220 20% 98%;
+    --surface-3: 220 20% 96%;
+    --text-secondary: 220 10% 38%;
+    --border-strong: 220 15% 80%;
 
-    --shadow-sm: 0 1px 3px rgba(10,10,30,0.06);
-    --shadow-md: 0 4px 20px rgba(10,10,30,0.08);
-    --shadow-lg: 0 8px 40px rgba(10,10,30,0.12);
-    --shadow-brand: 0 4px 20px rgba(99,72,233,0.25);
+    --shadow-sm: 0 1px 3px rgba(0,10,40,0.06);
+    --shadow-md: 0 4px 20px rgba(0,10,40,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,10,40,0.12);
+    --shadow-brand: 0 4px 24px rgba(37,99,235,0.25);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 245 58% 51%;
+    --sidebar-background: 220 25% 7%;
+    --sidebar-foreground: 220 10% 75%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 220 25% 7%;
+    --sidebar-accent: 220 20% 14%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 20% 14%;
+    --sidebar-ring: 220 90% 50%;
   }
 
   .dark {
-    --background: 240 15% 6%;
-    --foreground: 0 0% 96%;
-    --card: 240 12% 10%;
-    --card-foreground: 0 0% 96%;
-    --popover: 240 12% 10%;
-    --popover-foreground: 0 0% 96%;
-    --primary: 245 58% 60%;
+    --background: 220 25% 5%;
+    --foreground: 220 10% 93%;
+    --card: 220 22% 9%;
+    --card-foreground: 220 10% 93%;
+    --popover: 220 22% 9%;
+    --popover-foreground: 220 10% 93%;
+    --primary: 220 90% 56%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 245 20% 16%;
-    --secondary-foreground: 0 0% 96%;
-    --muted: 240 12% 16%;
-    --muted-foreground: 240 8% 60%;
-    --accent: 32 95% 52%;
+    --secondary: 220 20% 14%;
+    --secondary-foreground: 220 10% 93%;
+    --muted: 220 18% 14%;
+    --muted-foreground: 220 10% 55%;
+    --accent: 160 84% 44%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 12% 18%;
-    --input: 240 12% 18%;
-    --ring: 245 58% 60%;
+    --border: 220 18% 16%;
+    --input: 220 18% 16%;
+    --ring: 220 90% 56%;
   }
 }
 
@@ -95,30 +95,38 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, .font-display {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  code, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
 @layer utilities {
   .text-brand-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--brand-blue)), hsl(var(--brand-amber)));
+    background-image: linear-gradient(135deg, hsl(var(--brand-blue)), hsl(var(--brand-mint)));
   }
 
   .bg-hero-gradient {
-    background: linear-gradient(160deg, hsl(245 58% 51% / 0.04), hsl(32 95% 52% / 0.06), hsl(245 58% 51% / 0.02));
+    background: linear-gradient(160deg, hsl(220 90% 50% / 0.04), hsl(160 84% 44% / 0.06), hsl(220 90% 50% / 0.02));
   }
 
   .bg-mint-gradient {
-    background: linear-gradient(135deg, hsl(245 58% 51% / 0.05), hsl(32 95% 52% / 0.08));
+    background: linear-gradient(135deg, hsl(220 90% 50% / 0.05), hsl(160 84% 44% / 0.08));
   }
 
   .shadow-blue {
-    box-shadow: 0 4px 20px rgba(99,72,233,0.25);
+    box-shadow: 0 4px 24px rgba(37,99,235,0.25);
   }
 
   .glass {
@@ -126,6 +134,6 @@
   }
 
   .gradient-border {
-    border-image: linear-gradient(135deg, hsl(var(--brand-blue)), hsl(var(--brand-amber))) 1;
+    border-image: linear-gradient(135deg, hsl(var(--brand-blue)), hsl(var(--brand-mint))) 1;
   }
 }
