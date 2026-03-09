@@ -60,8 +60,8 @@ const Navbar = () => {
               )}
             </div>
 
-            <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Hitta byråer
+            <Link to="/publicera" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Publicera uppdrag
             </Link>
 
             <Link to="/jamfor" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
