@@ -14,8 +14,8 @@ const ComparisonPage = () => {
 
   useEffect(() => {
     if (page) {
-      import('@/lib/seoHelpers').then(({ setSEOMeta }) => {
-        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/${page.slug}` })
+      import('@/lib/seoHelpers').then(({ setSEOMeta, getOgImage }) => {
+        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/${page.slug}`, ogImage: getOgImage(page.slug) })
       })
     }
     window.scrollTo(0, 0)

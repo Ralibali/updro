@@ -20,6 +20,7 @@ const PillarPage = () => {
         title: page.metaTitle,
         description: page.metaDesc,
         canonical: `https://updro.se/${page.categorySlug}`,
+        ogImage: getOgImage(page.categorySlug),
       })
     }
     window.scrollTo(0, 0)

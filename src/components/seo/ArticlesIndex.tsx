@@ -13,6 +13,7 @@ const ArticlesIndex = () => {
       title: 'Artiklar & guider om digitala tjänster | Updro',
       description: 'Guider, prisöversikter och tips för webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring.',
       canonical: 'https://updro.se/artiklar',
+      ogImage: getOgImage('artiklar'),
     })
     window.scrollTo(0, 0)
   }, [])

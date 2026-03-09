@@ -14,8 +14,8 @@ const ArticlePage = () => {
 
   useEffect(() => {
     if (page) {
-      import('@/lib/seoHelpers').then(({ setSEOMeta }) => {
-        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/artiklar/${page.slug}`, ogType: 'article' })
+      import('@/lib/seoHelpers').then(({ setSEOMeta, getOgImage }) => {
+        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/artiklar/${page.slug}`, ogType: 'article', ogImage: getOgImage('artiklar') })
       })
     }
     window.scrollTo(0, 0)

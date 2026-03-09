@@ -31,6 +31,7 @@ const SubPage = () => {
         title: cityPage.metaTitle,
         description: cityPage.metaDesc,
         canonical: `https://updro.se/${cityPage.serviceSlug}/${cityPage.citySlug}`,
+        ogImage: getOgImage(cityPage.serviceSlug),
       })
     }
     window.scrollTo(0, 0)
