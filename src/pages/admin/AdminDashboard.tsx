@@ -12,6 +12,8 @@ const navItems = [
   { label: 'Byråer', href: '/admin/byraer', icon: Building2 },
   { label: 'Uppdrag', href: '/admin/uppdrag', icon: ClipboardList },
   { label: 'Offerter', href: '/admin/offerter', icon: CreditCard },
+  { label: 'Guider', href: '/admin/guider', icon: BookOpen },
+  { label: 'Stripe-logg', href: '/admin/stripe', icon: Receipt },
   { label: 'Notifikationer', href: '/admin/notifikationer', icon: Bell },
   { label: 'Inställningar', href: '/admin/installningar', icon: Settings },
 ]
