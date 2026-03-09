@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 const items = [
   { icon: Gift, text: 'Fem gratis leads direkt vid registrering' },
-  { icon: Calendar, text: 'Fjorton dagars fri provperiod' },
+  { icon: Calendar, text: 'Sju dagars gratis premium' },
   { icon: CreditCard, text: 'Inget kreditkort krävs' },
 ]
 
@@ -20,7 +20,7 @@ const CTASection = () => {
         transition={{ duration: 0.5 }}
       >
         <h2 className="font-display text-3xl md:text-4xl font-bold mb-8">
-          Ny byrå? Kom igång utan risk.
+          Byrå? Prova gratis i sju dagar.
         </h2>
 
         <div className="flex flex-col sm:flex-row justify-center gap-6 mb-10">
