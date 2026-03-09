@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
 import { findPillarPage } from '@/lib/seoData'
 import Navbar from '@/components/Navbar'
