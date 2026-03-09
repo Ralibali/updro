@@ -79,20 +79,20 @@ const RegisterSupplierPage = () => {
       <main className="flex-1">
         <div className="grid lg:grid-cols-2 min-h-[calc(100vh-4rem)]">
           {/* Left - Campaign */}
-          <div className="bg-hero-gradient p-8 lg:p-16 flex flex-col justify-center text-primary-foreground">
+          <div className="bg-primary p-8 lg:p-16 flex flex-col justify-center text-primary-foreground">
             <span className="text-5xl mb-6">🎁</span>
             <h2 className="font-display text-3xl lg:text-4xl font-bold mb-2">
               Prova Updro gratis
             </h2>
-            <p className="text-primary-foreground/70 mb-8 text-lg">
+            <p className="text-primary-foreground/80 mb-8 text-lg">
               Vad du får direkt:
             </p>
 
             <div className="space-y-4 mb-10">
               {benefits.map((b) => (
                 <div key={b.text} className="flex items-center gap-3">
-                  <div className="rounded-lg bg-accent/20 p-2">
-                    <b.icon className="h-5 w-5 text-accent" />
+                  <div className="rounded-lg bg-primary-foreground/15 p-2">
+                    <b.icon className="h-5 w-5 text-primary-foreground" />
                   </div>
                   <span className="text-primary-foreground/90">{b.text}</span>
                 </div>
@@ -100,16 +100,16 @@ const RegisterSupplierPage = () => {
             </div>
 
             {/* Testimonial */}
-            <div className="glass rounded-2xl p-6">
+            <div className="rounded-2xl p-6 bg-primary-foreground/10 backdrop-blur-md border border-primary-foreground/20">
               <div className="flex gap-1 mb-2">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
-              <p className="text-sm text-primary-foreground/80 italic mb-3">
+              <p className="text-sm text-primary-foreground/90 italic mb-3">
                 "Vi fick vår första kund via Updro redan dag 3. Äntligen en plattform där beställarna faktiskt svarar!"
               </p>
-              <p className="text-xs text-primary-foreground/50">
+              <p className="text-xs text-primary-foreground/60">
                 — Fredrik L., VD på Webbninja AB
               </p>
             </div>
