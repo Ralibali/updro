@@ -101,52 +101,57 @@ export const TRIAL_DAYS = 14
 export const REFERRAL_CREDITS = 3
 export const MAX_OFFERS_PER_PROJECT = 5
 
-export const PLANS = [
-  {
-    id: 'payg' as const,
-    name: 'Pay as you go',
+// Stripe product/price mapping
+export const STRIPE_PRODUCTS = {
+  monthly: {
+    product_id: 'prod_U7LtMgsCkuq80V',
+    price_id: 'price_1T97BeHzffTezY82Ofnh2oqp',
+    name: 'Månadskort',
+    price: 2995,
+    per: '/månad',
+    mode: 'subscription' as const,
+  },
+  lead: {
+    product_id: 'prod_U7Lv49HZivr8Hu',
+    price_id: 'price_1T97DOHzffTezY823D7MLIkq',
+    name: 'Enskilt lead',
     price: 299,
     per: 'per lead',
-    credits: 1,
+    mode: 'payment' as const,
+  },
+} as const
+
+export const PLANS = [
+  {
+    id: 'lead' as const,
+    name: 'Pay per lead',
+    price: 299,
+    per: 'per lead',
     features: [
       'Betala bara för leads du väljer',
       'Fullständig offert-funktion',
       'Inbyggd chatt med beställare',
       'Inga bindningstider',
     ],
-    cta: 'Köp leads',
+    cta: 'Köp lead',
     highlighted: false,
   },
   {
-    id: 'standard' as const,
-    name: 'Standard',
-    price: 699,
+    id: 'monthly' as const,
+    name: 'Månadskort',
+    price: 2995,
     per: '/månad',
-    credits: 10,
     features: [
-      'Tio leads per månad',
+      'Obegränsade leads – svara på allt',
       'Profilsida med logotyp & portfolio',
+      'Framhävd profil i sökning',
       'Statistik & insikter',
       'Prioriterad support',
+      'Ingen bindningstid',
     ],
-    cta: 'Välj Standard',
+    cta: 'Starta månadskort',
     highlighted: true,
-    badge: 'Populärast',
-  },
-  {
-    id: 'premium' as const,
-    name: 'Premium',
-    price: 1490,
-    per: '/månad',
-    credits: 9999,
-    features: [
-      'Obegränsat antal leads',
-      'Framhävd profil i sökning',
-      'Prioriterad matchning till uppdrag',
-      'Dedicated support',
-    ],
-    cta: 'Välj Premium',
-    highlighted: false,
+    badge: 'Bäst värde',
   },
 ]
 
