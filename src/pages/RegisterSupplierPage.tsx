@@ -12,7 +12,7 @@ import { CATEGORIES, CATEGORY_ICONS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/const
 import { Check, Gift, Shield, MessageCircle, CreditCard, Star, ArrowRight } from 'lucide-react'
 
 const RegisterSupplierPage = () => {
-  const { signUp, signInWithGoogle } = useAuth()
+  const { signUp } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
@@ -119,23 +119,6 @@ const RegisterSupplierPage = () => {
           <div className="p-8 lg:p-16 flex items-center">
             <div className="w-full max-w-lg mx-auto">
               <h2 className="font-display text-2xl font-bold mb-6">Skapa byråkonto</h2>
-
-              <Button
-                variant="outline"
-                className="w-full mb-4 py-5"
-                onClick={() => signInWithGoogle()}
-              >
-                Fortsätt med Google
-              </Button>
-
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">eller registrera med e-post</span>
-                </div>
-              </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">

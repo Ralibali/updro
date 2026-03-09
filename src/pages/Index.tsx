@@ -8,6 +8,7 @@ import HowItWorksSection from '@/components/home/HowItWorksSection'
 import USPSection from '@/components/home/USPSection'
 import LatestProjectsSection from '@/components/home/LatestProjectsSection'
 import StatsSection from '@/components/home/StatsSection'
+import TestimonialsSection from '@/components/home/TestimonialsSection'
 import CTASection from '@/components/home/CTASection'
 import FAQSection from '@/components/home/FAQSection'
 import { setSEOMeta } from '@/lib/seoHelpers'
@@ -65,6 +66,7 @@ const Index = () => {
         <USPSection />
         <LatestProjectsSection />
         <StatsSection />
+        <TestimonialsSection />
         <FAQSection />
         <CTASection />
       </main>
