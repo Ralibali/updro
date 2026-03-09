@@ -2,8 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import DashboardLayout from '@/components/DashboardLayout'
-import { Home, ClipboardList, MessageCircle, UserCircle, Check, X, Phone, Mail } from 'lucide-react'
+import { Check, X, Phone, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
@@ -13,13 +12,6 @@ import ProjectStepper from '@/components/shared/ProjectStepper'
 import BuyerDecisionCard from '@/components/shared/BuyerDecisionCard'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
-
-const navItems = [
-  { label: 'Översikt', href: '/dashboard/buyer', icon: Home },
-  { label: 'Mina uppdrag', href: '/dashboard/buyer/uppdrag', icon: ClipboardList },
-  { label: 'Meddelanden', href: '/dashboard/buyer/chatt', icon: MessageCircle },
-  { label: 'Min profil', href: '/dashboard/buyer/profil', icon: UserCircle },
-]
 
 const ProjectDetail = () => {
   const { id } = useParams()
