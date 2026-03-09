@@ -52,6 +52,36 @@ export type Database = {
           },
         ]
       }
+      click_events: {
+        Row: {
+          created_at: string
+          element_text: string | null
+          event_name: string
+          id: string
+          metadata: Json | null
+          path: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          element_text?: string | null
+          event_name: string
+          id?: string
+          metadata?: Json | null
+          path: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          element_text?: string | null
+          event_name?: string
+          id?: string
+          metadata?: Json | null
+          path?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
       guides: {
         Row: {
           category: string | null
@@ -240,6 +270,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      page_views: {
+        Row: {
+          created_at: string
+          device_type: string | null
+          id: string
+          path: string
+          referrer: string | null
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          path: string
+          referrer?: string | null
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          path?: string
+          referrer?: string | null
+          session_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
