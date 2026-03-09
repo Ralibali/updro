@@ -4,34 +4,64 @@ import { supabase } from '@/integrations/supabase/client'
 import { AdminLayout } from './AdminDashboard'
 import { timeAgo } from '@/lib/dateUtils'
 import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Search, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { exportCsv } from '@/lib/exportCsv'
 
 const AdminUsers = () => {
   const [users, setUsers] = useState<any[]>([])
   const [search, setSearch] = useState('')
+  const [roleFilter, setRoleFilter] = useState<string>('all')
 
   useEffect(() => {
-    supabase.from('profiles').select('*').order('created_at', { ascending: false }).limit(200)
+    supabase.from('profiles').select('*').order('created_at', { ascending: false }).limit(500)
       .then(({ data }) => { if (data) setUsers(data) })
   }, [])
 
-  const filtered = users.filter(u =>
-    (u.full_name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (u.email || '').toLowerCase().includes(search.toLowerCase()) ||
-    (u.company_name || '').toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = users.filter(u => {
+    const matchesSearch = (u.full_name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (u.email || '').toLowerCase().includes(search.toLowerCase()) ||
+      (u.company_name || '').toLowerCase().includes(search.toLowerCase())
+    const matchesRole = roleFilter === 'all' || u.role === roleFilter
+    return matchesSearch && matchesRole
+  })
+
+  const handleExport = () => {
+    exportCsv(filtered.map(u => ({
+      Namn: u.full_name || '–',
+      'E-post': u.email || '–',
+      Företag: u.company_name || '–',
+      Roll: u.role,
+      Stad: u.city || '–',
+      Telefon: u.phone || '–',
+      BankID: u.is_bankid_verified ? 'Ja' : 'Nej',
+      Registrerad: u.created_at ? new Date(u.created_at).toLocaleDateString('sv-SE') : '',
+    })), 'anvandare')
+  }
 
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="font-display text-2xl font-bold">Användare</h1>
-        <div className="relative w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Sök användare..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 rounded-xl" />
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            {['all', 'buyer', 'supplier', 'admin'].map(r => (
+              <Button key={r} size="sm" variant={roleFilter === r ? 'default' : 'outline'} className="rounded-xl text-xs" onClick={() => setRoleFilter(r)}>
+                {r === 'all' ? 'Alla' : r}
+              </Button>
+            ))}
+          </div>
+          <div className="relative w-56">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Sök användare..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 rounded-xl" />
+          </div>
+          <Button size="sm" variant="outline" className="rounded-xl" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-1" />CSV
+          </Button>
         </div>
       </div>
-      <div className="bg-card rounded-xl border overflow-hidden">
+      <div className="bg-card rounded-xl border overflow-hidden overflow-x-auto">
         <table className="w-full text-sm">
           <thead><tr className="border-b bg-muted/50">
             <th className="text-left p-3 font-medium">Namn</th>

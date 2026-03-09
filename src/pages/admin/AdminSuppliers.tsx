@@ -3,35 +3,41 @@ import { supabase } from '@/integrations/supabase/client'
 import { AdminLayout } from './AdminDashboard'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Search, Star, CheckCircle2, X, ExternalLink } from 'lucide-react'
+import { Search, Star, CheckCircle2, ExternalLink, Download, Plus, Minus, Coins } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import { exportCsv } from '@/lib/exportCsv'
 
 const AdminSuppliers = () => {
   const [suppliers, setSuppliers] = useState<any[]>([])
   const [search, setSearch] = useState('')
   const [editSupplier, setEditSupplier] = useState<any>(null)
+  const [creditDialog, setCreditDialog] = useState<{ supplier: any; amount: number } | null>(null)
+  const [planFilter, setPlanFilter] = useState<string>('all')
 
   const fetchSuppliers = async () => {
     const { data } = await supabase
       .from('supplier_profiles')
       .select('*, profiles!supplier_profiles_id_fkey(full_name, email, company_name, city, phone)')
       .order('created_at', { ascending: false })
-      .limit(200)
+      .limit(500)
     if (data) setSuppliers(data)
   }
 
   useEffect(() => { fetchSuppliers() }, [])
 
-  const filtered = suppliers.filter(s =>
-    (s.profiles?.full_name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (s.profiles?.email || '').toLowerCase().includes(search.toLowerCase()) ||
-    (s.profiles?.company_name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (s.org_number || '').includes(search) ||
-    s.slug.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = suppliers.filter(s => {
+    const matchesSearch = (s.profiles?.full_name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (s.profiles?.email || '').toLowerCase().includes(search.toLowerCase()) ||
+      (s.profiles?.company_name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (s.org_number || '').includes(search) ||
+      s.slug.toLowerCase().includes(search.toLowerCase())
+    const matchesPlan = planFilter === 'all' || (s.plan || 'none') === planFilter
+    return matchesSearch && matchesPlan
+  })
 
   const handleSave = async () => {
     if (!editSupplier) return
@@ -51,7 +57,6 @@ const AdminSuppliers = () => {
       toast.error('Kunde inte spara')
     } else {
       toast.success('Byrå uppdaterad!')
-      // Send notification if newly verified
       await supabase.from('notifications').insert({
         user_id: editSupplier.id,
         type: 'supplier_verified',
@@ -63,13 +68,62 @@ const AdminSuppliers = () => {
     }
   }
 
+  const handleCreditAdjust = async () => {
+    if (!creditDialog) return
+    const newCredits = Math.max(0, (creditDialog.supplier.lead_credits || 0) + creditDialog.amount)
+    const { error } = await supabase.from('supplier_profiles').update({ lead_credits: newCredits }).eq('id', creditDialog.supplier.id)
+    if (error) { toast.error('Kunde inte uppdatera credits'); return }
+
+    // Notify supplier
+    const action = creditDialog.amount > 0 ? 'lagt till' : 'dragit av'
+    await supabase.from('notifications').insert({
+      user_id: creditDialog.supplier.id,
+      type: 'credit_adjustment',
+      title: `Lead-credits ${action}`,
+      message: `Admin har ${action} ${Math.abs(creditDialog.amount)} lead-credits. Ditt nya saldo: ${newCredits} credits.`,
+      link: '/dashboard/supplier/fakturering',
+    })
+
+    toast.success(`Credits uppdaterade: ${newCredits}`)
+    setCreditDialog(null)
+    fetchSuppliers()
+  }
+
+  const handleExport = () => {
+    exportCsv(filtered.map(s => ({
+      Byrå: s.profiles?.company_name || s.profiles?.full_name || s.slug,
+      'E-post': s.profiles?.email || '–',
+      Telefon: s.profiles?.phone || '–',
+      Stad: s.profiles?.city || '–',
+      'Org.nr': s.org_number || '–',
+      Plan: s.plan || 'none',
+      Credits: s.lead_credits || 0,
+      Betyg: s.avg_rating || 0,
+      Omdömen: s.review_count || 0,
+      Projekt: s.completed_projects || 0,
+      Verifierad: s.is_verified ? 'Ja' : 'Nej',
+    })), 'byraer')
+  }
+
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="font-display text-2xl font-bold">Byråer</h1>
-        <div className="relative w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Sök byrå / org.nr..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 rounded-xl" />
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            {['all', 'none', 'trial', 'monthly', 'lead'].map(p => (
+              <Button key={p} size="sm" variant={planFilter === p ? 'default' : 'outline'} className="rounded-xl text-xs" onClick={() => setPlanFilter(p)}>
+                {p === 'all' ? 'Alla' : p}
+              </Button>
+            ))}
+          </div>
+          <div className="relative w-56">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Sök byrå / org.nr..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 rounded-xl" />
+          </div>
+          <Button size="sm" variant="outline" className="rounded-xl" onClick={handleExport}>
+            <Download className="h-4 w-4 mr-1" />CSV
+          </Button>
         </div>
       </div>
       <div className="bg-card rounded-xl border overflow-hidden overflow-x-auto">
@@ -99,7 +153,14 @@ const AdminSuppliers = () => {
                 <td className="p-3">
                   <span className="text-xs font-semibold bg-primary/10 text-primary rounded-full px-2 py-0.5 capitalize">{s.plan || 'none'}</span>
                 </td>
-                <td className="p-3 font-medium">{s.lead_credits || 0}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-1">
+                    <span className="font-medium">{s.lead_credits || 0}</span>
+                    <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setCreditDialog({ supplier: s, amount: 1 })}>
+                      <Plus className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </td>
                 <td className="p-3">
                   <span className="flex items-center gap-1 text-sm">
                     <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
@@ -126,6 +187,39 @@ const AdminSuppliers = () => {
         {filtered.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga byråer hittades.</p>}
       </div>
 
+      {/* Credit adjustment dialog */}
+      <Dialog open={!!creditDialog} onOpenChange={() => setCreditDialog(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Coins className="h-5 w-5" /> Justera lead-credits</DialogTitle>
+          </DialogHeader>
+          {creditDialog && (
+            <div className="space-y-4 mt-2">
+              <p className="text-sm text-muted-foreground">
+                <strong>{creditDialog.supplier.profiles?.company_name || creditDialog.supplier.profiles?.full_name}</strong>
+                <br />Nuvarande saldo: <strong>{creditDialog.supplier.lead_credits || 0}</strong> credits
+              </p>
+              <div className="flex items-center gap-3">
+                <Button size="icon" variant="outline" className="rounded-xl" onClick={() => setCreditDialog({ ...creditDialog, amount: creditDialog.amount - 1 })}>
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input type="number" className="text-center rounded-xl" value={creditDialog.amount} onChange={e => setCreditDialog({ ...creditDialog, amount: parseInt(e.target.value) || 0 })} />
+                <Button size="icon" variant="outline" className="rounded-xl" onClick={() => setCreditDialog({ ...creditDialog, amount: creditDialog.amount + 1 })}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-center">
+                Nytt saldo: <strong>{Math.max(0, (creditDialog.supplier.lead_credits || 0) + creditDialog.amount)}</strong> credits
+                <span className={cn('ml-2 text-xs', creditDialog.amount > 0 ? 'text-emerald-600' : creditDialog.amount < 0 ? 'text-destructive' : '')}>
+                  ({creditDialog.amount > 0 ? '+' : ''}{creditDialog.amount})
+                </span>
+              </p>
+              <Button onClick={handleCreditAdjust} className="w-full rounded-xl">Bekräfta</Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Edit dialog */}
       <Dialog open={!!editSupplier} onOpenChange={() => setEditSupplier(null)}>
         <DialogContent className="max-w-lg">
@@ -136,7 +230,6 @@ const AdminSuppliers = () => {
           </DialogHeader>
           {editSupplier && (
             <div className="space-y-5 mt-2">
-              {/* Org number */}
               <div>
                 <Label className="text-sm font-medium">Organisationsnummer</Label>
                 <div className="flex gap-2 mt-1">
@@ -147,11 +240,7 @@ const AdminSuppliers = () => {
                     className="rounded-xl"
                   />
                   {editSupplier.org_number && (
-                    <a
-                      href={`https://www.allabolag.se/${(editSupplier.org_number || '').replace('-', '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={`https://www.allabolag.se/${(editSupplier.org_number || '').replace('-', '')}`} target="_blank" rel="noopener noreferrer">
                       <Button size="sm" variant="outline" className="rounded-xl whitespace-nowrap">
                         <ExternalLink className="h-3 w-3 mr-1" /> Allabolag
                       </Button>
@@ -160,7 +249,6 @@ const AdminSuppliers = () => {
                 </div>
               </div>
 
-              {/* Verification toggles */}
               <div className="space-y-4 border rounded-xl p-4">
                 <h4 className="font-semibold text-sm">Verifiering</h4>
                 <div className="flex items-center justify-between">
@@ -181,7 +269,6 @@ const AdminSuppliers = () => {
                 </div>
               </div>
 
-              {/* Plan & credits */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="text-sm font-medium">Plan</Label>
@@ -192,6 +279,8 @@ const AdminSuppliers = () => {
                   >
                     <option value="none">Ingen</option>
                     <option value="trial">Trial</option>
+                    <option value="monthly">Månadskort</option>
+                    <option value="lead">Pay per lead</option>
                     <option value="payg">Pay as you go</option>
                     <option value="standard">Standard</option>
                     <option value="premium">Premium</option>
@@ -208,12 +297,9 @@ const AdminSuppliers = () => {
                 </div>
               </div>
 
-              {/* TODO: Integrera Roaring.io API för automatisk F-skattekontroll */}
-              {/* https://www.roaring.io */}
-
               <div className="flex gap-3 pt-2">
                 <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setEditSupplier(null)}>Avbryt</Button>
-                <Button className="flex-1 rounded-xl bg-primary hover:bg-primary/90" onClick={handleSave}>Spara ändringar</Button>
+                <Button className="flex-1 rounded-xl" onClick={handleSave}>Spara ändringar</Button>
               </div>
             </div>
           )}
