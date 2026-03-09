@@ -91,7 +91,8 @@ const ProjectWizard = () => {
     setLoading(false)
 
     if (projectError) {
-      toast.error('Kunde inte publicera uppdraget.')
+      console.error('Project insert error:', projectError)
+      toast.error(`Kunde inte publicera uppdraget: ${projectError.message}`)
     } else {
       toast.success('Uppdraget är inskickat och väntar på godkännande! ✅')
       navigate('/dashboard/buyer')
