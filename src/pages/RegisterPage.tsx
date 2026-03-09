@@ -9,7 +9,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { Building2, User } from 'lucide-react'
-import { lovable } from '@/integrations/lovable/index'
+
 import { setSEOMeta } from '@/lib/seoHelpers'
 
 const RegisterPage = () => {

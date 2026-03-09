@@ -8,7 +8,6 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { Mail, Lock } from 'lucide-react'
-import { lovable } from '@/integrations/lovable/index'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
 const LoginPage = () => {
