@@ -6,7 +6,9 @@ import { supabase } from '@/integrations/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
-import { Search, Star, MapPin, CheckCircle } from 'lucide-react'
+import { Search, MapPin, CheckCircle } from 'lucide-react'
+import RatingDisplay from '@/components/shared/RatingDisplay'
+import VerificationChecklist from '@/components/shared/VerificationChecklist'
 
 const BrowseAgenciesPage = () => {
   const [agencies, setAgencies] = useState<any[]>([])
