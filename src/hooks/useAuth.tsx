@@ -195,6 +195,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const trialExpired = supplierProfile?.plan === 'trial' && !isOnTrial
 
+  // Active subscription = monthly plan
+  const hasActiveSubscription = supplierProfile?.plan === 'monthly'
+
+  // Can unlock leads = on trial with credits, or has active subscription, or pay-per-lead (always can if willing to pay)
+  const canUnlockLeads = isOnTrial || hasActiveSubscription
+
   const value: AuthContextType = {
     user,
     session,
@@ -209,6 +215,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     trialLeadsLeft,
     trialDaysLeft,
     trialExpired,
+    hasActiveSubscription,
+    canUnlockLeads,
     signIn,
     signUp,
     signInWithGoogle,
