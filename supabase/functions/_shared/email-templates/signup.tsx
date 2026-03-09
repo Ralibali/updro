@@ -27,31 +27,32 @@ export const SignupEmail = ({
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Confirm your email for {siteName}</Preview>
+    <Preview>Bekräfta din e-post för Updro</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email</Heading>
+        <Text style={logoText}>🔥 updro</Text>
+        <Heading style={h1}>Välkommen till Updro!</Heading>
         <Text style={text}>
-          Thanks for signing up for{' '}
+          Kul att du registrerat dig på{' '}
           <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
+            <strong>Updro</strong>
           </Link>
           !
         </Text>
         <Text style={text}>
-          Please confirm your email address (
+          Bekräfta din e-postadress (
           <Link href={`mailto:${recipient}`} style={link}>
             {recipient}
           </Link>
-          ) by clicking the button below:
+          ) genom att klicka på knappen nedan:
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Verify Email
+          Bekräfta e-post
         </Button>
         <Text style={footer}>
-          If you didn't create an account, you can safely ignore this email.
+          Har du inte skapat ett konto? Ignorera det här mailet.
         </Text>
       </Container>
     </Body>
@@ -60,27 +61,36 @@ export const SignupEmail = ({
 
 export default SignupEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
+const main = { backgroundColor: '#ffffff', fontFamily: "'DM Sans', Arial, sans-serif" }
+const container = { padding: '40px 25px' }
+const logoText = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#000000',
+  fontFamily: "'Space Grotesk', Arial, sans-serif",
+  color: '#141321',
+  margin: '0 0 30px',
+}
+const h1 = {
+  fontSize: '24px',
+  fontWeight: 'bold' as const,
+  fontFamily: "'Space Grotesk', Arial, sans-serif",
+  color: '#141321',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
+  fontSize: '15px',
+  color: '#838191',
+  lineHeight: '1.6',
   margin: '0 0 25px',
 }
-const link = { color: 'inherit', textDecoration: 'underline' }
+const link = { color: '#6348E9', textDecoration: 'underline' }
 const button = {
-  backgroundColor: '#000000',
+  backgroundColor: '#6348E9',
   color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
+  fontSize: '15px',
+  fontWeight: '600' as const,
+  borderRadius: '12px',
+  padding: '14px 24px',
   textDecoration: 'none',
 }
 const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
