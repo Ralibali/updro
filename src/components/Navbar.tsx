@@ -136,8 +136,8 @@ const Navbar = () => {
               ))}
             </div>
             <div className="border-t pt-4 mt-2">
-              <Link to="/byraer" className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
-                Hitta byråer
+              <Link to="/publicera" className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
+                Publicera uppdrag
               </Link>
               {extraLinks.map((link) => (
                 <Link key={link.href} to={link.href} className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
