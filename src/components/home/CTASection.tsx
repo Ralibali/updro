@@ -39,7 +39,7 @@ const CTASection = () => {
           </Button>
         </Link>
 
-        <p className="mt-4 text-sm text-muted-foreground">Redan 300+ byråer på Updro</p>
+        
       </motion.div>
     </section>
   )

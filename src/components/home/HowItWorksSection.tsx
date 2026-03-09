@@ -40,7 +40,7 @@ const HowItWorksSection = () => {
             Tre enkla steg till rätt byrå
           </h2>
           <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Från uppdrag till färdig offert – snabbt, enkelt och helt kostnadsfritt för beställare.
+            Det tar kortare tid att lägga upp ett uppdrag än att ringa en byrå.
           </p>
         </motion.div>
 
