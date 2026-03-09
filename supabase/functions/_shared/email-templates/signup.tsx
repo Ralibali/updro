@@ -8,9 +8,11 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Link,
   Preview,
+  Section,
   Text,
 } from 'npm:@react-email/components@0.0.22'
 
@@ -32,14 +34,19 @@ export const SignupEmail = ({
     <Preview>Bekräfta din e-post för Updro</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Text style={logoText}>🔥 updro</Text>
+        <Section style={logoSection}>
+          <Text style={logoText}>
+            <span style={logoPart1}>⚡ upd</span>
+            <span style={logoPart2}>ro</span>
+          </Text>
+        </Section>
         <Heading style={h1}>Välkommen till Updro!</Heading>
         <Text style={text}>
           Kul att du registrerat dig på{' '}
           <Link href={siteUrl} style={link}>
             <strong>Updro</strong>
           </Link>
-          !
+          ! Du är snart redo att hitta rätt byrå för ditt projekt.
         </Text>
         <Text style={text}>
           Bekräfta din e-postadress (
@@ -48,11 +55,14 @@ export const SignupEmail = ({
           </Link>
           ) genom att klicka på knappen nedan:
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Bekräfta e-post
-        </Button>
+        <Section style={{ textAlign: 'center' as const, margin: '30px 0' }}>
+          <Button style={button} href={confirmationUrl}>
+            Bekräfta e-post
+          </Button>
+        </Section>
+        <Hr style={hr} />
         <Text style={footer}>
-          Har du inte skapat ett konto? Ignorera det här mailet.
+          Har du inte skapat ett konto på Updro? Ignorera det här mailet.
         </Text>
       </Container>
     </Body>
@@ -61,36 +71,35 @@ export const SignupEmail = ({
 
 export default SignupEmail
 
-const main = { backgroundColor: '#ffffff', fontFamily: "'DM Sans', Arial, sans-serif" }
-const container = { padding: '40px 25px' }
-const logoText = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  color: '#141321',
-  margin: '0 0 30px',
-}
+const main = { backgroundColor: '#ffffff', fontFamily: "'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif" }
+const container = { padding: '48px 28px', maxWidth: '520px', margin: '0 auto' }
+const logoSection = { marginBottom: '32px' }
+const logoText = { fontSize: '24px', fontWeight: 'bold' as const, margin: '0', lineHeight: '1' }
+const logoPart1 = { color: '#0F1118' }
+const logoPart2 = { color: '#FF851A' }
 const h1 = {
-  fontSize: '24px',
-  fontWeight: 'bold' as const,
-  fontFamily: "'Space Grotesk', Arial, sans-serif",
-  color: '#141321',
-  margin: '0 0 20px',
+  fontSize: '26px',
+  fontWeight: '700' as const,
+  fontFamily: "'Plus Jakarta Sans', 'Helvetica Neue', Arial, sans-serif",
+  color: '#0F1118',
+  margin: '0 0 16px',
 }
 const text = {
   fontSize: '15px',
-  color: '#838191',
-  lineHeight: '1.6',
-  margin: '0 0 25px',
+  color: '#555B66',
+  lineHeight: '1.7',
+  margin: '0 0 20px',
 }
-const link = { color: '#6348E9', textDecoration: 'underline' }
+const link = { color: '#FF851A', textDecoration: 'underline' }
 const button = {
-  backgroundColor: '#6348E9',
+  backgroundColor: '#FF851A',
   color: '#ffffff',
   fontSize: '15px',
   fontWeight: '600' as const,
-  borderRadius: '12px',
-  padding: '14px 24px',
+  borderRadius: '10px',
+  padding: '14px 28px',
   textDecoration: 'none',
+  display: 'inline-block' as const,
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+const hr = { borderColor: '#EAEDF0', margin: '28px 0' }
+const footer = { fontSize: '12px', color: '#999DA5', margin: '0' }
