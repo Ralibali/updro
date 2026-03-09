@@ -114,6 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
         await fetchProfile(session.user.id)
+        createPendingProject(session.user.id)
       }
       if (isMounted) setLoading(false)
     })
@@ -143,7 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isMounted = false
       subscription.unsubscribe()
     }
-  }, [fetchProfile])
+  }, [fetchProfile, createPendingProject])
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
