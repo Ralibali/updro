@@ -141,7 +141,7 @@ const AgencyCityPage = () => {
         </div>
       </section>
 
-      <SEOLeadCTA />
+      <SEOLeadCTA categoryName="digitala tjänster" />
       <Footer />
     </div>
   )

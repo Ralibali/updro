@@ -81,7 +81,7 @@ const ServicePage = () => {
         </div>
       </section>
 
-      <SEOLeadCTA />
+      <SEOLeadCTA categoryName={service.name.toLowerCase()} />
       <Footer />
     </div>
   )

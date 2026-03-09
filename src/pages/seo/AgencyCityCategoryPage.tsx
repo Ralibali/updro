@@ -146,7 +146,7 @@ const AgencyCityCategoryPage = () => {
         </div>
       </section>
 
-      <SEOLeadCTA />
+      <SEOLeadCTA categoryName={category.name.toLowerCase()} />
       <Footer />
     </div>
   )
