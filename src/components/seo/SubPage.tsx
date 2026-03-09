@@ -24,6 +24,7 @@ const SubPage = () => {
         title: page.title,
         description: page.metaDesc,
         canonical: `https://updro.se/${pillar.categorySlug}/${page.slug}`,
+        ogImage: getOgImage(pillar.categorySlug),
       })
     } else if (cityPage) {
       setSEOMeta({
