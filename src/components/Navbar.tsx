@@ -94,6 +94,7 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem asChild><Link to={dashboardLink}>Dashboard</Link></DropdownMenuItem>
+                    {isAdmin && <DropdownMenuItem asChild><Link to="/admin">Admin</Link></DropdownMenuItem>}
                     <DropdownMenuItem asChild><Link to={isAdmin ? '/dashboard/buyer/profil' : isBuyer ? '/dashboard/buyer/profil' : '/dashboard/supplier/profil'}>Min profil</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={signOut} className="text-destructive">Logga ut</DropdownMenuItem>
                   </DropdownMenuContent>
