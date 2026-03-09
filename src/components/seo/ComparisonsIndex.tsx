@@ -5,19 +5,15 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ArrowRight, ChevronRight, Trophy } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const ComparisonsIndex = () => {
   useEffect(() => {
-    document.title = 'Jämför byråer – Topp 10 listor | Updro'
-    const meta = document.querySelector('meta[name="description"]')
-    const desc = 'Jämför de bästa byråerna i Sverige. Topp 10 listor för SEO, webbutveckling, e-handel, apputveckling och mer.'
-    if (meta) meta.setAttribute('content', desc)
-    else {
-      const m = document.createElement('meta')
-      m.name = 'description'
-      m.content = desc
-      document.head.appendChild(m)
-    }
+    setSEOMeta({
+      title: 'Jämför byråer – Topp 10 listor | Updro',
+      description: 'Jämför de bästa byråerna i Sverige. Topp 10 listor för SEO, webbutveckling, e-handel, apputveckling och mer.',
+      canonical: 'https://updro.se/jamfor',
+    })
     window.scrollTo(0, 0)
   }, [])
 

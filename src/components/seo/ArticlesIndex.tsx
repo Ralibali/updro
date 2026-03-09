@@ -5,19 +5,15 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ArrowRight, ChevronRight, Calendar } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const ArticlesIndex = () => {
   useEffect(() => {
-    document.title = 'Artiklar & guider om digitala tjänster | Updro'
-    const meta = document.querySelector('meta[name="description"]')
-    const desc = 'Guider, prisöversikter och tips för webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring.'
-    if (meta) meta.setAttribute('content', desc)
-    else {
-      const m = document.createElement('meta')
-      m.name = 'description'
-      m.content = desc
-      document.head.appendChild(m)
-    }
+    setSEOMeta({
+      title: 'Artiklar & guider om digitala tjänster | Updro',
+      description: 'Guider, prisöversikter och tips för webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring.',
+      canonical: 'https://updro.se/artiklar',
+    })
     window.scrollTo(0, 0)
   }, [])
 
