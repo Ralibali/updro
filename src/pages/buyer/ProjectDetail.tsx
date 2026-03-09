@@ -64,7 +64,7 @@ const ProjectDetail = () => {
     setOffers(prev => prev.map(o => o.status === 'pending' ? { ...o, status: 'declined' } : o))
   }
 
-  if (!project) return <DashboardLayout navItems={navItems}><div className="animate-pulse h-40 bg-muted rounded-xl" /></DashboardLayout>
+  if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
   return (
     <DashboardLayout navItems={navItems}>
