@@ -41,7 +41,9 @@ const RegisterPage = () => {
     if (error) {
       toast.error(error.message || 'Något gick fel.')
     } else {
-      toast.success('Konto skapat! Välkommen till Updro!')
+      toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
+        duration: 8000,
+      })
       navigate('/')
     }
   }
