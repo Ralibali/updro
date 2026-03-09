@@ -40,9 +40,6 @@ const AdminSettings = () => {
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          Dessa värden styrs via koden i <code>src/lib/constants.ts</code>. Kontakta utvecklaren för att ändra.
-        </p>
       </div>
     </AdminLayout>
   )
