@@ -51,7 +51,7 @@ const SupplierLandingPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Få fler kunder till din byrå – Prova Updro gratis',
-      description: `Registrera din byrå och få ${TRIAL_LEADS} gratis leads. Kvalificerade uppdrag, inbyggd chatt och max 5 byråer per projekt. Starta gratis.`,
+      description: `Registrera din byrå och få ${numWord(TRIAL_LEADS)} gratis leads. Kvalificerade uppdrag, inbyggd chatt och max fem byråer per projekt. Starta gratis.`,
       noindex: true,
     })
   }, [])
