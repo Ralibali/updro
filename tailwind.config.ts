@@ -56,6 +56,8 @@ export default {
           dark: "hsl(var(--brand-dark))",
           blue: "hsl(var(--brand-blue))",
           "blue-hover": "hsl(var(--brand-blue-hover))",
+          orange: "hsl(var(--brand-orange))",
+          "orange-hover": "hsl(var(--brand-orange-hover))",
           mint: "hsl(var(--brand-mint))",
           "mint-hover": "hsl(var(--brand-mint-hover))",
           coral: "hsl(var(--brand-coral))",
