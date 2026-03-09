@@ -12,7 +12,7 @@ import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constan
 import { timeAgo } from '@/lib/dateUtils'
 import { numWord } from '@/lib/numberWords'
 import { toast } from 'sonner'
-import { Lock, Unlock, Mail, Phone, User, Building2 } from 'lucide-react'
+import { Lock, Unlock, Mail, Phone, User, Building2, Paperclip, X } from 'lucide-react'
 
 const ProjectUnlock = () => {
   const { id } = useParams()
