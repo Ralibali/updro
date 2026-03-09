@@ -97,7 +97,7 @@ export const START_TIME_LABELS: Record<string, string> = {
 }
 
 export const TRIAL_LEADS = 5
-export const TRIAL_DAYS = 14
+export const TRIAL_DAYS = 7
 export const REFERRAL_CREDITS = 3
 export const MAX_OFFERS_PER_PROJECT = 5
 
