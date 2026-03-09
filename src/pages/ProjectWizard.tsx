@@ -14,7 +14,7 @@ import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT
 import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2 } from 'lucide-react'
 
 const ProjectWizard = () => {
-  const { user, isAuthenticated, profile, signUp, signInWithGoogle } = useAuth()
+  const { user, isAuthenticated, profile, signUp } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -336,14 +336,6 @@ const ProjectWizard = () => {
             <div className="space-y-6">
               <h2 className="font-display text-2xl font-bold">Sista steget – skapa gratis konto</h2>
 
-              <Button variant="outline" className="w-full py-5" onClick={() => signInWithGoogle()}>
-                Fortsätt med Google
-              </Button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
-                <div className="relative flex justify-center text-xs uppercase"><span className="bg-background px-2 text-muted-foreground">eller</span></div>
-              </div>
 
               <div>
                 <Label>Namn *</Label>
