@@ -21,6 +21,7 @@ const RegisterSupplierPage = () => {
     email: '',
     password: '',
     phone: '',
+    org_number: '',
     categories: [] as string[],
     accepted: false,
     newsletter: false,
