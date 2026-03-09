@@ -45,6 +45,17 @@ export interface SupplierProfile {
   lead_credits: number
   is_featured: boolean
   is_verified: boolean
+  contact_name: string | null
+  contact_email: string | null
+  contact_phone: string | null
+  contact_avatar_url: string | null
+  org_number: string | null
+  has_fskatt: boolean
+  has_fskatt_verified_at: string | null
+  credit_check_passed: boolean
+  credit_check_at: string | null
+  stripe_customer_id: string | null
+  stripe_subscription_id: string | null
   profile?: Profile
 }
 
