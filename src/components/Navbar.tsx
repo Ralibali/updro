@@ -116,7 +116,7 @@ const Navbar = () => {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 top-16 z-50 bg-background overflow-y-auto">
+        <div className="md:hidden fixed inset-0 top-16 z-[55] bg-background overflow-y-auto">
           <nav className="flex flex-col p-6 gap-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tjänster</p>
             <div className="grid grid-cols-2 gap-2">
