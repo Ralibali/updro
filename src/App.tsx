@@ -85,6 +85,9 @@ const PageLoader = () => (
   </div>
 );
 
+
+const PageTracker = () => { usePageTracking(); return null; };
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -92,6 +95,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <PageTracker />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Public */}
