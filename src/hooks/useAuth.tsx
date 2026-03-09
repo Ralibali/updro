@@ -144,7 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isMounted = false
       subscription.unsubscribe()
     }
-  }, [fetchProfile])
+  }, [fetchProfile, createPendingProject])
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password })
