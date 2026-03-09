@@ -176,7 +176,7 @@ const ChatPage = () => {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </>
   )
 }
 
