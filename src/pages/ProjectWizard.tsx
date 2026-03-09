@@ -52,8 +52,19 @@ const ProjectWizard = () => {
     setLoading(true)
     let userId = user?.id
 
-    // If not authenticated, create account first
+    // If not authenticated, create account first and save project for later
     if (!isAuthenticated) {
+      // Save project data to localStorage so it can be created after email verification
+      const pendingProject = {
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        budget_range: form.budget_range,
+        start_time: form.start_time,
+        is_company: form.is_company,
+      }
+      localStorage.setItem('pending_project', JSON.stringify(pendingProject))
+
       const { error } = await signUp({
         email: form.email,
         password: form.password,
@@ -63,12 +74,15 @@ const ProjectWizard = () => {
       })
       if (error) {
         toast.error(error.message || 'Kunde inte skapa konto')
+        localStorage.removeItem('pending_project')
         setLoading(false)
         return
       }
-      // Get the new user
-      const { data: { session } } = await supabase.auth.getSession()
-      userId = session?.user?.id
+
+      // Show verify email step
+      setLoading(false)
+      setStep(4)
+      return
     }
 
     if (!userId) {
