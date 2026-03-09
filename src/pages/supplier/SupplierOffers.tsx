@@ -1,21 +1,10 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import DashboardLayout from '@/components/DashboardLayout'
-import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard } from 'lucide-react'
 import { CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
-const navItems = [
-  { label: 'Översikt', href: '/dashboard/supplier', icon: Home },
-  { label: 'Uppdrag', href: '/dashboard/supplier/uppdrag', icon: Search },
-  { label: 'Offerter', href: '/dashboard/supplier/offerter', icon: FileText },
-  { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
-  { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
-  { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },
-]
 
 function groupByMonth(offers: any[]) {
   const groups: Record<string, any[]> = {}
@@ -81,58 +70,56 @@ const SupplierOffers = () => {
   const lostByMonth = groupByMonth(filteredLost)
 
   return (
-    <DashboardLayout navItems={navItems}>
-      <div className="max-w-4xl">
-        <h1 className="font-display text-2xl font-bold mb-6">Mina offerter</h1>
+    <div className="max-w-4xl">
+      <h1 className="font-display text-2xl font-bold mb-6">Mina offerter</h1>
 
-        <Tabs defaultValue="active">
-          <TabsList className="mb-4">
-            <TabsTrigger value="active">Aktiva ({activeOffers.length})</TabsTrigger>
-            <TabsTrigger value="lost">Ej vunna ({lostOffers.length})</TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="active">
+        <TabsList className="mb-4">
+          <TabsTrigger value="active">Aktiva ({activeOffers.length})</TabsTrigger>
+          <TabsTrigger value="lost">Ej vunna ({lostOffers.length})</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="active">
-            {activeOffers.length === 0 ? (
-              <div className="bg-card rounded-xl border p-8 text-center">
-                <p className="text-muted-foreground">Du har inga aktiva offerter just nu.</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {activeOffers.map(o => <OfferCard key={o.id} o={o} />)}
-              </div>
-            )}
-          </TabsContent>
+        <TabsContent value="active">
+          {activeOffers.length === 0 ? (
+            <div className="bg-card rounded-xl border p-8 text-center">
+              <p className="text-muted-foreground">Du har inga aktiva offerter just nu.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {activeOffers.map(o => <OfferCard key={o.id} o={o} />)}
+            </div>
+          )}
+        </TabsContent>
 
-          <TabsContent value="lost">
-            <Input
-              placeholder="Sök bland ej vunna offerter..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="mb-4 rounded-xl"
-            />
+        <TabsContent value="lost">
+          <Input
+            placeholder="Sök bland ej vunna offerter..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="mb-4 rounded-xl"
+          />
 
-            {lostByMonth.length === 0 ? (
-              <div className="bg-card rounded-xl border p-8 text-center">
-                <p className="text-muted-foreground">Inga ej vunna offerter att visa.</p>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {lostByMonth.map(group => (
-                  <div key={group.key}>
-                    <h3 className="font-display font-semibold text-sm text-muted-foreground uppercase tracking-wider mb-3 capitalize">
-                      {group.label}
-                    </h3>
-                    <div className="space-y-3">
-                      {group.items.map(o => <OfferCard key={o.id} o={o} />)}
-                    </div>
+          {lostByMonth.length === 0 ? (
+            <div className="bg-card rounded-xl border p-8 text-center">
+              <p className="text-muted-foreground">Inga ej vunna offerter att visa.</p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {lostByMonth.map(group => (
+                <div key={group.key}>
+                  <h3 className="font-display font-semibold text-sm text-muted-foreground uppercase tracking-wider mb-3 capitalize">
+                    {group.label}
+                  </h3>
+                  <div className="space-y-3">
+                    {group.items.map(o => <OfferCard key={o.id} o={o} />)}
                   </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </div>
-    </DashboardLayout>
+                </div>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }
 

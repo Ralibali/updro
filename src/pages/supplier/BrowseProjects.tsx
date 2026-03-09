@@ -2,24 +2,15 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import DashboardLayout from '@/components/DashboardLayout'
 import TrialBanner from '@/components/TrialBanner'
-import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard, Lock, Unlock } from 'lucide-react'
+import { Lock, Unlock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CATEGORIES, CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
+import { numWord } from '@/lib/numberWords'
 import { toast } from 'sonner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-
-const navItems = [
-  { label: 'Översikt', href: '/dashboard/supplier', icon: Home },
-  { label: 'Uppdrag', href: '/dashboard/supplier/uppdrag', icon: Search },
-  { label: 'Offerter', href: '/dashboard/supplier/offerter', icon: FileText },
-  { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
-  { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
-  { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },
-]
 
 const BrowseProjects = () => {
   const { user, supplierProfile, refreshProfile } = useAuth()
@@ -61,7 +52,6 @@ const BrowseProjects = () => {
       return
     }
 
-    // Decrement credits
     await supabase.from('supplier_profiles').update({
       lead_credits: credits - 1,
       ...(isTrialCredit ? { trial_leads_used: (supplierProfile.trial_leads_used || 0) + 1 } : {}),
@@ -74,9 +64,10 @@ const BrowseProjects = () => {
   }
 
   const filtered = filterCat === 'all' ? projects : projects.filter(p => p.category === filterCat)
+  const creditsLeft = supplierProfile?.lead_credits || 0
 
   return (
-    <DashboardLayout navItems={navItems}>
+    <>
       <div className="max-w-4xl">
         <TrialBanner />
 
@@ -136,9 +127,9 @@ const BrowseProjects = () => {
                         size="sm"
                         className="mt-3"
                         variant="outline"
-                        onClick={() => (supplierProfile?.lead_credits || 0) > 0 ? setConfirmProject(p) : toast.error('Inga lead-krediter kvar. Uppgradera din plan.')}
+                        onClick={() => creditsLeft > 0 ? setConfirmProject(p) : toast.error('Inga lead-krediter kvar. Uppgradera din plan.')}
                       >
-                        🔓 Lås upp ({supplierProfile?.lead_credits || 0} krediter kvar)
+                        🔓 Lås upp ({numWord(creditsLeft)} krediter kvar)
                       </Button>
                     </>
                   )}
@@ -154,8 +145,8 @@ const BrowseProjects = () => {
           <DialogHeader>
             <DialogTitle>Lås upp uppdrag?</DialogTitle>
             <DialogDescription>
-              Använd 1 lead-kredit för att se "{confirmProject?.title}"?
-              Du har {supplierProfile?.lead_credits || 0} krediter kvar.
+              Använd en lead-kredit för att se "{confirmProject?.title}"?
+              Du har {numWord(creditsLeft)} krediter kvar.
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 mt-4">
@@ -164,7 +155,7 @@ const BrowseProjects = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </>
   )
 }
 
