@@ -18,7 +18,7 @@ interface Conversation {
 }
 
 const ChatPage = () => {
-  const { user, isBuyer } = useAuth()
+  const { user } = useAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeConvo, setActiveConvo] = useState<Conversation | null>(null)
   const [messages, setMessages] = useState<any[]>([])
