@@ -50,7 +50,7 @@ const TermsPage = () => {
               <h3 className="font-semibold text-foreground mt-3 mb-1">4.2 Priser och betalning</h3>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Pay as you go:</strong> 299 kr per lead (exkl. moms)</li>
-                <li><strong>Standard:</strong> 699 kr/månad, 10 leads inkluderat (exkl. moms)</li>
+                <li><strong>Standard:</strong> 699 kr/månad, tio leads inkluderat (exkl. moms)</li>
                 <li><strong>Premium:</strong> 1 490 kr/månad, obegränsat antal leads (exkl. moms)</li>
                 <li>Alla priser anges i svenska kronor, exklusive moms om inte annat anges.</li>
                 <li>Betalning sker via Stripe. Du ansvarar för att giltiga betalningsuppgifter finns.</li>
