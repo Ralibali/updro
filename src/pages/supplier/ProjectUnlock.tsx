@@ -7,15 +7,21 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
+import { numWord } from '@/lib/numberWords'
 import { toast } from 'sonner'
+import { Lock, Unlock, Mail, Phone, User, Building2 } from 'lucide-react'
 
 const ProjectUnlock = () => {
   const { id } = useParams()
-  const { user } = useAuth()
+  const { user, supplierProfile, refreshProfile } = useAuth()
   const navigate = useNavigate()
   const [project, setProject] = useState<any>(null)
+  const [buyer, setBuyer] = useState<any>(null)
+  const [isUnlocked, setIsUnlocked] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     title: '',
@@ -26,11 +32,50 @@ const ProjectUnlock = () => {
   })
 
   useEffect(() => {
-    if (!id) return
-    supabase.from('projects').select('*').eq('id', id).single().then(({ data }) => {
-      if (data) setProject(data)
+    if (!id || !user) return
+    const fetchData = async () => {
+      const { data: proj } = await supabase.from('projects').select('*, profiles!projects_buyer_id_fkey(full_name, company_name, email, phone, city)').eq('id', id).single()
+      if (proj) {
+        setProject(proj)
+        setBuyer(proj.profiles)
+      }
+
+      const { data: lead } = await supabase.from('unlocked_leads').select('id').eq('supplier_id', user.id).eq('project_id', id).maybeSingle()
+      if (lead) setIsUnlocked(true)
+    }
+    fetchData()
+  }, [id, user])
+
+  const handleUnlock = async () => {
+    if (!user || !supplierProfile || !id) return
+    const credits = supplierProfile.lead_credits || 0
+    if (credits <= 0) {
+      toast.error('Inga lead-krediter kvar. Uppgradera din plan.')
+      return
+    }
+
+    const isTrialCredit = supplierProfile.plan === 'trial'
+    const { error } = await supabase.from('unlocked_leads').insert({
+      supplier_id: user.id,
+      project_id: id,
+      used_trial_credit: isTrialCredit,
     })
-  }, [id])
+
+    if (error) {
+      toast.error('Kunde inte låsa upp uppdraget.')
+      return
+    }
+
+    await supabase.from('supplier_profiles').update({
+      lead_credits: credits - 1,
+      ...(isTrialCredit ? { trial_leads_used: (supplierProfile.trial_leads_used || 0) + 1 } : {}),
+    }).eq('id', user.id)
+
+    setIsUnlocked(true)
+    await refreshProfile()
+    toast.success('Kontaktuppgifter upplåsta! 🔓')
+    setConfirmOpen(false)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,11 +106,13 @@ const ProjectUnlock = () => {
     }
   }
 
+  const creditsLeft = supplierProfile?.lead_credits || 0
+
   if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
   return (
     <div className="max-w-3xl">
-      {/* Project info */}
+      {/* Project info – always visible */}
       <div className="bg-card rounded-xl border p-5 mb-6">
         <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
         <h1 className="font-display text-xl font-bold">{project.title}</h1>
@@ -73,49 +120,105 @@ const ProjectUnlock = () => {
         <div className="flex gap-4 mt-3 text-xs text-muted-foreground flex-wrap">
           <span>{BUDGET_LABELS[project.budget_range] || ''}</span>
           <span>{START_TIME_LABELS[project.start_time] || ''}</span>
-          <span>{project.city}</span>
+          <span>{project.city || 'Sverige'}</span>
           <span>{timeAgo(project.created_at)}</span>
         </div>
       </div>
 
-      {/* Offer form */}
-      <div className="bg-card rounded-xl border p-5">
-        <h2 className="font-display text-lg font-semibold mb-4">Skicka offert</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label>Offert-titel *</Label>
-            <Input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="rounded-xl mt-1" required />
-          </div>
-          <div>
-            <Label>Beskrivning *</Label>
-            <Textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="rounded-xl mt-1 min-h-[120px]" required />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label>Pris (kr) *</Label>
-              <Input type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} className="rounded-xl mt-1" required />
+      {/* Contact info – locked or unlocked */}
+      {isUnlocked ? (
+        <>
+          <div className="bg-card rounded-xl border p-5 mb-6 border-accent/30">
+            <div className="flex items-center gap-2 mb-3">
+              <Unlock className="h-4 w-4 text-accent" />
+              <h2 className="font-display text-lg font-semibold">Beställarens kontaktuppgifter</h2>
             </div>
-            <div>
-              <Label>Leveranstid (veckor)</Label>
-              <Input type="number" value={form.delivery_weeks} onChange={e => setForm(p => ({ ...p, delivery_weeks: e.target.value }))} className="rounded-xl mt-1" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              {buyer?.full_name && (
+                <div className="flex items-center gap-2 text-foreground"><User className="h-4 w-4 text-muted-foreground" /> {buyer.full_name}</div>
+              )}
+              {buyer?.company_name && (
+                <div className="flex items-center gap-2 text-foreground"><Building2 className="h-4 w-4 text-muted-foreground" /> {buyer.company_name}</div>
+              )}
+              {buyer?.email && (
+                <a href={`mailto:${buyer.email}`} className="flex items-center gap-2 text-primary hover:underline"><Mail className="h-4 w-4" /> {buyer.email}</a>
+              )}
+              {buyer?.phone && (
+                <a href={`tel:${buyer.phone}`} className="flex items-center gap-2 text-primary hover:underline"><Phone className="h-4 w-4" /> {buyer.phone}</a>
+              )}
             </div>
           </div>
-          <div>
-            <Label>Betalningsmodell</Label>
-            <Select value={form.payment_plan} onValueChange={v => setForm(p => ({ ...p, payment_plan: v }))}>
-              <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="fixed">Fast pris</SelectItem>
-                <SelectItem value="hourly">Timpris</SelectItem>
-                <SelectItem value="milestone">Milstolpar</SelectItem>
-              </SelectContent>
-            </Select>
+
+          {/* Offer form */}
+          <div className="bg-card rounded-xl border p-5">
+            <h2 className="font-display text-lg font-semibold mb-4">Skicka offert</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label>Offert-titel *</Label>
+                <Input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} className="rounded-xl mt-1" required />
+              </div>
+              <div>
+                <Label>Beskrivning *</Label>
+                <Textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} className="rounded-xl mt-1 min-h-[120px]" required />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Pris (kr) *</Label>
+                  <Input type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} className="rounded-xl mt-1" required />
+                </div>
+                <div>
+                  <Label>Leveranstid (veckor)</Label>
+                  <Input type="number" value={form.delivery_weeks} onChange={e => setForm(p => ({ ...p, delivery_weeks: e.target.value }))} className="rounded-xl mt-1" />
+                </div>
+              </div>
+              <div>
+                <Label>Betalningsmodell</Label>
+                <Select value={form.payment_plan} onValueChange={v => setForm(p => ({ ...p, payment_plan: v }))}>
+                  <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fixed">Fast pris</SelectItem>
+                    <SelectItem value="hourly">Timpris</SelectItem>
+                    <SelectItem value="milestone">Milstolpar</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <Button type="submit" disabled={loading} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5">
+                {loading ? 'Skickar...' : 'Skicka offert →'}
+              </Button>
+            </form>
           </div>
-          <Button type="submit" disabled={loading} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5">
-            {loading ? 'Skickar...' : 'Skicka offert →'}
+        </>
+      ) : (
+        <div className="bg-card rounded-xl border p-6 text-center">
+          <Lock className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+          <h2 className="font-display text-lg font-semibold mb-2">Lås upp kontaktuppgifter</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Använd en lead-kredit för att se beställarens kontaktuppgifter och skicka en offert.
+          </p>
+          <Button
+            onClick={() => creditsLeft > 0 ? setConfirmOpen(true) : toast.error('Inga lead-krediter kvar. Uppgradera din plan.')}
+            className="bg-primary hover:bg-primary/90"
+          >
+            🔓 Lås upp ({numWord(creditsLeft)} krediter kvar)
           </Button>
-        </form>
-      </div>
+        </div>
+      )}
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Lås upp kontaktuppgifter?</DialogTitle>
+            <DialogDescription>
+              Använd en lead-kredit för att få tillgång till beställarens kontaktuppgifter för "{project?.title}" och kunna skicka offert.
+              Du har {numWord(creditsLeft)} krediter kvar.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 mt-4">
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Avbryt</Button>
+            <Button onClick={handleUnlock} className="bg-primary hover:bg-primary/90">Bekräfta</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
