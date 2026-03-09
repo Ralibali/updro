@@ -102,9 +102,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null)
 
         if (session?.user) {
-          // Use .then() instead of await to avoid blocking the callback
           fetchProfile(session.user.id).then(() => {
             if (isMounted) setLoading(false)
+            // Auto-create pending project after email verification
+            createPendingProject(session.user.id)
           })
         } else {
           setProfile(null)
