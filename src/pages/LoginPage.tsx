@@ -25,6 +25,38 @@ const LoginPage = () => {
     })
   }, [])
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    const { error } = await signIn(email, password)
+    setLoading(false)
+
+    if (error) {
+      toast.error('Kunde inte logga in. Kontrollera uppgifterna.')
+    } else {
+      toast.success('Inloggad!')
+    }
+  }
+
+  useEffect(() => {
+    if (profile) {
+      if (profile.role === 'admin') navigate('/admin', { replace: true })
+      else if (profile.role === 'supplier') navigate('/dashboard/supplier', { replace: true })
+      else if (profile.role === 'buyer') navigate('/dashboard/buyer', { replace: true })
+      else navigate('/', { replace: true })
+    }
+  }, [profile, navigate])
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-1 flex items-center justify-center py-16 px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="font-display text-3xl font-bold">Logga in</h1>
+            <p className="text-muted-foreground mt-2">Välkommen tillbaka till Updro</p>
+          </div>
+
           <div className="bg-card rounded-2xl border p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
