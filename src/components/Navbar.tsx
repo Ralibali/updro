@@ -110,7 +110,7 @@ const Navbar = () => {
           )}
         </div>
 
-        <button className="md:hidden p-2 text-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
+        <button className="md:hidden p-2 text-foreground relative z-[60]" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Meny">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
