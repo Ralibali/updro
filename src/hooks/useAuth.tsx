@@ -79,31 +79,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user, fetchProfile])
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
+    let isMounted = true
 
-        if (session?.user) {
-          await fetchProfile(session.user.id)
-        } else {
-          setProfile(null)
-          setSupplierProfile(null)
-        }
-        setLoading(false)
-      }
-    )
-
+    // First, get the initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!isMounted) return
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
         await fetchProfile(session.user.id)
       }
-      setLoading(false)
+      if (isMounted) setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
+    // Then listen for auth changes (don't await inside callback)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!isMounted) return
+        setSession(session)
+        setUser(session?.user ?? null)
+
+        if (session?.user) {
+          // Use .then() instead of await to avoid blocking the callback
+          fetchProfile(session.user.id).then(() => {
+            if (isMounted) setLoading(false)
+          })
+        } else {
+          setProfile(null)
+          setSupplierProfile(null)
+          setLoading(false)
+        }
+      }
+    )
+
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
   }, [fetchProfile])
 
   const signIn = async (email: string, password: string) => {
