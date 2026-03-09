@@ -7,22 +7,6 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { timeAgo } from '@/lib/dateUtils'
 
-const buyerNav = [
-  { label: 'Översikt', href: '/dashboard/buyer', icon: Home },
-  { label: 'Mina uppdrag', href: '/dashboard/buyer/uppdrag', icon: ClipboardList },
-  { label: 'Meddelanden', href: '/dashboard/buyer/chatt', icon: MessageCircle },
-  { label: 'Min profil', href: '/dashboard/buyer/profil', icon: UserCircle },
-]
-
-const supplierNav = [
-  { label: 'Översikt', href: '/dashboard/supplier', icon: Home },
-  { label: 'Uppdrag', href: '/dashboard/supplier/uppdrag', icon: Search },
-  { label: 'Offerter', href: '/dashboard/supplier/offerter', icon: FileText },
-  { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
-  { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
-  { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },
-]
-
 interface Conversation {
   otherId: string
   otherName: string
