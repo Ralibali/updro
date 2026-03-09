@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 import { Mail, Lock } from 'lucide-react'
 
 const LoginPage = () => {
-  const { signIn, signInWithGoogle, profile } = useAuth()
+  const { signIn, profile } = useAuth()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
