@@ -1,7 +1,16 @@
+import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const PrivacyPolicyPage = () => {
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Integritetspolicy | Updro',
+      description: 'Läs Updros integritetspolicy. Här beskriver vi hur vi hanterar dina personuppgifter i enlighet med GDPR.',
+      canonical: 'https://updro.se/integritetspolicy',
+    })
+  }, [])
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

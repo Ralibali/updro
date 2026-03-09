@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { CATEGORIES, CATEGORY_ICONS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
 import { Check, Gift, Shield, MessageCircle, CreditCard, Star, ArrowRight } from 'lucide-react'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const RegisterSupplierPage = () => {
   const { signUp } = useAuth()
@@ -26,6 +27,14 @@ const RegisterSupplierPage = () => {
     accepted: false,
     newsletter: false,
   })
+
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Registrera din byrå – Få fler kunder gratis | Updro',
+      description: 'Registrera din byrå på Updro och få fem gratis leads. Kvalificerade uppdrag, ingen bindningstid.',
+      canonical: 'https://updro.se/registrera/byra',
+    })
+  }, [])
 
   const toggleCategory = (cat: string) => {
     setForm(prev => ({

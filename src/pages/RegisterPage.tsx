@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { Building2, User } from 'lucide-react'
 import { lovable } from '@/integrations/lovable/index'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const RegisterPage = () => {
   const { signUp } = useAuth()
@@ -22,6 +23,14 @@ const RegisterPage = () => {
     acceptedTerms: false,
     newsletter: false,
   })
+
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Registrera dig – Skapa gratis konto | Updro',
+      description: 'Skapa ett gratis konto på Updro och börja publicera uppdrag eller registrera din byrå.',
+      canonical: 'https://updro.se/registrera',
+    })
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

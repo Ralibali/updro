@@ -9,11 +9,20 @@ import { CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
 import { Search, MapPin, CheckCircle } from 'lucide-react'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const BrowseAgenciesPage = () => {
   const [agencies, setAgencies] = useState<any[]>([])
   const [filterCat, setFilterCat] = useState('all')
   const [searchCity, setSearchCity] = useState('')
+
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Hitta byråer i Sverige – Jämför och välj rätt byrå | Updro',
+      description: 'Sök bland kvalificerade digitala byråer i Sverige. Filtrera på kategori och stad. Jämför betyg och kompetenser.',
+      canonical: 'https://updro.se/byraer',
+    })
+  }, [])
 
   useEffect(() => {
     const fetchAgencies = async () => {

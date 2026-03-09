@@ -9,6 +9,7 @@ import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { Mail, Lock } from 'lucide-react'
 import { lovable } from '@/integrations/lovable/index'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const LoginPage = () => {
   const { signIn, profile } = useAuth()
@@ -17,6 +18,14 @@ const LoginPage = () => {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
+
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Logga in | Updro',
+      description: 'Logga in på ditt Updro-konto för att hantera uppdrag, offerter och meddelanden.',
+      canonical: 'https://updro.se/logga-in',
+    })
+  }, [])
 
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true)

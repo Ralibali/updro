@@ -10,6 +10,7 @@ import { Star, MapPin, CheckCircle, Globe, ArrowRight } from 'lucide-react'
 import { timeAgo } from '@/lib/dateUtils'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
@@ -31,6 +32,17 @@ const AgencyProfilePage = () => {
     }
     fetchAgency()
   }, [slug])
+
+  useEffect(() => {
+    if (agency && profile) {
+      const name = profile.company_name || profile.full_name || 'Byrå'
+      setSEOMeta({
+        title: `${name} – Byråprofil | Updro`,
+        description: `Se ${name}s profil på Updro. Betyg, tjänster, portfölj och kontaktuppgifter.`,
+        canonical: `https://updro.se/byra/${slug}`,
+      })
+    }
+  }, [agency, profile, slug])
 
   if (!agency) return (
     <div className="min-h-screen flex flex-col">

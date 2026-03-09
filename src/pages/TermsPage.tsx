@@ -1,7 +1,16 @@
+import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const TermsPage = () => {
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Allmänna villkor | Updro',
+      description: 'Läs Updros allmänna villkor för användning av tjänsten. Gäller för både beställare och byråer.',
+      canonical: 'https://updro.se/villkor',
+    })
+  }, [])
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -6,9 +6,18 @@ import { Button } from '@/components/ui/button'
 import { PLANS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
 import { Check, Gift, ArrowRight } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const PricingPage = () => {
   const [tab, setTab] = useState<'supplier' | 'buyer'>('supplier')
+
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Priser – Updro | Transparent prissättning för byråer',
+      description: 'Se Updros priser för byråer. Pay-per-lead från 299 kr eller månadskort för obegränsade leads. Inga dolda avgifter, inga bindningstider.',
+      canonical: 'https://updro.se/priser',
+    })
+  }, [])
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -1,7 +1,8 @@
+import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Building2, Target, Users, Heart } from 'lucide-react'
-
+import { setSEOMeta } from '@/lib/seoHelpers'
 const values = [
   { icon: Target, title: 'Transparens', desc: 'Inga dolda avgifter eller låsningar – du ser alltid vad du betalar för.' },
   { icon: Users, title: 'Kvalitet före kvantitet', desc: 'Vi granskar varje byrå och uppdrag för att säkerställa en hög standard.' },
@@ -10,6 +11,14 @@ const values = [
 ]
 
 const AboutPage = () => {
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Om Updro – Sveriges marknadsplats för digitala byråer',
+      description: 'Updro kopplar samman företag med rätt digitala byråer – snabbt, tryggt och kostnadsfritt. Läs om vår vision och våra värderingar.',
+      canonical: 'https://updro.se/om-oss',
+    })
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
