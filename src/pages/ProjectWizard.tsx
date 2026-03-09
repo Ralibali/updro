@@ -93,7 +93,7 @@ const ProjectWizard = () => {
     if (projectError) {
       toast.error('Kunde inte publicera uppdraget.')
     } else {
-      toast.success('Uppdraget är publicerat! 🎉')
+      toast.success('Uppdraget är inskickat och väntar på godkännande! ✅')
       navigate('/dashboard/buyer')
     }
   }
