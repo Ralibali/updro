@@ -25,7 +25,6 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
   signUp: (data: SignUpData) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
-  signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
 
