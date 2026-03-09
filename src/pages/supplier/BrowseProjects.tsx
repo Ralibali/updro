@@ -98,40 +98,30 @@ const BrowseProjects = () => {
                     {isUnlocked ? (
                       <span className="text-xs text-accent font-semibold flex items-center gap-1"><Unlock className="h-3 w-3" /> Upplåst</span>
                     ) : (
-                      <span className="text-xs text-muted-foreground flex items-center gap-1"><Lock className="h-3 w-3" /> Låst</span>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1"><Lock className="h-3 w-3" /> Kontaktuppgifter låsta</span>
                     )}
                   </div>
                   <h3 className="font-semibold">{p.title}</h3>
+                  <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{p.description}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {p.city || 'Sverige'} · {timeAgo(p.created_at)}</p>
 
                   {isUnlocked ? (
-                    <>
-                      <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">{p.description}</p>
-                      <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {timeAgo(p.created_at)}</p>
-                      <Link to={`/dashboard/supplier/uppdrag/${p.id}`}>
-                        <Button size="sm" className="mt-3 bg-primary hover:bg-primary/90">Svara med offert</Button>
-                      </Link>
-                    </>
+                    <Link to={`/dashboard/supplier/uppdrag/${p.id}`}>
+                      <Button size="sm" className="mt-3 bg-primary hover:bg-primary/90">Svara med offert →</Button>
+                    </Link>
                   ) : isClosed ? (
-                    <>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2 blur-sm select-none">{p.description}</p>
-                      <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {timeAgo(p.created_at)}</p>
-                      <span className="inline-block mt-3 text-xs font-semibold text-muted-foreground bg-muted px-3 py-1.5 rounded-full">
-                        Uppdraget är fullbokat
-                      </span>
-                    </>
+                    <span className="inline-block mt-3 text-xs font-semibold text-muted-foreground bg-muted px-3 py-1.5 rounded-full">
+                      Uppdraget är fullbokat
+                    </span>
                   ) : (
-                    <>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2 blur-sm select-none">{p.description}</p>
-                      <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[p.budget_range] || ''} · {timeAgo(p.created_at)}</p>
-                      <Button
-                        size="sm"
-                        className="mt-3"
-                        variant="outline"
-                        onClick={() => creditsLeft > 0 ? setConfirmProject(p) : toast.error('Inga lead-krediter kvar. Uppgradera din plan.')}
-                      >
-                        🔓 Lås upp ({numWord(creditsLeft)} krediter kvar)
-                      </Button>
-                    </>
+                    <Button
+                      size="sm"
+                      className="mt-3"
+                      variant="outline"
+                      onClick={() => creditsLeft > 0 ? setConfirmProject(p) : toast.error('Inga lead-krediter kvar. Uppgradera din plan.')}
+                    >
+                      🔓 Lås upp kontaktuppgifter ({numWord(creditsLeft)} krediter kvar)
+                    </Button>
                   )}
                 </div>
               )
