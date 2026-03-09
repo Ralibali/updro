@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import { useEffect } from 'react'
 import { setSEOMeta } from '@/lib/seoHelpers'
 import { TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
+import { numWord } from '@/lib/numberWords'
 
 const stats = [
   { value: '500+', label: 'Aktiva beställare' },
