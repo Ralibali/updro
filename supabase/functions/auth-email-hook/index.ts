@@ -16,12 +16,12 @@ const corsHeaders = {
 }
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
+  signup: 'Bekräfta din e-post – Updro',
+  invite: 'Du har blivit inbjuden till Updro',
+  magiclink: 'Din inloggningslänk – Updro',
+  recovery: 'Återställ ditt lösenord – Updro',
+  email_change: 'Bekräfta ny e-postadress – Updro',
+  reauthentication: 'Din verifieringskod – Updro',
 }
 
 // Template mapping
