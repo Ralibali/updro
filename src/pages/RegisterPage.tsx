@@ -68,7 +68,7 @@ const RegisterPage = () => {
             <Link to="/registrera/byra" className="bg-card rounded-2xl border p-5 text-center hover:border-brand-blue transition-colors">
               <Building2 className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
               <h3 className="font-display font-semibold text-sm">Byrå</h3>
-              <p className="text-xs text-muted-foreground mt-1">5 gratis leads</p>
+              <p className="text-xs text-muted-foreground mt-1">Fem gratis leads</p>
             </Link>
           </div>
 

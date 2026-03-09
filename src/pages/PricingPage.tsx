@@ -107,7 +107,7 @@ const PricingPage = () => {
                   ['Månadskort', '2 995 kr/mån', '4 990+ kr/mån'],
                   ['Lead-pris (styck)', '299 kr', '490+ kr'],
                   ['Obegränsade leads', 'Ja (månadskort)', 'Nej'],
-                  ['Gratis leads', '5 st', '0 st'],
+                  ['Gratis leads', 'Fem st', '0 st'],
                   ['Bindningstid', 'Nej', 'Ofta 3–12 mån'],
                   ['Kvalitetskontroll', 'Ja', 'Nej'],
                 ].map(([label, updro, other]) => (
