@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import { useEffect } from 'react'
 import { setSEOMeta } from '@/lib/seoHelpers'
 import { TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
+import { numWord } from '@/lib/numberWords'
 
 const stats = [
   { value: '500+', label: 'Aktiva beställare' },
@@ -16,23 +17,23 @@ const stats = [
 ]
 
 const benefits = [
-  { icon: Gift, title: `${TRIAL_LEADS} gratis leads`, desc: 'Starta utan kostnad – dina första leads är helt gratis.' },
+  { icon: Gift, title: `${numWord(TRIAL_LEADS)} gratis leads`, desc: 'Starta utan kostnad – dina första leads är helt gratis.' },
   { icon: Shield, title: 'Kvalificerade uppdrag', desc: 'Alla projekt verifieras innan de publiceras till byråer.' },
   { icon: TrendingUp, title: 'Öka din omsättning', desc: 'Få en stadig ström av nya kunder utan att jaga dem.' },
-  { icon: Users, title: 'Max 5 byråer per uppdrag', desc: 'Begränsad konkurrens – du slipper tävla mot 50 andra.' },
+  { icon: Users, title: 'Max fem byråer per uppdrag', desc: 'Begränsad konkurrens – du slipper tävla mot 50 andra.' },
   { icon: MessageCircle, title: 'Inbyggd chatt', desc: 'Kommunicera direkt med beställare via plattformen.' },
   { icon: BarChart3, title: 'Dashboard & statistik', desc: 'Följ dina leads, offerter och konverteringar i realtid.' },
 ]
 
 const steps = [
-  { num: '1', title: 'Skapa konto gratis', desc: 'Registrera din byrå på under 2 minuter. Inga kortuppgifter.' },
+  { num: '1', title: 'Skapa konto gratis', desc: 'Registrera din byrå på under två minuter. Inga kortuppgifter.' },
   { num: '2', title: 'Bläddra bland uppdrag', desc: 'Se nya projekt som matchar dina tjänster och din region.' },
   { num: '3', title: 'Skicka offert & vinn kunder', desc: 'Lås upp leads du vill ha och skicka din offert direkt.' },
 ]
 
 const testimonials = [
   {
-    quote: 'Vi fick vår första kund via Updro redan dag 3. Äntligen en plattform där beställarna faktiskt svarar!',
+    quote: 'Vi fick vår första kund via Updro redan dag tre. Äntligen en plattform där beställarna faktiskt svarar!',
     name: 'Fredrik L.',
     role: 'VD, Webbninja AB',
   },
@@ -50,7 +51,7 @@ const SupplierLandingPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Få fler kunder till din byrå – Prova Updro gratis',
-      description: `Registrera din byrå och få ${TRIAL_LEADS} gratis leads. Kvalificerade uppdrag, inbyggd chatt och max 5 byråer per projekt. Starta gratis.`,
+      description: `Registrera din byrå och få ${numWord(TRIAL_LEADS)} gratis leads. Kvalificerade uppdrag, inbyggd chatt och max fem byråer per projekt. Starta gratis.`,
       noindex: true,
     })
   }, [])
@@ -159,7 +160,7 @@ const SupplierLandingPage = () => {
         <section className="py-16 bg-card border-y">
           <div className="container max-w-3xl">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-center mb-10">
-              Kom igång på 3 steg
+              Kom igång på tre steg
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               {steps.map((step) => (

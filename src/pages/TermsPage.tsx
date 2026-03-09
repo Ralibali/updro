@@ -42,15 +42,15 @@ const TermsPage = () => {
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">4. Leverantörer (byråer/konsulter)</h2>
               <h3 className="font-semibold text-foreground mt-3 mb-1">4.1 Provperiod</h3>
               <ul className="list-disc pl-5 space-y-1">
-                <li>Nya leverantörer erbjuds en kostnadsfri provperiod med 5 lead-krediter under 14 dagar.</li>
-                <li>Provperioden avslutas automatiskt efter 14 dagar eller när alla 5 leads har använts.</li>
+                <li>Nya leverantörer erbjuds en kostnadsfri provperiod med fem lead-krediter under 14 dagar.</li>
+                <li>Provperioden avslutas automatiskt efter 14 dagar eller när alla fem leads har använts.</li>
                 <li>Inget kreditkort krävs under provperioden.</li>
               </ul>
 
               <h3 className="font-semibold text-foreground mt-3 mb-1">4.2 Priser och betalning</h3>
               <ul className="list-disc pl-5 space-y-1">
                 <li><strong>Pay as you go:</strong> 299 kr per lead (exkl. moms)</li>
-                <li><strong>Standard:</strong> 699 kr/månad, 10 leads inkluderat (exkl. moms)</li>
+                <li><strong>Standard:</strong> 699 kr/månad, tio leads inkluderat (exkl. moms)</li>
                 <li><strong>Premium:</strong> 1 490 kr/månad, obegränsat antal leads (exkl. moms)</li>
                 <li>Alla priser anges i svenska kronor, exklusive moms om inte annat anges.</li>
                 <li>Betalning sker via Stripe. Du ansvarar för att giltiga betalningsuppgifter finns.</li>
