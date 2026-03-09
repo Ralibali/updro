@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { Building2, User } from 'lucide-react'
 
 const RegisterPage = () => {
-  const { signUp, signInWithGoogle } = useAuth()
+  const { signUp } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
