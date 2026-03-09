@@ -206,8 +206,41 @@ const ProjectUnlock = () => {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label>Bifoga fil (PDF, max 10 MB)</Label>
+                <div className="mt-1">
+                  {file ? (
+                    <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2 text-sm">
+                      <Paperclip className="h-4 w-4 text-muted-foreground" />
+                      <span className="truncate flex-1">{file.name}</span>
+                      <button type="button" onClick={() => setFile(null)} className="text-muted-foreground hover:text-destructive">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center gap-2 cursor-pointer border border-dashed rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50 transition-colors">
+                      <Paperclip className="h-4 w-4" />
+                      <span>Välj fil att bifoga...</span>
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        className="hidden"
+                        onChange={e => {
+                          const f = e.target.files?.[0]
+                          if (f && f.size > 10 * 1024 * 1024) {
+                            toast.error('Filen är för stor (max 10 MB).')
+                            return
+                          }
+                          if (f) setFile(f)
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
               <Button type="submit" disabled={loading} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5">
                 {loading ? 'Skickar...' : 'Skicka offert →'}
+              </Button>
               </Button>
             </form>
           </div>
