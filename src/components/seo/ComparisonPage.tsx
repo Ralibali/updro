@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
 import { findComparisonPage, COMPARISON_PAGES } from '@/lib/seoComparisons'
 import Navbar from '@/components/Navbar'
@@ -97,9 +98,7 @@ const ComparisonPage = () => {
             <section key={i}>
               <h2 className="font-display text-2xl font-bold mb-4">{section.heading}</h2>
               <div className="prose prose-lg text-muted-foreground max-w-none">
-                {section.content.split('\n\n').map((p, j) => (
-                  <p key={j} className="mb-4 leading-relaxed whitespace-pre-line">{p}</p>
-                ))}
+                {renderMarkdown(section.content)}
               </div>
             </section>
           ))}
@@ -118,7 +117,7 @@ const ComparisonPage = () => {
                   {item.q}
                   <ChevronRight className="h-4 w-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
-                <p className="mt-3 text-muted-foreground leading-relaxed">{item.a}</p>
+                <div className="mt-3 text-muted-foreground leading-relaxed">{renderMarkdown(item.a)}</div>
               </details>
             ))}
           </div>
