@@ -119,21 +119,25 @@ const App = () => (
               ))}
 
               {/* Buyer dashboard */}
-              <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerDashboard /></ProtectedRoute>} />
-              <Route path="/dashboard/buyer/uppdrag" element={<ProtectedRoute role="buyer"><BuyerProjects /></ProtectedRoute>} />
-              <Route path="/dashboard/buyer/uppdrag/:id" element={<ProtectedRoute role="buyer"><ProjectDetail /></ProtectedRoute>} />
-              <Route path="/dashboard/buyer/chatt" element={<ProtectedRoute role="buyer"><ChatPage /></ProtectedRoute>} />
-              <Route path="/dashboard/buyer/profil" element={<ProtectedRoute role="buyer"><ProfilePage /></ProtectedRoute>} />
+              <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerLayout /></ProtectedRoute>}>
+                <Route index element={<BuyerDashboard />} />
+                <Route path="uppdrag" element={<BuyerProjects />} />
+                <Route path="uppdrag/:id" element={<ProjectDetail />} />
+                <Route path="chatt" element={<ChatPage />} />
+                <Route path="profil" element={<ProfilePage />} />
+              </Route>
 
               {/* Supplier dashboard */}
-              <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierDashboard /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/uppdrag" element={<ProtectedRoute role="supplier"><BrowseProjects /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/uppdrag/:id" element={<ProtectedRoute role="supplier"><ProjectUnlock /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/offerter" element={<ProtectedRoute role="supplier"><SupplierOffers /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/chatt" element={<ProtectedRoute role="supplier"><ChatPage /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/profil" element={<ProtectedRoute role="supplier"><ProfilePage /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/fakturering" element={<ProtectedRoute role="supplier"><BillingPage /></ProtectedRoute>} />
-              <Route path="/dashboard/supplier/bjud-in" element={<ProtectedRoute role="supplier"><ReferralPage /></ProtectedRoute>} />
+              <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierLayout /></ProtectedRoute>}>
+                <Route index element={<SupplierDashboard />} />
+                <Route path="uppdrag" element={<BrowseProjects />} />
+                <Route path="uppdrag/:id" element={<ProjectUnlock />} />
+                <Route path="offerter" element={<SupplierOffers />} />
+                <Route path="chatt" element={<ChatPage />} />
+                <Route path="profil" element={<ProfilePage />} />
+                <Route path="fakturering" element={<BillingPage />} />
+                <Route path="bjud-in" element={<ReferralPage />} />
+              </Route>
 
               {/* Admin */}
               <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
