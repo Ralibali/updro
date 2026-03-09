@@ -64,8 +64,10 @@ const ComparisonPage = () => {
       ))}
 
       <div className="container pt-6">
-        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Brödsmulor">
           <Link to="/" className="hover:text-foreground">Hem</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/jamfor" className="hover:text-foreground">Jämförelser</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground font-medium">{page.h1}</span>
         </nav>
