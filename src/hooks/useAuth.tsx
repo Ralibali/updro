@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import type { User, Session } from '@supabase/supabase-js'
 import type { Profile, SupplierProfile, UserRole } from '@/types'
 import { TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
+import { toast } from 'sonner'
 
 interface AuthContextType {
   user: User | null
@@ -78,6 +80,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, fetchProfile])
 
+  const createPendingProject = useCallback(async (userId: string) => {
+    const raw = localStorage.getItem('pending_project')
+    if (!raw) return
+    try {
+      const pending = JSON.parse(raw)
+      localStorage.removeItem('pending_project')
+      const { error } = await supabase.from('projects').insert({
+        buyer_id: userId,
+        title: pending.title,
+        description: pending.description,
+        category: pending.category,
+        budget_range: pending.budget_range,
+        start_time: pending.start_time,
+        is_company: pending.is_company ?? true,
+        status: 'pending',
+      })
+      if (!error) {
+        toast.success('Ditt uppdrag har publicerats! ✅')
+      }
+    } catch {
+      localStorage.removeItem('pending_project')
+    }
+  }, [])
+
   useEffect(() => {
     let isMounted = true
 
@@ -100,9 +126,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null)
 
         if (session?.user) {
-          // Use .then() instead of await to avoid blocking the callback
           fetchProfile(session.user.id).then(() => {
             if (isMounted) setLoading(false)
+            // Auto-create pending project after email verification
+            createPendingProject(session.user.id)
           })
         } else {
           setProfile(null)

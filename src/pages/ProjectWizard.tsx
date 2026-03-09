@@ -11,7 +11,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT_TEMPLATES } from '@/lib/constants'
-import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail } from 'lucide-react'
 
 const ProjectWizard = () => {
   const { user, isAuthenticated, profile, signUp, signInWithGoogle } = useAuth()
@@ -52,8 +52,19 @@ const ProjectWizard = () => {
     setLoading(true)
     let userId = user?.id
 
-    // If not authenticated, create account first
+    // If not authenticated, create account first and save project for later
     if (!isAuthenticated) {
+      // Save project data to localStorage so it can be created after email verification
+      const pendingProject = {
+        title: form.title,
+        description: form.description,
+        category: form.category,
+        budget_range: form.budget_range,
+        start_time: form.start_time,
+        is_company: form.is_company,
+      }
+      localStorage.setItem('pending_project', JSON.stringify(pendingProject))
+
       const { error } = await signUp({
         email: form.email,
         password: form.password,
@@ -63,12 +74,15 @@ const ProjectWizard = () => {
       })
       if (error) {
         toast.error(error.message || 'Kunde inte skapa konto')
+        localStorage.removeItem('pending_project')
         setLoading(false)
         return
       }
-      // Get the new user
-      const { data: { session } } = await supabase.auth.getSession()
-      userId = session?.user?.id
+
+      // Show verify email step
+      setLoading(false)
+      setStep(4)
+      return
     }
 
     if (!userId) {
@@ -325,6 +339,22 @@ const ProjectWizard = () => {
                   )}
                 </Button>
               </div>
+            </div>
+          )}
+          {/* STEP 4 - Verify email */}
+          {step === 4 && (
+            <div className="space-y-6 text-center py-12">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Mail className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="font-display text-2xl font-bold">Kolla din e-post!</h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Vi har skickat ett verifieringsmail till <strong className="text-foreground">{form.email}</strong>. 
+                Klicka på länken i mailet för att aktivera ditt konto – ditt uppdrag publiceras automatiskt efter det.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Hittar du inte mailet? Kolla skräpposten.
+              </p>
             </div>
           )}
         </div>
