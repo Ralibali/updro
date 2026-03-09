@@ -2,7 +2,6 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const SITE_URL = "https://updro.se";
 
-// All known routes - kept in sync with the app
 const staticPages = [
   { loc: "/", changefreq: "daily", priority: "1.0" },
   { loc: "/publicera", changefreq: "weekly", priority: "0.9" },
@@ -15,15 +14,14 @@ const staticPages = [
   { loc: "/verktyg", changefreq: "weekly", priority: "0.8" },
   { loc: "/stader", changefreq: "weekly", priority: "0.8" },
   { loc: "/jamfor", changefreq: "weekly", priority: "0.8" },
+  { loc: "/kunskapsbank", changefreq: "weekly", priority: "0.8" },
   { loc: "/integritetspolicy", changefreq: "monthly", priority: "0.3" },
   { loc: "/villkor", changefreq: "monthly", priority: "0.3" },
 ];
 
-// Pillar pages
 const pillars = [
   "webbutveckling", "ehandel", "digital-marknadsforing", "grafisk-design",
-  "seo", "app-utveckling", "mjukvaruutveckling", "google-ads", "ux-ui-design",
-  "ai-utveckling",
+  "seo", "app-utveckling", "mjukvaruutveckling", "google-ads", "ux-ui-design", "ai-utveckling",
 ];
 
 const subPages: Record<string, string[]> = {
@@ -36,54 +34,73 @@ const subPages: Record<string, string[]> = {
 };
 
 const cities = [
-  "stockholm", "goteborg", "malmo", "uppsala", "linkoping", "orebro",
-  "vasteras", "helsingborg", "norrkoping", "jonkoping", "lund", "umea",
+  "stockholm", "goteborg", "malmo", "linkoping", "norrkoping", "orebro",
+  "vasteras", "helsingborg", "jonkoping", "umea", "lund", "boras",
+  "sundsvall", "gavle", "halmstad", "karlstad", "vaxjo", "kalmar",
+  "skelleftea", "lulea", "pitea", "skovde", "angelholm", "falun",
 ];
 
-const articles = [
-  "vad-kostar-en-hemsida-2026", "basta-cms-2026",
-  "wordpress-vs-webflow", "seo-guide-nyborjare",
+const agencyCategories = [
+  "digital-marknadsforing", "design", "grafisk-design", "seo", "reklam",
+  "media", "kommunikation", "tryck", "fotografering", "e-handel", "pr", "webb",
 ];
 
+const services = [
+  "animering-animationer", "guerilla-marketing", "digital-marknadsforing",
+  "seo-tjanster", "social-media-annonsering", "konverteringsoptimering",
+  "affiliate-marknadsforing", "e-handel-marknadsforing", "data-migrering",
+  "bokomslag-design", "albumomslag-design",
+];
+
+const knowledgeArticles = [
+  "skapa-hemsida-med-egen-doman", "hjalp-med-hemsida", "konsult-marknadsforing",
+  "hitta-grafisk-designer", "frilansa-som-designer", "kostnad-ny-hemsida",
+];
+
+const articles = ["vad-kostar-en-hemsida-2026", "basta-cms-2026", "wordpress-vs-webflow", "seo-guide-nyborjare"];
 const tools = ["hemsida-pris-kalkylator", "kravspecifikation-mall"];
-
-const comparisons = [
-  "basta-seo-byran", "basta-webbyran", "basta-ehandel-byran", "basta-app-byran",
-];
+const comparisons = ["basta-seo-byran", "basta-webbyran", "basta-ehandel-byran", "basta-app-byran"];
 
 serve(async () => {
   const today = new Date().toISOString().split("T")[0];
-
   const urls: string[] = [];
 
   const addUrl = (loc: string, changefreq: string, priority: string) => {
-    urls.push(
-      `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
-    );
+    urls.push(`  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`);
   };
 
-  // Static pages
   for (const p of staticPages) addUrl(p.loc, p.changefreq, p.priority);
-
-  // Pillar pages
   for (const slug of pillars) {
     addUrl(`/${slug}`, "weekly", "0.9");
     const subs = subPages[slug];
-    if (subs) {
-      for (const sub of subs) addUrl(`/${slug}/${sub}`, "monthly", "0.7");
+    if (subs) for (const sub of subs) addUrl(`/${slug}/${sub}`, "monthly", "0.7");
+  }
+
+  // City hub pages (/stader/)
+  for (const city of cities) addUrl(`/stader/${city}`, "monthly", "0.7");
+
+  // Agency city pages (/byraer/[stad])
+  for (const city of cities) addUrl(`/byraer/${city}`, "weekly", "0.8");
+
+  // Agency category pages (/byraer/kategori/[kategori])
+  for (const cat of agencyCategories) addUrl(`/byraer/kategori/${cat}`, "weekly", "0.8");
+
+  // Agency city+category combos (/byraer/[stad]/[kategori])
+  for (const city of cities) {
+    for (const cat of agencyCategories) {
+      addUrl(`/byraer/${city}/${cat}`, "monthly", "0.6");
     }
   }
 
-  // Cities
-  for (const city of cities) addUrl(`/stader/${city}`, "monthly", "0.7");
+  // Service pages
+  for (const slug of services) addUrl(`/leveranser/${slug}`, "monthly", "0.7");
 
-  // Articles
+  // Knowledge bank
+  for (const slug of knowledgeArticles) addUrl(`/kunskapsbank/${slug}`, "monthly", "0.7");
+
+  // Existing content
   for (const slug of articles) addUrl(`/artiklar/${slug}`, "monthly", "0.7");
-
-  // Tools
   for (const slug of tools) addUrl(`/verktyg/${slug}`, "monthly", "0.7");
-
-  // Comparisons
   for (const slug of comparisons) addUrl(`/${slug}`, "monthly", "0.8");
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
