@@ -11,13 +11,14 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT_TEMPLATES } from '@/lib/constants'
-import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2 } from 'lucide-react'
 
 const ProjectWizard = () => {
   const { user, isAuthenticated, profile, signUp, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
 
   const [form, setForm] = useState({
@@ -44,6 +45,28 @@ const ProjectWizard = () => {
   const clearTemplate = () => {
     setSelectedTemplate(null)
     setForm(prev => ({ ...prev, title: '', description: '', budget_range: '' }))
+  }
+
+  const handleImproveDescription = async () => {
+    if (form.description.length < 10 || !form.category) return
+    setAiLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('improve-description', {
+        body: { title: form.title, category: form.category, description: form.description },
+      })
+      if (error) throw error
+      if (data?.improved) {
+        setForm(prev => ({ ...prev, description: data.improved }))
+        toast.success('Beskrivningen har förbättrats med AI! ✨')
+      } else if (data?.error) {
+        toast.error(data.error)
+      }
+    } catch (e: any) {
+      toast.error('Kunde inte förbättra beskrivningen just nu.')
+      console.error(e)
+    } finally {
+      setAiLoading(false)
+    }
   }
 
   const canNext1 = form.category && form.title.length >= 5 && form.description.length >= 20 && form.budget_range && form.start_time
@@ -185,7 +208,20 @@ const ProjectWizard = () => {
 
               {/* Description */}
               <div>
-                <Label>Beskrivning *</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Beskrivning *</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleImproveDescription}
+                    disabled={aiLoading || form.description.length < 10 || !form.category}
+                    className="text-xs text-primary hover:text-primary/80 gap-1.5"
+                  >
+                    {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}
+                    {aiLoading ? 'Förbättrar...' : 'Förbättra med AI'}
+                  </Button>
+                </div>
                 <Textarea
                   value={form.description}
                   onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}

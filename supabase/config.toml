@@ -13,3 +13,5 @@ project_id = "opgjoevvlwhsddscqmpe"
     verify_jwt = false
   [functions.sitemap]
     verify_jwt = false
+  [functions.improve-description]
+    verify_jwt = false
