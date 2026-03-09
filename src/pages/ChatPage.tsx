@@ -1,28 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import DashboardLayout from '@/components/DashboardLayout'
-import { Home, ClipboardList, MessageCircle, UserCircle, Search, FileText, CreditCard, Send, ArrowLeft } from 'lucide-react'
+import { Send, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { timeAgo } from '@/lib/dateUtils'
-
-const buyerNav = [
-  { label: 'Översikt', href: '/dashboard/buyer', icon: Home },
-  { label: 'Mina uppdrag', href: '/dashboard/buyer/uppdrag', icon: ClipboardList },
-  { label: 'Meddelanden', href: '/dashboard/buyer/chatt', icon: MessageCircle },
-  { label: 'Min profil', href: '/dashboard/buyer/profil', icon: UserCircle },
-]
-
-const supplierNav = [
-  { label: 'Översikt', href: '/dashboard/supplier', icon: Home },
-  { label: 'Uppdrag', href: '/dashboard/supplier/uppdrag', icon: Search },
-  { label: 'Offerter', href: '/dashboard/supplier/offerter', icon: FileText },
-  { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
-  { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
-  { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },
-]
 
 interface Conversation {
   otherId: string
@@ -35,7 +18,7 @@ interface Conversation {
 }
 
 const ChatPage = () => {
-  const { user, isBuyer } = useAuth()
+  const { user } = useAuth()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeConvo, setActiveConvo] = useState<Conversation | null>(null)
   const [messages, setMessages] = useState<any[]>([])
@@ -121,7 +104,7 @@ const ChatPage = () => {
   }
 
   return (
-    <DashboardLayout navItems={isBuyer ? buyerNav : supplierNav}>
+    <>
       <div className="flex h-[calc(100vh-10rem)] bg-card rounded-xl border overflow-hidden">
         {/* Conversation list - hidden on mobile when a convo is active */}
         <div className={cn(
@@ -193,7 +176,7 @@ const ChatPage = () => {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </>
   )
 }
 
