@@ -33,7 +33,7 @@ const steps = [
 
 const testimonials = [
   {
-    quote: 'Vi fick vår första kund via Updro redan dag 3. Äntligen en plattform där beställarna faktiskt svarar!',
+    quote: 'Vi fick vår första kund via Updro redan dag tre. Äntligen en plattform där beställarna faktiskt svarar!',
     name: 'Fredrik L.',
     role: 'VD, Webbninja AB',
   },
