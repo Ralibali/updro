@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard, Gift } from 'lucide-react'
@@ -14,7 +15,9 @@ const navItems = [
 
 const SupplierLayout = () => (
   <DashboardLayout navItems={navItems}>
-    <Outlet />
+    <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl" />}>
+      <Outlet />
+    </Suspense>
   </DashboardLayout>
 )
 

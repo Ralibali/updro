@@ -1,4 +1,4 @@
-import { Flame } from 'lucide-react'
+import { Zap } from 'lucide-react'
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg'
@@ -11,11 +11,18 @@ const sizes = {
   lg: 'text-4xl',
 }
 
+const iconSizes = {
+  sm: 'h-4 w-4',
+  md: 'h-5 w-5',
+  lg: 'h-7 w-7',
+}
+
 const Logo = ({ size = 'md', className = '' }: LogoProps) => {
   return (
     <a href="/" className={`flex items-center gap-1.5 font-display font-bold ${sizes[size]} ${className}`}>
-      <Flame className="h-5 w-5 text-accent fill-accent" />
-      <span className="text-foreground tracking-tight">updro</span>
+      <Zap className={`${iconSizes[size]} text-primary fill-primary`} />
+      <span className="text-foreground tracking-tight">upd</span>
+      <span className="text-primary tracking-tight -ml-1">ro</span>
     </a>
   )
 }
