@@ -67,7 +67,7 @@ const ProjectDetail = () => {
   if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
   return (
-    <DashboardLayout navItems={navItems}>
+    <>
       <div className="max-w-5xl">
         <div className="grid md:grid-cols-3 gap-6">
           {/* Main content */}
