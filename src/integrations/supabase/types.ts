@@ -451,13 +451,22 @@ export type Database = {
           bio: string | null
           categories: string[] | null
           completed_projects: number | null
+          contact_avatar_url: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           cover_url: string | null
           created_at: string | null
+          credit_check_at: string | null
+          credit_check_passed: boolean | null
+          has_fskatt: boolean | null
+          has_fskatt_verified_at: string | null
           id: string
           is_featured: boolean | null
           is_verified: boolean | null
           lead_credits: number | null
           logo_url: string | null
+          org_number: string | null
           plan: string | null
           portfolio_urls: string[] | null
           review_count: number | null
@@ -474,13 +483,22 @@ export type Database = {
           bio?: string | null
           categories?: string[] | null
           completed_projects?: number | null
+          contact_avatar_url?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           cover_url?: string | null
           created_at?: string | null
+          credit_check_at?: string | null
+          credit_check_passed?: boolean | null
+          has_fskatt?: boolean | null
+          has_fskatt_verified_at?: string | null
           id: string
           is_featured?: boolean | null
           is_verified?: boolean | null
           lead_credits?: number | null
           logo_url?: string | null
+          org_number?: string | null
           plan?: string | null
           portfolio_urls?: string[] | null
           review_count?: number | null
@@ -497,13 +515,22 @@ export type Database = {
           bio?: string | null
           categories?: string[] | null
           completed_projects?: number | null
+          contact_avatar_url?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           cover_url?: string | null
           created_at?: string | null
+          credit_check_at?: string | null
+          credit_check_passed?: boolean | null
+          has_fskatt?: boolean | null
+          has_fskatt_verified_at?: string | null
           id?: string
           is_featured?: boolean | null
           is_verified?: boolean | null
           lead_credits?: number | null
           logo_url?: string | null
+          org_number?: string | null
           plan?: string | null
           portfolio_urls?: string[] | null
           review_count?: number | null

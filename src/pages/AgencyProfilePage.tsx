@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CATEGORY_STYLES } from '@/lib/constants'
 import { Star, MapPin, CheckCircle, Globe, ArrowRight } from 'lucide-react'
 import { timeAgo } from '@/lib/dateUtils'
+import RatingDisplay from '@/components/shared/RatingDisplay'
+import VerificationChecklist from '@/components/shared/VerificationChecklist'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
@@ -56,11 +58,18 @@ const AgencyProfilePage = () => {
                 <h1 className="font-display text-2xl font-bold">{profile?.company_name || profile?.full_name}</h1>
                 {agency.is_verified && <CheckCircle className="h-5 w-5 text-primary" />}
               </div>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {profile?.city || 'Sverige'}</span>
-                <span className="flex items-center gap-1"><Star className="h-3 w-3 text-yellow-500 fill-yellow-500" /> {(agency.avg_rating || 0).toFixed(1)} · {agency.review_count || 0} omdömen</span>
-                <span>{agency.completed_projects || 0} projekt</span>
-              </div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {profile?.city || 'Sverige'}</span>
+                </div>
+                <div className="mt-2">
+                  <RatingDisplay avgRating={agency.avg_rating || 0} reviewCount={agency.review_count || 0} size="md" />
+                </div>
+                <VerificationChecklist
+                  isVerified={agency.is_verified}
+                  hasFskatt={agency.has_fskatt}
+                  creditCheckPassed={agency.credit_check_passed}
+                  completedProjects={agency.completed_projects}
+                />
             </div>
             <div className="flex gap-2">
               <Link to={`/publicera?kategori=${(agency.categories || [])[0] || ''}`}>

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import DashboardLayout from '@/components/DashboardLayout'
-import { Home, ClipboardList, MessageCircle, UserCircle, Plus } from 'lucide-react'
+import { Home, ClipboardList, MessageCircle, UserCircle, Plus, Hand } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
@@ -31,7 +31,7 @@ const BuyerProjects = () => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="font-display text-2xl font-bold">Mina uppdrag</h1>
           <Link to="/publicera">
-            <Button size="sm" className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl">
+            <Button size="sm" className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl">
               <Plus className="mr-1 h-4 w-4" /> Nytt uppdrag
             </Button>
           </Link>
@@ -54,7 +54,10 @@ const BuyerProjects = () => {
                     <span className={`text-xs font-semibold rounded-full px-2 py-1 ${p.status === 'active' ? 'bg-accent/10 text-accent' : 'bg-muted text-muted-foreground'}`}>
                       {p.status === 'active' ? 'Aktiv' : 'Stängd'}
                     </span>
-                    <span className="text-xs text-muted-foreground">{p.offer_count || 0} offerter · {p.view_count || 0} visningar</span>
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Hand className="h-3 w-3" />
+                      {p.offer_count || 0} intresserade {(p.offer_count || 0) === 1 ? 'byrå' : 'byråer'} · {p.view_count || 0} visningar
+                    </span>
                   </div>
                 </div>
               </Link>
