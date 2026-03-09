@@ -96,13 +96,14 @@ const BrowseAgenciesPage = () => {
 
                         {a.bio && <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{a.bio}</p>}
 
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="flex items-center gap-1">
-                            <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
-                            {(a.avg_rating || 0).toFixed(1)} ({a.review_count || 0})
-                          </span>
-                          <span className="text-muted-foreground">{a.completed_projects || 0} projekt</span>
-                        </div>
+                        <RatingDisplay avgRating={a.avg_rating || 0} reviewCount={a.review_count || 0} />
+
+                        <VerificationChecklist
+                          isVerified={a.is_verified}
+                          hasFskatt={a.has_fskatt}
+                          creditCheckPassed={a.credit_check_passed}
+                          completedProjects={a.completed_projects}
+                        />
                       </div>
                     </Link>
                   )
