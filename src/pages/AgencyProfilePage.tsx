@@ -10,6 +10,7 @@ import { Star, MapPin, CheckCircle, Globe, ArrowRight } from 'lucide-react'
 import { timeAgo } from '@/lib/dateUtils'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
