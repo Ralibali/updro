@@ -56,6 +56,7 @@ const RegisterSupplierPage = () => {
       company_name: form.company_name,
       phone: form.phone || undefined,
       categories: form.categories,
+      org_number: form.org_number || undefined,
     })
     setLoading(false)
 
