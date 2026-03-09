@@ -32,9 +32,9 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            Beställaren har redan bestämt sig
+            De letar redan.
             <br />
-            <span className="text-brand-gradient">för att anlita någon. Frågan är om det blir du.</span>
+            <span className="text-brand-gradient">Syns du?</span>
           </motion.h1>
 
           {/* Subtext */}
