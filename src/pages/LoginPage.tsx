@@ -19,6 +19,14 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
 
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Logga in | Updro',
+      description: 'Logga in på ditt Updro-konto för att hantera uppdrag, offerter och meddelanden.',
+      canonical: 'https://updro.se/logga-in',
+    })
+  }, [])
+
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true)
     const { error } = await lovable.auth.signInWithOAuth('google', {

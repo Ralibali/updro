@@ -17,6 +17,14 @@ const BrowseAgenciesPage = () => {
   const [searchCity, setSearchCity] = useState('')
 
   useEffect(() => {
+    setSEOMeta({
+      title: 'Hitta byråer i Sverige – Jämför och välj rätt byrå | Updro',
+      description: 'Sök bland kvalificerade digitala byråer i Sverige. Filtrera på kategori och stad. Jämför betyg och kompetenser.',
+      canonical: 'https://updro.se/byraer',
+    })
+  }, [])
+
+  useEffect(() => {
     const fetchAgencies = async () => {
       const { data } = await supabase
         .from('supplier_profiles')

@@ -11,6 +11,14 @@ const values = [
 ]
 
 const AboutPage = () => {
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Om Updro – Sveriges marknadsplats för digitala byråer',
+      description: 'Updro kopplar samman företag med rätt digitala byråer – snabbt, tryggt och kostnadsfritt. Läs om vår vision och våra värderingar.',
+      canonical: 'https://updro.se/om-oss',
+    })
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
