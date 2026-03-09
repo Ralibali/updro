@@ -11,7 +11,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT_TEMPLATES } from '@/lib/constants'
-import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2 } from 'lucide-react'
 
 const ProjectWizard = () => {
   const { user, isAuthenticated, profile, signUp, signInWithGoogle } = useAuth()
