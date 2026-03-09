@@ -208,7 +208,20 @@ const ProjectWizard = () => {
 
               {/* Description */}
               <div>
-                <Label>Beskrivning *</Label>
+                <div className="flex items-center justify-between">
+                  <Label>Beskrivning *</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleImproveDescription}
+                    disabled={aiLoading || form.description.length < 10 || !form.category}
+                    className="text-xs text-primary hover:text-primary/80 gap-1.5"
+                  >
+                    {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Wand2 className="h-3.5 w-3.5" />}
+                    {aiLoading ? 'Förbättrar...' : 'Förbättra med AI'}
+                  </Button>
+                </div>
                 <Textarea
                   value={form.description}
                   onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
