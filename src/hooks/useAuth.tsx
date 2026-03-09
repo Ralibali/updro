@@ -80,6 +80,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, fetchProfile])
 
+  const createPendingProject = useCallback(async (userId: string) => {
+    const raw = localStorage.getItem('pending_project')
+    if (!raw) return
+    try {
+      const pending = JSON.parse(raw)
+      localStorage.removeItem('pending_project')
+      const { error } = await supabase.from('projects').insert({
+        buyer_id: userId,
+        title: pending.title,
+        description: pending.description,
+        category: pending.category,
+        budget_range: pending.budget_range,
+        start_time: pending.start_time,
+        is_company: pending.is_company ?? true,
+        status: 'pending',
+      })
+      if (!error) {
+        toast.success('Ditt uppdrag har publicerats! ✅')
+      }
+    } catch {
+      localStorage.removeItem('pending_project')
+    }
+  }, [])
+
   useEffect(() => {
     let isMounted = true
 
