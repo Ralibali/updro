@@ -13,7 +13,7 @@ const features = [
 const comparison = [
   { label: 'Lead-pris', updro: '299 kr', competitor: '490 kr', updroGood: true, competitorBad: true },
   { label: 'Gratis leads', updro: 'Fem st', competitor: 'Noll st', updroGood: true, competitorBad: true },
-  { label: 'Provperiod', updro: 'Fjorton dagar', competitor: 'Nej', updroGood: true, competitorBad: true },
+  { label: 'Provperiod', updro: 'Sju dagar', competitor: 'Nej', updroGood: true, competitorBad: true },
   { label: 'Svarsgaranti', updro: 'Ja, aktiv uppföljning', competitor: 'Nej', updroGood: true, competitorBad: true },
   { label: 'Kvalitetskontroll', updro: 'Manuell granskning', competitor: 'Grundläggande', updroGood: true, competitorBad: false },
   { label: 'Bindningstid', updro: 'Nej', competitor: 'Auto-förnyelse', updroGood: true, competitorBad: true },
