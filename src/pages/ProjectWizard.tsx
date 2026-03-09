@@ -18,6 +18,7 @@ const ProjectWizard = () => {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [aiLoading, setAiLoading] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
 
   const [form, setForm] = useState({
