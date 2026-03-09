@@ -51,7 +51,6 @@ const ProfilePage = () => {
   }
 
   return (
-    <DashboardLayout navItems={isBuyer ? buyerNav : supplierNav}>
       <div className="max-w-lg">
         <h1 className="font-display text-2xl font-bold mb-6">Min profil</h1>
 
