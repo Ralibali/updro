@@ -654,6 +654,97 @@ export const SEO_PAGES: SEOPillarPage[] = [
       { label: 'AI-utveckling', href: '/ai-utveckling' },
     ]
   },
+  // ─── GOOGLE ADS ───
+  {
+    categorySlug: 'google-ads',
+    categoryName: 'Google Ads',
+    metaTitle: 'Google Ads-byrå – Hitta rätt byrå för Google Ads | Updro',
+    metaDesc: 'Jämför offerter från certifierade Google Ads-byråer i Sverige. Sök-, display- och Shopping-annonser – hitta rätt partner gratis.',
+    h1: 'Google Ads – Hitta rätt byrå för din annonsering',
+    intro: 'Google Ads är den snabbaste vägen till synlighet i Googles sökresultat. Men utan rätt byrå kan annonsbudgeten försvinna snabbt. På Updro jämför du kostnadsfritt offerter från certifierade Google Ads-byråer och hittar den partner som maximerar din avkastning.',
+    sections: [
+      {
+        heading: 'Vad är Google Ads?',
+        content: 'Google Ads (tidigare AdWords) är Googles annonsplattform där företag betalar per klick (PPC) för att synas i sökresultat, på YouTube och på miljontals webbplatser i Googles displaynätverk.\n\nDe vanligaste kampanjtyperna:\n- **Sökkampanjer** – Textannonser i sökresultaten\n- **Display-kampanjer** – Bannerannonser på webbplatser\n- **Shopping-kampanjer** – Produktannonser med bild och pris\n- **Video-kampanjer** – Annonser på YouTube\n- **Performance Max** – AI-driven kampanjtyp som använder alla kanaler'
+      },
+      {
+        heading: 'Vad kostar Google Ads?',
+        content: 'Google Ads-kostnader delas i två delar:\n\n**Byråavgift:**\n| Nivå | Pris/månad |\n|---|---|\n| Basic | 3 000 – 8 000 kr |\n| Standard | 8 000 – 20 000 kr |\n| Premium | 15 000 – 40 000 kr |\n| Enterprise | 30 000+ kr |\n\n**Annonsbudget:**\nRekommenderad minsta annonsbudget är 5 000–10 000 kr/månad. De flesta företag spenderar 10 000–50 000 kr/månad.\n\nKostnaden per klick (CPC) varierar från 2–5 kr (låg konkurrens) till 30–100+ kr (hög konkurrens som jurist, försäkring).'
+      },
+      {
+        heading: 'Varför anlita en Google Ads-byrå?',
+        content: 'En certifierad byrå kan:\n- Sänka din kostnad per konvertering med 30–50%\n- Identifiera och exkludera irrelevanta sökord\n- Optimera budstrategier med AI och maskininlärning\n- Bygga konverteringsspårning och attribution\n- A/B-testa annonser för bästa CTR\n- Leverera transparent rapportering\n\nSkillnaden mellan en bra och dålig Google Ads-hantering kan vara hundratusentals kronor per år.'
+      },
+      {
+        heading: 'Så väljer du rätt Google Ads-byrå',
+        content: '1. **Kontrollera certifieringar** – Google Partner eller Premier Partner\n2. **Be om resultat** – ROAS, CPA, konverteringsdata\n3. **Fråga om transparens** – Har du full tillgång till kontot?\n4. **Undvik långa bindningstider** – Max 3 månader initialt\n5. **Jämför offerter** – Använd Updro för att jämföra 3–5 byråer\n6. **Kontrollera avtalet** – Vem äger kontot? Vad händer vid uppsägning?'
+      },
+    ],
+    faq: [
+      { q: 'Hur snabbt ger Google Ads resultat?', a: 'Till skillnad från SEO kan Google Ads ge klick och konverteringar redan första dagen. Men det tar 2–4 veckor att optimera kampanjerna för bästa resultat.' },
+      { q: 'Google Ads eller SEO – vad ska jag välja?', a: 'Båda! Google Ads ger omedelbar trafik medan SEO bygger långsiktig synlighet. Bäst resultat med en kombination.' },
+      { q: 'Kan jag hantera Google Ads själv?', a: 'Grundläggande kampanjer ja, men en byrå optimerar typiskt 30–50% bättre. Det handlar om kompetens inom budstrategier, negativa sökord och konverteringsspårning.' },
+      { q: 'Vad är en bra ROAS?', a: 'Return On Ad Spend varierar per bransch. Generellt är 3–5x bra (3–5 kr tillbaka per spenderad krona). E-handel siktar ofta på 4–8x.' },
+      { q: 'Behöver byrån vara Google Partner?', a: 'Det är ett bra tecken på kompetens och erfarenhet, men inte ett absolut krav. Kontrollera resultat och kundrecensioner.' },
+    ],
+    subPages: [
+      {
+        slug: 'pris',
+        title: 'Google Ads pris 2026 – Vad kostar det? | Updro',
+        h1: 'Google Ads pris 2026 – Komplett prisguide',
+        metaDesc: 'Vad kostar Google Ads 2026? Byråavgifter, klickpriser och annonsbudget. Komplett prisguide med aktuella siffror.',
+        intro: 'Google Ads-priser beror på bransch, konkurrens och geografi. Här ger vi dig en komplett prisöversikt för 2026.',
+        sections: [
+          { heading: 'Klickpriser per bransch', content: '| Bransch | Genomsnittligt CPC |\n|---|---|\n| E-handel | 3 – 15 kr |\n| Konsulttjänster | 10 – 40 kr |\n| Fastigheter | 15 – 50 kr |\n| Juridik | 30 – 100+ kr |\n| Försäkring | 40 – 120+ kr |\n| SaaS / Tech | 8 – 35 kr |\n\nKlickpriset påverkas av konkurrens, kvalitetspoäng och geografisk inriktning.' },
+          { heading: 'Rekommenderade budgetar', content: '- **Startup/Litet företag**: 5 000 – 15 000 kr/mån\n- **Medelstort företag**: 15 000 – 50 000 kr/mån\n- **Stort företag**: 50 000 – 200 000+ kr/mån\n\nTill detta tillkommer byråavgift på 3 000 – 30 000 kr/mån beroende på servicenivå.' },
+        ],
+        faq: [
+          { q: 'Hur mycket ska jag lägga på Google Ads?', a: 'Minst 5 000 kr/mån i annonsbudget + byråavgift. De flesta företag ser bäst resultat med 15 000+ kr/mån totalt.' },
+        ],
+        relatedLinks: [
+          { label: 'Google Ads', href: '/google-ads' },
+          { label: 'Bästa Google Ads-byrån', href: '/basta-google-ads-byran' },
+          { label: 'SEO pris', href: '/seo/pris' },
+        ],
+      },
+      {
+        slug: 'stockholm',
+        title: 'Google Ads-byrå Stockholm | Updro',
+        h1: 'Google Ads-byrå i Stockholm',
+        metaDesc: 'Hitta certifierade Google Ads-byråer i Stockholm. Jämför offerter och maximera din annonsavkastning.',
+        intro: 'Stockholm har det bredaste utbudet av Google Ads-byråer i Sverige – från nischade PPC-specialister till fullservice-byråer.',
+        sections: [
+          { heading: 'Google Ads i Stockholm', content: 'Stockholm har flest Google Partner-certifierade byråer i Sverige. Priserna ligger generellt 10–15% högre än rikssnittet, men kompetensen och erfarenheten matchar.' },
+        ],
+        faq: [],
+        relatedLinks: [
+          { label: 'SEO Stockholm', href: '/seo/stockholm' },
+          { label: 'Digital marknadsföring Stockholm', href: '/digital-marknadsforing/stockholm' },
+        ],
+      },
+      {
+        slug: 'goteborg',
+        title: 'Google Ads-byrå Göteborg | Updro',
+        h1: 'Google Ads-byrå i Göteborg',
+        metaDesc: 'Hitta Google Ads-byråer i Göteborg. Jämför offerter kostnadsfritt.',
+        intro: 'Göteborg har en stark PPC-marknad med byråer som levererar hög avkastning till konkurrenskraftiga priser.',
+        sections: [
+          { heading: 'Google Ads i Göteborg', content: 'Göteborgs Google Ads-byråer erbjuder ofta 10–20% lägre priser än Stockholm med stark lokal marknadskännedom.' },
+        ],
+        faq: [],
+        relatedLinks: [
+          { label: 'Google Ads Stockholm', href: '/google-ads/stockholm' },
+          { label: 'SEO Göteborg', href: '/seo/goteborg' },
+        ],
+      },
+    ],
+    relatedCategories: [
+      { label: 'SEO', href: '/seo' },
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
+      { label: 'Sociala medier', href: '/sociala-medier' },
+      { label: 'E-handel', href: '/ehandel' },
+    ],
+  },
 ]
 
 // Merge expanded sub-pages

@@ -220,6 +220,105 @@ export const ARTICLES: ArticlePage[] = [
       { label: 'SEO pris', href: '/seo/pris' },
     ]
   },
+  {
+    slug: 'webbyra-pris-2026',
+    metaTitle: 'Webbyrå pris 2026 – Vad kostar en webbyrå? | Updro',
+    metaDesc: 'Vad kostar det att anlita en webbyrå 2026? Timpriser, fasta priser och paketlösningar. Komplett prisguide med aktuella marknadspriser.',
+    h1: 'Webbyrå pris 2026 – Vad kostar det att anlita en webbyrå?',
+    category: 'Webbutveckling',
+    publishedDate: '2026-03-01',
+    intro: '"Vad kostar en webbyrå?" är en av de vanligaste frågorna vi får på Updro. Svaret beror på projektets storlek, byråns erfarenhet och var i Sverige byrån finns. I den här guiden ger vi dig en ärlig prisöversikt baserad på verkliga offerter.',
+    sections: [
+      { heading: 'Timpris vs fast pris', content: '**Timpris:**\n- Freelancers: 500 – 900 kr/h\n- Liten byrå: 800 – 1 200 kr/h\n- Mellanstor byrå: 1 000 – 1 500 kr/h\n- Stor byrå: 1 200 – 2 000+ kr/h\n\n**Fast pris (vanligaste modellen):**\n- Enkel hemsida: 15 000 – 50 000 kr\n- Företagshemsida med CMS: 30 000 – 100 000 kr\n- E-handel: 40 000 – 200 000 kr\n- Webbapplikation: 80 000 – 500 000+ kr\n\nFast pris ger trygghet, timpris ger flexibilitet.' },
+      { heading: 'Priser per stad', content: '| Stad | Prisindex |\n|---|---|\n| Stockholm | 100 (referens) |\n| Göteborg | 85–95 |\n| Malmö | 80–90 |\n| Uppsala | 80–90 |\n| Övriga | 70–85 |\n\nStockholm är dyrast, men har också störst urval och bredast kompetens.' },
+      { heading: 'Dolda kostnader att se upp för', content: '- **Ändringar utanför scope** – Begär tydlig kravspecifikation\n- **Hosting och underhåll** – 500–3 000 kr/månad löpande\n- **Licenser** – CMS, plugins, bilder kan kosta extra\n- **Content** – Professionella texter kostar 500–2 000 kr/sida\n- **SEO-setup** – Grundläggande SEO bör ingå, men avancerad SEO är ofta extra' },
+      { heading: 'Så sparar du pengar', content: '1. **Jämför minst 3 offerter** via Updro – sparar i snitt 30%\n2. **Ha innehåll redo** – Texter och bilder innan projektet startar\n3. **Börja med MVP** – Bygg grunderna, utöka senare\n4. **Välj rätt CMS** – WordPress för enklare sajter, custom för avancerade\n5. **Var tydlig** – En bra kravspecifikation minskar missförstånd och tillägg' },
+    ],
+    faq: [
+      { q: 'Vad är rimligt att betala för en hemsida?', a: 'En professionell företagshemsida bör kosta minst 15 000–30 000 kr. Under det får du sällan kvalitet som konverterar.' },
+      { q: 'Varför skiljer sig priserna så mycket?', a: 'Erfarenhet, storlek, geografisk placering och projektets komplexitet påverkar. En erfaren byrå arbetar snabbare och levererar bättre resultat.' },
+      { q: 'Ska jag välja billigaste byrån?', a: 'Sällan. En billig hemsida som inte konverterar kostar mer i längden. Fokusera på värde, inte bara pris.' },
+    ],
+    relatedLinks: [
+      { label: 'Webbutveckling', href: '/webbutveckling' },
+      { label: 'Webbutveckling pris', href: '/webbutveckling/pris' },
+      { label: 'Bästa webbyrån', href: '/basta-webbyran' },
+      { label: 'Hur väljer man webbyrå?', href: '/artiklar/hur-valjer-man-webbyra' },
+    ]
+  },
+  {
+    slug: 'vad-kostar-google-ads',
+    metaTitle: 'Vad kostar Google Ads 2026? Komplett prisguide | Updro',
+    metaDesc: 'Vad kostar Google Ads 2026? Klickpriser, byråavgifter och annonsbudgetar. Aktuella priser för svenska marknaden.',
+    h1: 'Vad kostar Google Ads 2026? Komplett prisguide',
+    category: 'Marknadsföring',
+    publishedDate: '2026-02-25',
+    intro: 'Google Ads-kostnader beror på bransch, konkurrens och kvalitet. Den här guiden ger dig realistiska prisuppgifter för den svenska marknaden 2026 – både annonsbudget och byråavgifter.',
+    sections: [
+      { heading: 'Klickpriser per bransch i Sverige', content: '| Bransch | CPC (kr) |\n|---|---|\n| E-handel | 3 – 15 |\n| B2B / SaaS | 8 – 35 |\n| Konsulttjänster | 10 – 40 |\n| Fastigheter | 15 – 50 |\n| Hälsa / Sjukvård | 10 – 35 |\n| Juridik | 30 – 100+ |\n| Försäkring | 40 – 120+ |\n| Utbildning | 5 – 20 |\n\nKlickpriset beror på sökordets konkurrens, din kvalitetspoäng och geografisk inriktning.' },
+      { heading: 'Rekommenderad annonsbudget', content: '- **Micro** (test): 3 000 – 5 000 kr/mån\n- **Litet företag**: 5 000 – 15 000 kr/mån\n- **Medelstort**: 15 000 – 50 000 kr/mån\n- **Stort/Enterprise**: 50 000 – 500 000+ kr/mån\n\nTumregel: Lägg minst 2x din byråavgift på annonsbudget för att ge byrån tillräckligt med data att optimera.' },
+      { heading: 'Byråavgifter', content: '**Fast pris:**\n- 3 000 – 8 000 kr/mån (basic)\n- 8 000 – 20 000 kr/mån (standard)\n- 20 000+ kr/mån (premium)\n\n**Procentmodell:**\n- 10–20% av annonsbudgeten\n\n**Hybridmodell:**\n- Fast grundavgift + procent av budget' },
+      { heading: 'Så maximerar du ROI', content: '1. Investera i konverteringsspårning innan du startar\n2. Börja med sökkampanjer – högst köpintention\n3. Använd negativa sökord flitigt\n4. Testa annonser A/B\n5. Jämför byråer via Updro – rätt partner gör enorm skillnad' },
+    ],
+    faq: [
+      { q: 'Hur mycket ska jag lägga på Google Ads?', a: 'Minst 5 000 kr/mån i annonsbudget plus byråavgift. De flesta företag ser bäst resultat med 15 000+ kr/mån totalt.' },
+      { q: 'Är Google Ads dyrt?', a: 'Det beror på perspektivet. Om du genererar 10 kunder á 50 000 kr från 15 000 kr i annonser är det en fantastisk investering.' },
+      { q: 'Finns det en minsta budget?', a: 'Tekniskt nej, men under 3 000 kr/mån får du sällan tillräckligt med data för att optimera effektivt.' },
+    ],
+    relatedLinks: [
+      { label: 'Google Ads', href: '/google-ads' },
+      { label: 'Google Ads pris', href: '/google-ads/pris' },
+      { label: 'Bästa Google Ads-byrån', href: '/basta-google-ads-byran' },
+      { label: 'SEO pris', href: '/seo/pris' },
+    ]
+  },
+  {
+    slug: 'google-ads-vs-seo',
+    metaTitle: 'Google Ads vs SEO – Vilken strategi ska du välja? | Updro',
+    metaDesc: 'Google Ads eller SEO – vad ska du välja? Jämförelse av kostnader, tid, resultat och när du ska använda vad.',
+    h1: 'Google Ads vs SEO – Komplett jämförelse 2026',
+    category: 'Marknadsföring',
+    publishedDate: '2026-03-05',
+    intro: 'Google Ads och SEO är de två viktigaste kanalerna för synlighet i Google. Men vilken ska du satsa på? Svaret beror på din situation – budget, tidsperspektiv och bransch.',
+    sections: [
+      { heading: 'Snabb jämförelse', content: '| | Google Ads | SEO |\n|---|---|---|\n| Tid till resultat | Dagar | 3–6 månader |\n| Kostnad | Löpande (per klick) | Investering (engång + löpande) |\n| Trafik vid stopp | Försvinner | Kvarstår |\n| CTR (genomsnitt) | 2–5% | 15–30% (position 1) |\n| Trovärdighet | Lägre (markerat som annons) | Högre (organiskt) |\n| Skalbarhet | Omedelbar (öka budget) | Gradvis (mer content) |' },
+      { heading: 'När välja Google Ads?', content: '- Du behöver resultat NU (ny produkt, event, säsong)\n- Du testar nya marknader eller sökord\n- Du har hög marginal per kund\n- Din bransch har kort köpcykel\n- Du vill skala snabbt med budget' },
+      { heading: 'När välja SEO?', content: '- Du vill bygga långsiktig trafik\n- Du har begränsad månadsbudget men tid\n- Dina konkurrenter dominerar organiskt\n- Du vill bygga auktoritet och trovärdighet\n- Din bransch har informationssökningar' },
+      { heading: 'Bästa strategin: Båda!', content: 'Smartast är att kombinera:\n1. **Google Ads** för omedelbar trafik och data\n2. **SEO** för långsiktig kostnadseffektiv trafik\n3. Använd Ads-data för att hitta lönsamma sökord för SEO\n4. Minska Ads-budget gradvis när SEO-trafiken växer\n5. Behåll Ads för konkurrenskraftiga och konverterande sökord' },
+    ],
+    faq: [
+      { q: 'Vilken ger bäst ROI?', a: 'Långsiktigt ger SEO oftast bättre ROI. Kortsiktigt vinner Google Ads. Bäst ROI med en kombination av båda.' },
+      { q: 'Kan jag börja med Ads och sedan byta till SEO?', a: 'Ja, det är en vanlig strategi. Google Ads ger snabb data om vilka sökord som konverterar – perfekt input för SEO-strategi.' },
+    ],
+    relatedLinks: [
+      { label: 'Google Ads', href: '/google-ads' },
+      { label: 'SEO', href: '/seo' },
+      { label: 'Bästa Google Ads-byrån', href: '/basta-google-ads-byran' },
+      { label: 'Bästa SEO-byrån', href: '/basta-seo-byran' },
+    ]
+  },
+  {
+    slug: 'vad-kostar-digital-marknadsforing',
+    metaTitle: 'Vad kostar digital marknadsföring 2026? Prisguide | Updro',
+    metaDesc: 'Komplett prisguide för digital marknadsföring 2026. SEO, Google Ads, sociala medier, content – alla priser.',
+    h1: 'Vad kostar digital marknadsföring 2026?',
+    category: 'Marknadsföring',
+    publishedDate: '2026-02-18',
+    intro: 'Digital marknadsföring omfattar allt från SEO till sociala medier. Priserna varierar enormt beroende på kanal, byrå och ambitionsnivå. Här ger vi en ärlig prisöversikt.',
+    sections: [
+      { heading: 'Priser per kanal', content: '| Kanal | Månadspris (byrå) | Annonsbudget |\n|---|---|---|\n| SEO | 5 000 – 30 000 kr | – |\n| Google Ads | 3 000 – 30 000 kr | 5 000 – 200 000 kr |\n| Meta Ads (FB/IG) | 5 000 – 20 000 kr | 5 000 – 100 000 kr |\n| LinkedIn Ads | 5 000 – 15 000 kr | 10 000 – 50 000 kr |\n| Sociala medier (organiskt) | 8 000 – 25 000 kr | – |\n| Content marketing | 8 000 – 30 000 kr | – |\n| E-postmarknadsföring | 3 000 – 15 000 kr | – |\n| Fullservice-paket | 20 000 – 80 000 kr | 10 000 – 200 000 kr |' },
+      { heading: 'Hur stor budget behöver du?', content: 'Tumregel: 5–15% av omsättningen bör gå till marknadsföring. Digitalt bör stå för minst 50–70% av total marknadsföringsbudget.\n\n| Företagsstorlek | Rekommenderad digitalbudget |\n|---|---|\n| Startup | 10 000 – 30 000 kr/mån |\n| Litet företag | 15 000 – 50 000 kr/mån |\n| Medelstort | 30 000 – 150 000 kr/mån |\n| Stort | 100 000 – 500 000+ kr/mån |' },
+    ],
+    faq: [
+      { q: 'Vilken kanal ska jag börja med?', a: 'Hemsida + SEO + Google Ads är grundpelarna. Lägg till sociala medier och content marketing i steg 2.' },
+      { q: 'Kan jag göra digital marknadsföring själv?', a: 'Grunderna ja, men en byrå levererar typiskt 2–5x bättre ROI tack vare erfarenhet och verktyg.' },
+    ],
+    relatedLinks: [
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
+      { label: 'SEO pris', href: '/seo/pris' },
+      { label: 'Google Ads pris', href: '/google-ads/pris' },
+    ]
+  },
 ]
 
 export const findArticle = (slug: string) => ARTICLES.find(a => a.slug === slug)
