@@ -83,6 +83,28 @@ const ProjectUnlock = () => {
     if (!user || !id) return
     setLoading(true)
 
+    let attachment_url: string | null = null
+
+    // Upload file if selected
+    if (file) {
+      const ext = file.name.split('.').pop()
+      const path = `${user.id}/${id}-${Date.now()}.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('offer-attachments')
+        .upload(path, file, { contentType: file.type })
+
+      if (uploadError) {
+        toast.error('Kunde inte ladda upp filen.')
+        setLoading(false)
+        return
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('offer-attachments')
+        .getPublicUrl(path)
+      attachment_url = urlData.publicUrl
+    }
+
     const { error } = await supabase.from('offers').insert({
       project_id: id,
       supplier_id: user.id,
@@ -91,7 +113,8 @@ const ProjectUnlock = () => {
       price: parseFloat(form.price),
       delivery_weeks: parseInt(form.delivery_weeks) || null,
       payment_plan: form.payment_plan,
-    })
+      attachment_url,
+    } as any)
 
     if (!error && project) {
       await supabase.from('projects').update({ offer_count: (project.offer_count || 0) + 1 }).eq('id', id)
