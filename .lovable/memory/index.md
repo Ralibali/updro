@@ -2,20 +2,19 @@
 
 # Updro.se – Design System & Decisions
 
-## Colors (HSL) – Dark Theme
-- Background: 225 20% 7% (near-black blue)
-- Primary/accent: 28 100% 55% (warm orange)
-- Card: 225 18% 10%
-- Muted: 225 14% 13%
-- Brand amber: 42 100% 50%
-- Brand mint: 160 84% 44% (secondary accent)
-- Destructive/coral: 0 72% 51%
+## Colors (HSL)
+- Primary/brand-blue: 217 91% 53% (#2563EB)
+- Accent/mint: 160 96% 43% (#06D6A0)
+- Brand dark: 224 54% 8% (#0A0F1E)
+- Coral: 0 100% 71% (#FF6B6B)
 
 ## Fonts
-- Display: Space Grotesk (700, tight tracking -0.035em)
-- Body: Inter (400/500/600)
+- Display: Space Grotesk (700 for headings)
+- Body: Plus Jakarta Sans (replaced Inter – user found Inter too generic)
 - Mono: JetBrains Mono
-- Logo: "upd" in foreground + "ro" in primary, Zap icon before
+
+## Logo
+- "upd" in foreground + "ro" in brand-blue, Zap icon before
 
 ## Architecture
 - Types in src/types/index.ts
@@ -25,12 +24,9 @@
 - Footer: src/components/Footer.tsx
 - Dashboard sidebar uses Outlet pattern — SupplierLayout.tsx & BuyerLayout.tsx
 - Pages inside dashboard must NOT wrap themselves in DashboardLayout
-- Layouts wrap Outlet in Suspense for SPA-like navigation
 
 ## Rules
 - **Numbers < 12 MUST be written as Swedish words** — use `numWord()` from `src/lib/numberWords.ts`
 - Always use semantic design tokens, never hardcoded colors in components
-- Dashboard sidebar is dark-themed (--sidebar-* tokens)
-- Dark theme is default (no .dark class needed)
 
 ## Backend: Lovable Cloud (Supabase) connected
