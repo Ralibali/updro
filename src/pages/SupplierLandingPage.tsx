@@ -160,7 +160,7 @@ const SupplierLandingPage = () => {
         <section className="py-16 bg-card border-y">
           <div className="container max-w-3xl">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-center mb-10">
-              Kom igång på 3 steg
+              Kom igång på tre steg
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               {steps.map((step) => (
