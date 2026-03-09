@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ArrowRight, ChevronRight, Calendar } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 
 const ArticlesIndex = () => {
   useEffect(() => {
