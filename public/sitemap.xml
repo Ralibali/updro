@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Static pages -->
-  <url><loc>https://updro.se/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-  <url><loc>https://updro.se/publicera</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/byraer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/priser</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/om-oss</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://updro.se/artiklar</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/verktyg</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/stader</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/jamfor</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/integritetspolicy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://updro.se/villkor</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://updro.se/</loc><lastmod>2026-03-09</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://updro.se/publicera</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/byraer</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/priser</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/om-oss</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://updro.se/artiklar</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/verktyg</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/stader</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/jamfor</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/guider</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/integritetspolicy</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://updro.se/villkor</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>
 
   <!-- Pillar: Webbutveckling -->
   <url><loc>https://updro.se/webbutveckling</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
