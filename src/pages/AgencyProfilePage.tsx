@@ -62,8 +62,12 @@ const AgencyProfilePage = () => {
         <div className="container -mt-12 mb-16">
           {/* Header */}
           <div className="flex items-end gap-4 mb-6">
-            <div className="h-24 w-24 rounded-full bg-card border-4 border-card shadow-lg flex items-center justify-center text-3xl font-bold text-primary">
-              {(profile?.company_name || profile?.full_name || '?')[0]}
+            <div className="h-24 w-24 rounded-full bg-card border-4 border-card shadow-lg flex items-center justify-center text-3xl font-bold text-primary overflow-hidden">
+              {agency.logo_url ? (
+                <img src={agency.logo_url} alt={profile?.company_name || 'Logo'} className="h-full w-full object-contain" />
+              ) : (
+                (profile?.company_name || profile?.full_name || '?')[0]
+              )}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
