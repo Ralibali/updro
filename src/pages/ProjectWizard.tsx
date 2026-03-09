@@ -47,6 +47,28 @@ const ProjectWizard = () => {
     setForm(prev => ({ ...prev, title: '', description: '', budget_range: '' }))
   }
 
+  const handleImproveDescription = async () => {
+    if (form.description.length < 10 || !form.category) return
+    setAiLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('improve-description', {
+        body: { title: form.title, category: form.category, description: form.description },
+      })
+      if (error) throw error
+      if (data?.improved) {
+        setForm(prev => ({ ...prev, description: data.improved }))
+        toast.success('Beskrivningen har förbättrats med AI! ✨')
+      } else if (data?.error) {
+        toast.error(data.error)
+      }
+    } catch (e: any) {
+      toast.error('Kunde inte förbättra beskrivningen just nu.')
+      console.error(e)
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
   const canNext1 = form.category && form.title.length >= 5 && form.description.length >= 20 && form.budget_range && form.start_time
 
   const handlePublish = async () => {
