@@ -32,7 +32,7 @@ const AdminSettings = () => {
               <div key={plan.id} className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
                 <div>
                   <p className="text-sm font-medium">{plan.name}</p>
-                  <p className="text-xs text-muted-foreground">{plan.credits === 9999 ? 'Obegränsade' : plan.credits} leads</p>
+                  <p className="text-xs text-muted-foreground">{plan.id === 'monthly' ? 'Obegränsade' : '1'} leads</p>
                 </div>
                 <span className="font-semibold">{plan.price} kr {plan.per}</span>
               </div>

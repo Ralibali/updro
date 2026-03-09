@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { PLANS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
-import { Check, X, Gift, ArrowRight } from 'lucide-react'
+import { Check, Gift, ArrowRight } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 const PricingPage = () => {
@@ -18,12 +18,11 @@ const PricingPage = () => {
         <section className="py-16 text-center">
           <div className="container">
             <span className="inline-block bg-accent/10 text-accent rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
-              40% billigare än konkurrenterna
+              Enklast i Sverige
             </span>
             <h1 className="font-display text-4xl md:text-5xl font-bold">Transparent prissättning</h1>
             <p className="text-muted-foreground mt-3 max-w-lg mx-auto">Inga dolda avgifter, inga bindningstider.</p>
 
-            {/* Toggle */}
             <div className="flex justify-center mt-8">
               <div className="inline-flex bg-muted rounded-xl p-1">
                 <button onClick={() => setTab('supplier')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === 'supplier' ? 'bg-card shadow-sm' : ''}`}>
@@ -47,7 +46,7 @@ const PricingPage = () => {
                   <span className="font-display font-bold text-lg">Ny byrå?</span>
                 </div>
                 <p className="text-muted-foreground mb-4">
-                  Starta med {TRIAL_LEADS} gratis leads + {TRIAL_DAYS} dagars provperiod – inget kreditkort!
+                  Starta med {TRIAL_LEADS} gratis leads – inget kreditkort!
                 </p>
                 <Link to="/registrera/byra">
                   <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6">
@@ -59,12 +58,12 @@ const PricingPage = () => {
 
             {/* Plans */}
             <section className="container mb-16">
-              <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                 {PLANS.map(plan => (
                   <div key={plan.id} className={`bg-card rounded-2xl border p-6 relative ${plan.highlighted ? 'border-primary shadow-lg ring-2 ring-primary/20 scale-105' : ''}`}>
                     {plan.highlighted && (
                       <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">
-                        {'badge' in plan ? plan.badge : ''}
+                        {plan.badge}
                       </span>
                     )}
                     <h3 className="font-display font-bold text-lg">{plan.name}</h3>
@@ -72,6 +71,11 @@ const PricingPage = () => {
                       <span className="text-4xl font-bold">{plan.price.toLocaleString('sv-SE')}</span>
                       <span className="text-muted-foreground ml-1">kr {plan.per}</span>
                     </div>
+                    {plan.id === 'monthly' && (
+                      <p className="text-sm text-muted-foreground mb-4 -mt-2">
+                        Bara ~100 kr/dag för obegränsat antal leads
+                      </p>
+                    )}
                     <ul className="space-y-2.5 mb-6">
                       {plan.features.map(f => (
                         <li key={f} className="flex items-start gap-2 text-sm">
@@ -100,14 +104,13 @@ const PricingPage = () => {
                   <div className="p-4 border-b bg-muted font-display font-semibold text-muted-foreground">Andra</div>
                 </div>
                 {[
-                  ['Lead-pris', '299 kr', '490 kr', true],
-                  ['Gratis leads', '5 st', '0 st', true],
-                  ['Provperiod', '14 dagar', 'Nej', true],
-                  ['Bindningstid', 'Nej', 'Nej', false],
-                  ['Aktiv uppföljning', 'Ja', 'Nej', true],
-                  ['Kvalitetskontroll', 'Ja', 'Nej', true],
-                  ['Betalningsskydd', 'Valfritt', 'Nej', true],
-                ].map(([label, updro, other, better]) => (
+                  ['Månadskort', '2 995 kr/mån', '4 990+ kr/mån'],
+                  ['Lead-pris (styck)', '299 kr', '490+ kr'],
+                  ['Obegränsade leads', 'Ja (månadskort)', 'Nej'],
+                  ['Gratis leads', '5 st', '0 st'],
+                  ['Bindningstid', 'Nej', 'Ofta 3–12 mån'],
+                  ['Kvalitetskontroll', 'Ja', 'Nej'],
+                ].map(([label, updro, other]) => (
                   <div key={label as string} className="grid grid-cols-3 text-center text-sm border-b last:border-0">
                     <div className="p-3 text-left font-medium">{label}</div>
                     <div className="p-3 bg-primary/5 font-semibold text-primary">{updro}</div>
@@ -122,11 +125,12 @@ const PricingPage = () => {
               <h2 className="font-display text-2xl font-bold text-center mb-8">Vanliga frågor</h2>
               <Accordion type="single" collapsible className="space-y-2">
                 {[
+                  ['Vad innebär månadskortet?', 'Med månadskortet (2 995 kr/mån) kan du svara på alla tillgängliga leads utan begränsning. Perfekt om du vill maximera antalet uppdrag. Ingen bindningstid – avsluta när som helst.'],
+                  ['Hur fungerar pay-per-lead?', 'Med pay-per-lead betalar du 299 kr per lead du väljer att låsa upp. Du ser uppdragsbeskrivning, kategori och ort innan du bestämmer dig.'],
                   ['Vad är ett lead?', 'Ett lead är ett publicerat uppdrag från en beställare. När du låser upp ett lead ser du fullständig kontaktinfo och kan skicka en offert.'],
-                  ['Hur fungerar de 5 gratis leads?', 'När du registrerar dig som byrå får du automatiskt 5 gratis lead-krediter. Varje gång du låser upp ett uppdrag dras en kredit. Provperioden gäller i 14 dagar.'],
-                  ['Kan jag avbryta abonnemanget?', 'Ja, du kan avbryta när som helst. Det finns inga bindningstider.'],
-                  ['Vilka betalningsmetoder accepteras?', 'Vi accepterar kort (Visa, Mastercard) via Stripe. Faktura finns för Standard och Premium-planer.'],
-                  ['Vad händer när provperioden tar slut?', 'Du behöver välja en plan för att fortsätta låsa upp uppdrag. Dina befintliga upplåsta leads och offerter påverkas inte.'],
+                  ['Hur fungerar de gratis leads?', 'När du registrerar dig som byrå får du automatiskt fem gratis leads. Varje gång du låser upp ett uppdrag dras en kredit.'],
+                  ['Kan jag avbryta abonnemanget?', 'Ja, du kan avbryta när som helst via din profilsida. Det finns inga bindningstider.'],
+                  ['Vilka betalningsmetoder accepteras?', 'Vi accepterar kort (Visa, Mastercard) via Stripe.'],
                 ].map(([q, a]) => (
                   <AccordionItem key={q} value={q} className="bg-card rounded-xl border px-4">
                     <AccordionTrigger className="text-sm font-medium">{q}</AccordionTrigger>
