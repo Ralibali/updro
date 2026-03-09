@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { usePageTracking } from "@/hooks/usePageTracking";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -74,6 +75,7 @@ const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 const AdminGuides = lazy(() => import("./pages/admin/AdminGuides"));
 const AdminStripeLog = lazy(() => import("./pages/admin/AdminStripeLog"));
 const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
+const AdminVisitors = lazy(() => import("./pages/admin/AdminVisitors"));
 
 const queryClient = new QueryClient();
 
@@ -83,6 +85,9 @@ const PageLoader = () => (
   </div>
 );
 
+
+const PageTracker = () => { usePageTracking(); return null; };
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -90,6 +95,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <PageTracker />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Public */}
@@ -160,6 +166,7 @@ const App = () => (
               <Route path="/admin/guider" element={<ProtectedRoute role="admin"><AdminGuides /></ProtectedRoute>} />
               <Route path="/admin/stripe" element={<ProtectedRoute role="admin"><AdminStripeLog /></ProtectedRoute>} />
               <Route path="/admin/audit" element={<ProtectedRoute role="admin"><AdminAuditLog /></ProtectedRoute>} />
+              <Route path="/admin/besokare" element={<ProtectedRoute role="admin"><AdminVisitors /></ProtectedRoute>} />
 
               {/* SEO pillar + sub pages (catch-all) */}
               <Route path="/:category" element={<PillarPage />} />

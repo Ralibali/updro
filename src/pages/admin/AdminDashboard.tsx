@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
-import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield } from 'lucide-react'
+import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { label: 'Översikt', href: '/admin', icon: Home },
   { label: 'Statistik', href: '/admin/statistik', icon: TrendingUp },
+  { label: 'Besökare', href: '/admin/besokare', icon: Eye },
   { label: 'Användare', href: '/admin/anvandare', icon: Users },
   { label: 'Byråer', href: '/admin/byraer', icon: Building2 },
   { label: 'Uppdrag', href: '/admin/uppdrag', icon: ClipboardList },
