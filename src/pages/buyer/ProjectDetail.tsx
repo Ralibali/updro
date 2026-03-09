@@ -2,8 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import DashboardLayout from '@/components/DashboardLayout'
-import { Home, ClipboardList, MessageCircle, UserCircle, Check, X, Phone, Mail } from 'lucide-react'
+import { Check, X, Phone, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
@@ -13,13 +12,6 @@ import ProjectStepper from '@/components/shared/ProjectStepper'
 import BuyerDecisionCard from '@/components/shared/BuyerDecisionCard'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
-
-const navItems = [
-  { label: 'Översikt', href: '/dashboard/buyer', icon: Home },
-  { label: 'Mina uppdrag', href: '/dashboard/buyer/uppdrag', icon: ClipboardList },
-  { label: 'Meddelanden', href: '/dashboard/buyer/chatt', icon: MessageCircle },
-  { label: 'Min profil', href: '/dashboard/buyer/profil', icon: UserCircle },
-]
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -72,10 +64,10 @@ const ProjectDetail = () => {
     setOffers(prev => prev.map(o => o.status === 'pending' ? { ...o, status: 'declined' } : o))
   }
 
-  if (!project) return <DashboardLayout navItems={navItems}><div className="animate-pulse h-40 bg-muted rounded-xl" /></DashboardLayout>
+  if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
   return (
-    <DashboardLayout navItems={navItems}>
+    <>
       <div className="max-w-5xl">
         <div className="grid md:grid-cols-3 gap-6">
           {/* Main content */}
@@ -242,7 +234,7 @@ const ProjectDetail = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </>
   )
 }
 
