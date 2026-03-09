@@ -35,6 +35,10 @@ const ProfilePage = () => {
     phone: profile?.phone || '',
     bio: supplierProfile?.bio || '',
     website_url: supplierProfile?.website_url || '',
+    contact_name: supplierProfile?.contact_name || '',
+    contact_email: supplierProfile?.contact_email || '',
+    contact_phone: supplierProfile?.contact_phone || '',
+    org_number: supplierProfile?.org_number || '',
   })
 
   const handleSave = async () => {
@@ -52,6 +56,10 @@ const ProfilePage = () => {
       await supabase.from('supplier_profiles').update({
         bio: form.bio,
         website_url: form.website_url,
+        contact_name: form.contact_name || null,
+        contact_email: form.contact_email || null,
+        contact_phone: form.contact_phone || null,
+        org_number: form.org_number || null,
       }).eq('id', user.id)
     }
 
@@ -92,6 +100,29 @@ const ProfilePage = () => {
               <div>
                 <Label>Hemsida</Label>
                 <Input value={form.website_url} onChange={e => setForm(p => ({ ...p, website_url: e.target.value }))} className="rounded-xl mt-1" placeholder="https://..." />
+              </div>
+              <div>
+                <Label>Org-nummer</Label>
+                <Input value={form.org_number} onChange={e => setForm(p => ({ ...p, org_number: e.target.value }))} className="rounded-xl mt-1" placeholder="XXXXXX-XXXX" />
+              </div>
+
+              <div className="border-t border-border pt-4 mt-4">
+                <h2 className="font-display text-lg font-semibold mb-3">Kontaktperson</h2>
+                <p className="text-sm text-muted-foreground mb-4">Visas för beställare som vill nå er direkt.</p>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Kontaktpersonens namn</Label>
+                    <Input value={form.contact_name} onChange={e => setForm(p => ({ ...p, contact_name: e.target.value }))} className="rounded-xl mt-1" />
+                  </div>
+                  <div>
+                    <Label>Kontakt e-post</Label>
+                    <Input type="email" value={form.contact_email} onChange={e => setForm(p => ({ ...p, contact_email: e.target.value }))} className="rounded-xl mt-1" />
+                  </div>
+                  <div>
+                    <Label>Kontakt telefon</Label>
+                    <Input value={form.contact_phone} onChange={e => setForm(p => ({ ...p, contact_phone: e.target.value }))} className="rounded-xl mt-1" />
+                  </div>
+                </div>
               </div>
             </>
           )}
