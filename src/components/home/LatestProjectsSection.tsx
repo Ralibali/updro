@@ -35,8 +35,8 @@ const LatestProjectsSection = () => {
             Senaste uppdragen
           </h2>
         </div>
-        <Link to="/byraer" className="text-primary hover:text-primary/80 font-medium text-sm hidden sm:inline-flex items-center gap-1">
-          Se alla <ArrowRight className="h-4 w-4" />
+        <Link to="/registrera/byra" className="text-primary hover:text-primary/80 font-medium text-sm hidden sm:inline-flex items-center gap-1">
+          Registrera din byrå <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
 
