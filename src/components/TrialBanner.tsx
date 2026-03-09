@@ -3,7 +3,6 @@ import { useAuth } from '@/hooks/useAuth'
 import { Sparkles, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { numWord } from '@/lib/numberWords'
-import { Button } from '@/components/ui/button'
 
 const TrialBanner = () => {
   const { isOnTrial, trialLeadsLeft, trialDaysLeft, trialExpired, isSupplier } = useAuth()
