@@ -133,9 +133,9 @@ const BrowseProjects = () => {
       <Dialog open={!!confirmProject} onOpenChange={() => setConfirmProject(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Lås upp uppdrag?</DialogTitle>
+            <DialogTitle>Lås upp kontaktuppgifter?</DialogTitle>
             <DialogDescription>
-              Använd en lead-kredit för att se "{confirmProject?.title}"?
+              Använd en lead-kredit för att få tillgång till beställarens kontaktuppgifter för "{confirmProject?.title}" och kunna skicka offert.
               Du har {numWord(creditsLeft)} krediter kvar.
             </DialogDescription>
           </DialogHeader>
