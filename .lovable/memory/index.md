@@ -10,7 +10,8 @@
 - Sidebar: dark (brand-dark bg, light text)
 
 ## Fonts
-- Display + Body: Inter (700 for headings, tight letter-spacing)
+- Display: Space Grotesk (700, tight tracking -0.035em)
+- Body: Inter (400/500/600)
 - Mono: JetBrains Mono
 - Logo: "upd" in foreground + "ro" in primary, Zap icon before
 
