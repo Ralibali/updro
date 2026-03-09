@@ -38,7 +38,7 @@ const TrialBanner = () => {
       <div className="flex items-center gap-2">
         {urgent ? <AlertTriangle className="h-4 w-4 text-orange-600" /> : <Sparkles className="h-4 w-4 text-accent" />}
         <span className={`text-sm font-medium ${urgent ? 'text-orange-800' : 'text-foreground'}`}>
-          {urgent ? '⚠️ Nästan slut!' : '🎉 Provperiod aktiv'} · {trialLeadsLeft} gratis {trialLeadsLeft === 1 ? 'lead' : 'leads'} kvar · {trialDaysLeft} dagar kvar
+          {urgent ? '⚠️ Nästan slut!' : '🎉 Provperiod aktiv'} · {numWord(trialLeadsLeft)} gratis {trialLeadsLeft === 1 ? 'lead' : 'leads'} kvar · {numWord(trialDaysLeft)} dagar kvar
         </span>
       </div>
       {urgent && (
