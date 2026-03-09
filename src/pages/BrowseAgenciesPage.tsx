@@ -9,6 +9,7 @@ import { CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
 import { Search, MapPin, CheckCircle } from 'lucide-react'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const BrowseAgenciesPage = () => {
   const [agencies, setAgencies] = useState<any[]>([])
