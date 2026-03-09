@@ -1,29 +1,11 @@
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import DashboardLayout from '@/components/DashboardLayout'
-import { Home, ClipboardList, MessageCircle, UserCircle, Search, FileText, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
-
-const buyerNav = [
-  { label: 'Översikt', href: '/dashboard/buyer', icon: Home },
-  { label: 'Mina uppdrag', href: '/dashboard/buyer/uppdrag', icon: ClipboardList },
-  { label: 'Meddelanden', href: '/dashboard/buyer/chatt', icon: MessageCircle },
-  { label: 'Min profil', href: '/dashboard/buyer/profil', icon: UserCircle },
-]
-
-const supplierNav = [
-  { label: 'Översikt', href: '/dashboard/supplier', icon: Home },
-  { label: 'Uppdrag', href: '/dashboard/supplier/uppdrag', icon: Search },
-  { label: 'Offerter', href: '/dashboard/supplier/offerter', icon: FileText },
-  { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
-  { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
-  { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },
-]
 
 const ProfilePage = () => {
   const { user, profile, supplierProfile, isBuyer, refreshProfile } = useAuth()
@@ -69,7 +51,6 @@ const ProfilePage = () => {
   }
 
   return (
-    <DashboardLayout navItems={isBuyer ? buyerNav : supplierNav}>
       <div className="max-w-lg">
         <h1 className="font-display text-2xl font-bold mb-6">Min profil</h1>
 
@@ -132,7 +113,6 @@ const ProfilePage = () => {
           </Button>
         </div>
       </div>
-    </DashboardLayout>
   )
 }
 
