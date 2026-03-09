@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Home, ClipboardList, MessageCircle, UserCircle } from 'lucide-react'
@@ -11,7 +12,9 @@ const navItems = [
 
 const BuyerLayout = () => (
   <DashboardLayout navItems={navItems} ctaButton={{ label: '+ Nytt uppdrag', href: '/publicera' }}>
-    <Outlet />
+    <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl" />}>
+      <Outlet />
+    </Suspense>
   </DashboardLayout>
 )
 
