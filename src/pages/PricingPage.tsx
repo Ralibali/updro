@@ -60,7 +60,7 @@ const PricingPage = () => {
             <section className="container mb-16">
               <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                 {PLANS.map(plan => (
-                  <div key={plan.id} className={`bg-card rounded-2xl border p-6 relative ${plan.highlighted ? 'border-primary shadow-lg ring-2 ring-primary/20 scale-105' : ''}`}>
+                  <div key={plan.id} className={`bg-card rounded-2xl border p-6 relative flex flex-col ${plan.highlighted ? 'border-primary shadow-lg ring-2 ring-primary/20 scale-105' : ''}`}>
                     {plan.highlighted && (
                       <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">
                         {plan.badge}
@@ -76,7 +76,7 @@ const PricingPage = () => {
                         Bara ~100 kr/dag för obegränsat antal leads
                       </p>
                     )}
-                    <ul className="space-y-2.5 mb-6">
+                    <ul className="space-y-2.5 mb-6 flex-1">
                       {plan.features.map(f => (
                         <li key={f} className="flex items-start gap-2 text-sm">
                           <Check className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
@@ -84,7 +84,7 @@ const PricingPage = () => {
                         </li>
                       ))}
                     </ul>
-                    <Link to="/registrera/byra">
+                    <Link to="/registrera/byra" className="mt-auto">
                       <Button className={`w-full rounded-xl ${plan.highlighted ? 'bg-primary hover:bg-primary/90' : ''}`} variant={plan.highlighted ? 'default' : 'outline'}>
                         {plan.cta}
                       </Button>
