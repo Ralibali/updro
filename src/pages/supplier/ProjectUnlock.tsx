@@ -241,7 +241,6 @@ const ProjectUnlock = () => {
               <Button type="submit" disabled={loading} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5">
                 {loading ? 'Skickar...' : 'Skicka offert →'}
               </Button>
-              </Button>
             </form>
           </div>
         </>
