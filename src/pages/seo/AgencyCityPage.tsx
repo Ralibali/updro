@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import NotFound from '@/pages/NotFound'
-import SEOLeadCTA from '../seo/SEOLeadCTA'
+import SEOLeadCTA from '@/components/seo/SEOLeadCTA'
 import { ChevronRight, MapPin, Search, Star } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 
