@@ -1,7 +1,7 @@
 export type UserRole = 'buyer' | 'supplier' | 'admin'
 export type ProjectStatus = 'draft' | 'active' | 'closed' | 'completed'
 export type OfferStatus = 'pending' | 'accepted' | 'declined' | 'withdrawn'
-export type SupplierPlan = 'none' | 'trial' | 'payg' | 'standard' | 'premium'
+export type SupplierPlan = 'none' | 'trial' | 'payg' | 'standard' | 'premium' | 'monthly' | 'lead'
 export type BudgetRange = 'under_10k' | '10k_50k' | '50k_150k' | 'over_150k' | 'unknown'
 export type StartTime = 'asap' | 'within_month' | 'within_3months' | 'flexible'
 export type PaymentPlan = 'fixed' | 'hourly' | 'milestone'
