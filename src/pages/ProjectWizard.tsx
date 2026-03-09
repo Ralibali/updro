@@ -85,7 +85,7 @@ const ProjectWizard = () => {
       budget_range: form.budget_range,
       start_time: form.start_time,
       is_company: form.is_company,
-      status: 'active',
+      status: 'pending',
     })
 
     setLoading(false)
