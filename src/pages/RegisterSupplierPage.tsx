@@ -12,7 +12,7 @@ import { CATEGORIES, CATEGORY_ICONS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/const
 import { Check, Gift, Shield, MessageCircle, CreditCard, Star, ArrowRight } from 'lucide-react'
 
 const RegisterSupplierPage = () => {
-  const { signUp, signInWithGoogle } = useAuth()
+  const { signUp } = useAuth()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
