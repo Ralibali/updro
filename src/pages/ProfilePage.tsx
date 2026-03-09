@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -6,10 +6,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { toast } from 'sonner'
+import { Camera, Loader2 } from 'lucide-react'
 
 const ProfilePage = () => {
   const { user, profile, supplierProfile, isBuyer, refreshProfile } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const fileRef = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState({
     full_name: profile?.full_name || '',
     company_name: profile?.company_name || '',
@@ -22,6 +25,44 @@ const ProfilePage = () => {
     contact_phone: supplierProfile?.contact_phone || '',
     org_number: supplierProfile?.org_number || '',
   })
+  const [logoPreview, setLogoPreview] = useState<string | null>(supplierProfile?.logo_url || null)
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !user) return
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Vänligen välj en bildfil.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Bilden får vara max 5 MB.')
+      return
+    }
+
+    setUploadingLogo(true)
+    const ext = file.name.split('.').pop()
+    const filePath = `${user.id}/logo.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('logos')
+      .upload(filePath, file, { upsert: true })
+
+    if (uploadError) {
+      toast.error('Kunde inte ladda upp logotypen.')
+      setUploadingLogo(false)
+      return
+    }
+
+    const { data: urlData } = supabase.storage.from('logos').getPublicUrl(filePath)
+    const publicUrl = urlData.publicUrl + '?t=' + Date.now()
+
+    await supabase.from('supplier_profiles').update({ logo_url: publicUrl }).eq('id', user.id)
+    setLogoPreview(publicUrl)
+    await refreshProfile()
+    setUploadingLogo(false)
+    toast.success('Logotyp uppladdad!')
+  }
 
   const handleSave = async () => {
     if (!user) return
@@ -55,6 +96,44 @@ const ProfilePage = () => {
         <h1 className="font-display text-2xl font-bold mb-6">Min profil</h1>
 
         <div className="space-y-4">
+          {/* Logo upload for suppliers */}
+          {!isBuyer && (
+            <div>
+              <Label>Logotyp</Label>
+              <div className="mt-2 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="relative h-20 w-20 rounded-xl border-2 border-dashed border-border hover:border-primary/50 transition-colors flex items-center justify-center overflow-hidden bg-muted group"
+                >
+                  {uploadingLogo ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : logoPreview ? (
+                    <>
+                      <img src={logoPreview} alt="Logotyp" className="h-full w-full object-contain" />
+                      <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Camera className="h-5 w-5 text-foreground" />
+                      </div>
+                    </>
+                  ) : (
+                    <Camera className="h-6 w-6 text-muted-foreground" />
+                  )}
+                </button>
+                <div className="text-xs text-muted-foreground">
+                  <p>Ladda upp er logotyp</p>
+                  <p>PNG eller JPG, max 5 MB</p>
+                </div>
+              </div>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleLogoUpload}
+              />
+            </div>
+          )}
+
           <div>
             <Label>Namn</Label>
             <Input value={form.full_name} onChange={e => setForm(p => ({ ...p, full_name: e.target.value }))} className="rounded-xl mt-1" />
@@ -75,8 +154,16 @@ const ProfilePage = () => {
           {!isBuyer && (
             <>
               <div>
-                <Label>Bio</Label>
-                <Textarea value={form.bio} onChange={e => setForm(p => ({ ...p, bio: e.target.value }))} className="rounded-xl mt-1" />
+                <Label>Beskrivning av företaget</Label>
+                <p className="text-xs text-muted-foreground mt-0.5 mb-1">Berätta om er byrå – vad ni gör, er erfarenhet och vad som gör er unika.</p>
+                <Textarea
+                  value={form.bio}
+                  onChange={e => setForm(p => ({ ...p, bio: e.target.value }))}
+                  className="rounded-xl mt-1 min-h-[120px]"
+                  placeholder="Vi är en fullservice-byrå med 10 års erfarenhet inom..."
+                  maxLength={2000}
+                />
+                <p className="text-xs text-muted-foreground text-right mt-1">{form.bio.length} / 2 000</p>
               </div>
               <div>
                 <Label>Hemsida</Label>
