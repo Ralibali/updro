@@ -8,6 +8,9 @@ import { AuthProvider } from "@/hooks/useAuth";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
 import { COMPARISON_PAGES } from "./lib/seoComparisons";
+import SupplierLayout from "@/components/SupplierLayout";
+import BuyerLayout from "@/components/BuyerLayout";
+import { COMPARISON_PAGES } from "./lib/seoComparisons";
 
 // Eager: Index (landing page) for fastest FCP
 import Index from "./pages/Index";
