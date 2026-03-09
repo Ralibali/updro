@@ -86,12 +86,15 @@ const Footer = () => {
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      to={link.href}
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.href.includes('#') ? (
+                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

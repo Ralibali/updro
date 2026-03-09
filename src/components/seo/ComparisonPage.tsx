@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { renderMarkdown } from '@/lib/renderMarkdown'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { findComparisonPage, COMPARISON_PAGES } from '@/lib/seoComparisons'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -10,8 +10,9 @@ import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 
 const ComparisonPage = () => {
-  const { slug } = useParams<{ slug: string }>()
-  const page = findComparisonPage(slug || '')
+  const location = useLocation()
+  const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '')
+  const page = findComparisonPage(slug)
 
   useEffect(() => {
     if (page) {
