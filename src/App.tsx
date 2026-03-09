@@ -134,6 +134,18 @@ const App = () => (
               <Route path="/stader/:city" element={<CityHubPage />} />
               <Route path="/jamfor" element={<ComparisonsIndex />} />
 
+              {/* Agency SEO pages */}
+              <Route path="/byraer/kategori/:kategori" element={<AgencyCategoryPage />} />
+              <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
+              <Route path="/byraer/:stad" element={<AgencyCityPage />} />
+
+              {/* Service pages */}
+              <Route path="/leveranser/:tjanst" element={<ServicePage />} />
+
+              {/* Knowledge bank */}
+              <Route path="/kunskapsbank" element={<KnowledgeBankIndex />} />
+              <Route path="/kunskapsbank/:artikel" element={<KnowledgeArticlePage />} />
+
               {/* Comparison pages */}
               {COMPARISON_PAGES.map(p => (
                 <Route key={p.slug} path={`/${p.slug}`} element={<ComparisonPage />} />
