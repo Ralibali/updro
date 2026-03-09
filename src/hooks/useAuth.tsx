@@ -114,6 +114,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
         await fetchProfile(session.user.id)
+        createPendingProject(session.user.id)
       }
       if (isMounted) setLoading(false)
     })
