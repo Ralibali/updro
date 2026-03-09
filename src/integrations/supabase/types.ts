@@ -186,6 +186,7 @@ export type Database = {
       }
       offers: {
         Row: {
+          attachment_url: string | null
           created_at: string | null
           delivery_weeks: number | null
           description: string
@@ -198,6 +199,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          attachment_url?: string | null
           created_at?: string | null
           delivery_weeks?: number | null
           description: string
@@ -210,6 +212,7 @@ export type Database = {
           title: string
         }
         Update: {
+          attachment_url?: string | null
           created_at?: string | null
           delivery_weeks?: number | null
           description?: string
