@@ -56,6 +56,10 @@ const ProfilePage = () => {
       await supabase.from('supplier_profiles').update({
         bio: form.bio,
         website_url: form.website_url,
+        contact_name: form.contact_name || null,
+        contact_email: form.contact_email || null,
+        contact_phone: form.contact_phone || null,
+        org_number: form.org_number || null,
       }).eq('id', user.id)
     }
 
