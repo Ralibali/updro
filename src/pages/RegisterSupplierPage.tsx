@@ -21,6 +21,7 @@ const RegisterSupplierPage = () => {
     email: '',
     password: '',
     phone: '',
+    org_number: '',
     categories: [] as string[],
     accepted: false,
     newsletter: false,
@@ -55,6 +56,7 @@ const RegisterSupplierPage = () => {
       company_name: form.company_name,
       phone: form.phone || undefined,
       categories: form.categories,
+      org_number: form.org_number || undefined,
     })
     setLoading(false)
 
@@ -170,6 +172,16 @@ const RegisterSupplierPage = () => {
                   <Input
                     value={form.phone}
                     onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
+                    className="rounded-xl mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label>Org-nummer</Label>
+                  <Input
+                    value={form.org_number}
+                    onChange={(e) => setForm(prev => ({ ...prev, org_number: e.target.value }))}
+                    placeholder="XXXXXX-XXXX"
                     className="rounded-xl mt-1"
                   />
                 </div>

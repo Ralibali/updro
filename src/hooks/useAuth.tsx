@@ -34,6 +34,7 @@ interface SignUpData {
   city?: string
   phone?: string
   categories?: string[]
+  org_number?: string
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -153,6 +154,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         lead_credits: TRIAL_LEADS,
         trial_leads_used: 0,
         categories: data.categories || [],
+        org_number: data.org_number || null,
       })
 
       if (supplierError) return { error: supplierError as Error }
