@@ -22,7 +22,8 @@ const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
     return <Navigate to="/logga-in" replace />
   }
 
-  if (role && profile?.role !== role) {
+  // Admin can access all protected routes
+  if (role && profile?.role !== role && profile?.role !== 'admin') {
     return <Navigate to="/" replace />
   }
 
