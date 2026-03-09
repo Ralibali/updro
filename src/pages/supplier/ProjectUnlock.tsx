@@ -12,7 +12,7 @@ import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constan
 import { timeAgo } from '@/lib/dateUtils'
 import { numWord } from '@/lib/numberWords'
 import { toast } from 'sonner'
-import { Lock, Unlock, Mail, Phone, User, Building2 } from 'lucide-react'
+import { Lock, Unlock, Mail, Phone, User, Building2, Paperclip, X } from 'lucide-react'
 
 const ProjectUnlock = () => {
   const { id } = useParams()
@@ -23,6 +23,7 @@ const ProjectUnlock = () => {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -82,6 +83,28 @@ const ProjectUnlock = () => {
     if (!user || !id) return
     setLoading(true)
 
+    let attachment_url: string | null = null
+
+    // Upload file if selected
+    if (file) {
+      const ext = file.name.split('.').pop()
+      const path = `${user.id}/${id}-${Date.now()}.${ext}`
+      const { error: uploadError } = await supabase.storage
+        .from('offer-attachments')
+        .upload(path, file, { contentType: file.type })
+
+      if (uploadError) {
+        toast.error('Kunde inte ladda upp filen.')
+        setLoading(false)
+        return
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('offer-attachments')
+        .getPublicUrl(path)
+      attachment_url = urlData.publicUrl
+    }
+
     const { error } = await supabase.from('offers').insert({
       project_id: id,
       supplier_id: user.id,
@@ -90,7 +113,8 @@ const ProjectUnlock = () => {
       price: parseFloat(form.price),
       delivery_weeks: parseInt(form.delivery_weeks) || null,
       payment_plan: form.payment_plan,
-    })
+      attachment_url,
+    } as any)
 
     if (!error && project) {
       await supabase.from('projects').update({ offer_count: (project.offer_count || 0) + 1 }).eq('id', id)
@@ -181,6 +205,38 @@ const ProjectUnlock = () => {
                     <SelectItem value="milestone">Milstolpar</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label>Bifoga fil (PDF, max 10 MB)</Label>
+                <div className="mt-1">
+                  {file ? (
+                    <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2 text-sm">
+                      <Paperclip className="h-4 w-4 text-muted-foreground" />
+                      <span className="truncate flex-1">{file.name}</span>
+                      <button type="button" onClick={() => setFile(null)} className="text-muted-foreground hover:text-destructive">
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center gap-2 cursor-pointer border border-dashed rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50 transition-colors">
+                      <Paperclip className="h-4 w-4" />
+                      <span>Välj fil att bifoga...</span>
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        className="hidden"
+                        onChange={e => {
+                          const f = e.target.files?.[0]
+                          if (f && f.size > 10 * 1024 * 1024) {
+                            toast.error('Filen är för stor (max 10 MB).')
+                            return
+                          }
+                          if (f) setFile(f)
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
               </div>
               <Button type="submit" disabled={loading} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5">
                 {loading ? 'Skickar...' : 'Skicka offert →'}
