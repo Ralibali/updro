@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 const items = [
   { icon: Gift, text: 'Fem gratis leads direkt vid registrering' },
-  { icon: Calendar, text: 'Fjorton dagars fri provperiod' },
+  { icon: Calendar, text: 'Sju dagars gratis premium' },
   { icon: CreditCard, text: 'Inget kreditkort krävs' },
 ]
 
