@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
-import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp } from 'lucide-react'
+import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -12,6 +12,8 @@ const navItems = [
   { label: 'Byråer', href: '/admin/byraer', icon: Building2 },
   { label: 'Uppdrag', href: '/admin/uppdrag', icon: ClipboardList },
   { label: 'Offerter', href: '/admin/offerter', icon: CreditCard },
+  { label: 'Guider', href: '/admin/guider', icon: BookOpen },
+  { label: 'Stripe-logg', href: '/admin/stripe', icon: Receipt },
   { label: 'Notifikationer', href: '/admin/notifikationer', icon: Bell },
   { label: 'Inställningar', href: '/admin/installningar', icon: Settings },
 ]
