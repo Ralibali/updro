@@ -38,7 +38,7 @@ serve(async (req) => {
     const origin = req.headers.get("origin") || "https://updro.se";
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: customers.data[0].id,
-      return_url: `${origin}/dashboard/leverantor/betalning`,
+      return_url: `${origin}/dashboard/supplier/fakturering`,
     });
 
     return new Response(JSON.stringify({ url: portalSession.url }), {
