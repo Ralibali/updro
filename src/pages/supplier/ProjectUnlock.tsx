@@ -23,6 +23,7 @@ const ProjectUnlock = () => {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
   const [form, setForm] = useState({
     title: '',
     description: '',
