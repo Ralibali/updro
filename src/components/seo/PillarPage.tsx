@@ -8,7 +8,7 @@ import { ArrowRight, ChevronRight } from 'lucide-react'
 import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 
 const PillarPage = () => {
   const { category } = useParams<{ category: string }>()
@@ -20,6 +20,7 @@ const PillarPage = () => {
         title: page.metaTitle,
         description: page.metaDesc,
         canonical: `https://updro.se/${page.categorySlug}`,
+        ogImage: getOgImage(page.categorySlug),
       })
     }
     window.scrollTo(0, 0)

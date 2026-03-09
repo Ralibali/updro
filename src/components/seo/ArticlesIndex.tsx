@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ArrowRight, ChevronRight, Calendar } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 
 const ArticlesIndex = () => {
   useEffect(() => {
@@ -13,6 +13,7 @@ const ArticlesIndex = () => {
       title: 'Artiklar & guider om digitala tjänster | Updro',
       description: 'Guider, prisöversikter och tips för webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring.',
       canonical: 'https://updro.se/artiklar',
+      ogImage: getOgImage('artiklar'),
     })
     window.scrollTo(0, 0)
   }, [])

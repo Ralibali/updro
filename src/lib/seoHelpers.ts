@@ -10,7 +10,31 @@ import { TOOLS } from './seoTools'
 
 const SITE_URL = 'https://updro.se'
 const SITE_NAME = 'Updro'
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og/og-default.png`
+
+/** Map category slugs to OG images */
+const OG_IMAGE_MAP: Record<string, string> = {
+  webbutveckling: '/og/og-webbutveckling.png',
+  seo: '/og/og-seo.png',
+  'google-ads': '/og/og-google-ads.png',
+  ehandel: '/og/og-ehandel.png',
+  'digital-marknadsforing': '/og/og-digital-marknadsforing.png',
+  apputveckling: '/og/og-apputveckling.png',
+  artiklar: '/og/og-artiklar.png',
+  jamfor: '/og/og-jamfor.png',
+}
+
+/** Get the best OG image URL for a given category slug */
+export const getOgImage = (categorySlug?: string): string => {
+  if (!categorySlug) return DEFAULT_OG_IMAGE
+  const match = OG_IMAGE_MAP[categorySlug]
+  if (match) return `${SITE_URL}${match}`
+  // Try partial match (e.g. 'basta-seo-byran' -> 'seo')
+  for (const [key, path] of Object.entries(OG_IMAGE_MAP)) {
+    if (categorySlug.includes(key)) return `${SITE_URL}${path}`
+  }
+  return DEFAULT_OG_IMAGE
+}
 
 export interface SEOMeta {
   title: string

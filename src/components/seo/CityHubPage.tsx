@@ -15,7 +15,7 @@ const CityHubPage = () => {
   useEffect(() => {
     if (page) {
       import('@/lib/seoHelpers').then(({ setSEOMeta }) => {
-        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/stader/${page.slug}` })
+        setSEOMeta({ title: page.metaTitle, description: page.metaDesc, canonical: `https://updro.se/stader/${page.slug}`, ogImage: `https://updro.se/og/og-default.png` })
       })
     }
     window.scrollTo(0, 0)

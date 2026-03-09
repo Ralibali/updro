@@ -8,7 +8,7 @@ import { ArrowRight, ChevronRight } from 'lucide-react'
 import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 import { findCityServicePage } from '@/lib/seoCities'
 
 const SubPage = () => {
@@ -24,12 +24,14 @@ const SubPage = () => {
         title: page.title,
         description: page.metaDesc,
         canonical: `https://updro.se/${pillar.categorySlug}/${page.slug}`,
+        ogImage: getOgImage(pillar.categorySlug),
       })
     } else if (cityPage) {
       setSEOMeta({
         title: cityPage.metaTitle,
         description: cityPage.metaDesc,
         canonical: `https://updro.se/${cityPage.serviceSlug}/${cityPage.citySlug}`,
+        ogImage: getOgImage(cityPage.serviceSlug),
       })
     }
     window.scrollTo(0, 0)
