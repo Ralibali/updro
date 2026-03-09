@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import DashboardLayout from '@/components/DashboardLayout'
-import { Home, ClipboardList, MessageCircle, UserCircle, Search, FileText, CreditCard, Send } from 'lucide-react'
+import { Home, ClipboardList, MessageCircle, UserCircle, Search, FileText, CreditCard, Send, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
@@ -84,7 +84,6 @@ const ChatPage = () => {
         .or(`and(sender_id.eq.${user.id},receiver_id.eq.${activeConvo.otherId}),and(sender_id.eq.${activeConvo.otherId},receiver_id.eq.${user.id})`)
         .order('created_at', { ascending: true })
       if (data) setMessages(data)
-      // Mark as read
       await supabase.from('messages').update({ is_read: true })
         .eq('receiver_id', user.id)
         .eq('sender_id', activeConvo.otherId)
@@ -92,7 +91,6 @@ const ChatPage = () => {
     }
     fetchMessages()
 
-    // Realtime
     const channel = supabase
       .channel('chat-' + activeConvo.projectId)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `project_id=eq.${activeConvo.projectId}` }, (payload) => {
@@ -125,8 +123,11 @@ const ChatPage = () => {
   return (
     <DashboardLayout navItems={isBuyer ? buyerNav : supplierNav}>
       <div className="flex h-[calc(100vh-10rem)] bg-card rounded-xl border overflow-hidden">
-        {/* Conversation list */}
-        <div className="w-80 border-r flex flex-col">
+        {/* Conversation list - hidden on mobile when a convo is active */}
+        <div className={cn(
+          'w-full md:w-80 border-r flex flex-col',
+          activeConvo ? 'hidden md:flex' : 'flex'
+        )}>
           <div className="p-3 border-b font-display font-semibold text-sm">Meddelanden</div>
           <div className="flex-1 overflow-y-auto">
             {conversations.length === 0 ? (
@@ -145,17 +146,25 @@ const ChatPage = () => {
           </div>
         </div>
 
-        {/* Chat window */}
-        <div className="flex-1 flex flex-col">
+        {/* Chat window - full width on mobile when active */}
+        <div className={cn(
+          'flex-1 flex flex-col',
+          activeConvo ? 'flex' : 'hidden md:flex'
+        )}>
           {!activeConvo ? (
             <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
               Välj en konversation
             </div>
           ) : (
             <>
-              <div className="p-3 border-b">
-                <p className="font-semibold text-sm">{activeConvo.otherName}</p>
-                <p className="text-xs text-muted-foreground">{activeConvo.projectTitle}</p>
+              <div className="p-3 border-b flex items-center gap-2">
+                <button onClick={() => setActiveConvo(null)} className="md:hidden p-1 rounded-lg hover:bg-muted">
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
+                <div>
+                  <p className="font-semibold text-sm">{activeConvo.otherName}</p>
+                  <p className="text-xs text-muted-foreground">{activeConvo.projectTitle}</p>
+                </div>
               </div>
               <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {messages.map(m => (
