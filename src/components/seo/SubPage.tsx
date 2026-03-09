@@ -134,9 +134,7 @@ const SubPage = () => {
             <section key={i}>
               <h2 className="font-display text-2xl font-bold mb-4">{section.heading}</h2>
               <div className="prose prose-lg text-muted-foreground max-w-none">
-                {section.content.split('\n\n').map((p, j) => (
-                  <p key={j} className="mb-4 leading-relaxed whitespace-pre-line">{p}</p>
-                ))}
+                {renderMarkdown(section.content)}
               </div>
             </section>
           ))}
