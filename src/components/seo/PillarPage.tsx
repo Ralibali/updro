@@ -104,7 +104,7 @@ const PillarPage = () => {
                   {item.q}
                   <ChevronRight className="h-4 w-4 text-muted-foreground group-open:rotate-90 transition-transform" />
                 </summary>
-                <p className="mt-3 text-muted-foreground leading-relaxed">{item.a}</p>
+                <div className="mt-3 text-muted-foreground leading-relaxed">{renderMarkdown(item.a)}</div>
               </details>
             ))}
           </div>
