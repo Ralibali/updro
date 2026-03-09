@@ -145,9 +145,15 @@ const Navbar = () => {
                 </Link>
               ))}
               {navLinks.map((link) => (
-                <Link key={link.href} to={link.href} className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
-                  {link.label}
-                </Link>
+                link.href.includes('#') ? (
+                  <a key={link.href} href={link.href} className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link key={link.href} to={link.href} className="text-lg font-medium text-foreground py-2 block" onClick={() => setMobileOpen(false)}>
+                    {link.label}
+                  </Link>
+                )
               ))}
             </div>
             <div className="border-t pt-4 mt-4 flex flex-col gap-3">
