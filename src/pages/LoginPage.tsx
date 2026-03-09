@@ -51,23 +51,6 @@ const LoginPage = () => {
           </div>
 
           <div className="bg-card rounded-2xl border p-6 shadow-sm">
-            <Button
-              variant="outline"
-              className="w-full mb-4"
-              onClick={() => signInWithGoogle()}
-            >
-              Fortsätt med Google
-            </Button>
-
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">eller</span>
-              </div>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="email">E-post</Label>
