@@ -10,8 +10,9 @@ import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 
 const ComparisonPage = () => {
-  const { slug } = useParams<{ slug: string }>()
-  const page = findComparisonPage(slug || '')
+  const location = useLocation()
+  const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '')
+  const page = findComparisonPage(slug)
 
   useEffect(() => {
     if (page) {
