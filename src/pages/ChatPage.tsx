@@ -104,7 +104,7 @@ const ChatPage = () => {
   }
 
   return (
-    <DashboardLayout navItems={isBuyer ? buyerNav : supplierNav}>
+    <>
       <div className="flex h-[calc(100vh-10rem)] bg-card rounded-xl border overflow-hidden">
         {/* Conversation list - hidden on mobile when a convo is active */}
         <div className={cn(
