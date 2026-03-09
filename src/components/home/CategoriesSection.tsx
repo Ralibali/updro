@@ -13,7 +13,7 @@ const CategoriesSection = () => {
         {CATEGORIES.map((cat, i) => (
           <motion.a
             key={cat}
-            href={`/byraer?kategori=${encodeURIComponent(cat)}`}
+            href={`/publicera?kategori=${encodeURIComponent(cat)}`}
             className={`group relative flex flex-col items-center gap-3 rounded-2xl border p-6 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer ${CATEGORY_STYLES[cat]}`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

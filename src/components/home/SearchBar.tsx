@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Search } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -26,10 +26,10 @@ const SearchBar = () => {
             </SelectContent>
           </Select>
 
-          <Link to="/byraer">
+          <Link to="/publicera">
             <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6">
-              <Search className="mr-2 h-4 w-4" />
-              Hitta byråer
+              <ArrowRight className="mr-2 h-4 w-4" />
+              Publicera uppdrag
             </Button>
           </Link>
         </div>

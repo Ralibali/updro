@@ -64,8 +64,8 @@ const Navbar = () => {
               Publicera uppdrag
             </Link>
 
-            <Link to="/jamfor" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Jämför
+            <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Byråer
             </Link>
 
             {navLinks.map((link) => (
