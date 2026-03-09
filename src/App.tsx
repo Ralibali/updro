@@ -105,6 +105,7 @@ const App = () => (
               <Route path="/aterstall-losenord" element={<PlaceholderPage title="Återställ lösenord" />} />
               <Route path="/sitemap" element={<SitemapPage />} />
               <Route path="/landing" element={<LandingPage />} />
+              <Route path="/landing/byra" element={<SupplierLandingPage />} />
               <Route path="/guider" element={<GuidesIndex />} />
               <Route path="/guider/:slug" element={<GuidePage />} />
 
