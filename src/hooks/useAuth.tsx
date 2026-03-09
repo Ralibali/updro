@@ -174,6 +174,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (supplierError) return { error: supplierError as Error }
     }
 
+    // Fetch the newly created profile so state is ready before navigation
+    await fetchProfile(userId)
+
     return { error: null }
   }
 
