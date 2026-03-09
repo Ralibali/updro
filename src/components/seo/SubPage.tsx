@@ -8,7 +8,7 @@ import { ArrowRight, ChevronRight } from 'lucide-react'
 import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 import { findCityServicePage } from '@/lib/seoCities'
 
 const SubPage = () => {
