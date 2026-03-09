@@ -34,6 +34,7 @@ interface SignUpData {
   city?: string
   phone?: string
   categories?: string[]
+  org_number?: string
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
