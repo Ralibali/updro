@@ -35,6 +35,10 @@ const ProfilePage = () => {
     phone: profile?.phone || '',
     bio: supplierProfile?.bio || '',
     website_url: supplierProfile?.website_url || '',
+    contact_name: supplierProfile?.contact_name || '',
+    contact_email: supplierProfile?.contact_email || '',
+    contact_phone: supplierProfile?.contact_phone || '',
+    org_number: supplierProfile?.org_number || '',
   })
 
   const handleSave = async () => {
