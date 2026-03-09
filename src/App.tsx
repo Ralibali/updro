@@ -49,7 +49,14 @@ const ArticlesIndex = lazy(() => import("./components/seo/ArticlesIndex"));
 const ToolPage = lazy(() => import("./components/seo/ToolPage"));
 const ToolsIndex = lazy(() => import("./components/seo/ToolsIndex"));
 
-// Buyer pages
+// Agency SEO pages
+const AgencyCityPage = lazy(() => import("./pages/seo/AgencyCityPage"));
+const AgencyCityCategoryPage = lazy(() => import("./pages/seo/AgencyCityCategoryPage"));
+const AgencyCategoryPage = lazy(() => import("./pages/seo/AgencyCategoryPage"));
+const ServicePage = lazy(() => import("./pages/seo/ServicePage"));
+const KnowledgeArticlePage = lazy(() => import("./pages/seo/KnowledgeArticlePage"));
+const KnowledgeBankIndex = lazy(() => import("./pages/seo/KnowledgeBankIndex"));
+
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const BuyerProjects = lazy(() => import("./pages/buyer/BuyerProjects"));
 const ProjectDetail = lazy(() => import("./pages/buyer/ProjectDetail"));
