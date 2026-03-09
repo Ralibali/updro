@@ -113,7 +113,6 @@ const ProfilePage = () => {
           </Button>
         </div>
       </div>
-    </DashboardLayout>
   )
 }
 
