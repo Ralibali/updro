@@ -63,7 +63,7 @@ const HeroSection = () => {
             <Link to="/registrera/byra">
               <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base font-semibold border-border hover:bg-accent/5 hover:border-accent/30 transition-all active:scale-[0.98]">
                 <Sparkles className="mr-2 h-4 w-4 text-accent" />
-                Prova gratis i 14 dagar
+                Prova gratis i sju dagar
               </Button>
             </Link>
           </motion.div>
