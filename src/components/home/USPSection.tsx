@@ -32,7 +32,7 @@ const USPSection = () => {
             Färre leads. Högre kvalitet. Bättre resultat.
           </h2>
           <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Vi löser byråernas största frustrationer – leads som inte leder någonstans.
+            Trött på offerter som aldrig besvaras? Beställare på Updro måste svara.
           </p>
         </div>
 
