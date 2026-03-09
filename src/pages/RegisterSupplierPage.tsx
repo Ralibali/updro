@@ -176,6 +176,16 @@ const RegisterSupplierPage = () => {
                   />
                 </div>
 
+                <div>
+                  <Label>Org-nummer</Label>
+                  <Input
+                    value={form.org_number}
+                    onChange={(e) => setForm(prev => ({ ...prev, org_number: e.target.value }))}
+                    placeholder="XXXXXX-XXXX"
+                    className="rounded-xl mt-1"
+                  />
+                </div>
+
                 {/* Category chips */}
                 <div>
                   <Label>Kategorier (välj minst 1) *</Label>
