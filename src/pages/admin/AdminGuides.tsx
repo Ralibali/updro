@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
-import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
+import { Plus, Pencil, Trash2, Eye, EyeOff, Wand2, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
@@ -32,6 +32,11 @@ const AdminGuides = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editing, setEditing] = useState<Guide | null>(null)
   const [form, setForm] = useState(emptyGuide)
+  const [aiOpen, setAiOpen] = useState(false)
+  const [aiTopic, setAiTopic] = useState('')
+  const [aiKeywords, setAiKeywords] = useState('')
+  const [aiCategory, setAiCategory] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
 
   const fetchGuides = async () => {
     const { data } = await supabase.from('guides').select('*').order('published_at', { ascending: false })
@@ -77,11 +82,48 @@ const AdminGuides = () => {
     fetchGuides()
   }
 
+  const handleGenerateArticle = async () => {
+    if (!aiTopic.trim()) { toast.error('Ange ett ämne'); return }
+    setAiLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-article', {
+        body: { topic: aiTopic, category: aiCategory, keywords: aiKeywords },
+      })
+      if (error) throw error
+      if (data?.error) { toast.error(data.error); return }
+
+      setForm({
+        ...emptyGuide,
+        title: data.title || aiTopic,
+        slug: slugify(data.title || aiTopic),
+        description: data.description || '',
+        content: data.content || '',
+        category: aiCategory || '',
+        reading_time_minutes: data.reading_time_minutes || 5,
+        is_published: false,
+      })
+      setAiOpen(false)
+      setDialogOpen(true)
+      setEditing(null)
+      toast.success('Artikelutkast genererat! Granska och redigera innan publicering. ✨')
+    } catch (e: any) {
+      toast.error('Kunde inte generera artikel just nu.')
+      console.error(e)
+    } finally {
+      setAiLoading(false)
+    }
+  }
+
   return (
     <AdminLayout>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl font-bold">Guider</h1>
-        <Button onClick={openNew} size="sm"><Plus className="h-4 w-4 mr-1" />Ny guide</Button>
+        <div className="flex gap-2">
+          <Button onClick={() => { setAiTopic(''); setAiKeywords(''); setAiCategory(''); setAiOpen(true) }} size="sm" variant="outline" className="gap-1.5">
+            <Wand2 className="h-4 w-4" />Generera med AI
+          </Button>
+          <Button onClick={openNew} size="sm"><Plus className="h-4 w-4 mr-1" />Ny guide</Button>
+        </div>
       </div>
 
       {loading ? (
@@ -118,6 +160,50 @@ const AdminGuides = () => {
         </div>
       )}
 
+      {/* AI Generate Dialog */}
+      <Dialog open={aiOpen} onOpenChange={setAiOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wand2 className="h-5 w-5 text-primary" />
+              Generera artikel med AI
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-2">
+            <div>
+              <label className="text-sm font-medium">Ämne / rubrik *</label>
+              <Input
+                value={aiTopic}
+                onChange={e => setAiTopic(e.target.value)}
+                placeholder="T.ex. Så väljer du rätt webbyrå 2025"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Kategori (valfritt)</label>
+              <Input
+                value={aiCategory}
+                onChange={e => setAiCategory(e.target.value)}
+                placeholder="T.ex. Webbutveckling, SEO, E-handel"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Nyckelord (valfritt)</label>
+              <Input
+                value={aiKeywords}
+                onChange={e => setAiKeywords(e.target.value)}
+                placeholder="T.ex. webbyrå, offert, pris"
+              />
+            </div>
+            <Button onClick={handleGenerateArticle} disabled={aiLoading || !aiTopic.trim()} className="w-full gap-2">
+              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+              {aiLoading ? 'Genererar artikel...' : 'Generera utkast'}
+            </Button>
+            <p className="text-xs text-muted-foreground text-center">Artikeln skapas som utkast – granska innan publicering.</p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit/Create Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
