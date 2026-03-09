@@ -42,8 +42,8 @@ const BuyerProjects = () => {
                 <h3 className="font-semibold">{p.title}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{BUDGET_LABELS[p.budget_range] || ''} · {p.city} · {timeAgo(p.created_at)}</p>
                 <div className="flex items-center gap-3 mt-2">
-                  <span className={`text-xs font-semibold rounded-full px-2 py-1 ${p.status === 'active' ? 'bg-accent/10 text-accent' : 'bg-muted text-muted-foreground'}`}>
-                    {p.status === 'active' ? 'Aktiv' : 'Stängd'}
+                  <span className={`text-xs font-semibold rounded-full px-2 py-1 ${p.status === 'active' ? 'bg-accent/10 text-accent' : p.status === 'pending' ? 'bg-yellow-50 text-yellow-700' : p.status === 'rejected' ? 'bg-red-50 text-red-700' : 'bg-muted text-muted-foreground'}`}>
+                    {p.status === 'active' ? 'Aktiv' : p.status === 'pending' ? '⏳ Väntar på godkännande' : p.status === 'rejected' ? 'Avvisad' : 'Stängd'}
                   </span>
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <Hand className="h-3 w-3" />
