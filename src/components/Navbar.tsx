@@ -69,9 +69,15 @@ const Navbar = () => {
             </Link>
 
             {navLinks.map((link) => (
-              <Link key={link.href} to={link.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                {link.label}
-              </Link>
+              link.href.includes('#') ? (
+                <a key={link.href} href={link.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  {link.label}
+                </a>
+              ) : (
+                <Link key={link.href} to={link.href} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  {link.label}
+                </Link>
+              )
             ))}
           </nav>
 
