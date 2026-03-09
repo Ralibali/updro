@@ -234,7 +234,7 @@ const ProjectDetail = () => {
           </div>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+    </>
   )
 }
 
