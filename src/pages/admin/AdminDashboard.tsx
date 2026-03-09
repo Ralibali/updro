@@ -14,6 +14,7 @@ const navItems = [
   { label: 'Offerter', href: '/admin/offerter', icon: CreditCard },
   { label: 'Guider', href: '/admin/guider', icon: BookOpen },
   { label: 'Stripe-logg', href: '/admin/stripe', icon: Receipt },
+  { label: 'Audit-logg', href: '/admin/audit', icon: Shield },
   { label: 'Notifikationer', href: '/admin/notifikationer', icon: Bell },
   { label: 'Inställningar', href: '/admin/installningar', icon: Settings },
 ]
