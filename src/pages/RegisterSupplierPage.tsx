@@ -28,6 +28,14 @@ const RegisterSupplierPage = () => {
     newsletter: false,
   })
 
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Registrera din byrå – Få fler kunder gratis | Updro',
+      description: 'Registrera din byrå på Updro och få fem gratis leads. Kvalificerade uppdrag, ingen bindningstid.',
+      canonical: 'https://updro.se/registrera/byra',
+    })
+  }, [])
+
   const toggleCategory = (cat: string) => {
     setForm(prev => ({
       ...prev,
