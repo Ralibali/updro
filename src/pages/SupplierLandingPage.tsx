@@ -20,7 +20,7 @@ const benefits = [
   { icon: Gift, title: `${numWord(TRIAL_LEADS)} gratis leads`, desc: 'Starta utan kostnad – dina första leads är helt gratis.' },
   { icon: Shield, title: 'Kvalificerade uppdrag', desc: 'Alla projekt verifieras innan de publiceras till byråer.' },
   { icon: TrendingUp, title: 'Öka din omsättning', desc: 'Få en stadig ström av nya kunder utan att jaga dem.' },
-  { icon: Users, title: 'Max 5 byråer per uppdrag', desc: 'Begränsad konkurrens – du slipper tävla mot 50 andra.' },
+  { icon: Users, title: 'Max fem byråer per uppdrag', desc: 'Begränsad konkurrens – du slipper tävla mot 50 andra.' },
   { icon: MessageCircle, title: 'Inbyggd chatt', desc: 'Kommunicera direkt med beställare via plattformen.' },
   { icon: BarChart3, title: 'Dashboard & statistik', desc: 'Följ dina leads, offerter och konverteringar i realtid.' },
 ]
