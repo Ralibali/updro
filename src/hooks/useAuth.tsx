@@ -252,7 +252,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     canUnlockLeads,
     signIn,
     signUp,
-    signInWithGoogle,
     signOut,
     refreshProfile,
   }

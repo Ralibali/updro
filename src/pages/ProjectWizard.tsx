@@ -14,7 +14,7 @@ import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT
 import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2 } from 'lucide-react'
 
 const ProjectWizard = () => {
-  const { user, isAuthenticated, profile, signUp, signInWithGoogle } = useAuth()
+  const { user, isAuthenticated, profile, signUp } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
