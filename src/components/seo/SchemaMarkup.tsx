@@ -34,29 +34,45 @@ const SchemaMarkup = ({ page, type, parentCategory, parentSlug }: SchemaMarkupPr
 
   const faqItems = ('faq' in page ? page.faq : [])
 
-  const schemas = [
-    // Organization
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: 'Updro',
-      url: 'https://updro.se',
-      description: 'Updro hjälper företag att hitta rätt digitala byråer genom att jämföra offerter kostnadsfritt.',
-    },
+  const schemas: object[] = [
     // Service
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
       name: isPillar ? pillar.categoryName : sub.h1,
       description: isPillar ? pillar.metaDesc : sub.metaDesc,
-      provider: { '@type': 'Organization', name: 'Updro' },
+      provider: {
+        '@type': 'Organization',
+        name: 'Updro',
+        '@id': 'https://updro.se/#organization',
+      },
       areaServed: { '@type': 'Country', name: 'Sweden' },
+      serviceType: isPillar ? pillar.categoryName : sub.h1,
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'SEK',
+        description: 'Gratis offertjämförelse',
+      },
     },
     // Breadcrumb
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: breadcrumbItems,
+    },
+    // WebPage
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      name: isPillar ? pillar.metaTitle : sub.title,
+      description: isPillar ? pillar.metaDesc : sub.metaDesc,
+      isPartOf: { '@id': 'https://updro.se/#website' },
+      about: {
+        '@type': 'Thing',
+        name: isPillar ? pillar.categoryName : sub.h1,
+      },
+      inLanguage: 'sv-SE',
     },
   ]
 
@@ -70,7 +86,7 @@ const SchemaMarkup = ({ page, type, parentCategory, parentSlug }: SchemaMarkupPr
         name: f.q,
         acceptedAnswer: { '@type': 'Answer', text: f.a },
       })),
-    } as any)
+    })
   }
 
   return (

@@ -23,14 +23,24 @@ const ComparisonPage = () => {
 
   if (!page) return <NotFound />
 
-  const schemas = [
+  const schemas: object[] = [
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Hem', item: 'https://updro.se/' },
-        { '@type': 'ListItem', position: 2, name: page.h1, item: `https://updro.se/${page.slug}/` },
+        { '@type': 'ListItem', position: 2, name: 'Jämförelser', item: 'https://updro.se/jamfor/' },
+        { '@type': 'ListItem', position: 3, name: page.h1, item: `https://updro.se/${page.slug}/` },
       ]
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: page.h1,
+      description: page.metaDesc,
+      author: { '@type': 'Organization', name: 'Updro', '@id': 'https://updro.se/#organization' },
+      publisher: { '@type': 'Organization', name: 'Updro', '@id': 'https://updro.se/#organization' },
+      inLanguage: 'sv-SE',
     },
   ]
 
@@ -43,7 +53,7 @@ const ComparisonPage = () => {
         name: f.q,
         acceptedAnswer: { '@type': 'Answer', text: f.a },
       })),
-    } as any)
+    })
   }
 
   return (
@@ -54,8 +64,10 @@ const ComparisonPage = () => {
       ))}
 
       <div className="container pt-6">
-        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
+        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground" aria-label="Brödsmulor">
           <Link to="/" className="hover:text-foreground">Hem</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/jamfor" className="hover:text-foreground">Jämförelser</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground font-medium">{page.h1}</span>
         </nav>

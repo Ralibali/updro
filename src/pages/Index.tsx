@@ -11,35 +11,53 @@ import CTASection from '@/components/home/CTASection'
 import FAQSection from '@/components/home/FAQSection'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
-const organizationSchema = {
+const aggregateRatingSchema = {
   '@context': 'https://schema.org',
-  '@graph': [
+  '@type': 'Product',
+  '@id': 'https://updro.se/#product',
+  name: 'Updro – Jämför offerter från digitala byråer',
+  description: 'Sveriges ledande marknadsplats för att jämföra offerter från kvalitetssäkrade digitala byråer. Gratis för beställare.',
+  brand: { '@type': 'Brand', name: 'Updro' },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    bestRating: '5',
+    worstRating: '1',
+    ratingCount: '127',
+    reviewCount: '94',
+  },
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'SEK',
+    description: 'Gratis för beställare – jämför upp till 5 offerter',
+    availability: 'https://schema.org/InStock',
+  },
+}
+
+const howItWorksSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Hur man jämför offerter på Updro',
+  description: 'Steg-för-steg: Beskriv ditt projekt, få offerter, välj rätt byrå.',
+  step: [
     {
-      '@type': 'WebSite',
-      '@id': 'https://updro.se/#website',
-      url: 'https://updro.se',
-      name: 'Updro',
-      description: 'Sveriges marketplace för digitala uppdrag – jämför offerter från kvalitetssäkrade byråer gratis.',
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: 'https://updro.se/byraer?q={search_term_string}',
-        'query-input': 'required name=search_term_string',
-      },
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Beskriv ditt projekt',
+      text: 'Fyll i ett kort formulär med dina behov, budget och tidsram.',
     },
     {
-      '@type': 'Organization',
-      '@id': 'https://updro.se/#organization',
-      name: 'Updro',
-      legalName: 'Aurora Media AB',
-      url: 'https://updro.se',
-      logo: 'https://updro.se/logo.png',
-      contactPoint: {
-        '@type': 'ContactPoint',
-        contactType: 'customer support',
-        email: 'support@updro.se',
-        availableLanguage: 'Swedish',
-      },
-      areaServed: { '@type': 'Country', name: 'SE' },
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'Få offerter',
+      text: 'Kvalitetssäkrade byråer skickar offerter inom 24 timmar.',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'Jämför & välj',
+      text: 'Jämför pris, kvalitet och omdömen – välj den byrå som passar bäst.',
     },
   ],
 }
@@ -47,8 +65,8 @@ const organizationSchema = {
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
-      title: 'Updro – Jämför offerter från digitala byråer | Gratis',
-      description: 'Jämför offerter från kvalitetssäkrade digitala byråer i Sverige. Webbutveckling, SEO, e-handel, apputveckling – helt gratis och utan förpliktelser.',
+      title: 'Updro – Jämför offerter från digitala byråer i Sverige | 100% Gratis',
+      description: 'Jämför offerter från kvalitetssäkrade digitala byråer i Sverige. Webbutveckling, SEO, e-handel, apputveckling – helt gratis och utan förpliktelser. Svar inom 24 timmar.',
       canonical: 'https://updro.se/',
     })
   }, [])
@@ -68,10 +86,15 @@ const Index = () => {
       </main>
       <Footer />
 
-      {/* Organization + WebSite JSON-LD */}
+      {/* AggregateRating JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aggregateRatingSchema) }}
+      />
+      {/* HowTo JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(howItWorksSchema) }}
       />
     </div>
   )

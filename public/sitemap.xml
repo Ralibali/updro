@@ -1,89 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Core pages -->
-  <url><loc>https://updro.se/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://updro.se/publicera</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/byraer</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/priser</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/om-oss</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://updro.se/registrera/byra</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/guider</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/</loc><lastmod>2026-03-09</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://updro.se/publicera</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/byraer</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/priser</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/om-oss</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://updro.se/registrera/byra</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/guider</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/artiklar</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/verktyg</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/stader</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/jamfor</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
 
-  <!-- SEO Pillar pages -->
-  <url><loc>https://updro.se/webbutveckling</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/webbutveckling/pris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/webbutveckling/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/webbutveckling/goteborg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/webbutveckling/malmo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/webbutveckling/uppsala</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/webbutveckling/byra</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/webbutveckling/startup</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/webbutveckling/react</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/webbutveckling/nextjs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Pillar: Webbutveckling -->
+  <url><loc>https://updro.se/webbutveckling</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/webbutveckling/pris</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/webbutveckling/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/webbutveckling/goteborg</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/webbutveckling/malmo</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/webbutveckling/uppsala</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/webbutveckling/byra</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/webbutveckling/startup</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/webbutveckling/react</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/webbutveckling/nextjs</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <url><loc>https://updro.se/ehandel</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/ehandel/pris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/ehandel/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/ehandel/goteborg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/ehandel/malmo</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/ehandel/goteborg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/ehandel/byra</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Pillar: E-handel -->
+  <url><loc>https://updro.se/ehandel</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/ehandel/pris</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/ehandel/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/ehandel/goteborg</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/ehandel/malmo</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/ehandel/byra</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <url><loc>https://updro.se/digital-marknadsforing</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/digital-marknadsforing/pris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/digital-marknadsforing/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/digital-marknadsforing/goteborg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Pillar: Digital marknadsföring -->
+  <url><loc>https://updro.se/digital-marknadsforing</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/digital-marknadsforing/pris</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/digital-marknadsforing/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/digital-marknadsforing/goteborg</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <url><loc>https://updro.se/grafisk-design</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/grafisk-design/pris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/grafisk-design/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Pillar: Grafisk design -->
+  <url><loc>https://updro.se/grafisk-design</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/grafisk-design/pris</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/grafisk-design/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
-  <url><loc>https://updro.se/seo</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/seo/pris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/seo/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/seo/goteborg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- Pillar: SEO -->
+  <url><loc>https://updro.se/seo</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/seo/pris</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/seo/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/seo/goteborg</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <url><loc>https://updro.se/app-utveckling</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://updro.se/app-utveckling/pris</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/app-utveckling/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <!-- Pillar: Apputveckling -->
+  <url><loc>https://updro.se/app-utveckling</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://updro.se/app-utveckling/pris</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/app-utveckling/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
-  <url><loc>https://updro.se/mjukvaruutveckling</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <!-- Pillar: Mjukvaruutveckling -->
+  <url><loc>https://updro.se/mjukvaruutveckling</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+
+  <!-- Pillar: Google Ads -->
+  <url><loc>https://updro.se/google-ads</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+
+  <!-- Pillar: UX/UI -->
+  <url><loc>https://updro.se/ux-ui-design</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+
+  <!-- Pillar: AI-utveckling -->
+  <url><loc>https://updro.se/ai-utveckling</loc><lastmod>2026-03-09</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
 
   <!-- City hub pages -->
-  <url><loc>https://updro.se/stader</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/stockholm</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/stader/goteborg</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/stader/malmo</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/stader/uppsala</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/linkoping</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/orebro</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/vasteras</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/helsingborg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/norrkoping</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/jonkoping</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/lund</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/stader/umea</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/stockholm</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/stader/goteborg</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/stader/malmo</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/stader/uppsala</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/linkoping</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/orebro</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/vasteras</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/helsingborg</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/norrkoping</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/jonkoping</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/lund</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/stader/umea</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Articles -->
-  <url><loc>https://updro.se/artiklar</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/artiklar/vad-kostar-en-hemsida-2026</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/artiklar/basta-cms-2026</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/artiklar/wordpress-vs-webflow</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/artiklar/seo-guide-nybörjare</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/artiklar/vad-kostar-en-hemsida-2026</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/artiklar/basta-cms-2026</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/artiklar/wordpress-vs-webflow</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/artiklar/seo-guide-nyborjare</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Tools -->
-  <url><loc>https://updro.se/verktyg</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/verktyg/hemsida-pris-kalkylator</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/verktyg/kravspecifikation-mall</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/verktyg/hemsida-pris-kalkylator</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://updro.se/verktyg/kravspecifikation-mall</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- Comparisons -->
-  <url><loc>https://updro.se/jamfor</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://updro.se/basta-seo-byran</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/basta-webbyran</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/basta-ehandel-byran</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://updro.se/basta-app-byran</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/basta-seo-byran</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/basta-webbyran</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/basta-ehandel-byran</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://updro.se/basta-app-byran</loc><lastmod>2026-03-09</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
   <!-- Legal -->
-  <url><loc>https://updro.se/integritetspolicy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://updro.se/villkor</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://updro.se/integritetspolicy</loc><lastmod>2026-03-09</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://updro.se/villkor</loc><lastmod>2026-03-09</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>
