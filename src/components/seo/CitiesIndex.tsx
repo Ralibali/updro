@@ -5,19 +5,15 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 const CitiesIndex = () => {
   useEffect(() => {
-    document.title = 'Digitala byråer per stad – Jämför offerter | Updro'
-    const meta = document.querySelector('meta[name="description"]')
-    const desc = 'Hitta digitala byråer i din stad. Stockholm, Göteborg, Malmö och fler – jämför offerter kostnadsfritt.'
-    if (meta) meta.setAttribute('content', desc)
-    else {
-      const m = document.createElement('meta')
-      m.name = 'description'
-      m.content = desc
-      document.head.appendChild(m)
-    }
+    setSEOMeta({
+      title: 'Digitala byråer per stad – Jämför offerter | Updro',
+      description: 'Hitta digitala byråer i din stad. Stockholm, Göteborg, Malmö och fler – jämför offerter kostnadsfritt.',
+      canonical: 'https://updro.se/stader',
+    })
     window.scrollTo(0, 0)
   }, [])
 
