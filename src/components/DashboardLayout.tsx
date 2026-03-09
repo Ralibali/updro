@@ -25,7 +25,10 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
       <Navbar />
       <div className="flex-1 flex">
         {/* Sidebar - desktop */}
-        <aside className="hidden md:flex w-64 border-r bg-card flex-col p-4 gap-1">
+        <aside className="hidden md:flex w-60 bg-sidebar text-sidebar-foreground flex-col p-3 gap-0.5">
+          <div className="px-3 py-3 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-widest text-sidebar-foreground/50">Dashboard</span>
+          </div>
           {navItems.map(item => {
             const active = location.pathname === item.href
             return (
@@ -33,21 +36,21 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
-                  active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
                 )}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
                 {item.badge && item.badge > 0 && (
-                  <span className="ml-auto bg-destructive text-destructive-foreground text-xs rounded-full px-1.5 py-0.5">{item.badge}</span>
+                  <span className="ml-auto bg-primary text-primary-foreground text-xs rounded-full px-1.5 py-0.5">{item.badge}</span>
                 )}
               </Link>
             )
           })}
           {ctaButton && (
-            <Link to={ctaButton.href} className="mt-auto">
-              <button className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl px-3 py-2.5 text-sm font-semibold transition-all">
+            <Link to={ctaButton.href} className="mt-auto pt-4">
+              <button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-lg px-3 py-2.5 text-sm font-semibold transition-all">
                 {ctaButton.label}
               </button>
             </Link>
