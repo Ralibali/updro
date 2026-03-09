@@ -341,6 +341,22 @@ const ProjectWizard = () => {
               </div>
             </div>
           )}
+          {/* STEP 4 - Verify email */}
+          {step === 4 && (
+            <div className="space-y-6 text-center py-12">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <Mail className="h-8 w-8 text-primary" />
+              </div>
+              <h2 className="font-display text-2xl font-bold">Kolla din e-post!</h2>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Vi har skickat ett verifieringsmail till <strong className="text-foreground">{form.email}</strong>. 
+                Klicka på länken i mailet för att aktivera ditt konto – ditt uppdrag publiceras automatiskt efter det.
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Hittar du inte mailet? Kolla skräpposten.
+              </p>
+            </div>
+          )}
         </div>
       </main>
       <Footer />
