@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CATEGORY_STYLES } from '@/lib/constants'
 import { Star, MapPin, CheckCircle, Globe, ArrowRight } from 'lucide-react'
 import { timeAgo } from '@/lib/dateUtils'
+import RatingDisplay from '@/components/shared/RatingDisplay'
+import VerificationChecklist from '@/components/shared/VerificationChecklist'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
