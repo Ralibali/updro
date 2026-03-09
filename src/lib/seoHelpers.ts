@@ -2,6 +2,12 @@
  * SEO Helpers – Centralized meta tag, canonical, and OG management
  */
 
+import { SEO_PAGES } from './seoData'
+import { CITIES, SERVICE_CATEGORIES } from './seoCities'
+import { COMPARISON_PAGES } from './seoComparisons'
+import { ARTICLES } from './seoArticles'
+import { TOOLS } from './seoTools'
+
 const SITE_URL = 'https://updro.se'
 const SITE_NAME = 'Updro'
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
@@ -84,65 +90,77 @@ function setOrCreateMetaProperty(property: string, content: string) {
   }
 }
 
-/**
- * Generate all URLs for sitemap
- */
-export const getAllSiteUrls = (): string[] => {
-  // Lazy imports to avoid circular deps
-  const { SEO_PAGES } = require('./seoData')
-  const { CITIES, SERVICE_CATEGORIES } = require('./seoCities')
-  const { COMPARISON_PAGES } = require('./seoComparisons')
-  const { ARTICLES } = require('./seoArticles')
-  const { TOOLS } = require('./seoTools')
+export interface SitemapEntry {
+  loc: string
+  changefreq: 'daily' | 'weekly' | 'monthly'
+  priority: number
+}
 
-  const urls: string[] = [
-    '/',
-    '/publicera',
-    '/byraer',
-    '/priser',
-    '/om-oss',
-    '/artiklar',
-    '/verktyg',
-    '/stader',
-    '/jamfor',
+/**
+ * Generate all sitemap entries with metadata
+ */
+export const getAllSitemapEntries = (): SitemapEntry[] => {
+  const entries: SitemapEntry[] = [
+    { loc: '/', changefreq: 'daily', priority: 1.0 },
+    { loc: '/publicera', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/byraer', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/priser', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/om-oss', changefreq: 'monthly', priority: 0.6 },
+    { loc: '/artiklar', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/verktyg', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/stader', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/jamfor', changefreq: 'weekly', priority: 0.8 },
+    { loc: '/guider', changefreq: 'weekly', priority: 0.7 },
+    { loc: '/integritetspolicy', changefreq: 'monthly', priority: 0.3 },
+    { loc: '/villkor', changefreq: 'monthly', priority: 0.3 },
   ]
 
   // Pillar + sub pages
   for (const page of SEO_PAGES) {
-    urls.push(`/${page.categorySlug}`)
+    entries.push({ loc: `/${page.categorySlug}`, changefreq: 'weekly', priority: 0.9 })
     for (const sub of page.subPages) {
-      urls.push(`/${page.categorySlug}/${sub.slug}`)
+      entries.push({ loc: `/${page.categorySlug}/${sub.slug}`, changefreq: 'weekly', priority: 0.7 })
     }
   }
 
   // City hubs
   for (const city of CITIES) {
-    urls.push(`/stader/${city.slug}`)
-  }
-
-  // City × Service pages
-  for (const city of CITIES) {
-    for (const service of SERVICE_CATEGORIES) {
-      urls.push(`/${service.slug}/${city.slug}`)
-    }
+    entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7 })
   }
 
   // Comparison pages
   for (const comp of COMPARISON_PAGES) {
-    urls.push(`/${comp.slug}`)
+    entries.push({ loc: `/${comp.slug}`, changefreq: 'monthly', priority: 0.8 })
   }
 
   // Articles
   for (const article of ARTICLES) {
-    urls.push(`/artiklar/${article.slug}`)
+    entries.push({ loc: `/artiklar/${article.slug}`, changefreq: 'monthly', priority: 0.7 })
   }
 
   // Tools
   for (const tool of TOOLS) {
-    urls.push(`/verktyg/${tool.slug}`)
+    entries.push({ loc: `/verktyg/${tool.slug}`, changefreq: 'monthly', priority: 0.7 })
   }
 
-  return urls
+  return entries
+}
+
+/**
+ * Generate sitemap XML string
+ */
+export const generateSitemapXml = (): string => {
+  const entries = getAllSitemapEntries()
+  const today = new Date().toISOString().split('T')[0]
+
+  const urls = entries.map(e =>
+    `  <url><loc>https://updro.se${e.loc}</loc><lastmod>${today}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
+  ).join('\n')
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>`
 }
 
 export const SITE_URL_BASE = SITE_URL
