@@ -26,7 +26,7 @@ const benefits = [
 ]
 
 const steps = [
-  { num: '1', title: 'Skapa konto gratis', desc: 'Registrera din byrå på under 2 minuter. Inga kortuppgifter.' },
+  { num: '1', title: 'Skapa konto gratis', desc: 'Registrera din byrå på under två minuter. Inga kortuppgifter.' },
   { num: '2', title: 'Bläddra bland uppdrag', desc: 'Se nya projekt som matchar dina tjänster och din region.' },
   { num: '3', title: 'Skicka offert & vinn kunder', desc: 'Lås upp leads du vill ha och skicka din offert direkt.' },
 ]
