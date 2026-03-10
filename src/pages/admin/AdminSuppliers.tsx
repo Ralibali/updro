@@ -127,7 +127,7 @@ const AdminSuppliers = () => {
         </div>
       </div>
       <div className="bg-card rounded-xl border overflow-hidden overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[900px] text-sm">
           <thead><tr className="border-b bg-muted/50">
             <th className="text-left p-3 font-medium">Byrå</th>
             <th className="text-left p-3 font-medium">Org.nr</th>
