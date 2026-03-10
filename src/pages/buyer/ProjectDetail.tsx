@@ -245,7 +245,7 @@ const ProjectDetail = () => {
         </div>
       </div>
 
-      {/* Confirm dialog */}
+      {/* Confirm accept dialog */}
       <Dialog open={!!confirmOffer} onOpenChange={() => setConfirmOffer(null)}>
         <DialogContent>
           <DialogHeader>
@@ -259,6 +259,24 @@ const ProjectDetail = () => {
             <Button variant="outline" onClick={() => setConfirmOffer(null)}>Avbryt</Button>
             <Button onClick={() => handleAccept(confirmOffer.id)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
               Bekräfta
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirm dialog */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ta bort uppdrag?</DialogTitle>
+            <DialogDescription>
+              Vill du verkligen ta bort "{project?.title}"? Alla tillhörande offerter tas också bort. Detta kan inte ångras.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 mt-4">
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>Avbryt</Button>
+            <Button variant="destructive" onClick={handleDeleteProject} disabled={deleting}>
+              {deleting ? 'Tar bort…' : 'Ta bort'}
             </Button>
           </div>
         </DialogContent>
