@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Logo from '@/components/Logo'
 import { useAuth } from '@/hooks/useAuth'
 import NotificationBell from '@/components/NotificationBell'
+import ThemeToggle from '@/components/ThemeToggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { getCategoryNavLinks } from '@/lib/seoData'
@@ -81,7 +82,8 @@ const Navbar = () => {
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             {isAuthenticated ? (
               <>
                 {isSupplier && isOnTrial && (
@@ -158,6 +160,10 @@ const Navbar = () => {
               ))}
             </div>
             <div className="border-t pt-4 mt-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Tema</span>
+                <ThemeToggle />
+              </div>
               {isAuthenticated ? (
                 <>
                   <Link to={dashboardLink} onClick={() => setMobileOpen(false)}>
