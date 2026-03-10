@@ -30,6 +30,7 @@ const PlaceholderPage = lazy(() => import("./pages/PlaceholderPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const TermsPage = lazy(() => import("./pages/TermsPage"));
+const CookiePolicyPage = lazy(() => import("./pages/CookiePolicyPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const SitemapPage = lazy(() => import("./pages/SitemapPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -115,6 +116,7 @@ const App = () => (
               <Route path="/support" element={<PlaceholderPage title="Support" />} />
               <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />
               <Route path="/villkor" element={<TermsPage />} />
+              <Route path="/cookies" element={<CookiePolicyPage />} />
               <Route path="/logga-in" element={<LoginPage />} />
               <Route path="/registrera" element={<RegisterPage />} />
               <Route path="/registrera/byra" element={<RegisterSupplierPage />} />

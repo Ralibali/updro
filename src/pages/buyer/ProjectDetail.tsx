@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { Check, X, Phone, Mail } from 'lucide-react'
+import { Check, X, Phone, Mail, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
@@ -15,10 +15,13 @@ import VerificationChecklist from '@/components/shared/VerificationChecklist'
 
 const ProjectDetail = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [project, setProject] = useState<any>(null)
   const [offers, setOffers] = useState<any[]>([])
   const [confirmOffer, setConfirmOffer] = useState<any>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const offersRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -64,6 +67,21 @@ const ProjectDetail = () => {
     setOffers(prev => prev.map(o => o.status === 'pending' ? { ...o, status: 'declined' } : o))
   }
 
+  const handleDeleteProject = async () => {
+    if (!id) return
+    setDeleting(true)
+    await supabase.from('offers').delete().eq('project_id', id)
+    const { error } = await supabase.from('projects').delete().eq('id', id)
+    setDeleting(false)
+    if (error) {
+      toast.error('Kunde inte ta bort uppdraget')
+    } else {
+      toast.success('Uppdraget har tagits bort')
+      navigate('/dashboard/buyer/uppdrag')
+    }
+    setShowDeleteConfirm(false)
+  }
+
   if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
   return (
@@ -73,8 +91,19 @@ const ProjectDetail = () => {
           {/* Main content */}
           <div className="md:col-span-2">
             <div className="mb-6">
-              <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
-              <h1 className="font-display text-2xl font-bold">{project.title}</h1>
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+                  <h1 className="font-display text-2xl font-bold">{project.title}</h1>
+                </div>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  title="Ta bort uppdrag"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+              </div>
               <div className="flex gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
                 <span>{BUDGET_LABELS[project.budget_range] || 'Ej angiven'}</span>
                 <span>{START_TIME_LABELS[project.start_time] || ''}</span>
@@ -216,7 +245,7 @@ const ProjectDetail = () => {
         </div>
       </div>
 
-      {/* Confirm dialog */}
+      {/* Confirm accept dialog */}
       <Dialog open={!!confirmOffer} onOpenChange={() => setConfirmOffer(null)}>
         <DialogContent>
           <DialogHeader>
@@ -230,6 +259,24 @@ const ProjectDetail = () => {
             <Button variant="outline" onClick={() => setConfirmOffer(null)}>Avbryt</Button>
             <Button onClick={() => handleAccept(confirmOffer.id)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
               Bekräfta
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete confirm dialog */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ta bort uppdrag?</DialogTitle>
+            <DialogDescription>
+              Vill du verkligen ta bort "{project?.title}"? Alla tillhörande offerter tas också bort. Detta kan inte ångras.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 mt-4">
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>Avbryt</Button>
+            <Button variant="destructive" onClick={handleDeleteProject} disabled={deleting}>
+              {deleting ? 'Tar bort…' : 'Ta bort'}
             </Button>
           </div>
         </DialogContent>
