@@ -5,10 +5,11 @@ import { CATEGORY_STYLES, BUDGET_LABELS, START_TIME_LABELS } from '@/lib/constan
 import { timeAgo } from '@/lib/dateUtils'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Search, Download, CheckCircle, XCircle, ChevronDown, ChevronUp, Mail, Building2, User, Calendar, DollarSign, Clock, FileText } from 'lucide-react'
+import { Search, Download, CheckCircle, XCircle, ChevronDown, ChevronUp, Mail, Building2, User, Calendar, DollarSign, Clock, FileText, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { exportCsv } from '@/lib/exportCsv'
 import { toast } from 'sonner'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState<any[]>([])
