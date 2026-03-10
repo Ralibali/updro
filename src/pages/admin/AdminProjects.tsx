@@ -40,6 +40,17 @@ const AdminProjects = () => {
     fetchProjects()
   }
 
+  const handleDelete = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
+    const { error } = await supabase.from('projects').delete().eq('id', deleteTarget.id)
+    setDeleting(false)
+    if (error) { toast.error('Kunde inte ta bort: ' + error.message); return }
+    toast.success('Uppdraget har tagits bort')
+    setDeleteTarget(null)
+    fetchProjects()
+  }
+
   const filtered = projects.filter(p => {
     const matchesSearch = (p.title || '').toLowerCase().includes(search.toLowerCase()) ||
       (p.profiles?.company_name || '').toLowerCase().includes(search.toLowerCase()) ||
