@@ -6,6 +6,68 @@
 
 @layer base {
   :root {
+    --background: 220 20% 97%;
+    --foreground: 224 30% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 30% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 30% 12%;
+
+    --primary: 28 100% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 92%;
+    --secondary-foreground: 224 20% 30%;
+
+    --muted: 220 14% 94%;
+    --muted-foreground: 220 8% 46%;
+
+    --accent: 28 100% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 28 100% 55%;
+
+    --radius: 0.625rem;
+
+    /* Updro custom tokens */
+    --brand-dark: 224 30% 12%;
+    --brand-blue: 220 90% 56%;
+    --brand-blue-hover: 220 90% 48%;
+    --brand-orange: 28 100% 55%;
+    --brand-orange-hover: 28 100% 46%;
+    --brand-mint: 160 84% 44%;
+    --brand-mint-hover: 160 84% 36%;
+    --brand-coral: 0 72% 51%;
+    --brand-amber: 42 100% 50%;
+    --brand-amber-glow: 36 100% 60%;
+    --surface-2: 220 16% 95%;
+    --surface-3: 220 14% 92%;
+    --text-secondary: 220 8% 46%;
+    --border-strong: 220 13% 78%;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+    --shadow-brand: 0 4px 24px rgba(245,130,32,0.2);
+
+    --sidebar-background: 220 18% 96%;
+    --sidebar-foreground: 220 8% 40%;
+    --sidebar-primary: 224 30% 12%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 92%;
+    --sidebar-accent-foreground: 224 30% 12%;
+    --sidebar-border: 220 13% 88%;
+    --sidebar-ring: 28 100% 55%;
+  }
+
+  .dark {
     --background: 225 20% 7%;
     --foreground: 40 10% 92%;
 
@@ -33,8 +95,6 @@
     --border: 225 14% 16%;
     --input: 225 14% 16%;
     --ring: 28 100% 55%;
-
-    --radius: 0.625rem;
 
     /* Updro custom tokens */
     --brand-dark: 225 20% 5%;
@@ -103,7 +163,7 @@
   }
 
   .bg-hero-gradient {
-    background: linear-gradient(160deg, hsl(28 100% 55% / 0.06), hsl(42 100% 50% / 0.04), hsl(225 20% 7% / 0));
+    background: linear-gradient(160deg, hsl(28 100% 55% / 0.06), hsl(42 100% 50% / 0.04), hsl(var(--background) / 0));
   }
 
   .bg-mint-gradient {
@@ -116,6 +176,14 @@
 
   .glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .dark .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  :root .glass {
+    @apply bg-black/5 backdrop-blur-md border border-black/10;
   }
 
   .gradient-border {
