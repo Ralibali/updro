@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { Plus, Hand } from 'lucide-react'
+import { Plus, Hand, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
+import { toast } from 'sonner'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 const BuyerProjects = () => {
   const { user } = useAuth()
