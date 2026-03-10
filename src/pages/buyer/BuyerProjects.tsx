@@ -24,12 +24,10 @@ const BuyerProjects = () => {
   const handleDelete = async () => {
     if (!deleteTarget) return
     setDeleting(true)
-    // Delete related offers first, then the project
-    await supabase.from('offers').delete().eq('project_id', deleteTarget.id)
     const { error } = await supabase.from('projects').delete().eq('id', deleteTarget.id)
     setDeleting(false)
     if (error) {
-      toast.error('Kunde inte ta bort uppdraget')
+      toast.error(error.message || 'Kunde inte ta bort uppdraget')
     } else {
       setProjects(prev => prev.filter(p => p.id !== deleteTarget.id))
       toast.success('Uppdraget har tagits bort')

@@ -25,8 +25,8 @@ const AdminOffers = () => {
   return (
     <AdminLayout>
       <h1 className="font-display text-2xl font-bold mb-6">Offerter</h1>
-      <div className="bg-card rounded-xl border overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="bg-card rounded-xl border overflow-hidden overflow-x-auto">
+        <table className="w-full min-w-[760px] text-sm">
           <thead><tr className="border-b bg-muted/50">
             <th className="text-left p-3 font-medium">Offert</th>
             <th className="text-left p-3 font-medium">Uppdrag</th>

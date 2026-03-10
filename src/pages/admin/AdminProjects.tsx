@@ -100,7 +100,7 @@ const AdminProjects = () => {
         </div>
       </div>
       <div className="bg-card rounded-xl border overflow-hidden overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[980px] text-sm">
           <thead><tr className="border-b bg-muted/50">
             <th className="text-left p-3 font-medium w-8"></th>
             <th className="text-left p-3 font-medium">Titel</th>
