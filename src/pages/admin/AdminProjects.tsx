@@ -249,6 +249,23 @@ const AdminProjects = () => {
         </table>
         {filtered.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga uppdrag hittades.</p>}
       </div>
+
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ta bort uppdrag?</DialogTitle>
+            <DialogDescription>
+              Vill du verkligen ta bort "{deleteTarget?.title}"? Alla tillhörande offerter, meddelanden och recensioner tas också bort. Detta kan inte ångras.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 mt-4">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Avbryt</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Tar bort…' : 'Ta bort'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   )
 }
