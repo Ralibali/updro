@@ -29,6 +29,7 @@ const footerColumns = [
       { label: 'Om oss', href: '/om-oss' },
       { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Villkor', href: '/villkor' },
+      { label: 'Cookiepolicy', href: '/cookies' },
       { label: 'Sitemap', href: '/sitemap' },
     ],
   },

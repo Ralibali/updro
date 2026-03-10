@@ -116,6 +116,7 @@ const App = () => (
               <Route path="/support" element={<PlaceholderPage title="Support" />} />
               <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />
               <Route path="/villkor" element={<TermsPage />} />
+              <Route path="/cookies" element={<CookiePolicyPage />} />
               <Route path="/logga-in" element={<LoginPage />} />
               <Route path="/registrera" element={<RegisterPage />} />
               <Route path="/registrera/byra" element={<RegisterSupplierPage />} />
