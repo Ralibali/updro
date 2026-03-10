@@ -223,17 +223,22 @@ const AdminProjects = () => {
                           </div>
                         </div>
 
-                        {/* Actions for pending */}
-                        {p.status === 'pending' && (
-                          <div className="flex gap-2 pt-1">
-                            <Button className="rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => handleApprove(p.id)}>
-                              <CheckCircle className="h-4 w-4 mr-1.5" /> Godkänn uppdrag
-                            </Button>
-                            <Button variant="outline" className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
-                              <XCircle className="h-4 w-4 mr-1.5" /> Avvisa
-                            </Button>
-                          </div>
-                        )}
+                        {/* Actions */}
+                        <div className="flex gap-2 pt-1">
+                          {p.status === 'pending' && (
+                            <>
+                              <Button className="rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => handleApprove(p.id)}>
+                                <CheckCircle className="h-4 w-4 mr-1.5" /> Godkänn uppdrag
+                              </Button>
+                              <Button variant="outline" className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
+                                <XCircle className="h-4 w-4 mr-1.5" /> Avvisa
+                              </Button>
+                            </>
+                          )}
+                          <Button variant="outline" className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => setDeleteTarget(p)}>
+                            <Trash2 className="h-4 w-4 mr-1.5" /> Ta bort
+                          </Button>
+                        </div>
                       </div>
                     </td>
                   </tr>
