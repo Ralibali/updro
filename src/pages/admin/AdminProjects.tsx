@@ -5,16 +5,19 @@ import { CATEGORY_STYLES, BUDGET_LABELS, START_TIME_LABELS } from '@/lib/constan
 import { timeAgo } from '@/lib/dateUtils'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Search, Download, CheckCircle, XCircle, ChevronDown, ChevronUp, Mail, Building2, User, Calendar, DollarSign, Clock, FileText } from 'lucide-react'
+import { Search, Download, CheckCircle, XCircle, ChevronDown, ChevronUp, Mail, Building2, User, Calendar, DollarSign, Clock, FileText, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { exportCsv } from '@/lib/exportCsv'
 import { toast } from 'sonner'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 const AdminProjects = () => {
   const [projects, setProjects] = useState<any[]>([])
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<any>(null)
+  const [deleting, setDeleting] = useState(false)
 
   const fetchProjects = async () => {
     const { data } = await supabase.from('projects').select('*, profiles!projects_buyer_id_fkey(full_name, company_name, email, phone, city)').order('created_at', { ascending: false }).limit(500)
@@ -34,6 +37,17 @@ const AdminProjects = () => {
     const { error } = await supabase.from('projects').update({ status: 'rejected' }).eq('id', id)
     if (error) { toast.error('Kunde inte avvisa.'); return }
     toast.success('Uppdrag avvisat.')
+    fetchProjects()
+  }
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
+    const { error } = await supabase.from('projects').delete().eq('id', deleteTarget.id)
+    setDeleting(false)
+    if (error) { toast.error('Kunde inte ta bort: ' + error.message); return }
+    toast.success('Uppdraget har tagits bort')
+    setDeleteTarget(null)
     fetchProjects()
   }
 
@@ -131,16 +145,21 @@ const AdminProjects = () => {
                   <td className="p-3">{p.offer_count || 0}</td>
                   <td className="p-3 text-muted-foreground">{timeAgo(p.created_at)}</td>
                   <td className="p-3" onClick={e => e.stopPropagation()}>
-                    {p.status === 'pending' && (
-                      <div className="flex gap-1">
-                        <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-accent border-accent/30 hover:bg-accent/10" onClick={() => handleApprove(p.id)}>
-                          <CheckCircle className="h-3 w-3 mr-1" /> Godkänn
-                        </Button>
-                        <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
-                          <XCircle className="h-3 w-3 mr-1" /> Avvisa
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex gap-1">
+                      {p.status === 'pending' && (
+                        <>
+                          <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-accent border-accent/30 hover:bg-accent/10" onClick={() => handleApprove(p.id)}>
+                            <CheckCircle className="h-3 w-3 mr-1" /> Godkänn
+                          </Button>
+                          <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
+                            <XCircle className="h-3 w-3 mr-1" /> Avvisa
+                          </Button>
+                        </>
+                      )}
+                      <Button size="sm" variant="ghost" className="rounded-lg h-7 w-7 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteTarget(p)} title="Ta bort">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
                 {expandedId === p.id && (
@@ -204,17 +223,22 @@ const AdminProjects = () => {
                           </div>
                         </div>
 
-                        {/* Actions for pending */}
-                        {p.status === 'pending' && (
-                          <div className="flex gap-2 pt-1">
-                            <Button className="rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => handleApprove(p.id)}>
-                              <CheckCircle className="h-4 w-4 mr-1.5" /> Godkänn uppdrag
-                            </Button>
-                            <Button variant="outline" className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
-                              <XCircle className="h-4 w-4 mr-1.5" /> Avvisa
-                            </Button>
-                          </div>
-                        )}
+                        {/* Actions */}
+                        <div className="flex gap-2 pt-1">
+                          {p.status === 'pending' && (
+                            <>
+                              <Button className="rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground" onClick={() => handleApprove(p.id)}>
+                                <CheckCircle className="h-4 w-4 mr-1.5" /> Godkänn uppdrag
+                              </Button>
+                              <Button variant="outline" className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
+                                <XCircle className="h-4 w-4 mr-1.5" /> Avvisa
+                              </Button>
+                            </>
+                          )}
+                          <Button variant="outline" className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => setDeleteTarget(p)}>
+                            <Trash2 className="h-4 w-4 mr-1.5" /> Ta bort
+                          </Button>
+                        </div>
                       </div>
                     </td>
                   </tr>
@@ -225,6 +249,23 @@ const AdminProjects = () => {
         </table>
         {filtered.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga uppdrag hittades.</p>}
       </div>
+
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Ta bort uppdrag?</DialogTitle>
+            <DialogDescription>
+              Vill du verkligen ta bort "{deleteTarget?.title}"? Alla tillhörande offerter, meddelanden och recensioner tas också bort. Detta kan inte ångras.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 mt-4">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Avbryt</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Tar bort…' : 'Ta bort'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   )
 }
