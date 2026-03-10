@@ -67,6 +67,21 @@ const ProjectDetail = () => {
     setOffers(prev => prev.map(o => o.status === 'pending' ? { ...o, status: 'declined' } : o))
   }
 
+  const handleDeleteProject = async () => {
+    if (!id) return
+    setDeleting(true)
+    await supabase.from('offers').delete().eq('project_id', id)
+    const { error } = await supabase.from('projects').delete().eq('id', id)
+    setDeleting(false)
+    if (error) {
+      toast.error('Kunde inte ta bort uppdraget')
+    } else {
+      toast.success('Uppdraget har tagits bort')
+      navigate('/dashboard/buyer/uppdrag')
+    }
+    setShowDeleteConfirm(false)
+  }
+
   if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
   return (
