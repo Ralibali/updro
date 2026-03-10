@@ -145,16 +145,21 @@ const AdminProjects = () => {
                   <td className="p-3">{p.offer_count || 0}</td>
                   <td className="p-3 text-muted-foreground">{timeAgo(p.created_at)}</td>
                   <td className="p-3" onClick={e => e.stopPropagation()}>
-                    {p.status === 'pending' && (
-                      <div className="flex gap-1">
-                        <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-accent border-accent/30 hover:bg-accent/10" onClick={() => handleApprove(p.id)}>
-                          <CheckCircle className="h-3 w-3 mr-1" /> Godkänn
-                        </Button>
-                        <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
-                          <XCircle className="h-3 w-3 mr-1" /> Avvisa
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex gap-1">
+                      {p.status === 'pending' && (
+                        <>
+                          <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-accent border-accent/30 hover:bg-accent/10" onClick={() => handleApprove(p.id)}>
+                            <CheckCircle className="h-3 w-3 mr-1" /> Godkänn
+                          </Button>
+                          <Button size="sm" variant="outline" className="rounded-lg text-xs h-7 px-2 text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => handleReject(p.id)}>
+                            <XCircle className="h-3 w-3 mr-1" /> Avvisa
+                          </Button>
+                        </>
+                      )}
+                      <Button size="sm" variant="ghost" className="rounded-lg h-7 w-7 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setDeleteTarget(p)} title="Ta bort">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
                 {expandedId === p.id && (
