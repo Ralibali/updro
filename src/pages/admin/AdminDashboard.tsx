@@ -42,7 +42,7 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
       {/* Mobile bottom nav for admin */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t flex justify-around py-2 z-50">
-        {navItems.slice(0, 5).map(item => {
+        {navItems.slice(0, 4).map(item => {
           const active = location.pathname === item.href
           return (
             <Link key={item.href} to={item.href}
@@ -52,6 +52,32 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             </Link>
           )
         })}
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className={cn('flex flex-col items-center gap-0.5 text-xs p-1',
+              navItems.slice(4).some(i => location.pathname === i.href) ? 'text-primary' : 'text-muted-foreground'
+            )}>
+              <MoreHorizontal className="h-5 w-5" />
+              <span>Mer</span>
+            </button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="rounded-t-2xl pb-8">
+            <div className="grid grid-cols-3 gap-2 pt-4">
+              {navItems.slice(4).map(item => {
+                const active = location.pathname === item.href
+                return (
+                  <Link key={item.href} to={item.href}
+                    className={cn('flex flex-col items-center gap-1.5 rounded-xl p-3 text-xs font-medium transition-colors',
+                      active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'
+                    )}>
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </div>
   )
