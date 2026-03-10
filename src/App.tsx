@@ -98,6 +98,7 @@ const PageLoader = () => (
 const PageTracker = () => { usePageTracking(); return null; };
 
 const App = () => (
+  <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
