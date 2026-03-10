@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
-import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye } from 'lucide-react'
+import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
 const navItems = [
   { label: 'Översikt', href: '/admin', icon: Home },
@@ -37,11 +38,11 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             </Link>
           ))}
         </aside>
-        <main className="flex-1 p-4 md:p-8 overflow-y-auto pb-20 md:pb-8">{children}</main>
+        <main className="flex-1 p-4 md:p-8 overflow-x-auto pb-24 md:pb-8">{children}</main>
       </div>
       {/* Mobile bottom nav for admin */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t flex justify-around py-2 z-50">
-        {navItems.slice(0, 5).map(item => {
+        {navItems.slice(0, 4).map(item => {
           const active = location.pathname === item.href
           return (
             <Link key={item.href} to={item.href}
@@ -51,6 +52,32 @@ export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             </Link>
           )
         })}
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className={cn('flex flex-col items-center gap-0.5 text-xs p-1',
+              navItems.slice(4).some(i => location.pathname === i.href) ? 'text-primary' : 'text-muted-foreground'
+            )}>
+              <MoreHorizontal className="h-5 w-5" />
+              <span>Mer</span>
+            </button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="rounded-t-2xl pb-8">
+            <div className="grid grid-cols-3 gap-2 pt-4">
+              {navItems.slice(4).map(item => {
+                const active = location.pathname === item.href
+                return (
+                  <Link key={item.href} to={item.href}
+                    className={cn('flex flex-col items-center gap-1.5 rounded-xl p-3 text-xs font-medium transition-colors',
+                      active ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'
+                    )}>
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </div>
   )
