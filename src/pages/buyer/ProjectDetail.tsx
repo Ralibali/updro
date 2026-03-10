@@ -15,10 +15,13 @@ import VerificationChecklist from '@/components/shared/VerificationChecklist'
 
 const ProjectDetail = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const [project, setProject] = useState<any>(null)
   const [offers, setOffers] = useState<any[]>([])
   const [confirmOffer, setConfirmOffer] = useState<any>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const offersRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
