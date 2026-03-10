@@ -160,6 +160,10 @@ const Navbar = () => {
               ))}
             </div>
             <div className="border-t pt-4 mt-4 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Tema</span>
+                <ThemeToggle />
+              </div>
               {isAuthenticated ? (
                 <>
                   <Link to={dashboardLink} onClick={() => setMobileOpen(false)}>
