@@ -16,6 +16,8 @@ const AdminProjects = () => {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<any>(null)
+  const [deleting, setDeleting] = useState(false)
 
   const fetchProjects = async () => {
     const { data } = await supabase.from('projects').select('*, profiles!projects_buyer_id_fkey(full_name, company_name, email, phone, city)').order('created_at', { ascending: false }).limit(500)
