@@ -91,8 +91,19 @@ const ProjectDetail = () => {
           {/* Main content */}
           <div className="md:col-span-2">
             <div className="mb-6">
-              <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
-              <h1 className="font-display text-2xl font-bold">{project.title}</h1>
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+                  <h1 className="font-display text-2xl font-bold">{project.title}</h1>
+                </div>
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  title="Ta bort uppdrag"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
+              </div>
               <div className="flex gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
                 <span>{BUDGET_LABELS[project.budget_range] || 'Ej angiven'}</span>
                 <span>{START_TIME_LABELS[project.start_time] || ''}</span>
