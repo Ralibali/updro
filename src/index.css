@@ -79,7 +79,7 @@
     --popover: 225 18% 10%;
     --popover-foreground: 40 10% 92%;
 
-    --primary: 28 100% 55%;
+    --primary: 245 58% 55%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 225 15% 14%;
@@ -88,7 +88,7 @@
     --muted: 225 14% 13%;
     --muted-foreground: 225 8% 55%;
 
-    --accent: 28 100% 55%;
+    --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -96,19 +96,21 @@
 
     --border: 225 14% 16%;
     --input: 225 14% 16%;
-    --ring: 28 100% 55%;
+    --ring: 245 58% 55%;
 
     /* Updro custom tokens */
     --brand-dark: 225 20% 5%;
-    --brand-blue: 220 90% 56%;
-    --brand-blue-hover: 220 90% 48%;
-    --brand-orange: 28 100% 55%;
-    --brand-orange-hover: 28 100% 46%;
-    --brand-mint: 160 84% 44%;
-    --brand-mint-hover: 160 84% 36%;
+    --brand-blue: 245 58% 55%;
+    --brand-blue-hover: 245 58% 48%;
+    --brand-indigo: 245 58% 55%;
+    --brand-orange: 24 95% 53%;
+    --brand-orange-hover: 24 95% 46%;
+    --brand-mint: 160 84% 39%;
+    --brand-mint-hover: 160 84% 32%;
     --brand-coral: 0 72% 51%;
     --brand-amber: 42 100% 50%;
     --brand-amber-glow: 36 100% 60%;
+    --surface-alt: 225 20% 10%;
     --surface-2: 225 18% 9%;
     --surface-3: 225 16% 12%;
     --text-secondary: 225 8% 50%;
@@ -117,7 +119,7 @@
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
     --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
     --shadow-lg: 0 8px 40px rgba(0,0,0,0.5);
-    --shadow-brand: 0 4px 24px rgba(245,130,32,0.3);
+    --shadow-brand: 0 4px 24px rgba(67,56,202,0.3);
 
     --sidebar-background: 225 22% 5%;
     --sidebar-foreground: 225 8% 65%;
@@ -126,7 +128,7 @@
     --sidebar-accent: 225 16% 12%;
     --sidebar-accent-foreground: 40 10% 92%;
     --sidebar-border: 225 16% 12%;
-    --sidebar-ring: 28 100% 55%;
+    --sidebar-ring: 245 58% 55%;
   }
 }
 
