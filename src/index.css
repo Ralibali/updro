@@ -6,65 +6,67 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 224 30% 12%;
+    --background: 0 0% 100%;
+    --foreground: 224 71% 4%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 30% 12%;
+    --card-foreground: 224 71% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 30% 12%;
+    --popover-foreground: 224 71% 4%;
 
-    --primary: 28 100% 55%;
+    --primary: 245 58% 51%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 92%;
+    --secondary: 220 14% 96%;
     --secondary-foreground: 224 20% 30%;
 
-    --muted: 220 14% 94%;
+    --muted: 220 14% 96%;
     --muted-foreground: 220 8% 46%;
 
-    --accent: 28 100% 55%;
+    --accent: 24 95% 53%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 88%;
-    --input: 220 13% 88%;
-    --ring: 28 100% 55%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 245 58% 51%;
 
     --radius: 0.625rem;
 
     /* Updro custom tokens */
-    --brand-dark: 224 30% 12%;
-    --brand-blue: 220 90% 56%;
-    --brand-blue-hover: 220 90% 48%;
-    --brand-orange: 28 100% 55%;
-    --brand-orange-hover: 28 100% 46%;
-    --brand-mint: 160 84% 44%;
-    --brand-mint-hover: 160 84% 36%;
+    --brand-dark: 224 71% 4%;
+    --brand-blue: 245 58% 51%;
+    --brand-blue-hover: 245 58% 44%;
+    --brand-indigo: 245 58% 51%;
+    --brand-orange: 24 95% 53%;
+    --brand-orange-hover: 24 95% 46%;
+    --brand-mint: 160 84% 39%;
+    --brand-mint-hover: 160 84% 32%;
     --brand-coral: 0 72% 51%;
     --brand-amber: 42 100% 50%;
     --brand-amber-glow: 36 100% 60%;
-    --surface-2: 220 16% 95%;
-    --surface-3: 220 14% 92%;
+    --surface-alt: 225 60% 98%;
+    --surface-2: 220 16% 96%;
+    --surface-3: 220 14% 93%;
     --text-secondary: 220 8% 46%;
     --border-strong: 220 13% 78%;
 
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
     --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
     --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
-    --shadow-brand: 0 4px 24px rgba(245,130,32,0.2);
+    --shadow-brand: 0 4px 24px rgba(67,56,202,0.2);
 
     --sidebar-background: 220 18% 96%;
     --sidebar-foreground: 220 8% 40%;
-    --sidebar-primary: 224 30% 12%;
+    --sidebar-primary: 224 71% 4%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 14% 92%;
-    --sidebar-accent-foreground: 224 30% 12%;
-    --sidebar-border: 220 13% 88%;
-    --sidebar-ring: 28 100% 55%;
+    --sidebar-accent-foreground: 224 71% 4%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 245 58% 51%;
   }
 
   .dark {
