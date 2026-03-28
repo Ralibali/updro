@@ -5,12 +5,12 @@ const steps = [
   {
     number: '1',
     title: 'Beskriv ditt projekt',
-    description: 'Berätta vad du behöver hjälp med – det tar 2 minuter. Ingen registrering krävs.',
+    description: 'Berätta vad du behöver hjälp med – det tar två minuter. Ingen registrering krävs.',
   },
   {
     number: '2',
     title: 'Matcha med byråer',
-    description: 'Vi matchar din förfrågan med upp till 5 kvalitetssäkrade byråer som passar ditt uppdrag och din budget.',
+    description: 'Vi matchar din förfrågan med upp till fem kvalitetssäkrade byråer som passar ditt uppdrag och din budget.',
   },
   {
     number: '3',

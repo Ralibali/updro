@@ -106,7 +106,7 @@ export const HittaWebbbyraPage = () => (
 
     <h2>Hur matchar Updro dig med rätt webbyrå?</h2>
     <p>
-      På Updro beskriver du ditt projekt i ett enkelt formulär – vad du behöver, din budget och tidsram. Vi matchar sedan din förfrågan med upp till 5 kvalitetssäkrade webbyråer som har erfarenhet inom just ditt område. Alla byråer på Updro är manuellt granskade, vilket innebär att du bara får offerter från seriösa och kompetenta partners.
+      På Updro beskriver du ditt projekt i ett enkelt formulär – vad du behöver, din budget och tidsram. Vi matchar sedan din förfrågan med upp till fem kvalitetssäkrade webbyråer som har erfarenhet inom just ditt område. Alla byråer på Updro är manuellt granskade, vilket innebär att du bara får offerter från seriösa och kompetenta partners.
     </p>
     <p>
       Processen är helt gratis för dig som beställare. Du betalar ingenting – varken för att lägga upp ditt projekt eller för att ta emot och jämföra offerter. Byråerna svarar vanligtvis inom 24 timmar, så du kan komma igång snabbt.
@@ -114,7 +114,7 @@ export const HittaWebbbyraPage = () => (
 
     <h2>Vad kostar det att anlita en webbyrå?</h2>
     <p>
-      Priset för ett webbprojekt varierar kraftigt beroende på omfattning och komplexitet. En enklare företagssajt med fem till tio sidor kan kosta mellan 20 000 och 80 000 kr. En mer avancerad sajt med kundportal, bokningssystem eller e-handelsfunktionalitet hamnar ofta mellan 80 000 och 300 000 kr. Större enterprise-lösningar kan kosta ännu mer.
+      Priset för ett webbprojekt varierar kraftigt beroende på omfattning och komplexitet. Priset för ett webbprojekt varierar kraftigt beroende på omfattning och komplexitet. En enklare företagssajt med fem till tio sidor kan kosta mellan 20 000 och 80 000 kr. En mer avancerad sajt med kundportal, bokningssystem eller e-handelsfunktionalitet hamnar ofta mellan 80 000 och 300 000 kr. Större enterprise-lösningar kan kosta ännu mer. En mer avancerad sajt med kundportal, bokningssystem eller e-handelsfunktionalitet hamnar ofta mellan 80 000 och 300 000 kr. Större enterprise-lösningar kan kosta ännu mer.
     </p>
     <p>
       Genom att jämföra offerter från flera webbyråer får du en tydlig bild av marknadspriset och kan fatta ett välgrundat beslut. På Updro ser du inte bara priset – du kan också jämföra byråernas specialistområden, leveranstider och kundbetyg.
@@ -130,7 +130,7 @@ export const HittaWebbbyraPage = () => (
 export const HittaSeoByraPage = () => (
   <SEOLandingPage
     title="Hitta SEO-byrå – Jämför offerter gratis | Updro"
-    metaDescription="Jämför offerter från SEO-byråer i Sverige. Få upp till 5 offerter inom 24h. Gratis och utan förpliktelser."
+    metaDescription="Jämför offerter från SEO-byråer i Sverige. Få upp till fem offerter inom 24h. Gratis och utan förpliktelser."
     canonical="https://updro.se/hitta-seo-byra"
     h1="Hitta rätt SEO-byrå – jämför och välj"
     serviceType="SEO & sökmotoroptimering"
@@ -177,7 +177,7 @@ export const HittaDigitalByraPage = () => (
     title="Hitta Digital Byrå – Jämför offerter gratis | Updro"
     metaDescription="Hitta rätt digital byrå för ditt projekt. Jämför offerter från kvalitetssäkrade byråer inom Meta Ads, SEO, webb och mer."
     canonical="https://updro.se/hitta-digital-byra"
-    h1="Hitta digital byrå – upp till 5 offerter gratis"
+    h1="Hitta digital byrå – upp till fem offerter gratis"
     serviceType="Digital marknadsföring"
   >
     <h2>Vad gör en digital byrå?</h2>

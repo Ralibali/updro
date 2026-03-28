@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 const buyerBullets = [
   'Gratis att använda',
-  'Upp till 5 offerter',
+  'Upp till fem offerter',
   'Jämför priser & portfolio',
   'Ingen registrering krävs',
 ]
