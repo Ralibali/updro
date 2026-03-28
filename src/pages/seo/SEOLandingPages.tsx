@@ -114,7 +114,7 @@ export const HittaWebbbyraPage = () => (
 
     <h2>Vad kostar det att anlita en webbyrå?</h2>
     <p>
-      Priset för ett webbprojekt varierar kraftigt beroende på omfattning och komplexitet. En enklare företagssajt med fem till tio sidor kan kosta mellan 20 000 och 80 000 kr. En mer avancerad sajt med kundportal, bokningssystem eller e-handelsfunktionalitet hamnar ofta mellan 80 000 och 300 000 kr. Större enterprise-lösningar kan kosta ännu mer.
+      Priset för ett webbprojekt varierar kraftigt beroende på omfattning och komplexitet. Priset för ett webbprojekt varierar kraftigt beroende på omfattning och komplexitet. En enklare företagssajt med fem till tio sidor kan kosta mellan 20 000 och 80 000 kr. En mer avancerad sajt med kundportal, bokningssystem eller e-handelsfunktionalitet hamnar ofta mellan 80 000 och 300 000 kr. Större enterprise-lösningar kan kosta ännu mer. En mer avancerad sajt med kundportal, bokningssystem eller e-handelsfunktionalitet hamnar ofta mellan 80 000 och 300 000 kr. Större enterprise-lösningar kan kosta ännu mer.
     </p>
     <p>
       Genom att jämföra offerter från flera webbyråer får du en tydlig bild av marknadspriset och kan fatta ett välgrundat beslut. På Updro ser du inte bara priset – du kan också jämföra byråernas specialistområden, leveranstider och kundbetyg.

@@ -42,7 +42,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Beskriv ditt projekt. Få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Helt gratis, helt utan förpliktelser.
+            Beskriv ditt projekt. Få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Helt gratis, helt utan förpliktelser.
           </motion.p>
 
           {/* Search form */}

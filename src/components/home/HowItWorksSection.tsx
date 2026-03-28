@@ -10,7 +10,7 @@ const steps = [
   {
     number: '2',
     title: 'Matcha med byråer',
-    description: 'Vi matchar din förfrågan med upp till 5 kvalitetssäkrade byråer som passar ditt uppdrag och din budget.',
+    description: 'Vi matchar din förfrågan med upp till fem kvalitetssäkrade byråer som passar ditt uppdrag och din budget.',
   },
   {
     number: '3',

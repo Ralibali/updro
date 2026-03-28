@@ -43,7 +43,7 @@ const Index = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser',
-      description: 'Beskriv ditt projekt och få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis.',
+      description: 'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis.',
       canonical: 'https://updro.se/',
     })
   }, [])
