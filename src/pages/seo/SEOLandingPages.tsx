@@ -130,7 +130,7 @@ export const HittaWebbbyraPage = () => (
 export const HittaSeoByraPage = () => (
   <SEOLandingPage
     title="Hitta SEO-byrå – Jämför offerter gratis | Updro"
-    metaDescription="Jämför offerter från SEO-byråer i Sverige. Få upp till 5 offerter inom 24h. Gratis och utan förpliktelser."
+    metaDescription="Jämför offerter från SEO-byråer i Sverige. Få upp till fem offerter inom 24h. Gratis och utan förpliktelser."
     canonical="https://updro.se/hitta-seo-byra"
     h1="Hitta rätt SEO-byrå – jämför och välj"
     serviceType="SEO & sökmotoroptimering"
