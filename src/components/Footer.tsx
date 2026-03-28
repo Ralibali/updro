@@ -6,7 +6,9 @@ const footerColumns = [
     title: 'För kunder',
     links: [
       { label: 'Starta förfrågan', href: '/publicera' },
-      { label: 'Kategorier', href: '/#kategorier' },
+      { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
+      { label: 'Hitta SEO-byrå', href: '/hitta-seo-byra' },
+      { label: 'Hitta digital byrå', href: '/hitta-digital-byra' },
       { label: 'Hur det fungerar', href: '/#hur-det-fungerar' },
       { label: 'FAQ', href: '/#faq' },
     ],
