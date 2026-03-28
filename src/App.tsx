@@ -58,6 +58,7 @@ const AgencyCategoryPage = lazy(() => import("./pages/seo/AgencyCategoryPage"));
 const ServicePage = lazy(() => import("./pages/seo/ServicePage"));
 const KnowledgeArticlePage = lazy(() => import("./pages/seo/KnowledgeArticlePage"));
 const KnowledgeBankIndex = lazy(() => import("./pages/seo/KnowledgeBankIndex"));
+const { HittaWebbbyraPage, HittaSeoByraPage, HittaDigitalByraPage } = await import("./pages/seo/SEOLandingPages");
 
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const BuyerProjects = lazy(() => import("./pages/buyer/BuyerProjects"));

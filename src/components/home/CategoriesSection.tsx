@@ -22,7 +22,7 @@ const CategoriesSection = () => {
       <div className="container">
         <div className="text-center mb-14">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Vilket digitalt uppdrag behöver du hjälp med?
+            Gratis offertjämförelse – webbutveckling, SEO och mer
           </h2>
           <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
             Välj kategori – vi matchar dig med rätt byråer automatiskt

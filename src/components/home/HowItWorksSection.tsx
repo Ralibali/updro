@@ -31,7 +31,7 @@ const HowItWorksSection = () => {
           transition={{ duration: 0.5 }}
         >
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Så enkelt fungerar Updro
+            Så enkelt fungerar Updro – beskriv projekt, få offerter, välj byrå
           </h2>
         </motion.div>
 
