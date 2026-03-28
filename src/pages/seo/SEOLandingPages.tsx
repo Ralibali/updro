@@ -106,7 +106,7 @@ export const HittaWebbbyraPage = () => (
 
     <h2>Hur matchar Updro dig med rätt webbyrå?</h2>
     <p>
-      På Updro beskriver du ditt projekt i ett enkelt formulär – vad du behöver, din budget och tidsram. Vi matchar sedan din förfrågan med upp till 5 kvalitetssäkrade webbyråer som har erfarenhet inom just ditt område. Alla byråer på Updro är manuellt granskade, vilket innebär att du bara får offerter från seriösa och kompetenta partners.
+      På Updro beskriver du ditt projekt i ett enkelt formulär – vad du behöver, din budget och tidsram. Vi matchar sedan din förfrågan med upp till fem kvalitetssäkrade webbyråer som har erfarenhet inom just ditt område. Alla byråer på Updro är manuellt granskade, vilket innebär att du bara får offerter från seriösa och kompetenta partners.
     </p>
     <p>
       Processen är helt gratis för dig som beställare. Du betalar ingenting – varken för att lägga upp ditt projekt eller för att ta emot och jämföra offerter. Byråerna svarar vanligtvis inom 24 timmar, så du kan komma igång snabbt.
