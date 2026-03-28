@@ -132,6 +132,11 @@ const App = () => (
               <Route path="/guider" element={<GuidesIndex />} />
               <Route path="/guider/:slug" element={<GuidePage />} />
 
+              {/* SEO landing pages */}
+              <Route path="/hitta-webbyra" element={<HittaWebbbyraPage />} />
+              <Route path="/hitta-seo-byra" element={<HittaSeoByraPage />} />
+              <Route path="/hitta-digital-byra" element={<HittaDigitalByraPage />} />
+
               {/* Content hubs */}
               <Route path="/artiklar" element={<ArticlesIndex />} />
               <Route path="/artiklar/:slug" element={<ArticlePage />} />
