@@ -23,7 +23,7 @@
     <meta property="og:url" content="https://updro.se/" />
     <meta property="og:title" content="Updro – Jämför offerter från digitala byråer | Gratis" />
     <meta property="og:description" content="Få upp till 5 offerter från kvalitetssäkrade byråer inom 24 timmar. Webbutveckling, SEO, e-handel och mer – helt gratis." />
-    <meta property="og:image" content="https://updro.se/og/og-defaultfault.png" />
+    <meta property="og:image" content="https://updro.se/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Updro – Jämför offerter från digitala byråer i Sverige" />
@@ -34,7 +34,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Updro – Jämför offerter från digitala byråer | Gratis" />
     <meta name="twitter:description" content="Få upp till 5 offerter från kvalitetssäkrade byråer inom 24 timmar. Helt gratis." />
-    <meta name="twitter:image" content="https://updro./og-defaultimage.png" />
+    <meta name="twitter:image" content="https://updro.se/og-image.png" />
 
     <!-- Performance hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -75,7 +75,7 @@
           "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "customer support",
-            "email": "support@updro.se",
+            "email": "info@auroramedia.se",
             "availableLanguage": "Swedish"
           },
           "sameAs": []
@@ -87,26 +87,25 @@
           "name": "Updro",
           "publisher": { "@id": "https://updro.se/#organization" },
           "inLanguage": "sv-SE",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": {
-              "@type": "EntryPoint",
-              "urlTemplate": "https://updro.se/byraer?q={search_term_string}"
-            },
-            "query-input": "required name=search_term_string"
-          }
+          "inLanguage": "sv-SE"
         }
       ]
     }
     </script>
 
-    <!-- Google Ads (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10941540384"></script>
+    <!-- Google Ads (gtag.js) – deferred -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'AW-10941540384');
+      window.addEventListener('DOMContentLoaded', function() {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-10941540384';
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'AW-10941540384');
+      });
     </script>
   </head>
 
