@@ -1,30 +1,27 @@
 import { motion } from 'framer-motion'
-import { ClipboardList, MessageSquareText, Handshake } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 const steps = [
   {
-    icon: ClipboardList,
     number: '1',
-    title: 'Publicera ditt uppdrag',
-    description: 'Beskriv vad du behöver – det tar bara två minuter. Helt gratis och utan förpliktelser.',
+    title: 'Beskriv ditt projekt',
+    description: 'Berätta vad du behöver hjälp med – det tar 2 minuter. Ingen registrering krävs.',
   },
   {
-    icon: MessageSquareText,
     number: '2',
-    title: 'Få offerter från byråer',
-    description: 'Upp till fem kvalificerade byråer skickar skräddarsydda offerter direkt till dig.',
+    title: 'Matcha med byråer',
+    description: 'Vi matchar din förfrågan med upp till 5 kvalitetssäkrade byråer som passar ditt uppdrag och din budget.',
   },
   {
-    icon: Handshake,
     number: '3',
-    title: 'Välj rätt byrå',
-    description: 'Jämför pris, portfolio och omdömen – och välj den byrå som passar dig bäst.',
+    title: 'Jämför och välj',
+    description: 'Byråerna kontaktar dig direkt med offerter. Du jämför, ställer frågor och väljer den som passar bäst.',
   },
 ]
 
 const HowItWorksSection = () => {
   return (
-    <section className="py-20 bg-muted/30" id="hur-det-fungerar">
+    <section className="py-20 bg-[#F8FAFF] dark:bg-muted/20" id="hur-det-fungerar">
       <div className="container">
         <motion.div
           className="text-center mb-14"
@@ -33,40 +30,35 @@ const HowItWorksSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <span className="inline-block rounded-full bg-primary/10 text-primary px-4 py-1.5 text-xs font-semibold mb-4">
-            Så fungerar det
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold">
-            Tre enkla steg till rätt byrå
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+            Så enkelt fungerar Updro
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Det tar kortare tid att lägga upp ett uppdrag än att ringa en byrå.
-          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           {steps.map((step, i) => (
             <motion.div
-              key={step.title}
+              key={step.number}
               className="relative text-center"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.15 }}
+              transition={{ duration: 0.4, delay: i * 0.2 }}
             >
-              {/* Connector line (between cards on desktop) */}
+              {/* Arrow connector on desktop */}
               {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 left-[60%] w-[80%] border-t-2 border-dashed border-border" />
+                <div className="hidden md:flex absolute top-8 left-[65%] w-[70%] items-center justify-center">
+                  <ArrowRight className="h-5 w-5 text-primary/30" />
+                </div>
               )}
 
-              <div className="relative mx-auto mb-5 flex h-24 w-24 items-center justify-center rounded-2xl bg-card border shadow-sm">
-                <step.icon className="h-8 w-8 text-primary" />
-                <span className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold shadow">
+              <div className="mb-5">
+                <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-display text-2xl font-bold">
                   {step.number}
                 </span>
               </div>
 
-              <h3 className="font-display text-lg font-bold mb-2">{step.title}</h3>
+              <h3 className="font-display text-lg font-bold mb-2 text-foreground">{step.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
                 {step.description}
               </p>

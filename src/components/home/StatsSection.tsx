@@ -1,30 +1,60 @@
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+
+interface CountUpProps {
+  target: number
+  suffix?: string
+  prefix?: string
+}
+
+const CountUp = ({ target, suffix = '', prefix = '' }: CountUpProps) => {
+  const [inView, setInView] = useState(false)
+  const ref = useRef<HTMLSpanElement>(null)
+  const count = useMotionValue(0)
+  const rounded = useTransform(count, (v) => `${prefix}${Math.round(v)}${suffix}`)
+  const [display, setDisplay] = useState(`${prefix}0${suffix}`)
+
+  useEffect(() => {
+    if (!inView) return
+    const controls = animate(count, target, { duration: 1.5, ease: 'easeOut' })
+    const unsub = rounded.on('change', (v) => setDisplay(v))
+    return () => { controls.stop(); unsub() }
+  }, [inView, target, count, rounded])
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setInView(true) }, { threshold: 0.5 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  return <span ref={ref}>{display}</span>
+}
 
 const stats = [
-  { value: '300+', label: 'Registrerade byråer' },
-  { value: '1 800+', label: 'Genomförda projekt' },
-  { value: '4,8 ★', label: 'Genomsnittligt betyg' },
-  { value: '299 kr', label: 'Lägsta lead-pris' },
+  { target: 5, suffix: '', label: 'offerter per förfrågan (max)' },
+  { target: 24, suffix: 'h', label: 'genomsnittlig svarstid' },
+  { target: 100, suffix: '%', label: 'gratis för uppdragsgivare' },
 ]
 
 const StatsSection = () => {
   return (
-    <section className="py-16 border-y bg-card">
+    <section className="py-16 bg-primary">
       <div className="container">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto text-center">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="text-center"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
             >
-              <div className="font-display text-3xl md:text-4xl font-bold text-foreground">
-                {stat.value}
+              <div className="font-display text-5xl md:text-6xl font-bold text-primary-foreground">
+                <CountUp target={stat.target} suffix={stat.suffix} />
               </div>
-              <div className="mt-1 text-sm text-muted-foreground">{stat.label}</div>
+              <div className="mt-2 text-sm text-primary-foreground/80">{stat.label}</div>
             </motion.div>
           ))}
         </div>

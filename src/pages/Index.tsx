@@ -2,12 +2,14 @@ import { useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/home/HeroSection'
-import SearchBar from '@/components/home/SearchBar'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
-import USPSection from '@/components/home/USPSection'
-import CTASection from '@/components/home/CTASection'
+import AgencyTrustSection from '@/components/home/AgencyTrustSection'
+import TwoSidedSection from '@/components/home/TwoSidedSection'
+import StatsSection from '@/components/home/StatsSection'
+import TestimonialsSection from '@/components/home/TestimonialsSection'
 import FAQSection from '@/components/home/FAQSection'
+import CTASection from '@/components/home/CTASection'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
 const howItWorksSchema = {
@@ -51,10 +53,12 @@ const Index = () => {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
-        <SearchBar />
         <CategoriesSection />
         <HowItWorksSection />
-        <USPSection />
+        <AgencyTrustSection />
+        <TwoSidedSection />
+        <StatsSection />
+        <TestimonialsSection />
         <FAQSection />
         <CTASection />
       </main>

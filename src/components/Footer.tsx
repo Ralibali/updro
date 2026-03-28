@@ -3,34 +3,30 @@ import Logo from '@/components/Logo'
 
 const footerColumns = [
   {
-    title: 'För beställare',
+    title: 'För kunder',
     links: [
-      { label: 'Publicera uppdrag', href: '/publicera' },
+      { label: 'Starta förfrågan', href: '/publicera' },
+      { label: 'Kategorier', href: '/#kategorier' },
       { label: 'Hur det fungerar', href: '/#hur-det-fungerar' },
-      { label: 'Guider', href: '/guider' },
-      { label: 'Kunskapsbank', href: '/kunskapsbank' },
-      { label: 'Support', href: '/support' },
+      { label: 'FAQ', href: '/#faq' },
     ],
   },
   {
     title: 'För byråer',
     links: [
-      { label: 'Registrera byrå', href: '/registrera/byra' },
+      { label: 'Registrera din byrå', href: '/registrera/byra' },
+      { label: 'Byrå-dashboard', href: '/dashboard/supplier' },
       { label: 'Priser', href: '/priser' },
-      { label: 'Logga in', href: '/logga-in' },
+      { label: 'Villkor för byråer', href: '/villkor' },
     ],
   },
   {
-    title: 'Resurser',
+    title: 'Om oss',
     links: [
-      { label: 'Artiklar', href: '/artiklar' },
-      { label: 'Verktyg', href: '/verktyg' },
-      { label: 'Jämförelser', href: '/jamfor' },
-      { label: 'Om oss', href: '/om-oss' },
+      { label: 'Om Updro', href: '/om-oss' },
       { label: 'Integritetspolicy', href: '/integritetspolicy' },
-      { label: 'Villkor', href: '/villkor' },
+      { label: 'Användarvillkor', href: '/villkor' },
       { label: 'Cookiepolicy', href: '/cookies' },
-      { label: 'Sitemap', href: '/sitemap' },
     ],
   },
 ]
@@ -44,8 +40,6 @@ const popularServices = [
   { label: 'Grafisk design', href: '/grafisk-design' },
   { label: 'Google Ads-byrå', href: '/google-ads' },
   { label: 'UX/UI-design', href: '/ux-ui-design' },
-  { label: 'Mjukvaruutveckling', href: '/mjukvaruutveckling' },
-  { label: 'AI-utveckling', href: '/ai-utveckling' },
 ]
 
 const popularCities = [
@@ -61,89 +55,36 @@ const popularCities = [
   { label: 'Västerås', href: '/byraer/vasteras' },
   { label: 'Lund', href: '/byraer/lund' },
   { label: 'Halmstad', href: '/byraer/halmstad' },
-  { label: 'Gävle', href: '/byraer/gavle' },
-  { label: 'Sundsvall', href: '/byraer/sundsvall' },
-  { label: 'Karlstad', href: '/byraer/karlstad' },
-  { label: 'Borås', href: '/byraer/boras' },
-  { label: 'Växjö', href: '/byraer/vaxjo' },
-  { label: 'Kalmar', href: '/byraer/kalmar' },
-  { label: 'Skellefteå', href: '/byraer/skelleftea' },
-  { label: 'Luleå', href: '/byraer/lulea' },
-  { label: 'Falun', href: '/byraer/falun' },
-  { label: 'Skövde', href: '/byraer/skovde' },
-  { label: 'Ängelholm', href: '/byraer/angelholm' },
-  { label: 'Piteå', href: '/byraer/pitea' },
-]
-
-const categories = [
-  { label: 'Digital marknadsföring', href: '/byraer/kategori/digital-marknadsforing' },
-  { label: 'Design', href: '/byraer/kategori/design' },
-  { label: 'SEO', href: '/byraer/kategori/seo' },
-  { label: 'Reklam', href: '/byraer/kategori/reklam' },
-  { label: 'Media', href: '/byraer/kategori/media' },
-  { label: 'E-handel', href: '/byraer/kategori/e-handel' },
-  { label: 'Webb', href: '/byraer/kategori/webb' },
-  { label: 'Grafisk design', href: '/byraer/kategori/grafisk-design' },
-  { label: 'PR', href: '/byraer/kategori/pr' },
-  { label: 'Kommunikation', href: '/byraer/kategori/kommunikation' },
-  { label: 'Tryck', href: '/byraer/kategori/tryck' },
-  { label: 'Fotografering', href: '/byraer/kategori/fotografering' },
-]
-
-const comparisons = [
-  { label: 'Bästa SEO-byrån', href: '/basta-seo-byran' },
-  { label: 'Bästa webbyrån', href: '/basta-webbyran' },
-  { label: 'Bästa e-handelsbyrån', href: '/basta-ehandel-byran' },
-  { label: 'Bästa app-byrån', href: '/basta-app-byran' },
-]
-
-const topCombos = [
-  { label: 'Design i Linköping', href: '/byraer/linkoping/design' },
-  { label: 'Media i Norrköping', href: '/byraer/norrkoping/media' },
-  { label: 'Reklam i Helsingborg', href: '/byraer/helsingborg/reklam' },
-  { label: 'Digital marknadsföring i Halmstad', href: '/byraer/halmstad/digital-marknadsforing' },
-  { label: 'SEO i Stockholm', href: '/byraer/stockholm/seo' },
-  { label: 'Webb i Göteborg', href: '/byraer/goteborg/webb' },
-  { label: 'E-handel i Malmö', href: '/byraer/malmo/e-handel' },
-  { label: 'Grafisk design i Jönköping', href: '/byraer/jonkoping/grafisk-design' },
-  { label: 'Digital marknadsföring i Örebro', href: '/byraer/orebro/digital-marknadsforing' },
-  { label: 'Media i Malmö', href: '/byraer/malmo/media' },
-  { label: 'Media i Göteborg', href: '/byraer/goteborg/media' },
-  { label: 'Tryck i Linköping', href: '/byraer/linkoping/tryck' },
-  { label: 'Tryck i Gävle', href: '/byraer/gavle/tryck' },
-  { label: 'Reklam i Stockholm', href: '/byraer/stockholm/reklam' },
-  { label: 'Design i Malmö', href: '/byraer/malmo/design' },
-  { label: 'Webb i Umeå', href: '/byraer/umea/webb' },
-  { label: 'SEO i Göteborg', href: '/byraer/goteborg/seo' },
-  { label: 'PR i Stockholm', href: '/byraer/stockholm/pr' },
-  { label: 'E-handel i Stockholm', href: '/byraer/stockholm/e-handel' },
-  { label: 'Design i Örebro', href: '/byraer/orebro/design' },
 ]
 
 const Footer = () => {
   return (
-    <footer className="border-t bg-card" role="contentinfo">
+    <footer className="bg-[#111827] text-white" role="contentinfo">
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
-            <Logo size="md" />
-            <p className="mt-3 text-sm text-muted-foreground">
-              Sveriges ledande marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade byråer – helt gratis.
+            <Logo size="md" className="[&_span]:text-white" />
+            <p className="mt-3 text-sm text-gray-400">
+              Sveriges marknadsplats för digitala uppdrag
             </p>
+            <p className="mt-4 text-xs text-gray-500">
+              © {new Date().getFullYear()} Updro – Aurora Media AB
+            </p>
+            <p className="text-xs text-gray-500">info@auroramedia.se</p>
           </div>
 
           {footerColumns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
-              <h4 className="font-display font-semibold text-sm mb-4 text-foreground">{col.title}</h4>
+              <h4 className="font-display font-semibold text-sm mb-4 text-white">{col.title}</h4>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
                     {link.href.includes('#') ? (
-                      <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <a href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                         {link.label}
                       </a>
                     ) : (
-                      <Link to={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      <Link to={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                         {link.label}
                       </Link>
                     )}
@@ -155,65 +96,27 @@ const Footer = () => {
         </div>
 
         {/* SEO internal links */}
-        <div className="border-t mt-12 pt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="border-t border-gray-800 mt-12 pt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
           <nav aria-label="Populära tjänster">
-            <h4 className="font-display font-semibold text-sm mb-4 text-foreground">Populära tjänster</h4>
+            <h4 className="font-display font-semibold text-sm mb-4 text-white">Populära tjänster</h4>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
               {popularServices.map((s) => (
-                <Link key={s.href} to={s.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link key={s.href} to={s.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                   {s.label}
                 </Link>
               ))}
             </div>
           </nav>
-          <nav aria-label="Kategorier">
-            <h4 className="font-display font-semibold text-sm mb-4 text-foreground">Kategorier</h4>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {categories.map((c) => (
-                <Link key={c.href} to={c.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  {c.label}
-                </Link>
-              ))}
-            </div>
-          </nav>
           <nav aria-label="Byråer per stad">
-            <h4 className="font-display font-semibold text-sm mb-4 text-foreground">Byråer per stad</h4>
+            <h4 className="font-display font-semibold text-sm mb-4 text-white">Byråer per stad</h4>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
               {popularCities.map((c) => (
-                <Link key={c.href} to={c.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <Link key={c.href} to={c.href} className="text-sm text-gray-400 hover:text-white transition-colors">
                   {c.label}
                 </Link>
               ))}
             </div>
           </nav>
-          <nav aria-label="Jämförelser">
-            <h4 className="font-display font-semibold text-sm mb-4 text-foreground">Jämförelser</h4>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {comparisons.map((c) => (
-                <Link key={c.href} to={c.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  {c.label}
-                </Link>
-              ))}
-            </div>
-          </nav>
-        </div>
-
-        {/* Top combos */}
-        <div className="border-t mt-8 pt-8">
-          <nav aria-label="Populära stad+kategori">
-            <h4 className="font-display font-semibold text-sm mb-4 text-foreground">Populära kombinationer</h4>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {topCombos.map((c) => (
-                <Link key={c.href} to={c.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  {c.label}
-                </Link>
-              ))}
-            </div>
-          </nav>
-        </div>
-
-        <div className="border-t mt-8 pt-6 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Updro.se – Aurora Media AB (559272-0220). Alla rättigheter förbehållna.
         </div>
       </div>
     </footer>
