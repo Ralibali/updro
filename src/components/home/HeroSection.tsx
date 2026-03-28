@@ -30,9 +30,9 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            Hitta rätt digital byrå
+            Jämför offerter från digitala byråer
             <br />
-            – på minuter, inte veckor
+            – hitta rätt webbyrå på minuter
           </motion.h1>
 
           {/* Subtext */}
