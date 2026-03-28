@@ -56,6 +56,7 @@ export default {
           dark: "hsl(var(--brand-dark))",
           blue: "hsl(var(--brand-blue))",
           "blue-hover": "hsl(var(--brand-blue-hover))",
+          indigo: "hsl(var(--brand-indigo))",
           orange: "hsl(var(--brand-orange))",
           "orange-hover": "hsl(var(--brand-orange-hover))",
           mint: "hsl(var(--brand-mint))",
@@ -66,6 +67,7 @@ export default {
         },
         surface: {
           DEFAULT: "hsl(0 0% 100%)",
+          alt: "hsl(var(--surface-alt))",
           2: "hsl(var(--surface-2))",
           3: "hsl(var(--surface-3))",
         },

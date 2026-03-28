@@ -1,88 +1,90 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowRight, Sparkles, Check, Flame } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-[720px] overflow-hidden flex items-center bg-background">
-      {/* Abstract shapes */}
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-accent/5 blur-3xl" />
-      <div className="absolute top-40 left-1/3 w-[200px] h-[200px] rounded-full bg-accent/10 blur-2xl" />
+  const [query, setQuery] = useState('')
+  const navigate = useNavigate()
 
-      <div className="container relative z-10 py-20 md:py-28">
-        <div className="max-w-5xl">
-          {/* Badge */}
-          <motion.div
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    navigate(`/publicera${query ? `?beskrivning=${encodeURIComponent(query)}` : ''}`)
+  }
+
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#F8FAFF] to-[#EEF2FF] dark:from-background dark:to-background">
+      {/* Subtle diagonal pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, currentColor 35px, currentColor 36px)',
+      }} />
+
+      <div className="container relative z-10 py-20 md:py-32">
+        <div className="max-w-3xl mx-auto text-center">
+          {/* H1 */}
+          <motion.h1
+            className="font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-[#111827] dark:text-foreground leading-[1.08]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-4 py-1.5 text-sm font-semibold text-accent">
-              <Flame className="h-3.5 w-3.5" />
-              Bättre leads. Lägre pris. Seriösa beställare.
-            </span>
-          </motion.div>
-
-          {/* Heading */}
-          <motion.h1
-            className="mt-8 font-display text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight text-foreground leading-[1.05]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            Kunderna letar redan
+            Hitta rätt digital byrå
             <br />
-            <span className="text-brand-gradient">— syns du?</span>
+            – på minuter, inte veckor
           </motion.h1>
 
           {/* Subtext */}
           <motion.p
-            className="mt-6 text-lg md:text-xl text-muted-foreground max-w-xl"
+            className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            Kvalitetssäkrade uppdrag med beställare som faktiskt engagerar sig. Max fem byråer per uppdrag – varje lead räknas.
+            Beskriv ditt projekt. Få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Helt gratis, helt utan förpliktelser.
           </motion.p>
 
-          {/* CTAs */}
-          <motion.div
-            className="mt-10 flex flex-col sm:flex-row gap-4"
+          {/* Search form */}
+          <motion.form
+            onSubmit={handleSubmit}
+            className="mt-10 flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
           >
-            <Link to="/publicera">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-6 text-base font-semibold shadow-blue transition-all active:scale-[0.98]">
-                Publicera uppdrag – gratis
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Beskriv ditt projekt kort – t.ex. 'Ny e-handelssajt i Shopify'"
+              className="flex-1 h-14 rounded-xl text-base px-5 border-border bg-white dark:bg-card shadow-sm"
+            />
+            <motion.div whileHover={{ scale: 1.02 }}>
+              <Button
+                type="submit"
+                size="lg"
+                className="h-14 bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl px-8 text-base font-semibold shadow-md whitespace-nowrap"
+              >
+                Få offerter gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-            </Link>
-            <Link to="/registrera/byra">
-              <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base font-semibold border-border hover:bg-accent/5 hover:border-accent/30 transition-all active:scale-[0.98]">
-                <Sparkles className="mr-2 h-4 w-4 text-accent" />
-                Prova gratis i sju dagar
-              </Button>
-            </Link>
-          </motion.div>
+            </motion.div>
+          </motion.form>
 
-          {/* Trust indicators */}
+          {/* Social proof badges */}
           <motion.div
-            className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-sm text-muted-foreground"
+            className="mt-8 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
             {[
-              'Gratis för beställare',
-              'Fem gratis leads vid start',
-              '40% lägre pris per lead',
-              'Max fem byråer per uppdrag',
+              '100% gratis',
+              'Svar inom 24h',
+              'Kvalitetssäkrade byråer',
             ].map((text) => (
               <span key={text} className="flex items-center gap-1.5">
-                <Check className="h-3.5 w-3.5 text-accent" />
+                <Check className="h-4 w-4 text-brand-mint" />
                 {text}
               </span>
             ))}
