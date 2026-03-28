@@ -5,7 +5,7 @@ const steps = [
   {
     number: '1',
     title: 'Beskriv ditt projekt',
-    description: 'Berätta vad du behöver hjälp med – det tar 2 minuter. Ingen registrering krävs.',
+    description: 'Berätta vad du behöver hjälp med – det tar två minuter. Ingen registrering krävs.',
   },
   {
     number: '2',
