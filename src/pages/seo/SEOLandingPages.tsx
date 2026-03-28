@@ -177,7 +177,7 @@ export const HittaDigitalByraPage = () => (
     title="Hitta Digital Byrå – Jämför offerter gratis | Updro"
     metaDescription="Hitta rätt digital byrå för ditt projekt. Jämför offerter från kvalitetssäkrade byråer inom Meta Ads, SEO, webb och mer."
     canonical="https://updro.se/hitta-digital-byra"
-    h1="Hitta digital byrå – upp till 5 offerter gratis"
+    h1="Hitta digital byrå – upp till fem offerter gratis"
     serviceType="Digital marknadsföring"
   >
     <h2>Vad gör en digital byrå?</h2>
