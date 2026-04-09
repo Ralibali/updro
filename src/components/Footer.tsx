@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 import Logo from '@/components/Logo'
 
+declare const __BUILD_TIMESTAMP__: string
+const BUILD_ID = typeof __BUILD_TIMESTAMP__ !== 'undefined' ? __BUILD_TIMESTAMP__ : 'dev'
+
 const footerColumns = [
   {
     title: 'För kunder',
@@ -121,6 +124,9 @@ const Footer = () => {
             </div>
           </nav>
         </div>
+      </div>
+      <div className="mt-8 border-t border-gray-800 pt-4 text-center">
+        <span className="text-[10px] text-gray-600 select-all" title="Build ID">v {BUILD_ID}</span>
       </div>
     </footer>
   )
