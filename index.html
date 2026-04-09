@@ -93,17 +93,18 @@
     }
     </script>
 
-    <!-- Google Ads (gtag.js) – deferred -->
+    <!-- Google Ads + GA4 (gtag.js) – deferred -->
     <script>
       window.addEventListener('DOMContentLoaded', function() {
         var s = document.createElement('script');
         s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=AW-10941540384';
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-C0XMZG0KDQ';
         document.head.appendChild(s);
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         window.gtag = gtag;
         gtag('js', new Date());
+        gtag('config', 'G-C0XMZG0KDQ');
         gtag('config', 'AW-10941540384');
       });
     </script>
