@@ -4,16 +4,48 @@ import { Link } from 'react-router-dom'
 
 const COOKIE_KEY = 'updro_cookie_consent'
 
+/** Apply consent to gtag – block analytics until user accepts */
+const applyConsent = (level: 'all' | 'necessary') => {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    if (level === 'all') {
+      (window as any).gtag('consent', 'update', {
+        analytics_storage: 'granted',
+        ad_storage: 'granted',
+      })
+    } else {
+      (window as any).gtag('consent', 'update', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+      })
+    }
+  }
+}
+
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_KEY)
-    if (!consent) setVisible(true)
+    const raw = localStorage.getItem(COOKIE_KEY)
+    if (raw) {
+      try {
+        const { level } = JSON.parse(raw)
+        applyConsent(level)
+      } catch {}
+    } else {
+      // Default: deny until consent
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('consent', 'default', {
+          analytics_storage: 'denied',
+          ad_storage: 'denied',
+        })
+      }
+      setVisible(true)
+    }
   }, [])
 
   const accept = (level: 'all' | 'necessary') => {
     localStorage.setItem(COOKIE_KEY, JSON.stringify({ level, date: new Date().toISOString() }))
+    applyConsent(level)
     setVisible(false)
   }
 
@@ -25,7 +57,8 @@ const CookieConsent = () => {
         <div className="flex-1 text-sm text-foreground/80">
           <p className="font-semibold text-foreground mb-1">🍪 Vi använder cookies</p>
           <p>Vi använder nödvändiga cookies för att tjänsten ska fungera. Med ditt samtycke använder vi även analyscookies för att förbättra upplevelsen. Läs mer i vår{' '}
-            <Link to="/integritetspolicy" className="text-primary hover:underline">integritetspolicy</Link>.
+            <Link to="/integritetspolicy" className="text-primary hover:underline">integritetspolicy</Link> och{' '}
+            <Link to="/cookies" className="text-primary hover:underline">cookiepolicy</Link>.
           </p>
         </div>
         <div className="flex gap-2 shrink-0">

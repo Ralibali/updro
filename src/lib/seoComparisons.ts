@@ -286,6 +286,59 @@ export const COMPARISON_PAGES: ComparisonPage[] = [
       { label: 'Bästa webbyrån Göteborg', href: '/basta-webbyran-goteborg' },
     ]
   },
+  {
+    slug: 'updro-vs-offerta',
+    metaTitle: 'Updro vs Offerta – Vilken plattform är bäst? | Jämförelse 2026',
+    metaDesc: 'Jämför Updro och Offerta – två sätt att hitta rätt byrå. Vi går igenom skillnader i pris, tjänster, kvalitetssäkring och användarupplevelse.',
+    h1: 'Updro vs Offerta – Vilken plattform passar dig?',
+    intro: 'Funderar du på om du ska använda Updro eller Offerta för att hitta leverantör? Båda plattformarna kopplar ihop företag med leverantörer – men på helt olika sätt. Här jämför vi de viktigaste skillnaderna så att du kan göra rätt val.',
+    sections: [
+      { heading: 'Översikt', content: 'Offerta är en bred förmedlingstjänst som täcker allt från hantverkare till digitala tjänster. Updro är specialiserad på digitala uppdrag – webb, SEO, appar, design och marknadsföring. Det innebär att Updro kan erbjuda en mer riktad matchning och djupare kvalitetssäkring inom det digitala området.' },
+      { heading: 'Kvalitetssäkring av byråer', content: '**Updro** granskar varje byrå manuellt innan godkännande. Vi kontrollerar portfolio, referenskunder och leveranshistorik. Det innebär att du bara matchas med byråer som faktiskt kan leverera.\n\n**Offerta** har ett bredare utbud men mindre rigorös kvalitetskontroll – vilket kan innebära att du behöver göra mer research själv.' },
+      { heading: 'Pris och kostnad', content: 'Båda plattformarna är gratis för uppdragsgivare. Skillnaden ligger i affärsmodellen:\n\n- **Updro** – Byråer betalar per avslut, inte per lead. Det gör att du som kund bara kontaktas av byråer som verkligen är intresserade.\n- **Offerta** – Leverantörer betalar per lead, oavsett utfall. Det kan leda till fler men sämre anpassade offerter.' },
+      { heading: 'Användarupplevelse', content: 'Updro är byggt specifikt för digitala projekt. Formuläret tar två minuter att fylla i och du får upp till fem skräddarsydda offerter inom 24 timmar.\n\nOfferta har ett mer generellt formulär som täcker hundratals kategorier, från rörmokare till app-utvecklare. Det bredare fokuset kan göra att matchningen blir mindre precis för digitala uppdrag.' },
+      { heading: 'Vem passar plattformen bäst?', content: '**Välj Updro om:**\n- Du söker en digital byrå (webb, SEO, app, design, marknadsföring)\n- Du vill ha kvalitetssäkrade byråer som är manuellt granskade\n- Du värderar få, relevanta offerter framför många generella\n\n**Välj Offerta om:**\n- Du söker hantverkare eller fysiska tjänster\n- Du vill ha ett brett utbud av leverantörer inom alla kategorier' },
+      { heading: 'Sammanfattning', content: 'Om ditt projekt är digitalt – webbsajt, e-handel, SEO, app eller marknadsföring – är Updro det bättre valet. Alla byråer är kvalitetssäkrade och specialiserade på just digitala uppdrag. Offerta passar bättre om du behöver hitta hantverkare eller leverantörer inom icke-digitala områden.' },
+    ],
+    faq: [
+      { q: 'Är Updro gratis?', a: 'Ja, det är helt gratis att använda Updro som uppdragsgivare. Du betalar ingenting – varken för att publicera ditt projekt eller för att jämföra offerter.' },
+      { q: 'Vad är skillnaden mot Offerta?', a: 'Updro är specialiserat på digitala uppdrag och kvalitetssäkrar varje byrå manuellt. Offerta är bredare och täcker även fysiska tjänster som hantverk, men med mindre detaljerad kvalitetskontroll för digitala leverantörer.' },
+      { q: 'Hur snabbt får jag offerter?', a: 'På Updro förbinder sig byråerna att återkomma inom 24 timmar med skräddarsydda offerter.' },
+      { q: 'Kan jag använda båda plattformarna?', a: 'Absolut. Det är helt gratis att använda båda. Men om ditt projekt är digitalt rekommenderar vi att börja med Updro för mer relevanta och kvalitetssäkrade svar.' },
+    ],
+    relatedLinks: [
+      { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
+      { label: 'Hitta SEO-byrå', href: '/hitta-seo-byra' },
+      { label: 'Bästa webbyrån', href: '/basta-webbyran' },
+      { label: 'Updro vs Hittabyrå', href: '/updro-vs-hittabyra' },
+    ]
+  },
+  {
+    slug: 'updro-vs-hittabyra',
+    metaTitle: 'Updro vs Hittabyrå – Vilken tjänst är bäst? | Jämförelse 2026',
+    metaDesc: 'Jämför Updro och Hittabyrå för att hitta digital byrå. Skillnader i matchning, kvalitetssäkring och offerter.',
+    h1: 'Updro vs Hittabyrå – Vilken tjänst ska du välja?',
+    intro: 'Både Updro och Hittabyrå hjälper dig hitta digitala byråer i Sverige. Men tjänsterna fungerar på helt olika sätt. Här går vi igenom de viktigaste skillnaderna.',
+    sections: [
+      { heading: 'Översikt', content: 'Hittabyrå fungerar i huvudsak som en katalog där du själv söker och kontaktar byråer. Updro däremot matchar dig aktivt med kvalitetssäkrade byråer som skickar skräddarsydda offerter – du behöver inte kontakta någon själv.' },
+      { heading: 'Matchning och offerter', content: '**Updro** – Du beskriver ditt projekt och får upp till fem offerter från matchade byråer inom 24 timmar. Byråerna kontaktar dig.\n\n**Hittabyrå** – Du bläddrar i en katalog, filtrerar på tjänster och plats, och kontaktar byråer själv. Ingen automatisk matchning eller offert-process.' },
+      { heading: 'Kvalitetssäkring', content: 'Updro granskar varje byrå manuellt – portfolio, referenskunder och leveranshistorik kontrolleras innan en byrå godkänns.\n\nHittabyrå listar byråer som registrerar sig men har inte samma typ av manuell granskning. Det innebär att kvaliteten kan variera mer.' },
+      { heading: 'Kostnad', content: 'Båda tjänsterna är gratis att använda för dig som söker byrå.\n\n- **Updro** – Byråer betalar per avslut\n- **Hittabyrå** – Byråer betalar för sin listning\n\nFör dig som kund innebär det att byråer på Updro har ett starkare incitament att verkligen leverera bra offerter.' },
+      { heading: 'Tidsbesparing', content: 'Med Updro slipper du researcha och kontakta byråer en och en. Du lägger två minuter på att beskriva ditt projekt, sedan kommer byråerna till dig.\n\nMed Hittabyrå gör du researcharbetet själv – du bläddrar, läser, och kontaktar. Det kan ta timmar eller dagar.' },
+      { heading: 'Sammanfattning', content: 'Om du vill spara tid och få kvalitetssäkrade offerter direkt i din inkorg – välj Updro. Om du föredrar att själv bläddra igenom en katalog och kontakta byråer manuellt – testa Hittabyrå.' },
+    ],
+    faq: [
+      { q: 'Måste jag registrera mig på Updro?', a: 'Nej, du kan lämna en förfrågan utan att skapa ett konto.' },
+      { q: 'Hur skiljer sig offertprocessen?', a: 'På Updro får du offerter direkt från byråerna utan att kontakta dem. På Hittabyrå kontaktar du byråerna själv.' },
+      { q: 'Vilken tjänst har flest byråer?', a: 'Hittabyrå har fler listade byråer, men Updro kvalitetssäkrar alla byråer vilket ger en högre genomsnittlig kvalitet.' },
+    ],
+    relatedLinks: [
+      { label: 'Hitta digital byrå', href: '/hitta-digital-byra' },
+      { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
+      { label: 'Updro vs Offerta', href: '/updro-vs-offerta' },
+      { label: 'Bästa SEO-byrån', href: '/basta-seo-byran' },
+    ]
+  },
 ]
 
 export const findComparisonPage = (slug: string) => COMPARISON_PAGES.find(p => p.slug === slug)

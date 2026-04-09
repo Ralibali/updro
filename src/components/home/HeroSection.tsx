@@ -11,6 +11,13 @@ const HeroSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    // Fire Google Ads conversion
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        send_to: 'AW-10941540384/hero_lead',
+        event_callback: () => {},
+      })
+    }
     navigate(`/publicera${query ? `?beskrivning=${encodeURIComponent(query)}` : ''}`)
   }
 

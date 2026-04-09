@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { supabase } from '@/integrations/supabase/client'
 import { setSEOMeta } from '@/lib/seoHelpers'
+import AuthorBio from '@/components/shared/AuthorBio'
+import ShareButtons from '@/components/shared/ShareButtons'
 
 /** Simple markdown-ish renderer for guide content (handles ##, **, -, \n) */
 const renderContent = (content: string) => {
@@ -185,6 +187,12 @@ const GuidePage = () => {
           >
             {renderContent(guide.content)}
           </motion.div>
+
+          {/* Author + share */}
+          <div className="mt-10 space-y-4">
+            <AuthorBio />
+            <ShareButtons url={`https://updro.se/guider/${guide.slug}`} title={guide.title} />
+          </div>
 
           {/* CTA */}
           <div className="mt-14 rounded-2xl border bg-muted/30 p-8 text-center">

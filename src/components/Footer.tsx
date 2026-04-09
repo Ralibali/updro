@@ -9,8 +9,9 @@ const footerColumns = [
       { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
       { label: 'Hitta SEO-byrå', href: '/hitta-seo-byra' },
       { label: 'Hitta digital byrå', href: '/hitta-digital-byra' },
+      { label: 'Updro vs Offerta', href: '/updro-vs-offerta' },
+      { label: 'Updro vs Hittabyrå', href: '/updro-vs-hittabyra' },
       { label: 'Hur det fungerar', href: '/#hur-det-fungerar' },
-      { label: 'FAQ', href: '/#faq' },
     ],
   },
   {
