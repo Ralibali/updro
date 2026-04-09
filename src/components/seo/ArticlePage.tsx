@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, Calendar } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
+import AuthorBio from '@/components/shared/AuthorBio'
+import ShareButtons from '@/components/shared/ShareButtons'
 
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -99,7 +101,13 @@ const ArticlePage = () => {
             </section>
           ))}
         </div>
-      </div>
+          {/* Author bio */}
+          <AuthorBio />
+          {/* Share buttons */}
+          <div className="mt-6">
+            <ShareButtons url={`https://updro.se/artiklar/${page.slug}`} title={page.h1} />
+          </div>
+        </div>
 
       <SEOLeadCTA categoryName="digitala tjänster" />
 
