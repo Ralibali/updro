@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import Logo from '@/components/Logo'
 
-const BUILD_ID = __BUILD_TIMESTAMP__ ?? 'dev'
+declare const __BUILD_TIMESTAMP__: string
+const BUILD_ID = typeof __BUILD_TIMESTAMP__ !== 'undefined' ? __BUILD_TIMESTAMP__ : 'dev'
 
 const footerColumns = [
   {
