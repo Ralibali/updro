@@ -125,6 +125,9 @@ const Footer = () => {
           </nav>
         </div>
       </div>
+      <div className="mt-8 border-t border-gray-800 pt-4 text-center">
+        <span className="text-[10px] text-gray-600 select-all" title="Build ID">v {BUILD_ID}</span>
+      </div>
     </footer>
   )
 }
