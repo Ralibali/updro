@@ -93,6 +93,18 @@
     }
     </script>
 
+    <!-- Consent defaults (denied until user accepts cookies) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        wait_for_update: 500,
+      });
+    </script>
+
     <!-- Google Ads + GA4 (gtag.js) – deferred -->
     <script>
       window.addEventListener('DOMContentLoaded', function() {
@@ -100,9 +112,6 @@
         s.async = true;
         s.src = 'https://www.googletagmanager.com/gtag/js?id=G-C0XMZG0KDQ';
         document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
         gtag('js', new Date());
         gtag('config', 'G-C0XMZG0KDQ');
         gtag('config', 'AW-10941540384');
