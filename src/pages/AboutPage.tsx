@@ -81,7 +81,7 @@ const AboutPage = () => {
             <h2 className="font-display text-2xl font-semibold text-foreground">Kontakta oss</h2>
             <p className="text-muted-foreground">
               Har du frågor eller vill veta mer? Hör av dig till oss på{' '}
-              <a href="mailto:hej@updro.se" className="text-primary hover:underline font-medium">hej@updro.se</a>
+              <a href="mailto:info@auroramedia.se" className="text-primary hover:underline font-medium">info@auroramedia.se</a>
             </p>
             <p className="text-sm text-muted-foreground">
               Aurora Media AB · Org.nr 559272-0220
