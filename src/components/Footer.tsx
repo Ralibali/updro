@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import Logo from '@/components/Logo'
 
+const BUILD_ID = __BUILD_TIMESTAMP__ ?? 'dev'
+
 const footerColumns = [
   {
     title: 'För kunder',
