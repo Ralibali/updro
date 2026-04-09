@@ -251,7 +251,7 @@ async function handleWebhook(req: Request): Promise<Response> {
       {
         run_id,
         to: payload.data.email,
-        from: `Updro <hej@${FROM_DOMAIN}>`,
+        from: `Updro <info@auroramedia.se>`,
         sender_domain: SENDER_DOMAIN,
         subject: EMAIL_SUBJECTS[emailType] || 'Notification',
         html,
