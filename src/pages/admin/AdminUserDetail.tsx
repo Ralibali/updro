@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
-import { ArrowLeft, Save, CreditCard, Shield, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, Save, CreditCard, Shield, ShieldCheck, Trash2 } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { timeAgo } from '@/lib/dateUtils'
 
 const AdminUserDetail = () => {
