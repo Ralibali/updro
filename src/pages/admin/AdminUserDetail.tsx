@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'sonner'
-import { ArrowLeft, Save, CreditCard, Shield, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, Save, CreditCard, Shield, ShieldCheck, Trash2 } from 'lucide-react'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { timeAgo } from '@/lib/dateUtils'
 
 const AdminUserDetail = () => {
@@ -278,6 +279,45 @@ const AdminUserDetail = () => {
               </div>
             </div>
           )}
+
+          {/* Delete user */}
+          <div className="bg-destructive/5 rounded-xl border border-destructive/20 p-5">
+            <h2 className="font-display font-semibold text-lg text-destructive mb-2">Riskzon</h2>
+            <p className="text-sm text-muted-foreground mb-4">Att radera en användare tar bort profilen och all tillhörande data permanent.</p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="rounded-xl">
+                  <Trash2 className="h-4 w-4 mr-2" /> Radera användare
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Radera {fullName || 'användare'}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Detta raderar profilen, eventuell byråprofil och all tillhörande data. Åtgärden kan inte ångras.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="rounded-xl">Avbryt</AlertDialogCancel>
+                  <AlertDialogAction className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={async () => {
+                    // Delete supplier profile first if exists
+                    if (supplierProfile) {
+                      await supabase.from('supplier_profiles').delete().eq('id', id!)
+                    }
+                    const { error } = await supabase.from('profiles').delete().eq('id', id!)
+                    if (error) {
+                      toast.error('Kunde inte radera: ' + error.message)
+                    } else {
+                      toast.success('Användaren har raderats')
+                      navigate('/admin/anvandare')
+                    }
+                  }}>
+                    Radera permanent
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </div>
     </AdminLayout>
