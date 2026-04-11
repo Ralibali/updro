@@ -803,6 +803,49 @@ export type Database = {
       }
     }
     Views: {
+      public_agency_directory: {
+        Row: {
+          avatar_url: string | null
+          avg_rating: number | null
+          bio: string | null
+          categories: string[] | null
+          city: string | null
+          company_name: string | null
+          completed_projects: number | null
+          contact_email: string | null
+          contact_name: string | null
+          cover_url: string | null
+          credit_check_passed: boolean | null
+          full_name: string | null
+          has_fskatt: boolean | null
+          id: string | null
+          is_featured: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          org_number: string | null
+          portfolio_urls: string[] | null
+          review_count: number | null
+          services: string[] | null
+          slug: string | null
+          website_url: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_profiles: {
         Row: {
           avatar_url: string | null
