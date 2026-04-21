@@ -1,3 +1,5 @@
+export type ArticleType = 'guide' | 'news' | 'comparison' | 'case-study'
+
 export interface ArticlePage {
   slug: string
   metaTitle: string
@@ -5,10 +7,24 @@ export interface ArticlePage {
   h1: string
   category: string
   publishedDate: string
+  /** ISO date – defaults to publishedDate when missing */
+  updatedDate?: string
+  /** Editorial type – default 'guide' for evergreen content */
+  type?: ArticleType
+  /** Estimated reading time in minutes (auto-derived if missing) */
+  readTimeMinutes?: number
   intro: string
   sections: { heading: string; content: string }[]
   faq: { q: string; a: string }[]
   relatedLinks: { label: string; href: string }[]
+}
+
+/** Friendly Swedish label for an article type */
+export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
+  guide: 'Guide',
+  news: 'Nyhet',
+  comparison: 'Jämförelse',
+  'case-study': 'Case',
 }
 
 export const ARTICLES: ArticlePage[] = [
