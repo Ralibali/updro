@@ -40,7 +40,7 @@ const stats = [
 
 const StatsSection = () => {
   return (
-    <section className="py-16 bg-primary">
+    <section className="py-16 bg-surface-alt border-y border-border">
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto text-center">
           {stats.map((stat, i) => (
@@ -51,10 +51,10 @@ const StatsSection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
             >
-              <div className="font-display text-5xl md:text-6xl font-bold text-primary-foreground">
+              <div className="font-display text-5xl md:text-6xl text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 <CountUp target={stat.target} suffix={stat.suffix} />
               </div>
-              <div className="mt-2 text-sm text-primary-foreground/80">{stat.label}</div>
+              <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
             </motion.div>
           ))}
         </div>
