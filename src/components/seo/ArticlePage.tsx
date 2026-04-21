@@ -93,6 +93,13 @@ const ArticlePage = () => {
   }
   if (!page) return <NotFound />
 
+  const updatedDate = page.updatedDate || page.publishedDate
+  const nextReviewDate = (() => {
+    const d = new Date(updatedDate)
+    d.setMonth(d.getMonth() + 6)
+    return d.toISOString().slice(0, 10)
+  })()
+
   const schemas: any[] = [
     {
       '@context': 'https://schema.org',
@@ -100,8 +107,15 @@ const ArticlePage = () => {
       headline: page.h1,
       description: page.metaDesc,
       datePublished: page.publishedDate,
-      author: { '@type': 'Organization', name: 'Updro' },
-      publisher: { '@type': 'Organization', name: 'Updro', url: 'https://updro.se' },
+      dateModified: updatedDate,
+      author: { '@type': 'Person', name: 'Updro-redaktionen', url: 'https://updro.se/om-oss' },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Updro',
+        url: 'https://updro.se',
+        logo: { '@type': 'ImageObject', url: 'https://updro.se/logo-updro.png' },
+      },
+      mainEntityOfPage: `https://updro.se/artiklar/${page.slug}`,
     },
     {
       '@context': 'https://schema.org',
@@ -168,9 +182,28 @@ const ArticlePage = () => {
             </section>
           ))}
         </div>
-        <div className="max-w-3xl">
+        <div className="max-w-3xl mt-10 space-y-5">
+          {/* Update / review meta */}
+          <div className="bg-muted/40 border rounded-2xl p-5 text-sm text-muted-foreground space-y-1.5">
+            <p>
+              <span className="text-foreground font-medium">Senast uppdaterad:</span>{' '}
+              {new Date(updatedDate).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+            <p>
+              <span className="text-foreground font-medium">Nästa granskning:</span>{' '}
+              {new Date(nextReviewDate).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+            <p className="text-xs pt-2 border-t border-border/60 mt-2">
+              Denna artikel är skriven baserat på marknadsdata, offerter via Updro och egen erfarenhet av den svenska
+              byråmarknaden. Hittar du ett fel?{' '}
+              <a href="mailto:info@auroramedia.se" className="text-primary underline">
+                Mejla oss
+              </a>{' '}
+              – vi rättar det och uppdaterar datumet.
+            </p>
+          </div>
           <AuthorBio />
-          <div className="mt-6">
+          <div>
             <ShareButtons url={`https://updro.se/artiklar/${page.slug}`} title={page.h1} />
           </div>
         </div>
