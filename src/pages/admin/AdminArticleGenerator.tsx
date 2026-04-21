@@ -208,13 +208,27 @@ const AdminArticleGenerator = () => {
         status,
         generated_by: "gemini-2.5-pro",
       };
-      const { error } = await supabase.from("articles").upsert([payload], { onConflict: "slug" });
-      if (error) throw error;
+      // Om vi redigerar befintlig artikel: uppdatera, annars upsert
+      if (editingId) {
+        const { error } = await supabase.from("articles").update(payload).eq("id", editingId);
+        if (error) throw error;
+        // Markera kö-raden som publicerad
+        if (status === "published") {
+          await (supabase as any)
+            .from("article_queue")
+            .update({ status: "published" })
+            .eq("generated_article_id", editingId);
+        }
+      } else {
+        const { error } = await supabase.from("articles").upsert([payload], { onConflict: "slug" });
+        if (error) throw error;
+      }
       toast({
         title: status === "published" ? "Publicerad" : "Sparad som utkast",
         description: `/artiklar/${article.slug}`,
       });
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
+      queryClient.invalidateQueries({ queryKey: ["article-queue"] });
     } catch (e: any) {
       toast({ title: "Sparfel", description: e.message, variant: "destructive" });
     } finally {
