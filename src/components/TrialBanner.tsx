@@ -17,7 +17,7 @@ const TrialBanner = () => {
           <p className="text-muted-foreground mb-6">Välj en plan för att fortsätta ta emot uppdrag.</p>
           <div className="flex flex-col gap-3">
             <Link to="/dashboard/supplier/fakturering">
-              <Button className="w-full bg-primary hover:bg-primary/90">Välj plan – från 299 kr/lead</Button>
+              <Button className="w-full bg-primary hover:bg-primary/90">Välj plan – från 119 kr/lead</Button>
             </Link>
             <Link to="/" className="text-xs text-muted-foreground hover:underline">
               Fortsätt utan plan

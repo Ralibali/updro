@@ -14,7 +14,7 @@ const PricingPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Priser – Updro | Transparent prissättning för byråer',
-      description: 'Se Updros priser för byråer. Pay-per-lead från 299 kr eller månadskort för obegränsade leads. Inga dolda avgifter, inga bindningstider.',
+      description: 'Se Updros priser för byråer. Pay-per-lead från 119 kr (öppningserbjudande) eller månadskort 1 995 kr/mån för obegränsade leads. Inga dolda avgifter, inga bindningstider.',
       canonical: 'https://updro.se/priser',
     })
   }, [])
@@ -113,8 +113,8 @@ const PricingPage = () => {
                   <div className="p-4 border-b bg-muted font-display font-semibold text-muted-foreground">Andra</div>
                 </div>
                 {[
-                  ['Månadskort', '2 995 kr/mån', '4 990+ kr/mån'],
-                  ['Lead-pris (styck)', '299 kr', '490+ kr'],
+                  ['Månadskort', '1 995 kr/mån', '4 990+ kr/mån'],
+                  ['Lead-pris (styck)', '119 kr (öppningserbjudande)', '490+ kr'],
                   ['Obegränsade leads', 'Ja (månadskort)', 'Nej'],
                   ['Gratis leads', 'Fem st', '0 st'],
                   ['Bindningstid', 'Nej', 'Ofta 3–12 mån'],
@@ -134,8 +134,8 @@ const PricingPage = () => {
               <h2 className="font-display text-2xl font-bold text-center mb-8">Vanliga frågor</h2>
               <Accordion type="single" collapsible className="space-y-2">
                 {[
-                  ['Vad innebär månadskortet?', 'Med månadskortet (2 995 kr/mån) kan du svara på alla tillgängliga leads utan begränsning. Perfekt om du vill maximera antalet uppdrag. Ingen bindningstid – avsluta när som helst.'],
-                  ['Hur fungerar pay-per-lead?', 'Med pay-per-lead betalar du 299 kr per lead du väljer att låsa upp. Du ser uppdragsbeskrivning, kategori och ort innan du bestämmer dig.'],
+                  ['Vad innebär månadskortet?', 'Med månadskortet (1 995 kr/mån) kan du svara på alla tillgängliga leads utan begränsning. Perfekt om du vill maximera antalet uppdrag. Ingen bindningstid – avsluta när som helst.'],
+                  ['Hur fungerar pay-per-lead?', 'Med pay-per-lead betalar du 119 kr per lead du väljer att låsa upp (öppningserbjudande). Du ser uppdragsbeskrivning, kategori och ort innan du bestämmer dig.'],
                   ['Vad är ett lead?', 'Ett lead är ett publicerat uppdrag från en beställare. När du låser upp ett lead ser du fullständig kontaktinfo och kan skicka en offert.'],
                   ['Hur fungerar de gratis leads?', 'När du registrerar dig som byrå får du automatiskt fem gratis leads. Varje gång du låser upp ett uppdrag dras en kredit.'],
                   ['Kan jag avbryta abonnemanget?', 'Ja, du kan avbryta när som helst via din profilsida. Det finns inga bindningstider.'],

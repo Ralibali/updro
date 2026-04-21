@@ -107,7 +107,7 @@ export const STRIPE_PRODUCTS = {
     product_id: 'prod_U7LtMgsCkuq80V',
     price_id: 'price_1T97BeHzffTezY82Ofnh2oqp',
     name: 'Månadskort',
-    price: 2995,
+    price: 1995,
     per: '/månad',
     mode: 'subscription' as const,
   },
@@ -115,7 +115,7 @@ export const STRIPE_PRODUCTS = {
     product_id: 'prod_U7Lv49HZivr8Hu',
     price_id: 'price_1T97DOHzffTezY823D7MLIkq',
     name: 'Enskilt lead',
-    price: 299,
+    price: 119,
     per: 'per lead',
     mode: 'payment' as const,
   },
@@ -125,7 +125,7 @@ export const PLANS = [
   {
     id: 'lead' as const,
     name: 'Pay per lead',
-    price: 299,
+    price: 119,
     per: 'per lead',
     features: [
       'Betala bara för leads du väljer',
@@ -139,7 +139,7 @@ export const PLANS = [
   {
     id: 'monthly' as const,
     name: 'Månadskort',
-    price: 2995,
+    price: 1995,
     per: '/månad',
     features: [
       'Obegränsade leads – svara på allt',
