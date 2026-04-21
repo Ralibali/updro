@@ -168,3 +168,49 @@ export const getNearbyCities = (citySlug: string, limit = 6): CityData[] => {
   const others = CITIES.filter(c => c.slug !== city.slug && c.region !== city.region)
   return [...sameRegion, ...others].slice(0, limit)
 }
+
+// ───────────────────────────────────────────────────────
+// Legacy helper – kept for backwards compatibility with SubPage.tsx
+// which checks /:category/:sub for city × service overlap.
+// New programmatic city × category pages live under /byraer/:stad/:kategori
+// ───────────────────────────────────────────────────────
+export interface LegacyCityServicePage {
+  citySlug: string
+  cityName: string
+  serviceSlug: string
+  serviceName: string
+  metaTitle: string
+  metaDesc: string
+  h1: string
+  intro: string
+  sections: { heading: string; content: string }[]
+  faq: { q: string; a: string }[]
+  relatedLinks: { label: string; href: string }[]
+}
+
+export const findCityServicePage = (serviceSlug: string, citySlug: string): LegacyCityServicePage | undefined => {
+  const city = CITIES.find(c => c.slug === citySlug)
+  const service = SERVICE_CATEGORIES.find(s => s.slug === serviceSlug)
+  if (!city || !service) return undefined
+  return {
+    citySlug: city.slug,
+    cityName: city.name,
+    serviceSlug: service.slug,
+    serviceName: service.name,
+    metaTitle: `${service.name} ${city.name} – Hitta byrå | Updro`,
+    metaDesc: `Hitta byråer för ${service.name.toLowerCase()} i ${city.name}. Jämför offerter kostnadsfritt.`,
+    h1: `${service.name} i ${city.name}`,
+    intro: getCityIntroVariant(city, service),
+    sections: [
+      { heading: `${service.name} i ${city.name}`, content: `${city.name} (${city.population} invånare) har ett brett utbud av byråer som arbetar med ${service.name.toLowerCase()}. ${city.description}` },
+      { heading: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, content: `Räkna med ${getPriceCopy(service.slug, city.name)} för ${service.name.toLowerCase()} i ${city.name}. Det bästa sättet att hitta rätt pris är att jämföra minst tre offerter via Updro.` },
+    ],
+    faq: [
+      { q: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, a: `${getPriceCopy(service.slug, city.name)}. Jämför minst tre offerter via Updro för att hitta rätt pris.` },
+    ],
+    relatedLinks: [
+      { label: `${service.name}`, href: `/${service.slug}` },
+      { label: `Byråer i ${city.name}`, href: `/byraer/${city.slug}` },
+    ],
+  }
+}
