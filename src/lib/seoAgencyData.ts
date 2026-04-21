@@ -29,48 +29,64 @@ export interface SEOArticle {
   content: string // markdown placeholder
 }
 
-// ─── CITIES (24) ───
+// ─── CITIES (25) ─── synced with seoCities.ts CITIES
 export const SEO_CITIES: SEOCity[] = [
   { slug: 'stockholm', name: 'Stockholm', description: 'Sveriges huvudstad och digitala nav med hundratals byråer inom alla kategorier.' },
   { slug: 'goteborg', name: 'Göteborg', description: 'Västkustens kreativa centrum med stark design- och tech-tradition.' },
   { slug: 'malmo', name: 'Malmö', description: 'Skånes digitala centrum med växande startup-scen och kreativa byråer.' },
+  { slug: 'uppsala', name: 'Uppsala', description: 'Universitetsstad med stark forsknings- och innovationskompetens.' },
   { slug: 'linkoping', name: 'Linköping', description: 'Östergötlands tech-centrum med stark IT-tradition och innovationskraft.' },
-  { slug: 'norrkoping', name: 'Norrköping', description: 'Visualiseringens huvudstad med stark digital kompetens.' },
-  { slug: 'orebro', name: 'Örebro', description: 'Centralt beläget nav med växande digital sektor och flera kreativa byråer.' },
   { slug: 'vasteras', name: 'Västerås', description: 'Industristad med stark teknisk kompetens och innovationskultur.' },
+  { slug: 'orebro', name: 'Örebro', description: 'Centralt beläget nav med växande digital sektor och flera kreativa byråer.' },
+  { slug: 'norrkoping', name: 'Norrköping', description: 'Visualiseringens huvudstad med stark digital kompetens.' },
   { slug: 'helsingborg', name: 'Helsingborg', description: 'Skånes kreativa port med växande digital sektor.' },
   { slug: 'jonkoping', name: 'Jönköping', description: 'Entreprenörsstad med stark företagartradition och digital kompetens.' },
   { slug: 'umea', name: 'Umeå', description: 'Norrlands digitala huvudstad med fokus på design och användarupplevelse.' },
   { slug: 'lund', name: 'Lund', description: 'Universitetsstad med världsledande forskning och tech-innovation.' },
-  { slug: 'boras', name: 'Borås', description: 'Stad med stark e-handelstradition och växande digital sektor.' },
-  { slug: 'sundsvall', name: 'Sundsvall', description: 'Norrlands finanscentrum med växande digital tjänstesektor.' },
   { slug: 'gavle', name: 'Gävle', description: 'Norrlandskusten med starka digital- och kommunikationsbyråer.' },
+  { slug: 'sundsvall', name: 'Sundsvall', description: 'Norrlands finanscentrum med växande digital tjänstesektor.' },
+  { slug: 'eskilstuna', name: 'Eskilstuna', description: 'Mälardalens industri- och tekniska centrum med växande digital sektor.' },
   { slug: 'halmstad', name: 'Halmstad', description: 'Hallands kreativa centrum med fokus på digital marknadsföring.' },
   { slug: 'karlstad', name: 'Karlstad', description: 'Värmlands huvudstad med växande byråscen och innovation.' },
   { slug: 'vaxjo', name: 'Växjö', description: 'Smålands digitala nav med starka byråer inom webb och design.' },
-  { slug: 'kalmar', name: 'Kalmar', description: 'Östkuststad med kreativa byråer och stark lokal företagsamhet.' },
-  { slug: 'skelleftea', name: 'Skellefteå', description: 'Norrlands nya tillväxtstad med växande digital sektor.' },
+  { slug: 'sodertalje', name: 'Södertälje', description: 'Industristad i Storstockholm med växande digitalt ekosystem.' },
   { slug: 'lulea', name: 'Luleå', description: 'Norrbottens digitala centrum med starka tech-företag.' },
-  { slug: 'pitea', name: 'Piteå', description: 'Norrbottens kreativa kuststad med lokala byråer.' },
-  { slug: 'skovde', name: 'Skövde', description: 'Västergötlands spelstad med stark digital kompetens.' },
-  { slug: 'angelholm', name: 'Ängelholm', description: 'Nordvästra Skånes kreativa centrum med lokala byråer.' },
-  { slug: 'falun', name: 'Falun', description: 'Dalarnas huvudstad med växande digital sektor.' },
+  { slug: 'boras', name: 'Borås', description: 'Stad med stark e-handelstradition och växande digital sektor.' },
+  { slug: 'kristianstad', name: 'Kristianstad', description: 'Nordöstra Skånes nav med växande digital sektor.' },
+  { slug: 'solna', name: 'Solna', description: 'Stockholms norra företagsnav med tätt kluster av digitala byråer.' },
+  { slug: 'skelleftea', name: 'Skellefteå', description: 'Norrlands nya tillväxtstad med växande digital sektor.' },
+  { slug: 'kalmar', name: 'Kalmar', description: 'Östkuststad med kreativa byråer och stark lokal företagsamhet.' },
 ]
 
-// ─── CATEGORIES for /byraer routes (12) ───
+// ─── CATEGORIES for /byraer routes (10 primary + legacy) ───
+// Synced with SERVICE_CATEGORIES in seoCities.ts so /byraer/:stad/:kategori works for the same slugs.
 export const SEO_AGENCY_CATEGORIES: SEOCategory[] = [
-  { slug: 'digital-marknadsforing', name: 'Digital marknadsföring', description: 'Byråer inom digital marknadsföring, annonsering och tillväxt.', dbCategory: 'Digital marknadsföring' },
-  { slug: 'design', name: 'Design', description: 'Designbyråer som arbetar med UX, UI, varumärke och visuell kommunikation.', dbCategory: 'Grafisk design/UX' },
-  { slug: 'grafisk-design', name: 'Grafisk design', description: 'Byråer specialiserade på grafisk formgivning, logotyper och trycksaker.', dbCategory: 'Grafisk design/UX' },
+  { slug: 'webbutveckling', name: 'Webbutveckling', description: 'Webbbyråer som bygger moderna, snabba och konverterande webbplatser.', dbCategory: 'Webbutveckling' },
   { slug: 'seo', name: 'SEO', description: 'SEO-byråer som hjälper dig ranka högre i Google.', dbCategory: 'SEO' },
+  { slug: 'ehandel', name: 'E-handel', description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: 'E-handel' },
+  { slug: 'digital-marknadsforing', name: 'Digital marknadsföring', description: 'Byråer inom digital marknadsföring, annonsering och tillväxt.', dbCategory: 'Digital marknadsföring' },
+  { slug: 'apputveckling', name: 'Apputveckling', description: 'Byråer som bygger mobilappar för iOS och Android, nativt eller cross-platform.', dbCategory: 'Apputveckling' },
+  { slug: 'grafisk-design', name: 'Grafisk design', description: 'Byråer specialiserade på grafisk formgivning, varumärke och visuell identitet.', dbCategory: 'Grafisk design/UX' },
+  { slug: 'google-ads', name: 'Google Ads', description: 'Google Ads-byråer som bygger lönsamma kampanjer i Search, Display, YouTube och Shopping.', dbCategory: 'Google Ads' },
+  { slug: 'e-postmarknadsforing', name: 'E-postmarknadsföring', description: 'Byråer som arbetar med Klaviyo, Mailchimp och Apsis för automation och kampanjer.', dbCategory: 'Digital marknadsföring' },
+  { slug: 'analys-data', name: 'Analys & data', description: 'Byråer som hjälper med GA4, GTM, server-side tracking och dashboards.', dbCategory: 'Digital marknadsföring' },
+  { slug: 'ux-ui-design', name: 'UX/UI-design', description: 'UX-byråer som arbetar med användarforskning, prototyper och designsystem.', dbCategory: 'Grafisk design/UX' },
+  // Legacy categories – behåll bakåtkompatibilitet med befintliga URL:er och DB-data
+  { slug: 'design', name: 'Design', description: 'Designbyråer som arbetar med UX, UI, varumärke och visuell kommunikation.', dbCategory: 'Grafisk design/UX' },
   { slug: 'reklam', name: 'Reklam', description: 'Reklambyråer som skapar kampanjer och varumärkesstrategier.', dbCategory: 'Digital marknadsföring' },
   { slug: 'media', name: 'Media', description: 'Mediabyråer inom video, foto, sociala medier och innehållsproduktion.', dbCategory: 'Sociala medier' },
   { slug: 'kommunikation', name: 'Kommunikation', description: 'Kommunikationsbyråer som arbetar med PR, storytelling och intern kommunikation.', dbCategory: 'Varumärke & PR' },
   { slug: 'tryck', name: 'Tryck', description: 'Tryckerier och byråer som arbetar med tryckt material och förpackningsdesign.', dbCategory: 'Grafisk design/UX' },
   { slug: 'fotografering', name: 'Fotografering', description: 'Fotografer och fotobyråer för produktfoto, porträtt och eventfotografering.', dbCategory: 'Video & foto' },
-  { slug: 'e-handel', name: 'E-handel', description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: 'E-handel' },
+  { slug: 'e-handel', name: 'E-handel (legacy)', description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: 'E-handel' },
   { slug: 'pr', name: 'PR', description: 'PR-byråer som arbetar med medierelationer och opinionsbildning.', dbCategory: 'Varumärke & PR' },
   { slug: 'webb', name: 'Webb', description: 'Webbbyråer som bygger moderna, snabba och konverterande webbplatser.', dbCategory: 'Webbutveckling' },
+]
+
+// Primary categories shown in city pages (the 10 from SERVICE_CATEGORIES)
+export const PRIMARY_CATEGORY_SLUGS = [
+  'webbutveckling', 'seo', 'ehandel', 'digital-marknadsforing', 'apputveckling',
+  'grafisk-design', 'google-ads', 'e-postmarknadsforing', 'analys-data', 'ux-ui-design',
 ]
 
 // ─── LEVERANSER / SERVICES (11) ───

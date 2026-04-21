@@ -38,7 +38,41 @@ const cityLinks = [
   { label: 'Stockholm', href: '/byraer/stockholm' },
   { label: 'Göteborg', href: '/byraer/goteborg' },
   { label: 'Malmö', href: '/byraer/malmo' },
+  { label: 'Uppsala', href: '/byraer/uppsala' },
   { label: 'Linköping', href: '/byraer/linkoping' },
+  { label: 'Västerås', href: '/byraer/vasteras' },
+  { label: 'Örebro', href: '/byraer/orebro' },
+  { label: 'Norrköping', href: '/byraer/norrkoping' },
+  { label: 'Helsingborg', href: '/byraer/helsingborg' },
+  { label: 'Jönköping', href: '/byraer/jonkoping' },
+  { label: 'Umeå', href: '/byraer/umea' },
+  { label: 'Lund', href: '/byraer/lund' },
+  { label: 'Gävle', href: '/byraer/gavle' },
+  { label: 'Sundsvall', href: '/byraer/sundsvall' },
+  { label: 'Eskilstuna', href: '/byraer/eskilstuna' },
+  { label: 'Halmstad', href: '/byraer/halmstad' },
+  { label: 'Karlstad', href: '/byraer/karlstad' },
+  { label: 'Växjö', href: '/byraer/vaxjo' },
+  { label: 'Södertälje', href: '/byraer/sodertalje' },
+  { label: 'Luleå', href: '/byraer/lulea' },
+  { label: 'Borås', href: '/byraer/boras' },
+  { label: 'Kristianstad', href: '/byraer/kristianstad' },
+  { label: 'Solna', href: '/byraer/solna' },
+  { label: 'Skellefteå', href: '/byraer/skelleftea' },
+  { label: 'Kalmar', href: '/byraer/kalmar' },
+]
+
+const popularCombos = [
+  { label: 'Webbyrå Stockholm', href: '/byraer/stockholm/webbutveckling' },
+  { label: 'SEO Göteborg', href: '/byraer/goteborg/seo' },
+  { label: 'E-handel Malmö', href: '/byraer/malmo/ehandel' },
+  { label: 'Webbyrå Linköping', href: '/byraer/linkoping/webbutveckling' },
+  { label: 'Google Ads Uppsala', href: '/byraer/uppsala/google-ads' },
+  { label: 'Apputveckling Stockholm', href: '/byraer/stockholm/apputveckling' },
+  { label: 'Designbyrå Göteborg', href: '/byraer/goteborg/grafisk-design' },
+  { label: 'Digital marknadsföring Helsingborg', href: '/byraer/helsingborg/digital-marknadsforing' },
+  { label: 'UX-byrå Umeå', href: '/byraer/umea/ux-ui-design' },
+  { label: 'SEO-byrå Jönköping', href: '/byraer/jonkoping/seo' },
 ]
 
 const Footer = () => {
@@ -92,9 +126,22 @@ const Footer = () => {
               </span>
             ))}
             <span className="text-background/30">·</span>
-            <Link to="/byraer" className="hover:text-background transition-colors">
+            <Link to="/stader" className="hover:text-background transition-colors">
               Se alla städer
             </Link>
+          </p>
+        </div>
+
+        {/* Popular combos */}
+        <div className="border-t border-background/10 mt-8 pt-8">
+          <h4 className="font-display text-sm mb-3 text-background/80">Populära kombinationer</h4>
+          <p className="text-sm text-background/60 flex flex-wrap items-center gap-x-2 gap-y-2">
+            {popularCombos.map((c, i) => (
+              <span key={c.href} className="flex items-center gap-2">
+                <Link to={c.href} className="hover:text-background transition-colors">{c.label}</Link>
+                {i < popularCombos.length - 1 && <span className="text-background/30">·</span>}
+              </span>
+            ))}
           </p>
         </div>
       </div>
