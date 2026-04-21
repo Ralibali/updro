@@ -14,6 +14,94 @@ export type Database = {
   }
   public: {
     Tables: {
+      article_queue: {
+        Row: {
+          article_type: string
+          category: string
+          city: string | null
+          created_at: string
+          created_by: string | null
+          estimated_difficulty: string | null
+          generated_article_id: string | null
+          id: string
+          last_error: string | null
+          priority: number
+          publish_at: string | null
+          retry_count: number
+          search_intent: string | null
+          status: string
+          suggested_length: number
+          target_keyword: string
+          topic: string
+          updated_at: string
+          why_this_topic: string | null
+        }
+        Insert: {
+          article_type?: string
+          category: string
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          estimated_difficulty?: string | null
+          generated_article_id?: string | null
+          id?: string
+          last_error?: string | null
+          priority?: number
+          publish_at?: string | null
+          retry_count?: number
+          search_intent?: string | null
+          status?: string
+          suggested_length?: number
+          target_keyword: string
+          topic: string
+          updated_at?: string
+          why_this_topic?: string | null
+        }
+        Update: {
+          article_type?: string
+          category?: string
+          city?: string | null
+          created_at?: string
+          created_by?: string | null
+          estimated_difficulty?: string | null
+          generated_article_id?: string | null
+          id?: string
+          last_error?: string | null
+          priority?: number
+          publish_at?: string | null
+          retry_count?: number
+          search_intent?: string | null
+          status?: string
+          suggested_length?: number
+          target_keyword?: string
+          topic?: string
+          updated_at?: string
+          why_this_topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_queue_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_queue_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "article_queue_generated_article_id_fkey"
+            columns: ["generated_article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           article_type: string
