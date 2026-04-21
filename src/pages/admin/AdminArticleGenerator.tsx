@@ -160,7 +160,7 @@ const AdminArticleGenerator = () => {
         status,
         generated_by: "gemini-2.5-pro",
       };
-      const { error } = await supabase.from("articles").upsert(payload, { onConflict: "slug" });
+      const { error } = await supabase.from("articles").upsert([payload], { onConflict: "slug" });
       if (error) throw error;
       toast({
         title: status === "published" ? "Publicerad" : "Sparad som utkast",
@@ -245,9 +245,9 @@ const AdminArticleGenerator = () => {
               <Card>
                 <CardContent className="py-3 flex items-center gap-3 text-sm">
                   {meta.issues && meta.issues.length > 0 ? (
-                    <AlertCircle className="h-4 w-4 text-amber-600" />
+                    <AlertCircle className="h-4 w-4 text-destructive" />
                   ) : (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                    <CheckCircle2 className="h-4 w-4 text-accent" />
                   )}
                   <span>{meta.attempts} AI-anrop</span>
                   {meta.issues && meta.issues.length > 0 && (
