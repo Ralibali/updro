@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "next-themes";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -36,8 +36,15 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const SitemapPage = lazy(() => import("./pages/SitemapPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const SupplierLandingPage = lazy(() => import("./pages/SupplierLandingPage"));
-const GuidesIndex = lazy(() => import("./pages/GuidesIndex"));
-const GuidePage = lazy(() => import("./pages/GuidePage"));
+const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
+const MetodPage = lazy(() => import("./pages/MetodPage"));
+
+// Redirect helper for legacy /guider/:slug and /kunskapsbank/:slug -> /artiklar/:slug
+const RedirectToArtikel = () => {
+  const params = useParams();
+  const slug = params.slug || params.artikel;
+  return <Navigate to={slug ? `/artiklar/${slug}` : '/artiklar'} replace />;
+};
 
 // SEO pages
 const PillarPage = lazy(() => import("./components/seo/PillarPage"));
@@ -130,8 +137,15 @@ const App = () => (
               <Route path="/sitemap" element={<SitemapPage />} />
               <Route path="/landing" element={<LandingPage />} />
               <Route path="/landing/byra" element={<SupplierLandingPage />} />
-              <Route path="/guider" element={<GuidesIndex />} />
-              <Route path="/guider/:slug" element={<GuidePage />} />
+              {/* Legacy redirects → /artiklar (consolidated content hub) */}
+              <Route path="/guider" element={<Navigate to="/artiklar" replace />} />
+              <Route path="/guider/:slug" element={<RedirectToArtikel />} />
+              <Route path="/kunskapsbank" element={<Navigate to="/artiklar" replace />} />
+              <Route path="/kunskapsbank/:artikel" element={<RedirectToArtikel />} />
+
+              {/* E-E-A-T pages */}
+              <Route path="/redaktionell-policy" element={<EditorialPolicyPage />} />
+              <Route path="/metod" element={<MetodPage />} />
 
               {/* SEO landing pages */}
               <Route path="/hitta-webbyra" element={<HittaWebbbyraPage />} />
@@ -155,9 +169,7 @@ const App = () => (
               {/* Service pages */}
               <Route path="/leveranser/:tjanst" element={<ServicePage />} />
 
-              {/* Knowledge bank */}
-              <Route path="/kunskapsbank" element={<KnowledgeBankIndex />} />
-              <Route path="/kunskapsbank/:artikel" element={<KnowledgeArticlePage />} />
+              {/* Knowledge bank routes consolidated above into /artiklar redirects */}
 
               {/* Comparison pages */}
               {COMPARISON_PAGES.map(p => (

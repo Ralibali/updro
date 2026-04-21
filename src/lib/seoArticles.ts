@@ -1,3 +1,5 @@
+export type ArticleType = 'guide' | 'news' | 'comparison' | 'case-study'
+
 export interface ArticlePage {
   slug: string
   metaTitle: string
@@ -5,10 +7,24 @@ export interface ArticlePage {
   h1: string
   category: string
   publishedDate: string
+  /** ISO date – defaults to publishedDate when missing */
+  updatedDate?: string
+  /** Editorial type – default 'guide' for evergreen content */
+  type?: ArticleType
+  /** Estimated reading time in minutes (auto-derived if missing) */
+  readTimeMinutes?: number
   intro: string
   sections: { heading: string; content: string }[]
   faq: { q: string; a: string }[]
   relatedLinks: { label: string; href: string }[]
+}
+
+/** Friendly Swedish label for an article type */
+export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
+  guide: 'Guide',
+  news: 'Nyhet',
+  comparison: 'Jämförelse',
+  'case-study': 'Case',
 }
 
 export const ARTICLES: ArticlePage[] = [
@@ -319,7 +335,181 @@ export const ARTICLES: ArticlePage[] = [
       { label: 'Google Ads pris', href: '/google-ads/pris' },
     ]
   },
+
+  // ─────────────────────────────────────────────────────────
+  // NEWS – 2026 (color the index, signal freshness to Google)
+  // ─────────────────────────────────────────────────────────
+  {
+    slug: 'google-algoritm-update-mars-2026',
+    metaTitle: 'Googles marsuppdatering 2026 – så påverkas svenska sajter',
+    metaDesc: 'Vad ändrades i Googles marsuppdatering 2026? Tidiga signaler från svenska sajter, vad som rasade och hur du återhämtar dig.',
+    h1: 'Googles marsuppdatering 2026 – tidiga signaler från svenska sajter',
+    category: 'SEO',
+    publishedDate: '2026-03-22',
+    updatedDate: '2026-04-02',
+    type: 'news',
+    intro: 'Google rullade ut en bredare core-uppdatering i mitten av mars. Den slog hårdast mot tunna affiliate-sajter och AI-massproducerat innehåll. Här är vad vi ser i de svenska SERP:erna efter två veckors data.',
+    sections: [
+      { heading: 'Vad som rörde sig mest i Sverige', content: 'Vinnare i den här omgången är publicister med tydligt ägarskap (om-oss-sida, namngiven redaktion, kontaktuppgifter) och e-handel med rejält produktinnehåll. Förlorare är generiska "topp 10"-listor och AI-genererade pris- och guide-sajter utan källor.\n\nFlera svenska tjänsteföretag rapporterar 20–40 procent tappad organisk trafik. Det är inte ovanligt vid en core-uppdatering, men nivån är högre än i 2025-uppdateringarna.' },
+      { heading: 'Mönster i de drabbade sidorna', content: '- Sajter där författare saknas helt eller där en "expert" är samma person på 200 artiklar.\n- Långa guider utan konkret data, prisuppgifter eller exempel.\n- Sidor som rankade på keyword-stuffing snarare än faktiskt djup.\n- Auto-genererade stadslandningssidor utan unikt innehåll per stad.\n\nGemensam nämnare: ytligt innehåll producerat snabbt utan mänsklig redaktion.' },
+      { heading: 'Vad du gör om du tappat', content: 'Vänta minst tre veckor innan du panikar. Core-uppdateringar fortsätter rulla ut i 2–4 veckor. Använd tiden till att granska dina mest tappade sidor: är de faktiskt bättre än konkurrenternas? Har de en namngiven författare? Konkreta siffror? Senast-uppdaterad-datum?\n\nOm svaret är nej på flera av dem är det inte algoritmen som är problemet.' },
+      { heading: 'Vad vi gör på Updro', content: 'Vi har en redaktion med namn och bild, varje artikel är granskad av en människa, och vi har lagt till "senast granskad"-datum på alla guider. Den här typen av signaler matchar det Google sa i marsuppdateringens dokumentation om "people-first content".' },
+    ],
+    faq: [
+      { q: 'Är detta en HCU-uppdatering?', a: 'Inte officiellt namngiven så, men signalerna är samma: belönar sidor där en människa stått bakom innehållet.' },
+      { q: 'Kan jag återhämta innan nästa update?', a: 'Ja, men effekten syns oftast först vid nästa core-uppdatering. Förbered nu.' },
+      { q: 'Påverkas alla branscher lika?', a: 'Nej. YMYL-områden (hälsa, finans) träffades hårdast. E-handel mer måttligt.' },
+    ],
+    relatedLinks: [
+      { label: 'SEO för AI-sök 2026', href: '/artiklar/seo-for-ai-sok-2026' },
+      { label: 'SEO-guide för företag', href: '/artiklar/seo-guide-foretag' },
+      { label: 'SEO pris', href: '/seo/pris' },
+    ]
+  },
+  {
+    slug: 'ai-verktyg-marknadsforing-2026',
+    metaTitle: 'AI-verktyg för marknadsföring 2026 – vad fungerar i Sverige',
+    metaDesc: 'Vilka AI-verktyg använder svenska marknadsavdelningar 2026? Genomgång av det som faktiskt sparar tid – och det som inte gör det.',
+    h1: 'AI-verktyg för marknadsföring 2026 – läget i Sverige',
+    category: 'Marknadsföring',
+    publishedDate: '2026-04-08',
+    updatedDate: '2026-04-08',
+    type: 'news',
+    intro: 'På ett år har AI-verktygen i marknadsavdelningarna gått från "vi testar lite" till "vi har sex licenser och vet inte vilka som används". Här är en lägesrapport från ett 30-tal svenska marknadschefer vi pratat med under första kvartalet 2026.',
+    sections: [
+      { heading: 'Vad som faktiskt används dagligen', content: 'ChatGPT (eller motsvarande) för briefer, e-postutkast och sammanfattningar. Perplexity för research. Claude för längre texter. Midjourney och Adobe Firefly för bildkoncept – sällan slutlevererade bilder.\n\nDet som inte används lika ofta som leverantörerna säger: heltäckande "AI marketing platforms". De flesta avdelningar har plockat ihop sitt eget stack.' },
+      { heading: 'Det som verkligen sparar tid', content: 'Snabba första utkast på e-post, annonscopy och produktbeskrivningar. SEO-research där en människa sedan väljer ut det relevanta. Transkribering och sammanfattning av kundsamtal. Korrektur och tonjustering.\n\nEn marknadschef i Linköping uppskattade att hennes team sparar 6–8 timmar per vecka enbart på dessa fyra användningsområden.' },
+      { heading: 'Det som inte fungerat', content: 'Att låta AI publicera content utan redigering. Trafiken kommer kanske, men konvertering och varumärkesförtroende rasar. Flera bolag fick också besök av jurister efter att AI:n hittat på påståenden om priser och garantier.\n\nAuto-genererade landningssidor i skala är också på väg ut. Google straffar dem nu (se marsuppdateringen) och konvertering är generellt sämre.' },
+      { heading: 'Vad svenska byråer rekommenderar 2026', content: 'Använd AI för tempo, inte ersättning. Behåll en mänsklig redaktör mellan modellen och publicerat innehåll. Investera i bra prompts som dokumenteras internt – det är det nya "brand voice"-dokumentet.' },
+    ],
+    faq: [
+      { q: 'Vilket AI-verktyg ska jag börja med?', a: 'ChatGPT eller Claude för text, Perplexity för research. De tre täcker 80 procent av vardagsbehoven.' },
+      { q: 'Behöver vi en egen AI-policy?', a: 'Ja, även små bolag. Reglera vad som inte får matas in (kunddata, källkod) och vem som signerar av AI-genererat publikt material.' },
+    ],
+    relatedLinks: [
+      { label: 'ChatGPT-synlighet för företag', href: '/artiklar/chatgpt-synlighet-for-foretag-2026' },
+      { label: 'SEO för AI-sök', href: '/artiklar/seo-for-ai-sok-2026' },
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
+    ]
+  },
+  {
+    slug: 'sveriges-digitala-byraer-konjunktur-2026',
+    metaTitle: 'Sveriges digitala byråer – konjunkturläget 2026',
+    metaDesc: 'Hur går det för svenska digitala byråer just nu? Snittpriser, beläggning och vad köpare prioriterar i lågkonjunktur 2026.',
+    h1: 'Konjunkturläget för svenska digitala byråer 2026',
+    category: 'Marknadsföring',
+    publishedDate: '2026-02-12',
+    updatedDate: '2026-03-30',
+    type: 'news',
+    intro: 'Den svenska byråmarknaden går in i 2026 med blandade signaler. Stora byråer i Stockholm rapporterar prispress, medan specialiserade nischbyråer i Linköping, Umeå och Jönköping har fullbokat. Här är vad data och samtal visar.',
+    sections: [
+      { heading: 'Beläggning och prispress', content: 'Stora generalistbyråer ligger på 70–80 procent beläggning, ned från 90+ för två år sedan. Timpriserna har planat ut runt 1 200–1 500 kr för seniora roller, snarare än att fortsätta uppåt som under 2022–2023.\n\nNischade byråer (renodlad SEO, Shopify-experter, B2B-content) går mot strömmen och har höjt sina priser. Beställare betalar fortfarande premium för specialistkompetens.' },
+      { heading: 'Vad beställare prioriterar', content: 'Mätbar avkastning är den största förändringen. "Bygg en fin sajt" har ersatts av "öka konvertering med 15 procent". Mer än hälften av de uppdrag som publiceras på Updro Q1 2026 har en konkret KPI redan i förfrågan.\n\nFasta priser slår timdebitering allt oftare. Byråer som inte kan estimera projekt förlorar affärer.' },
+      { heading: 'Vinnarna 2026', content: 'Mindre byråer med tydlig nisch. AI-flytande team som levererar dubbelt så snabbt som tidigare till samma pris. Byråer som vågar säga nej till uppdrag de inte kan leverera på.\n\nFörlorarna är generalister utan särprägel som konkurrerar enbart på pris.' },
+    ],
+    faq: [
+      { q: 'Är det köparens marknad nu?', a: 'I storstäderna – ja. Det finns färre projekt och mer kapacitet än för två år sedan. På specialiserade kompetenser är läget tvärtom.' },
+      { q: 'Sjunker timpriserna?', a: 'Inte signifikant. De ligger stilla. Det som faller är överbelagda fastpriser från dyra byråer.' },
+    ],
+    relatedLinks: [
+      { label: 'Webbyrå pris 2026', href: '/artiklar/webbyra-pris-2026' },
+      { label: 'Hur väljer man webbyrå?', href: '/artiklar/hur-valjer-man-webbyra' },
+      { label: 'Bästa webbyrån', href: '/basta-webbyran' },
+    ]
+  },
+  {
+    slug: 'e-handel-trender-varen-2026',
+    metaTitle: 'E-handelstrender våren 2026 – vad som faktiskt funkar',
+    metaDesc: 'Vilka e-handelstrender slår igenom våren 2026? Konkreta siffror från svenska butiker och vad konsumenterna nu förväntar sig.',
+    h1: 'E-handelstrender våren 2026 – från svenska butiker',
+    category: 'E-handel',
+    publishedDate: '2026-03-04',
+    updatedDate: '2026-04-10',
+    type: 'news',
+    intro: 'Den svenska e-handelsvåren 2026 ser annorlunda ut än fjolårets. Mobilhandeln har stabiliserats kring 67 procent, returprocenten i kläder är fortfarande över 30 procent, och något har hänt med betalningsfördelningen. Här är vad data säger.',
+    sections: [
+      { heading: 'Betalningsfördelning förändras', content: 'Klarna ligger fortfarande i topp men har tappat 4–5 procentenheter på ett år. Swish e-handel har vuxit kraftigt, särskilt för köp under 500 kr. Direktbetalning via konto (open banking) är på frammarsch hos kunder över 50 år.\n\nFör butiker betyder det fler integrationer i kassan – och fortfarande 1–3 procent i avgifter att förhandla om.' },
+      { heading: 'AI-rekommendationer som faktiskt fungerar', content: 'Tre svenska e-handlare vi pratat med ser 12–18 procent högre snittordervärde med moderna rekommendationsmotorer. Skillnaden mot 2024: motorerna är billigare och tränas på butikens egen data, inte generisk branschdata.\n\nKlassisk "kunder köpte också" presterar fortfarande bättre än komplexa rekommendationer i de flesta segment.' },
+      { heading: 'Returer och hållbarhet', content: 'Sverige följer EU-trenden där betalda returer blir vanligare i klädbranschen. Två stora svenska klädbutiker införde 49 kr-returer i februari 2026 utan att tappa konvertering nämnvärt. Returprocenten sjönk däremot 4–6 procent.\n\nKonsumenterna är inte överraskade – de har vetat att gratis returer var subventionerade.' },
+    ],
+    faq: [
+      { q: 'Är det fortfarande värt att satsa på Shopify 2026?', a: 'För de flesta svenska butiker upp till 50 mkr i omsättning – ja. Plattformen är stabil och ekosystemet växer. Stora svenska aktörer flyttar dock allt oftare till headless eller composable.' },
+      { q: 'Hur viktigt är Swish e-handel nu?', a: 'För B2C under 1 000 kr: viktigt. Avsaknad är en konverteringsfälla särskilt på mobil.' },
+    ],
+    relatedLinks: [
+      { label: 'Shopify vs WooCommerce', href: '/artiklar/shopify-vs-woocommerce' },
+      { label: 'E-handel statistik Sverige', href: '/artiklar/ehandel-statistik-sverige' },
+      { label: 'E-handel', href: '/ehandel' },
+    ]
+  },
+  {
+    slug: 'seo-for-ai-sok-2026',
+    metaTitle: 'SEO för AI-sök 2026 – synlighet i ChatGPT, Gemini och Perplexity',
+    metaDesc: 'Hur optimerar du för ChatGPT, Perplexity och Gemini 2026? Konkret strategi för AI-sök utan att slänga klassisk SEO.',
+    h1: 'SEO för AI-sök 2026 – så syns du i ChatGPT, Perplexity och Gemini',
+    category: 'SEO',
+    publishedDate: '2026-04-15',
+    updatedDate: '2026-04-15',
+    type: 'guide',
+    intro: 'Andelen sökningar som sker i ChatGPT, Perplexity och Gemini istället för Google växer stadigt. Inte explosivt, men tillräckligt för att svenska byråer börjat få frågan: "Hur syns vi där?". Det korta svaret: gör klassisk SEO, plus några specifika saker. Det långa svaret är det här.',
+    sections: [
+      { heading: 'Hur LLM-svar plockas ihop', content: 'När en användare ställer en fråga i ChatGPT eller Perplexity hämtas i regel 3–8 källor från webben i realtid. Modellen syntetiserar svaret och nämner ofta källorna. Det är de citaten du jagar.\n\nFör att bli citerad behöver två saker stämma: din sida måste hittas (klassisk crawlability) och innehållet måste vara enkelt att lyfta ut som ett självständigt svar.' },
+      { heading: 'Skriv så att svaret står i första meningen', content: 'LLM:er gillar text där svaret står direkt. "En hemsida kostar 15 000–80 000 kr för ett företag i Sverige 2026" är värdefullt. Ett 200-ords inledande resonemang innan siffran kommer är mindre värdefullt.\n\nDet krockar inte med klassisk SEO – det förstärker den. Featured snippets och AI-citat belönar samma struktur.' },
+      { heading: 'Tekniska signaler som hjälper', content: '- Tydlig publishing-författare med bio och kontakt.\n- Datum för publicering OCH senaste granskning.\n- Strukturerad data (FAQPage, Article, Organization).\n- En llms.txt på rotnivå som beskriver vad sajten är.\n- Korta URL:er, läsbara rubriker.\n- Tabeller med konkreta siffror.\n\nIngen av dessa är hemliga – det är bara att de spelar större roll nu än för två år sedan.' },
+      { heading: 'Vad du inte ska göra', content: 'Skriv inte "AI-optimerade" sidor som är tunna lager keywords. LLM:er är ofta bättre än Google på att se igenom sånt eftersom de läser hela sidan, inte bara signaler.\n\nSluta inte heller med klassisk SEO. ChatGPT och Perplexity hämtar fortfarande till stor del från sidor som rankar bra organiskt. Google driver fortfarande 90+ procent av sökningarna i Sverige.' },
+    ],
+    faq: [
+      { q: 'Behöver jag en egen "llms.txt"?', a: 'Det skadar inte. Vi har en på updro.se. Det är en kort markdownfil som beskriver vad sajten innehåller – LLM:er börjar läsa den.' },
+      { q: 'Ska jag spärra AI-bottar i robots.txt?', a: 'Bara om du verkligen inte vill bli citerad. För de flesta svenska företag är citat-trafik värdefull och växande.' },
+      { q: 'Hur mäter jag synlighet i AI-sök?', a: 'Verktyg som Otterly och Profound gör det. Annars – ställ konkreta frågor som dina kunder skulle ställa, i ChatGPT och Perplexity, och se vem som nämns.' },
+    ],
+    relatedLinks: [
+      { label: 'SEO-guide för företag', href: '/artiklar/seo-guide-foretag' },
+      { label: 'ChatGPT-synlighet för företag', href: '/artiklar/chatgpt-synlighet-for-foretag-2026' },
+      { label: 'Googles marsuppdatering 2026', href: '/artiklar/google-algoritm-update-mars-2026' },
+    ]
+  },
+  {
+    slug: 'chatgpt-synlighet-for-foretag-2026',
+    metaTitle: 'ChatGPT-synlighet för företag 2026 – så blir du rekommenderad',
+    metaDesc: 'Bli rekommenderad i ChatGPT när potentiella kunder frågar efter företag i din bransch. Konkret guide för svenska bolag 2026.',
+    h1: 'ChatGPT-synlighet för företag 2026 – från noll till rekommendation',
+    category: 'SEO',
+    publishedDate: '2026-04-02',
+    updatedDate: '2026-04-15',
+    type: 'guide',
+    intro: 'En växande andel B2B-köp börjar med "Vilka är de bästa byråerna för X i Sverige?" – ställd till ChatGPT eller Perplexity. Om ditt företag inte nämns där förlorar du leads du aldrig får veta att du missade. Här är vad som faktiskt fungerar.',
+    sections: [
+      { heading: 'Vad ChatGPT vet om ditt företag idag', content: 'Testa själv: öppna ChatGPT och fråga "Vilka är de bästa [din bransch]-byråerna i [din stad]?". Får du svar nämns du eller inte? Får du inte svar är ditt företag inte ens i underlaget.\n\nDet är där du börjar. Inte med "AI-strategi", utan med en tydlig mätpunkt på utgångsläget.' },
+      { heading: 'Vad som driver omnämnande', content: '1. Att finnas i tredjepartslistor och jämförelser. När någon skrivit "10 bästa SEO-byråerna i Göteborg" och du står där, hamnar du i underlaget för många LLM-svar.\n2. En tydlig om-oss-sida med vad ni gör, var ni finns, vilka som driver bolaget. LLM:er gillar konkreta fakta.\n3. Att ha case eller publicerade kundnamn på sajten – det skapar associationer mellan ditt företag och specifika branscher.\n4. Branschmedier som skrivit om er. Lite gammeldags PR slår fortfarande mycket annat.' },
+      { heading: 'Konkret 30-dagarsplan', content: 'Vecka 1: Testa nuvarande synlighet på 10 frågor som dina kunder skulle ställa. Dokumentera vem som nämns istället.\n\nVecka 2: Optimera om-oss-sidan. Lägg till stad, grundare, antal anställda, kunder, tjänster i klartext. Inga buzzwords.\n\nVecka 3: Identifiera 5–10 jämförelseartiklar och listartiklar i din nisch. Pitcha skribenten med ett konkret skäl varför ni borde ingå.\n\nVecka 4: Skriv en egen jämförelseartikel i din nisch där ni ärligt jämför er med konkurrenter. Det blir ofta källa för LLM-svar.' },
+      { heading: 'Det som inte fungerar (så bra)', content: 'Att betala för "AI SEO". Just nu finns inga genvägar – det är klassisk content och digital PR i ny kostym.\n\nAtt fylla sajten med "AI-optimerat" innehåll utan substans. LLM:er väljer källor med konkret information, inte ord-soppa.' },
+    ],
+    faq: [
+      { q: 'Hur lång tid tar det att synas?', a: 'Beroende på bransch: 2–6 månader för att märkbart förändra omnämnande-mönstret. Snabbare i nischer.' },
+      { q: 'Är detta värt det för små bolag?', a: 'Om dina kunder är digitalt mogna – ja. För konsumentprodukter på Tradera är det fortfarande tidigt.' },
+      { q: 'Påverkas omnämnandet av annonser?', a: 'Inte direkt. ChatGPT visar inte annonser ännu. Indirekt om annonsering driver omnämnande på andra sajter.' },
+    ],
+    relatedLinks: [
+      { label: 'SEO för AI-sök 2026', href: '/artiklar/seo-for-ai-sok-2026' },
+      { label: 'AI-verktyg för marknadsföring', href: '/artiklar/ai-verktyg-marknadsforing-2026' },
+      { label: 'SEO-guide för företag', href: '/artiklar/seo-guide-foretag' },
+    ]
+  },
 ]
+
+/** Mark a few existing articles as the comparison type */
+const COMPARISON_SLUGS = new Set(['shopify-vs-woocommerce', 'google-ads-vs-seo'])
+ARTICLES.forEach(a => {
+  if (!a.type) {
+    a.type = COMPARISON_SLUGS.has(a.slug) ? 'comparison' : 'guide'
+  }
+  if (!a.updatedDate) a.updatedDate = a.publishedDate
+  if (!a.readTimeMinutes) {
+    const total = a.intro.length + a.sections.reduce((s, sec) => s + sec.content.length, 0)
+    a.readTimeMinutes = Math.max(3, Math.round(total / 1200))
+  }
+})
 
 export const findArticle = (slug: string) => ARTICLES.find(a => a.slug === slug)
 

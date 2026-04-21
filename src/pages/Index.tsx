@@ -94,6 +94,17 @@ const Index = () => {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
+        {/* AI-friendly answer-first paragraph (often quoted by LLMs) */}
+        <section className="container py-10 md:py-12">
+          <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
+            <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
+            <p className="mt-3 text-foreground/85 leading-relaxed">
+              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag och får upp till fem offerter
+              från kvalitetssäkrade byråer inom 24 timmar. Tjänsten är gratis för uppdragsgivare och täcker
+              webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring i hela Sverige.
+            </p>
+          </div>
+        </section>
         <CategoriesSection />
         <HowItWorksSection />
         <AgencyTrustSection />

@@ -27,6 +27,9 @@ const footerColumns = [
     title: 'Om & legal',
     links: [
       { label: 'Om Updro', href: '/om-oss' },
+      { label: 'Vår metod', href: '/metod' },
+      { label: 'Redaktionell policy', href: '/redaktionell-policy' },
+      { label: 'Artiklar', href: '/artiklar' },
       { label: 'Användarvillkor', href: '/villkor' },
       { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Cookiepolicy', href: '/cookies' },
