@@ -22,6 +22,7 @@ const LoginPage = () => {
       title: 'Logga in | Updro',
       description: 'Logga in på ditt Updro-konto för att hantera uppdrag, offerter och meddelanden.',
       canonical: 'https://updro.se/logga-in',
+      noindex: true,
     })
   }, [])
 

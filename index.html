@@ -46,10 +46,10 @@
     <link rel="apple-touch-icon" href="/favicon.png" />
 
     <!-- Theme color -->
-    <meta name="theme-color" content="#4338CA" />
-    <meta name="msapplication-TileColor" content="#4338CA" />
+    <meta name="theme-color" content="#111111" />
+    <meta name="msapplication-TileColor" content="#111111" />
 
-    <!-- Structured Data: Organization + WebSite (global) -->
+    <!-- Structured Data: Organization + WebSite + BreadcrumbList (global) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -60,23 +60,22 @@
           "name": "Updro",
           "legalName": "Aurora Media AB",
           "url": "https://updro.se",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://updro.se/logo.png",
-            "width": 512,
-            "height": 512
+          "logo": "https://updro.se/logo-updro.png",
+          "description": "Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.",
+          "foundingDate": "2026",
+          "founder": {
+            "@type": "Organization",
+            "name": "Aurora Media AB"
           },
-          "description": "Sveriges ledande marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade byråer – gratis.",
-          "foundingDate": "2024",
           "areaServed": {
             "@type": "Country",
             "name": "Sweden"
           },
           "contactPoint": {
             "@type": "ContactPoint",
-            "contactType": "customer support",
+            "contactType": "customer service",
             "email": "info@auroramedia.se",
-            "availableLanguage": "Swedish"
+            "availableLanguage": ["Swedish", "English"]
           },
           "sameAs": []
         },
@@ -87,7 +86,23 @@
           "name": "Updro",
           "publisher": { "@id": "https://updro.se/#organization" },
           "inLanguage": "sv-SE",
-          "inLanguage": "sv-SE"
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://updro.se/byraer?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://updro.se/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Hem",
+              "item": "https://updro.se/"
+            }
+          ]
         }
       ]
     }
@@ -120,7 +135,12 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Prerendered H1 fallback for slow crawlers (replaced when React mounts) -->
+      <h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+        Updro – Jämför offerter från digitala byråer i Sverige
+      </h1>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

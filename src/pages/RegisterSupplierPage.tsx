@@ -33,6 +33,7 @@ const RegisterSupplierPage = () => {
       title: 'Registrera din byrå – Få fler kunder gratis | Updro',
       description: 'Registrera din byrå på Updro och få fem gratis leads. Kvalificerade uppdrag, ingen bindningstid.',
       canonical: 'https://updro.se/registrera/byra',
+      noindex: true,
     })
   }, [])
 

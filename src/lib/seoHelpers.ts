@@ -114,6 +114,39 @@ function setOrCreateMetaProperty(property: string, content: string) {
   }
 }
 
+/**
+ * Inject a JSON-LD <script> tag into <head> with a unique id.
+ * Removes any existing script with the same id first to prevent duplicates
+ * when navigating between pages.
+ */
+export const setJsonLd = (id: string, data: object) => {
+  if (typeof document === 'undefined') return
+  const existing = document.getElementById(id)
+  if (existing) existing.remove()
+  const script = document.createElement('script')
+  script.id = id
+  script.type = 'application/ld+json'
+  script.text = JSON.stringify(data)
+  document.head.appendChild(script)
+}
+
+/**
+ * Generate and inject a BreadcrumbList JSON-LD from a list of items.
+ * Items should be ordered from root → current page.
+ */
+export const setBreadcrumb = (items: { name: string; url: string }[]) => {
+  setJsonLd('breadcrumb-jsonld', {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  })
+}
+
 export interface SitemapEntry {
   loc: string
   changefreq: 'daily' | 'weekly' | 'monthly'

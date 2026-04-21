@@ -1,0 +1,22 @@
+# Updro
+
+> Sveriges marknadsplats för digitala uppdrag. Uppdragsgivare publicerar projekt och får upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Gratis för uppdragsgivare. Drivs av Aurora Media AB.
+
+## Viktiga sidor
+- [Startsida](https://updro.se/): Beskriv projekt, jämför byråer
+- [Publicera uppdrag](https://updro.se/publicera): Starta förfrågan gratis
+- [Hitta byrå](https://updro.se/byraer): Bläddra alla byråer
+- [För byråer](https://updro.se/registrera/byra): Registrera din byrå
+- [Priser](https://updro.se/priser): Prismodell för byråer
+- [Artiklar](https://updro.se/artiklar): Guider och kunskapsbank
+- [Städer](https://updro.se/stader): Byråer per stad
+
+## Tjänstekategorier
+- Webbutveckling
+- SEO & sökmotoroptimering
+- E-handel
+- Apputveckling
+- Digital marknadsföring
+- Grafisk design & UX
+- Google Ads
+- E-postmarknadsföring
