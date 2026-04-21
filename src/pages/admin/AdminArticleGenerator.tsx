@@ -314,6 +314,11 @@ const AdminArticleGenerator = () => {
 
           {/* Preview / history */}
           <div className="space-y-6">
+            {loadingExisting && (
+              <Card><CardContent className="py-12 text-center text-sm text-muted-foreground flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" /> Laddar artikel…
+              </CardContent></Card>
+            )}
             {meta && (
               <Card>
                 <CardContent className="py-3 flex items-center gap-3 text-sm">
