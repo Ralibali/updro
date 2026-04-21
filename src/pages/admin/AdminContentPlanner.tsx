@@ -407,6 +407,22 @@ const AdminContentPlanner = () => {
             <StatBox label="I kö" value={queue.filter((q) => q.status === "queued").length} />
             <StatBox label="Schemalagda" value={queue.filter((q) => q.publish_at).length} />
           </div>
+
+          <PublishCalendar
+            queueItems={queue.map((q) => ({
+              id: q.id, topic: q.topic, category: q.category, city: q.city,
+              status: q.status, publish_at: q.publish_at,
+            }))}
+            publishedItems={(existingArticles || []).map((a: any) => ({
+              id: a.id || a.slug,
+              h1: a.h1 || a.slug,
+              category: a.category,
+              published_date: a.published_date || new Date().toISOString().slice(0, 10),
+              slug: a.slug,
+            }))}
+            onChanged={() => queryClient.invalidateQueries({ queryKey: ["article-queue"] })}
+          />
+
           <Card>
             <CardHeader><CardTitle className="text-base">Täckning per kategori</CardTitle></CardHeader>
             <CardContent className="grid sm:grid-cols-2 gap-2 text-sm">
@@ -457,53 +473,6 @@ const StatBox = ({ label, value }: { label: string; value: number }) => (
     <p className="text-3xl font-bold font-display mt-1">{value}</p>
   </div>
 );
-
-const QueueItem = ({ row, onChanged }: { row: QueueRow; onChanged: () => void }) => {
-  const [updating, setUpdating] = useState(false);
-
-  const setStatus = async (status: string) => {
-    setUpdating(true);
-    const { error } = await (supabase as any).from("article_queue").update({ status }).eq("id", row.id);
-    setUpdating(false);
-    if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
-    else onChanged();
-  };
-
-  const remove = async () => {
-    if (!confirm("Ta bort detta köelement?")) return;
-    const { error } = await (supabase as any).from("article_queue").delete().eq("id", row.id);
-    if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
-    else onChanged();
-  };
-
-  return (
-    <div className="bg-card rounded-xl border p-4 flex items-start gap-4">
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Badge className={cn("border-0", STATUS_STYLE[row.status])}>{STATUS_LABEL[row.status] || row.status}</Badge>
-          <Badge variant="outline">{TYPE_LABEL[row.article_type] || row.article_type}</Badge>
-          <Badge variant="outline">{row.category}</Badge>
-          {row.city && <Badge variant="outline">{row.city}</Badge>}
-          {row.priority > 0 && <Badge variant="secondary">Prio {row.priority}</Badge>}
-        </div>
-        <h4 className="font-medium mt-2 truncate">{row.topic}</h4>
-        <code className="text-xs text-muted-foreground font-mono">{row.target_keyword}</code>
-        {row.last_error && <p className="text-xs text-destructive mt-1">Fel: {row.last_error}</p>}
-      </div>
-      <div className="flex items-center gap-1.5">
-        {row.status === "ready_for_review" && row.generated_article_id && (
-          <Button size="sm" variant="outline" asChild>
-            <a href={`/admin/artikelgenerator?id=${row.generated_article_id}`}>Granska</a>
-          </Button>
-        )}
-        {(row.status === "skipped" || row.status === "ready_for_review") && (
-          <Button size="sm" variant="ghost" disabled={updating} onClick={() => setStatus("queued")}>Återställ</Button>
-        )}
-        <Button size="icon" variant="ghost" onClick={remove}><Trash2 className="h-4 w-4" /></Button>
-      </div>
-    </div>
-  );
-};
 
 const AutopilotDialog = ({
   open, onOpenChange, existingSlugs, weakCategories, onComplete,
