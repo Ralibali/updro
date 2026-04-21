@@ -85,6 +85,7 @@ const AdminNotifications = lazy(() => import("./pages/admin/AdminNotifications")
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 const AdminGuides = lazy(() => import("./pages/admin/AdminGuides"));
+const AdminArticleGenerator = lazy(() => import("./pages/admin/AdminArticleGenerator"));
 const AdminStripeLog = lazy(() => import("./pages/admin/AdminStripeLog"));
 const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
 const AdminVisitors = lazy(() => import("./pages/admin/AdminVisitors"));
@@ -195,6 +196,7 @@ const App = () => (
               <Route path="/admin/installningar" element={<ProtectedRoute role="admin"><AdminSettings /></ProtectedRoute>} />
               <Route path="/admin/statistik" element={<ProtectedRoute role="admin"><AdminAnalytics /></ProtectedRoute>} />
               <Route path="/admin/guider" element={<ProtectedRoute role="admin"><AdminGuides /></ProtectedRoute>} />
+              <Route path="/admin/artikelgenerator" element={<ProtectedRoute role="admin"><AdminArticleGenerator /></ProtectedRoute>} />
               <Route path="/admin/stripe" element={<ProtectedRoute role="admin"><AdminStripeLog /></ProtectedRoute>} />
               <Route path="/admin/audit" element={<ProtectedRoute role="admin"><AdminAuditLog /></ProtectedRoute>} />
               <Route path="/admin/besokare" element={<ProtectedRoute role="admin"><AdminVisitors /></ProtectedRoute>} />

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
-import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal } from 'lucide-react'
+import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
@@ -15,6 +15,7 @@ const navItems = [
   { label: 'Uppdrag', href: '/admin/uppdrag', icon: ClipboardList },
   { label: 'Offerter', href: '/admin/offerter', icon: CreditCard },
   { label: 'Guider', href: '/admin/guider', icon: BookOpen },
+  { label: 'Artikelgenerator', href: '/admin/artikelgenerator', icon: Sparkles },
   { label: 'Stripe-logg', href: '/admin/stripe', icon: Receipt },
   { label: 'Audit-logg', href: '/admin/audit', icon: Shield },
   { label: 'Notifikationer', href: '/admin/notifikationer', icon: Bell },

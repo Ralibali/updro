@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
-import { findArticle, ARTICLES } from '@/lib/seoArticles'
+import { findArticle, ARTICLES, type ArticlePage as ArticleType } from '@/lib/seoArticles'
+import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, Calendar } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
@@ -13,7 +13,67 @@ import ShareButtons from '@/components/shared/ShareButtons'
 
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>()
-  const page = findArticle(slug || '')
+  const [page, setPage] = useState<ArticleType | null | undefined>(undefined) // undefined = loading
+  const [allArticles, setAllArticles] = useState<ArticleType[]>(ARTICLES)
+
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      // Try DB first
+      try {
+        const { data } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('slug', slug || '')
+          .eq('status', 'published')
+          .maybeSingle()
+        if (cancelled) return
+        if (data) {
+          setPage({
+            slug: data.slug,
+            metaTitle: data.meta_title,
+            metaDesc: data.meta_desc,
+            h1: data.h1,
+            category: data.category,
+            publishedDate: data.published_date,
+            intro: data.intro,
+            sections: (data.sections as any) || [],
+            faq: (data.faq as any) || [],
+            relatedLinks: (data.related_links as any) || [],
+          })
+          return
+        }
+      } catch (e) {
+        console.warn('articles DB fetch failed, falling back to static', e)
+      }
+      // Fallback to static
+      const fromStatic = findArticle(slug || '')
+      if (!cancelled) setPage(fromStatic ?? null)
+    }
+    load()
+    return () => { cancelled = true }
+  }, [slug])
+
+  // Load related articles list (DB + static merged)
+  useEffect(() => {
+    let cancelled = false
+    supabase
+      .from('articles')
+      .select('slug, h1, category, published_date')
+      .eq('status', 'published')
+      .order('published_date', { ascending: false })
+      .then(({ data }) => {
+        if (cancelled || !data) return
+        const dbArticles: ArticleType[] = data.map((a: any) => ({
+          slug: a.slug, metaTitle: '', metaDesc: '', h1: a.h1, category: a.category,
+          publishedDate: a.published_date, intro: '', sections: [], faq: [], relatedLinks: [],
+        }))
+        const seen = new Set(dbArticles.map(a => a.slug))
+        const merged = [...dbArticles, ...ARTICLES.filter(a => !seen.has(a.slug))]
+        setAllArticles(merged)
+      })
+    return () => { cancelled = true }
+  }, [])
 
   useEffect(() => {
     if (page) {
@@ -24,9 +84,16 @@ const ArticlePage = () => {
     window.scrollTo(0, 0)
   }, [page])
 
+  if (page === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
   if (!page) return <NotFound />
 
-  const schemas = [
+  const schemas: any[] = [
     {
       '@context': 'https://schema.org',
       '@type': 'Article',
@@ -56,7 +123,7 @@ const ArticlePage = () => {
         name: f.q,
         acceptedAnswer: { '@type': 'Answer', text: f.a },
       })),
-    } as any)
+    })
   }
 
   return (
@@ -101,13 +168,13 @@ const ArticlePage = () => {
             </section>
           ))}
         </div>
-          {/* Author bio */}
+        <div className="max-w-3xl">
           <AuthorBio />
-          {/* Share buttons */}
           <div className="mt-6">
             <ShareButtons url={`https://updro.se/artiklar/${page.slug}`} title={page.h1} />
           </div>
         </div>
+      </div>
 
       <SEOLeadCTA categoryName="digitala tjänster" />
 
@@ -128,25 +195,26 @@ const ArticlePage = () => {
         </section>
       )}
 
-      <section className="container py-12 border-t">
-        <h2 className="font-display text-xl font-bold mb-4">Relaterade sidor</h2>
-        <div className="flex flex-wrap gap-3">
-          {page.relatedLinks.map(link => (
-            <Link key={link.href} to={link.href}
-              className="bg-muted rounded-xl px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors">
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      </section>
+      {page.relatedLinks.length > 0 && (
+        <section className="container py-12 border-t">
+          <h2 className="font-display text-xl font-bold mb-4">Relaterade sidor</h2>
+          <div className="flex flex-wrap gap-3">
+            {page.relatedLinks.map(link => (
+              <Link key={link.href} to={link.href}
+                className="bg-muted rounded-xl px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors">
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* More articles */}
       <section className="container py-12 border-t">
         <h2 className="font-display text-xl font-bold mb-4">Fler artiklar</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {ARTICLES.filter(a => a.slug !== page.slug).slice(0, 6).map(a => (
+          {allArticles.filter(a => a.slug !== page.slug).slice(0, 6).map(a => (
             <Link key={a.slug} to={`/artiklar/${a.slug}`}
-              className="bg-card border rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all group">
+              className="bg-card border rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-shadow group">
               <span className="text-xs text-primary font-semibold">{a.category}</span>
               <h3 className="font-display font-semibold mt-1 group-hover:text-primary transition-colors line-clamp-2">{a.h1}</h3>
               <span className="text-xs text-muted-foreground mt-2 inline-flex items-center gap-1">
