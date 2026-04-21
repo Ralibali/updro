@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Eye, ChevronLeft, ExternalLink, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Loader2, Sparkles, Eye, ChevronLeft, ExternalLink, AlertCircle, CheckCircle2, FileEdit } from "lucide-react";
 import { setSEOMeta } from "@/lib/seoHelpers";
 
 interface Section { heading: string; content: string }
@@ -52,6 +52,8 @@ const ARTICLE_TYPES: { value: string; label: string }[] = [
 
 const AdminArticleGenerator = () => {
   const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const editId = searchParams.get("id");
 
   const [topic, setTopic] = useState("");
   const [targetKeyword, setTargetKeyword] = useState("");
@@ -62,8 +64,10 @@ const AdminArticleGenerator = () => {
 
   const [generating, setGenerating] = useState(false);
   const [article, setArticle] = useState<GeneratedArticle | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [meta, setMeta] = useState<{ attempts?: number; issues?: string[] } | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loadingExisting, setLoadingExisting] = useState(false);
 
   useEffect(() => {
     setSEOMeta({
@@ -72,6 +76,50 @@ const AdminArticleGenerator = () => {
       noindex: true,
     });
   }, []);
+
+  // Ladda existerande artikel om ?id= finns (från Granska-knapp i kön)
+  useEffect(() => {
+    if (!editId) return;
+    let cancelled = false;
+    (async () => {
+      setLoadingExisting(true);
+      try {
+        const { data, error } = await supabase
+          .from("articles")
+          .select("*")
+          .eq("id", editId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!data || cancelled) return;
+        setArticle({
+          slug: data.slug,
+          metaTitle: data.meta_title,
+          metaDesc: data.meta_desc,
+          h1: data.h1,
+          category: data.category,
+          publishedDate: data.published_date,
+          updatedDate: data.updated_date,
+          readTimeMinutes: data.read_time_minutes ?? undefined,
+          intro: data.intro,
+          sections: (data.sections as any) || [],
+          faq: (data.faq as any) || [],
+          relatedLinks: (data.related_links as any) || [],
+        });
+        setEditingId(data.id);
+        setCategory(data.category);
+        setCity(data.city || "");
+        setArticleType(data.article_type);
+        setTargetKeyword(data.target_keyword || "");
+        setTopic(data.h1);
+        toast({ title: "Artikel laddad", description: "Granska och publicera när du är klar" });
+      } catch (e: any) {
+        toast({ title: "Kunde inte ladda artikel", description: e.message, variant: "destructive" });
+      } finally {
+        setLoadingExisting(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [editId]);
 
   const { data: history } = useQuery({
     queryKey: ["admin-articles"],
@@ -184,11 +232,22 @@ const AdminArticleGenerator = () => {
         </div>
 
         <div className="flex items-center gap-3 mb-8">
-          <Sparkles className="h-7 w-7 text-accent" />
+          {editingId ? <FileEdit className="h-7 w-7 text-primary" /> : <Sparkles className="h-7 w-7 text-accent" />}
           <div>
-            <h1 className="font-display text-3xl">Artikelgenerator</h1>
-            <p className="text-sm text-muted-foreground">Gemini 2.5 Pro – anti-AI röstregler aktiva</p>
+            <h1 className="font-display text-3xl">{editingId ? "Granska artikel" : "Artikelgenerator"}</h1>
+            <p className="text-sm text-muted-foreground">
+              {editingId ? "Redigera AI-utkast – publicera när du är nöjd" : "Gemini 2.5 Pro – anti-AI röstregler aktiva"}
+            </p>
           </div>
+          {editingId && (
+            <Button variant="ghost" size="sm" className="ml-auto" onClick={() => {
+              setEditingId(null);
+              setArticle(null);
+              setSearchParams({});
+            }}>
+              Avbryt granskning
+            </Button>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-[380px_1fr] gap-6">
