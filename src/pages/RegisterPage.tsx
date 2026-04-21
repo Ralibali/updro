@@ -29,6 +29,7 @@ const RegisterPage = () => {
       title: 'Registrera dig – Skapa gratis konto | Updro',
       description: 'Skapa ett gratis konto på Updro och börja publicera uppdrag eller registrera din byrå.',
       canonical: 'https://updro.se/registrera',
+      noindex: true,
     })
   }, [])
 

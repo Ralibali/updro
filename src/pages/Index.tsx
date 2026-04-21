@@ -11,7 +11,7 @@ import TestimonialsSection from '@/components/home/TestimonialsSection'
 import FAQSection from '@/components/home/FAQSection'
 import CTASection from '@/components/home/CTASection'
 import NewsletterSection from '@/components/home/NewsletterSection'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 
 const howItWorksSchema = {
   '@context': 'https://schema.org',
@@ -40,13 +40,53 @@ const howItWorksSchema = {
   ],
 }
 
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://updro.se/#organization',
+  name: 'Updro',
+  url: 'https://updro.se',
+  logo: 'https://updro.se/logo-updro.png',
+  description:
+    'Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.',
+  foundingDate: '2026',
+  founder: { '@type': 'Organization', name: 'Aurora Media AB' },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@auroramedia.se',
+    contactType: 'customer service',
+    availableLanguage: ['Swedish', 'English'],
+  },
+  areaServed: { '@type': 'Country', name: 'Sweden' },
+  sameAs: [],
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://updro.se/#website',
+  url: 'https://updro.se',
+  name: 'Updro',
+  inLanguage: 'sv-SE',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://updro.se/byraer?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+}
+
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser',
-      description: 'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis.',
+      description:
+        'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis.',
       canonical: 'https://updro.se/',
     })
+    setJsonLd('howto-jsonld', howItWorksSchema)
+    setJsonLd('organization-jsonld', organizationSchema)
+    setJsonLd('website-jsonld', websiteSchema)
+    setBreadcrumb([{ name: 'Hem', url: 'https://updro.se/' }])
   }, [])
 
   return (
@@ -65,12 +105,6 @@ const Index = () => {
         <CTASection />
       </main>
       <Footer />
-
-      {/* HowTo JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(howItWorksSchema) }}
-      />
     </div>
   )
 }
