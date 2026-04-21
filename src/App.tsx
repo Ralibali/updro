@@ -38,6 +38,7 @@ const LandingPage = lazy(() => import("./pages/LandingPage"));
 const SupplierLandingPage = lazy(() => import("./pages/SupplierLandingPage"));
 const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
 const MetodPage = lazy(() => import("./pages/MetodPage"));
+const AdminContentPlanner = lazy(() => import("./pages/admin/AdminContentPlanner"));
 
 // Redirect helper for legacy /guider/:slug and /kunskapsbank/:slug -> /artiklar/:slug
 const RedirectToArtikel = () => {
@@ -170,6 +171,9 @@ const App = () => (
               <Route path="/leveranser/:tjanst" element={<ServicePage />} />
 
               {/* Knowledge bank routes consolidated above into /artiklar redirects */}
+
+              {/* Admin: content planner */}
+              <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
 
               {/* Comparison pages */}
               {COMPARISON_PAGES.map(p => (
