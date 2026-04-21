@@ -120,23 +120,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Social proof */}
-        <section className="py-16">
-          <div className="container max-w-3xl">
-            <div className="rounded-2xl border bg-card p-8 md:p-10 text-center">
-              <div className="flex justify-center gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <blockquote className="text-lg text-foreground/90 italic mb-4 max-w-lg mx-auto">
-                "Vi fick tre offerter inom ett dygn och sparade över 40% jämfört med att kontakta byråer direkt. Updro gjorde hela processen enkel."
-              </blockquote>
-              <p className="text-sm text-muted-foreground">— Maria S., marknadschef på TechVenture AB</p>
-            </div>
-          </div>
-        </section>
-
         {/* Final CTA */}
         <section className="py-16 bg-primary/5 border-y">
           <div className="container max-w-2xl text-center">

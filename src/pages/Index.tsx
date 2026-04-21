@@ -40,43 +40,6 @@ const howItWorksSchema = {
   ],
 }
 
-const reviewSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': 'https://updro.se/#organization',
-  name: 'Updro',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '5.0',
-    reviewCount: '3',
-    bestRating: '5',
-    worstRating: '1',
-  },
-  review: [
-    {
-      '@type': 'Review',
-      author: { '@type': 'Person', name: 'Erik S.' },
-      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-      reviewBody: 'Fick tre relevanta offerter inom ett dygn. Valde en byrå i Göteborg som levererade perfekt.',
-      datePublished: '2025-11-10',
-    },
-    {
-      '@type': 'Review',
-      author: { '@type': 'Person', name: 'Sara L.' },
-      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-      reviewBody: 'Som liten byrå får vi nu förfrågningar vi aldrig hade hittat själva.',
-      datePublished: '2025-12-03',
-    },
-    {
-      '@type': 'Review',
-      author: { '@type': 'Person', name: 'Marcus K.' },
-      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
-      reviewBody: 'Sparade minst två veckor av research. Updro matchade oss med rätt partners direkt.',
-      datePublished: '2026-01-15',
-    },
-  ],
-}
-
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
@@ -107,11 +70,6 @@ const Index = () => {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howItWorksSchema) }}
-      />
-      {/* Review/Rating JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewSchema) }}
       />
     </div>
   )

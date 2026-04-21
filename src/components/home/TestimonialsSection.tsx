@@ -1,65 +1,36 @@
 import { motion } from 'framer-motion'
-import { Star } from 'lucide-react'
-
-const testimonials = [
-  {
-    quote: 'Fick tre relevanta offerter inom ett dygn. Valde en byrå i Göteborg som levererade perfekt.',
-    name: 'Erik S.',
-    title: 'E-handelsföretag',
-  },
-  {
-    quote: 'Som liten byrå får vi nu förfrågningar vi aldrig hade hittat själva.',
-    name: 'Sara L.',
-    title: 'Digital byrå Stockholm',
-  },
-  {
-    quote: 'Sparade minst två veckor av research. Updro matchade oss med rätt partners direkt.',
-    name: 'Marcus K.',
-    title: 'Startup Malmö',
-  },
-]
+import { Link } from 'react-router-dom'
+import { Sparkles, ArrowRight } from 'lucide-react'
 
 const TestimonialsSection = () => {
   return (
     <section className="py-20 bg-[#F8FAFF] dark:bg-muted/20">
       <div className="container">
         <motion.div
-          className="text-center mb-12"
+          className="max-w-2xl mx-auto text-center bg-white dark:bg-card rounded-2xl border border-border p-10 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <Sparkles className="h-6 w-6 text-primary" />
+          </div>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Vad våra användare säger
+            Nylanserad – bli en av de första
           </h2>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            Updro är precis igång. Vi samlar riktiga omdömen från våra första
+            uppdragsgivare och byråer – och visar dem här så snart de finns.
+          </p>
+          <Link
+            to="/publicera"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-[0.98]"
+          >
+            Starta förfrågan
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </motion.div>
-
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={t.name}
-              className="bg-white dark:bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-            >
-              <div className="flex gap-0.5 mb-4">
-                {[...Array(5)].map((_, j) => (
-                  <Star key={j} className="h-4 w-4 fill-brand-orange text-brand-orange" />
-                ))}
-              </div>
-              <p className="text-sm text-foreground/80 italic flex-1 leading-relaxed">
-                "{t.quote}"
-              </p>
-              <div className="mt-4 pt-4 border-t border-border">
-                <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.title}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   )

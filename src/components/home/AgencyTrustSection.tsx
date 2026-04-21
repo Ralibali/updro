@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ShieldCheck, Star, Clock, ArrowRight, MapPin } from 'lucide-react'
+import { ShieldCheck, Star, Clock, ArrowRight, MapPin, Plus } from 'lucide-react'
 
 const trustBadges = [
   { icon: ShieldCheck, title: 'Granskade byråer', desc: 'Varje byrå granskas manuellt innan godkännande' },
@@ -8,10 +8,8 @@ const trustBadges = [
   { icon: Clock, title: 'Svar inom 24 timmar', desc: 'Byråerna förbinder sig att återkomma snabbt' },
 ]
 
-const exampleAgencies = [
-  { name: 'Aurora Media AB', specialization: 'Digital marknadsföring & Webbutveckling', city: 'Linköping', rating: 5.0 },
-  { name: 'Pixelcraft Studio', specialization: 'UX/UI Design & E-handel', city: 'Stockholm', rating: 4.9 },
-  { name: 'Digiflow AB', specialization: 'SEO & Content Marketing', city: 'Göteborg', rating: 4.8 },
+const foundingAgencies = [
+  { name: 'Aurora Media AB', specialization: 'Digital marknadsföring & Webbutveckling', city: 'Linköping', badge: 'Grundare' },
 ]
 
 const AgencyTrustSection = () => {
@@ -53,9 +51,20 @@ const AgencyTrustSection = () => {
           ))}
         </div>
 
+        {/* Founding agencies header */}
+        <motion.h3
+          className="font-display text-xl md:text-2xl font-bold text-foreground text-center mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+        >
+          Första byråer ombord
+        </motion.h3>
+
         {/* Agency cards */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          {exampleAgencies.map((agency, i) => (
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {foundingAgencies.map((agency, i) => (
             <motion.div
               key={agency.name}
               className="bg-white dark:bg-card rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow"
@@ -64,32 +73,47 @@ const AgencyTrustSection = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
             >
-              <div className="flex items-center gap-2 mb-3">
-                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="font-display font-bold text-primary text-sm">
-                    {agency.name.charAt(0)}
-                  </span>
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-foreground">{agency.name}</h4>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3" />
-                    {agency.city}
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="font-display font-bold text-primary text-sm">
+                      {agency.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-sm text-foreground">{agency.name}</h4>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      {agency.city}
+                    </div>
                   </div>
                 </div>
+                <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                  {agency.badge}
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground mb-3">{agency.specialization}</p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className={`h-3.5 w-3.5 ${j < Math.floor(agency.rating) ? 'fill-brand-orange text-brand-orange' : 'text-border'}`} />
-                  ))}
-                  <span className="text-xs font-semibold text-foreground ml-1">{agency.rating}</span>
-                </div>
-                <span className="text-xs text-primary font-medium">Se profil →</span>
-              </div>
+              <p className="text-xs text-muted-foreground">{agency.specialization}</p>
             </motion.div>
           ))}
+
+          {/* Add-card: Apply now */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.15 }}
+          >
+            <Link
+              to="/registrera/byra"
+              className="group flex h-full min-h-[140px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-transparent p-6 text-center transition-all hover:border-primary hover:bg-primary/5"
+            >
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                <Plus className="h-5 w-5" />
+              </div>
+              <p className="font-display font-bold text-sm text-foreground">Din byrå här?</p>
+              <p className="text-xs text-primary font-medium mt-1">Ansök nu →</p>
+            </Link>
+          </motion.div>
         </div>
 
         {/* CTA */}
