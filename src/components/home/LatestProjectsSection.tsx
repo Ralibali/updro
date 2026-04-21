@@ -48,7 +48,7 @@ const LatestProjectsSection = () => {
           return (
             <motion.div
               key={project.id}
-              className={`group rounded-2xl border bg-card p-5 hover:shadow-md hover:border-primary/20 transition-all duration-200 flex flex-col ${isClosed ? 'opacity-50' : ''}`}
+              className={`group rounded-2xl border bg-card p-5 hover:shadow-md hover:border-primary/20 transition-shadow duration-200 flex flex-col ${isClosed ? 'opacity-50' : ''}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

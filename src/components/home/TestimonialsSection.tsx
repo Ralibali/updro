@@ -25,7 +25,7 @@ const TestimonialsSection = () => {
           </p>
           <Link
             to="/publicera"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 active:scale-[0.98]"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 active:scale-[0.98]"
           >
             Starta förfrågan
             <ArrowRight className="h-4 w-4" />

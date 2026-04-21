@@ -3,27 +3,29 @@ import { Link } from 'react-router-dom'
 import { ShieldCheck, Star, Clock, ArrowRight, MapPin, Plus } from 'lucide-react'
 
 const trustBadges = [
-  { icon: ShieldCheck, title: 'Granskade byråer', desc: 'Varje byrå granskas manuellt innan godkännande' },
-  { icon: Star, title: 'Verifierade recensioner', desc: 'Riktiga omdömen från verkliga kunder' },
-  { icon: Clock, title: 'Svar inom 24 timmar', desc: 'Byråerna förbinder sig att återkomma snabbt' },
+  { icon: ShieldCheck, title: 'Granskade byråer', desc: 'Manuellt granskade innan godkännande' },
+  { icon: Star, title: 'Verifierade recensioner', desc: 'Riktiga omdömen från riktiga kunder' },
+  { icon: Clock, title: 'Svar inom 24 timmar', desc: 'Snabb återkoppling, garanterat' },
 ]
 
 const foundingAgencies = [
   { name: 'Aurora Media AB', specialization: 'Digital marknadsföring & Webbutveckling', city: 'Linköping', badge: 'Grundare' },
 ]
 
+const ease = [0.22, 1, 0.36, 1] as const
+
 const AgencyTrustSection = () => {
   return (
     <section className="py-20">
       <div className="container">
         <motion.div
-          className="text-center mb-14"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+          <h2 className="font-display text-3xl md:text-5xl text-foreground">
             Kvalitetssäkrade byråer – hela Sverige
           </h2>
           <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
@@ -31,29 +33,29 @@ const AgencyTrustSection = () => {
           </p>
         </motion.div>
 
-        {/* Trust badges */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-16">
+        {/* Trust badges – horizontal row, no cards */}
+        <div className="max-w-5xl mx-auto mb-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 border-y border-border py-10">
           {trustBadges.map((badge, i) => (
             <motion.div
               key={badge.title}
-              className="text-center"
-              initial={{ opacity: 0, y: 20 }}
+              className="flex items-center gap-3"
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.15 }}
+              transition={{ duration: 0.4, delay: i * 0.1, ease }}
             >
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <badge.icon className="h-6 w-6 text-primary" />
+              <badge.icon className="h-6 w-6 text-foreground shrink-0" strokeWidth={1.5} />
+              <div>
+                <p className="font-display text-base text-foreground leading-tight">{badge.title}</p>
+                <p className="text-xs text-muted-foreground">{badge.desc}</p>
               </div>
-              <h3 className="font-display font-bold text-foreground mb-1">{badge.title}</h3>
-              <p className="text-sm text-muted-foreground">{badge.desc}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Founding agencies header */}
         <motion.h3
-          className="font-display text-xl md:text-2xl font-bold text-foreground text-center mb-6"
+          className="font-display text-2xl md:text-3xl text-foreground text-center mb-8"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -62,33 +64,33 @@ const AgencyTrustSection = () => {
           Första byråer ombord
         </motion.h3>
 
-        {/* Agency cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        {/* Agency cards – max 2 cols, centered */}
+        <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {foundingAgencies.map((agency, i) => (
             <motion.div
               key={agency.name}
-              className="bg-white dark:bg-card rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-card rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
+              transition={{ duration: 0.4, delay: i * 0.1, ease }}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <span className="font-display font-bold text-primary text-sm">
+                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
+                    <span className="font-display text-foreground text-base">
                       {agency.name.charAt(0)}
                     </span>
                   </div>
                   <div>
-                    <h4 className="font-display font-bold text-sm text-foreground">{agency.name}</h4>
+                    <h4 className="font-display text-base text-foreground leading-tight">{agency.name}</h4>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
                       <MapPin className="h-3 w-3" />
                       {agency.city}
                     </div>
                   </div>
                 </div>
-                <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
                   {agency.badge}
                 </span>
               </div>
@@ -101,17 +103,17 @@ const AgencyTrustSection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.15 }}
+            transition={{ duration: 0.4, delay: 0.15, ease }}
           >
             <Link
               to="/registrera/byra"
-              className="group flex h-full min-h-[140px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-transparent p-6 text-center transition-all hover:border-primary hover:bg-primary/5"
+              className="group flex h-full min-h-[120px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-transparent p-6 text-center transition-colors hover:border-foreground hover:bg-surface-alt"
             >
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-transform group-hover:scale-110">
-                <Plus className="h-5 w-5" />
+              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground transition-transform group-hover:scale-110">
+                <Plus className="h-5 w-5" strokeWidth={1.5} />
               </div>
-              <p className="font-display font-bold text-sm text-foreground">Din byrå här?</p>
-              <p className="text-xs text-primary font-medium mt-1">Ansök nu →</p>
+              <p className="font-display text-base text-foreground">Din byrå här?</p>
+              <p className="text-xs text-muted-foreground mt-1">Ansök nu →</p>
             </Link>
           </motion.div>
         </div>
@@ -124,7 +126,7 @@ const AgencyTrustSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
-          <Link to="/byraer" className="inline-flex items-center gap-2 text-primary font-semibold hover:underline">
+          <Link to="/byraer" className="inline-flex items-center gap-2 text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2 transition-all">
             Se alla byråer <ArrowRight className="h-4 w-4" />
           </Link>
         </motion.div>

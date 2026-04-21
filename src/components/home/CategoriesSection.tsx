@@ -21,8 +21,8 @@ const CategoriesSection = () => {
     <section className="py-20">
       <div className="container">
         <div className="text-center mb-14">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Gratis offertjämförelse – webbutveckling, SEO och mer
+          <h2 className="font-display text-3xl md:text-5xl text-foreground">
+            Hitta rätt byrå för ditt uppdrag
           </h2>
           <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
             Välj kategori – vi matchar dig med rätt byråer automatiskt
@@ -33,19 +33,18 @@ const CategoriesSection = () => {
           {categories.map((cat, i) => (
             <motion.div
               key={cat.slug}
+              className={i === 0 || i === categories.length - 1 ? 'md:col-span-2' : ''}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
+              transition={{ duration: 0.4, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link
                 to={`/publicera?kategori=${encodeURIComponent(cat.label)}`}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-white dark:bg-card p-6 transition-all duration-200 hover:border-primary/40 hover:shadow-md hover:scale-[1.02] text-center"
+                className="group flex h-full flex-col items-start gap-3 rounded-2xl bg-card hover:bg-surface-alt p-6 transition-colors duration-200 hover:-translate-y-0.5 transition-transform"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <cat.icon className="h-6 w-6 text-primary" />
-                </div>
-                <span className="font-display font-semibold text-sm text-foreground">{cat.label}</span>
+                <cat.icon className="h-7 w-7 text-foreground" strokeWidth={1.5} />
+                <span className="font-display text-lg text-foreground leading-tight">{cat.label}</span>
                 <span className="text-xs text-muted-foreground leading-snug">{cat.desc}</span>
               </Link>
             </motion.div>

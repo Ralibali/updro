@@ -1,67 +1,63 @@
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
 
 const steps = [
   {
-    number: '1',
+    number: '01',
     title: 'Beskriv ditt projekt',
     description: 'Berätta vad du behöver hjälp med – det tar två minuter. Ingen registrering krävs.',
+    align: 'left' as const,
   },
   {
-    number: '2',
+    number: '02',
     title: 'Matcha med byråer',
     description: 'Vi matchar din förfrågan med upp till fem kvalitetssäkrade byråer som passar ditt uppdrag och din budget.',
+    align: 'right' as const,
   },
   {
-    number: '3',
+    number: '03',
     title: 'Jämför och välj',
     description: 'Byråerna kontaktar dig direkt med offerter. Du jämför, ställer frågor och väljer den som passar bäst.',
+    align: 'left' as const,
   },
 ]
 
 const HowItWorksSection = () => {
   return (
-    <section className="py-20 bg-[#F8FAFF] dark:bg-muted/20" id="hur-det-fungerar">
+    <section className="py-20 bg-surface-alt" id="hur-det-fungerar">
       <div className="container">
         <motion.div
-          className="text-center mb-14"
+          className="text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Så enkelt fungerar Updro – beskriv projekt, få offerter, välj byrå
+          <h2 className="font-display text-3xl md:text-5xl text-foreground">
+            Så enkelt fungerar Updro
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto space-y-16 md:space-y-20">
           {steps.map((step, i) => (
             <motion.div
               key={step.number}
-              className="relative text-center"
+              className={`flex items-start gap-6 max-w-md ${
+                step.align === 'right' ? 'md:ml-auto md:mr-0' : 'md:ml-0 md:mr-auto'
+              }`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.2 }}
+              transition={{ duration: 0.5, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Arrow connector on desktop */}
-              {i < steps.length - 1 && (
-                <div className="hidden md:flex absolute top-8 left-[65%] w-[70%] items-center justify-center">
-                  <ArrowRight className="h-5 w-5 text-primary/30" />
-                </div>
-              )}
-
-              <div className="mb-5">
-                <span className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground font-display text-2xl font-bold">
-                  {step.number}
-                </span>
+              <span className="font-display text-6xl font-normal text-muted-foreground/40 leading-none shrink-0">
+                {step.number}
+              </span>
+              <div className="pt-2">
+                <h3 className="font-display text-2xl text-foreground mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
               </div>
-
-              <h3 className="font-display text-lg font-bold mb-2 text-foreground">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                {step.description}
-              </p>
             </motion.div>
           ))}
         </div>

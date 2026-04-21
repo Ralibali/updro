@@ -15,13 +15,28 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 font-display text-6xl font-bold text-foreground">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Sidan hittades inte</p>
-        <Link to="/" className="text-primary underline hover:text-primary/90">
-          Tillbaka till startsidan
-        </Link>
+    <div className="flex min-h-screen items-center justify-center bg-surface-alt px-6">
+      <div className="max-w-xl text-left">
+        <h1 className="font-display text-6xl md:text-8xl text-foreground leading-[1.05] tracking-tight [text-wrap:balance]">
+          404 – sidan hittades inte
+        </h1>
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-md">
+          Sidan du letar efter finns inte – kanske flyttad, kanske aldrig publicerad. Härifrån kan du hitta tillbaka.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-base">
+          <Link
+            to="/"
+            className="text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2 transition-all"
+          >
+            Till startsidan
+          </Link>
+          <Link
+            to="/byraer"
+            className="text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2 transition-all"
+          >
+            Hitta byrå
+          </Link>
+        </div>
       </div>
     </div>
   );
