@@ -22,17 +22,12 @@ const HeroSection = () => {
   }
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#F8FAFF] to-[#EEF2FF] dark:from-background dark:to-background">
-      {/* Subtle diagonal pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, currentColor 35px, currentColor 36px)',
-      }} />
-
+    <section className="relative overflow-hidden bg-hero-gradient dark:from-background dark:to-background">
       <div className="container relative z-10 py-20 md:py-32">
         <div className="max-w-3xl mx-auto text-center">
           {/* H1 */}
           <motion.h1
-            className="font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-[#111827] dark:text-foreground leading-[1.08]"
+            className="font-display text-4xl sm:text-5xl md:text-7xl tracking-tight text-foreground leading-[1.08] [text-wrap:balance]"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -70,7 +65,7 @@ const HeroSection = () => {
               <Button
                 type="submit"
                 size="lg"
-                className="h-14 bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl px-8 text-base font-semibold shadow-md whitespace-nowrap"
+                className="h-14 bg-foreground hover:bg-foreground/90 text-background rounded-xl px-8 text-base font-semibold shadow-md whitespace-nowrap"
               >
                 Få offerter gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
