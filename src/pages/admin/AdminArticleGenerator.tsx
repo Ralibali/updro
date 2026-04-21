@@ -154,9 +154,9 @@ const AdminArticleGenerator = () => {
         updated_date: today,
         read_time_minutes: article.readTimeMinutes || null,
         intro: article.intro,
-        sections: article.sections,
-        faq: article.faq,
-        related_links: article.relatedLinks,
+        sections: article.sections as any,
+        faq: article.faq as any,
+        related_links: article.relatedLinks as any,
         status,
         generated_by: "gemini-2.5-pro",
       };
