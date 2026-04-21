@@ -410,7 +410,7 @@ const AdminContentPlanner = () => {
                 return (
                   <div key={c.slug} className="flex items-center justify-between p-2 rounded-md bg-muted/40">
                     <span>{c.name}</span>
-                    <span className={cn("text-xs font-medium", weak ? "text-destructive" : "text-emerald-600 dark:text-emerald-400")}>{n} artikl{n === 1 ? "el" : "ar"}</span>
+                    <span className={cn("text-xs font-medium", weak ? "text-destructive" : "text-primary")}>{n} artikl{n === 1 ? "el" : "ar"}</span>
                   </div>
                 );
               })}

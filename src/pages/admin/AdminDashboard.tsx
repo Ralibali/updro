@@ -97,6 +97,52 @@ const StatCard = ({ label, value, icon: Icon, color }: { label: string; value: n
   </div>
 )
 
+const ContentStatusWidget = () => {
+  const [stats, setStats] = useState({ published: 0, queued: 0, ready: 0, weakCats: [] as string[], weakCities: [] as string[] })
+
+  useEffect(() => {
+    const load = async () => {
+      const [{ data: arts }, { data: q }] = await Promise.all([
+        supabase.from('articles').select('category, city, status'),
+        (supabase as any).from('article_queue').select('status'),
+      ])
+      const byCat: Record<string, number> = {}
+      const byCity: Record<string, number> = {}
+      ;(arts || []).forEach((a: any) => {
+        byCat[a.category] = (byCat[a.category] || 0) + 1
+        if (a.city) byCity[a.city] = (byCity[a.city] || 0) + 1
+      })
+      const allCats = ['Webbutveckling', 'SEO', 'E-handel', 'Apputveckling', 'Digital marknadsföring', 'Grafisk design', 'Google Ads', 'E-post']
+      setStats({
+        published: (arts || []).filter((a: any) => a.status === 'published').length,
+        queued: (q || []).filter((r: any) => r.status === 'queued').length,
+        ready: (q || []).filter((r: any) => r.status === 'ready_for_review').length,
+        weakCats: allCats.filter(c => (byCat[c] || 0) < 3),
+        weakCities: [],
+      })
+    }
+    load()
+  }, [])
+
+  return (
+    <div className="bg-card rounded-xl border p-5 mb-8">
+      <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+        <h2 className="font-display font-semibold flex items-center gap-2"><Sparkles className="h-4 w-4 text-primary" /> Innehållsstatus</h2>
+        <Link to="/admin/innehallsplan" className="text-xs text-primary hover:underline font-medium">Öppna planeraren →</Link>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+        <div className="bg-muted/40 rounded-lg p-3"><p className="text-xs text-muted-foreground">Publicerade</p><p className="text-2xl font-display font-bold mt-1">{stats.published}</p></div>
+        <div className="bg-muted/40 rounded-lg p-3"><p className="text-xs text-muted-foreground">I kö</p><p className="text-2xl font-display font-bold mt-1">{stats.queued}</p></div>
+        <div className="bg-muted/40 rounded-lg p-3"><p className="text-xs text-muted-foreground">Klara att granska</p><p className="text-2xl font-display font-bold mt-1">{stats.ready}</p></div>
+        <div className="bg-muted/40 rounded-lg p-3"><p className="text-xs text-muted-foreground">Svaga kategorier</p><p className="text-2xl font-display font-bold mt-1">{stats.weakCats.length}</p></div>
+      </div>
+      {stats.weakCats.length > 0 && (
+        <div className="mt-3 text-xs text-muted-foreground">Behöver fler artiklar: <span className="text-foreground font-medium">{stats.weakCats.join(', ')}</span></div>
+      )}
+    </div>
+  )
+}
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState({ users: 0, projects: 0, suppliers: 0, offers: 0, activeProjects: 0, totalLeads: 0 })
   const [recentUsers, setRecentUsers] = useState<any[]>([])
@@ -145,6 +191,8 @@ const AdminDashboard = () => {
         <StatCard label="Offerter" value={stats.offers} icon={CreditCard} color="bg-violet-100 text-violet-700" />
         <StatCard label="Upplåsta leads" value={stats.totalLeads} icon={BarChart3} color="bg-rose-100 text-rose-700" />
       </div>
+
+      <ContentStatusWidget />
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-card rounded-xl border p-5">
