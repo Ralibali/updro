@@ -40,7 +40,7 @@ const FAQSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+          <h2 className="font-display text-3xl md:text-5xl text-foreground">
             Vanliga frågor
           </h2>
         </motion.div>
@@ -51,17 +51,17 @@ const FAQSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible>
             {faqs.map((faq, i) => (
               <AccordionItem
                 key={i}
                 value={`faq-${i}`}
-                className="border rounded-xl px-5 bg-white dark:bg-card shadow-sm"
+                className="border-b border-border last:border-0"
               >
-                <AccordionTrigger className="text-left font-semibold text-sm md:text-base hover:no-underline">
+                <AccordionTrigger className="text-left font-display text-lg md:text-xl text-foreground hover:no-underline py-5">
                   {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm leading-relaxed">
+                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>

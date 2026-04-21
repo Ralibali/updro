@@ -12,8 +12,6 @@ const footerColumns = [
       { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
       { label: 'Hitta SEO-byrå', href: '/hitta-seo-byra' },
       { label: 'Hitta digital byrå', href: '/hitta-digital-byra' },
-      { label: 'Updro vs Offerta', href: '/updro-vs-offerta' },
-      { label: 'Updro vs Hittabyrå', href: '/updro-vs-hittabyra' },
       { label: 'Hur det fungerar', href: '/#hur-det-fungerar' },
     ],
   },
@@ -23,74 +21,54 @@ const footerColumns = [
       { label: 'Registrera din byrå', href: '/registrera/byra' },
       { label: 'Byrå-dashboard', href: '/dashboard/supplier' },
       { label: 'Priser', href: '/priser' },
-      { label: 'Villkor för byråer', href: '/villkor' },
     ],
   },
   {
-    title: 'Om oss',
+    title: 'Om & legal',
     links: [
       { label: 'Om Updro', href: '/om-oss' },
-      { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Användarvillkor', href: '/villkor' },
+      { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Cookiepolicy', href: '/cookies' },
     ],
   },
 ]
 
-const popularServices = [
-  { label: 'Webbutveckling', href: '/webbutveckling' },
-  { label: 'SEO-byrå', href: '/seo' },
-  { label: 'E-handel', href: '/ehandel' },
-  { label: 'Apputveckling', href: '/app-utveckling' },
-  { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
-  { label: 'Grafisk design', href: '/grafisk-design' },
-  { label: 'Google Ads-byrå', href: '/google-ads' },
-  { label: 'UX/UI-design', href: '/ux-ui-design' },
-]
-
-const popularCities = [
+const cityLinks = [
   { label: 'Stockholm', href: '/byraer/stockholm' },
   { label: 'Göteborg', href: '/byraer/goteborg' },
   { label: 'Malmö', href: '/byraer/malmo' },
   { label: 'Linköping', href: '/byraer/linkoping' },
-  { label: 'Norrköping', href: '/byraer/norrkoping' },
-  { label: 'Örebro', href: '/byraer/orebro' },
-  { label: 'Helsingborg', href: '/byraer/helsingborg' },
-  { label: 'Jönköping', href: '/byraer/jonkoping' },
-  { label: 'Umeå', href: '/byraer/umea' },
-  { label: 'Västerås', href: '/byraer/vasteras' },
-  { label: 'Lund', href: '/byraer/lund' },
-  { label: 'Halmstad', href: '/byraer/halmstad' },
 ]
 
 const Footer = () => {
   return (
-    <footer className="bg-[#111827] text-white" role="contentinfo">
+    <footer className="bg-foreground text-background" role="contentinfo">
       <div className="container py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div>
-            <Logo size="md" className="[&_span]:text-white" />
-            <p className="mt-3 text-sm text-gray-400">
+            <Logo size="md" className="[&_span]:text-background" />
+            <p className="mt-3 text-sm text-background/60">
               Sveriges marknadsplats för digitala uppdrag
             </p>
-            <p className="mt-4 text-xs text-gray-500">
+            <p className="mt-4 text-xs text-background/50">
               © {new Date().getFullYear()} Updro – Aurora Media AB
             </p>
-            <p className="text-xs text-gray-500">info@auroramedia.se</p>
+            <p className="text-xs text-background/50">info@auroramedia.se</p>
           </div>
 
           {footerColumns.map((col) => (
             <nav key={col.title} aria-label={col.title}>
-              <h4 className="font-display font-semibold text-sm mb-4 text-white">{col.title}</h4>
+              <h4 className="font-display text-base mb-4 text-background">{col.title}</h4>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
                     {link.href.includes('#') ? (
-                      <a href={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <a href={link.href} className="text-sm text-background/60 hover:text-background transition-colors">
                         {link.label}
                       </a>
                     ) : (
-                      <Link to={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link to={link.href} className="text-sm text-background/60 hover:text-background transition-colors">
                         {link.label}
                       </Link>
                     )}
@@ -101,32 +79,27 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* SEO internal links */}
-        <div className="border-t border-gray-800 mt-12 pt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-          <nav aria-label="Populära tjänster">
-            <h4 className="font-display font-semibold text-sm mb-4 text-white">Populära tjänster</h4>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {popularServices.map((s) => (
-                <Link key={s.href} to={s.href} className="text-sm text-gray-400 hover:text-white transition-colors">
-                  {s.label}
-                </Link>
-              ))}
-            </div>
-          </nav>
-          <nav aria-label="Byråer per stad">
-            <h4 className="font-display font-semibold text-sm mb-4 text-white">Byråer per stad</h4>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {popularCities.map((c) => (
-                <Link key={c.href} to={c.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+        {/* City row */}
+        <div className="border-t border-background/10 mt-12 pt-8">
+          <p className="text-sm text-background/60 flex flex-wrap items-center gap-x-2 gap-y-2">
+            <span className="text-background/50">Byråer i:</span>
+            {cityLinks.map((c, i) => (
+              <span key={c.href} className="flex items-center gap-2">
+                <Link to={c.href} className="hover:text-background transition-colors">
                   {c.label}
                 </Link>
-              ))}
-            </div>
-          </nav>
+                {i < cityLinks.length - 1 && <span className="text-background/30">·</span>}
+              </span>
+            ))}
+            <span className="text-background/30">·</span>
+            <Link to="/byraer" className="hover:text-background transition-colors">
+              Se alla städer
+            </Link>
+          </p>
         </div>
       </div>
-      <div className="mt-8 border-t border-gray-800 pt-4 text-center">
-        <span className="text-[10px] text-gray-600 select-all" title="Build ID">v {BUILD_ID}</span>
+      <div className="mt-8 border-t border-background/10 pt-4 pb-4 text-center">
+        <span className="text-[10px] text-background/40 select-all" title="Build ID">v {BUILD_ID}</span>
       </div>
     </footer>
   )
