@@ -112,11 +112,11 @@ const AdminContentPlanner = () => {
     setSEOMeta({ title: "Innehållsplanering – Admin | Updro", description: "Planera och bulk-generera artiklar", noindex: true });
   }, []);
 
-  // Existing slugs (to dedupe suggestions)
+  // Existing articles (for dedupe + calendar)
   const { data: existingArticles } = useQuery({
     queryKey: ["all-article-slugs"],
     queryFn: async () => {
-      const { data } = await supabase.from("articles").select("slug, category, city");
+      const { data } = await supabase.from("articles").select("id, slug, h1, category, city, published_date").eq("status", "published");
       return data || [];
     },
   });
