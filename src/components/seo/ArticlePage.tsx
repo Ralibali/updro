@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
-import { findArticle, ARTICLES, type ArticlePage as ArticleType } from '@/lib/seoArticles'
+import { findArticle, ARTICLES, ARTICLE_TYPE_LABEL, type ArticlePage as ArticleType } from '@/lib/seoArticles'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -159,8 +159,9 @@ const ArticlePage = () => {
 
       <section className="container py-12 md:py-16">
         <div className="max-w-3xl">
-          <div className="flex items-center gap-3 mb-4">
-            <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">{page.category}</span>
+          <div className="flex items-center gap-3 mb-4 flex-wrap">
+            <span className="bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full">{ARTICLE_TYPE_LABEL[page.type || 'guide']}</span>
+            <span className="bg-secondary text-secondary-foreground text-xs font-medium px-3 py-1 rounded-full">{page.category}</span>
             <span className="flex items-center gap-1 text-sm text-muted-foreground">
               <Calendar className="h-3.5 w-3.5" />
               {new Date(page.publishedDate).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}
