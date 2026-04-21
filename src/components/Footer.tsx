@@ -92,9 +92,22 @@ const Footer = () => {
               </span>
             ))}
             <span className="text-background/30">·</span>
-            <Link to="/byraer" className="hover:text-background transition-colors">
+            <Link to="/stader" className="hover:text-background transition-colors">
               Se alla städer
             </Link>
+          </p>
+        </div>
+
+        {/* Popular combos */}
+        <div className="border-t border-background/10 mt-8 pt-8">
+          <h4 className="font-display text-sm mb-3 text-background/80">Populära kombinationer</h4>
+          <p className="text-sm text-background/60 flex flex-wrap items-center gap-x-2 gap-y-2">
+            {popularCombos.map((c, i) => (
+              <span key={c.href} className="flex items-center gap-2">
+                <Link to={c.href} className="hover:text-background transition-colors">{c.label}</Link>
+                {i < popularCombos.length - 1 && <span className="text-background/30">·</span>}
+              </span>
+            ))}
           </p>
         </div>
       </div>
