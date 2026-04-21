@@ -1,6 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const SITE_URL = "https://updro.se";
+const today = () => new Date().toISOString().split("T")[0];
+
+const xmlHeader = `<?xml version="1.0" encoding="UTF-8"?>`;
+const headers = {
+  "Content-Type": "application/xml; charset=utf-8",
+  "Cache-Control": "public, max-age=3600, s-maxage=86400",
+  "X-Robots-Tag": "noindex",
+};
+
+// ============ DATA ============
 
 const staticPages = [
   { loc: "/", changefreq: "daily", priority: "1.0" },
@@ -61,59 +71,73 @@ const articles = ["vad-kostar-en-hemsida-2026", "basta-cms-2026", "wordpress-vs-
 const tools = ["hemsida-pris-kalkylator", "kravspecifikation-mall"];
 const comparisons = ["basta-seo-byran", "basta-webbyran", "basta-ehandel-byran", "basta-app-byran"];
 
-serve(async () => {
-  const today = new Date().toISOString().split("T")[0];
+// ============ HELPERS ============
+
+const url = (loc: string, changefreq: string, priority: string) =>
+  `  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${today()}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+
+const wrapUrlset = (urls: string[]) =>
+  `${xmlHeader}\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>`;
+
+const wrapSitemapIndex = (sitemaps: string[]) => {
+  const items = sitemaps.map((path) =>
+    `  <sitemap>\n    <loc>${SITE_URL}${path}</loc>\n    <lastmod>${today()}</lastmod>\n  </sitemap>`
+  );
+  return `${xmlHeader}\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items.join("\n")}\n</sitemapindex>`;
+};
+
+// ============ BUILDERS ============
+
+const buildMain = () => {
   const urls: string[] = [];
-
-  const addUrl = (loc: string, changefreq: string, priority: string) => {
-    urls.push(`  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`);
-  };
-
-  for (const p of staticPages) addUrl(p.loc, p.changefreq, p.priority);
+  for (const p of staticPages) urls.push(url(p.loc, p.changefreq, p.priority));
   for (const slug of pillars) {
-    addUrl(`/${slug}`, "weekly", "0.9");
+    urls.push(url(`/${slug}`, "weekly", "0.9"));
     const subs = subPages[slug];
-    if (subs) for (const sub of subs) addUrl(`/${slug}/${sub}`, "monthly", "0.7");
+    if (subs) for (const sub of subs) urls.push(url(`/${slug}/${sub}`, "monthly", "0.7"));
   }
+  for (const slug of services) urls.push(url(`/leveranser/${slug}`, "monthly", "0.7"));
+  for (const slug of comparisons) urls.push(url(`/${slug}`, "monthly", "0.8"));
+  for (const slug of tools) urls.push(url(`/verktyg/${slug}`, "monthly", "0.7"));
+  return wrapUrlset(urls);
+};
 
-  // City hub pages (/stader/)
-  for (const city of cities) addUrl(`/stader/${city}`, "monthly", "0.7");
+const buildArticles = () => {
+  const urls: string[] = [];
+  for (const slug of articles) urls.push(url(`/artiklar/${slug}`, "monthly", "0.7"));
+  for (const slug of knowledgeArticles) urls.push(url(`/kunskapsbank/${slug}`, "monthly", "0.7"));
+  return wrapUrlset(urls);
+};
 
-  // Agency city pages (/byraer/[stad])
-  for (const city of cities) addUrl(`/byraer/${city}`, "weekly", "0.8");
-
-  // Agency category pages (/byraer/kategori/[kategori])
-  for (const cat of agencyCategories) addUrl(`/byraer/kategori/${cat}`, "weekly", "0.8");
-
-  // Agency city+category combos (/byraer/[stad]/[kategori])
+const buildCities = () => {
+  const urls: string[] = [];
+  for (const city of cities) urls.push(url(`/stader/${city}`, "monthly", "0.7"));
+  for (const city of cities) urls.push(url(`/byraer/${city}`, "weekly", "0.8"));
+  for (const cat of agencyCategories) urls.push(url(`/byraer/kategori/${cat}`, "weekly", "0.8"));
   for (const city of cities) {
     for (const cat of agencyCategories) {
-      addUrl(`/byraer/${city}/${cat}`, "monthly", "0.6");
+      urls.push(url(`/byraer/${city}/${cat}`, "monthly", "0.6"));
     }
   }
+  return wrapUrlset(urls);
+};
 
-  // Service pages
-  for (const slug of services) addUrl(`/leveranser/${slug}`, "monthly", "0.7");
+const buildIndex = () =>
+  wrapSitemapIndex([
+    "/sitemap-main.xml",
+    "/sitemap-artiklar.xml",
+    "/sitemap-stader.xml",
+  ]);
 
-  // Knowledge bank
-  for (const slug of knowledgeArticles) addUrl(`/kunskapsbank/${slug}`, "monthly", "0.7");
+// ============ ROUTER ============
 
-  // Existing content
-  for (const slug of articles) addUrl(`/artiklar/${slug}`, "monthly", "0.7");
-  for (const slug of tools) addUrl(`/verktyg/${slug}`, "monthly", "0.7");
-  for (const slug of comparisons) addUrl(`/${slug}`, "monthly", "0.8");
+serve(async (req) => {
+  const path = new URL(req.url).pathname;
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${urls.join("\n")}
-</urlset>`;
+  if (path.endsWith("/sitemap-main.xml")) return new Response(buildMain(), { headers });
+  if (path.endsWith("/sitemap-artiklar.xml")) return new Response(buildArticles(), { headers });
+  if (path.endsWith("/sitemap-stader.xml")) return new Response(buildCities(), { headers });
 
-  return new Response(xml, {
-    headers: {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=86400",
-      "X-Robots-Tag": "noindex",
-    },
-  });
+  // Default: sitemap index
+  return new Response(buildIndex(), { headers });
 });
