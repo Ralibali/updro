@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      articles: {
+        Row: {
+          article_type: string
+          author_name: string
+          author_role: string
+          category: string
+          city: string | null
+          created_at: string
+          faq: Json
+          generated_by: string | null
+          h1: string
+          id: string
+          intro: string
+          meta_desc: string
+          meta_title: string
+          published_date: string
+          read_time_minutes: number | null
+          related_links: Json
+          sections: Json
+          slug: string
+          status: string
+          target_keyword: string | null
+          updated_at: string
+          updated_date: string
+        }
+        Insert: {
+          article_type?: string
+          author_name?: string
+          author_role?: string
+          category: string
+          city?: string | null
+          created_at?: string
+          faq?: Json
+          generated_by?: string | null
+          h1: string
+          id?: string
+          intro: string
+          meta_desc: string
+          meta_title: string
+          published_date?: string
+          read_time_minutes?: number | null
+          related_links?: Json
+          sections?: Json
+          slug: string
+          status?: string
+          target_keyword?: string | null
+          updated_at?: string
+          updated_date?: string
+        }
+        Update: {
+          article_type?: string
+          author_name?: string
+          author_role?: string
+          category?: string
+          city?: string | null
+          created_at?: string
+          faq?: Json
+          generated_by?: string | null
+          h1?: string
+          id?: string
+          intro?: string
+          meta_desc?: string
+          meta_title?: string
+          published_date?: string
+          read_time_minutes?: number | null
+          related_links?: Json
+          sections?: Json
+          slug?: string
+          status?: string
+          target_keyword?: string | null
+          updated_at?: string
+          updated_date?: string
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
