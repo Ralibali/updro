@@ -172,6 +172,9 @@ const App = () => (
 
               {/* Knowledge bank routes consolidated above into /artiklar redirects */}
 
+              {/* Admin: content planner */}
+              <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
+
               {/* Comparison pages */}
               {COMPARISON_PAGES.map(p => (
                 <Route key={p.slug} path={`/${p.slug}`} element={<ComparisonPage />} />

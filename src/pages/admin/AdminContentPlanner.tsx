@@ -78,16 +78,16 @@ const STATUS_LABEL: Record<string, string> = {
 
 const STATUS_STYLE: Record<string, string> = {
   queued: "bg-muted text-foreground",
-  generating: "bg-amber-100 text-amber-800",
-  ready_for_review: "bg-emerald-100 text-emerald-800",
+  generating: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+  ready_for_review: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
   published: "bg-primary/15 text-primary",
   skipped: "bg-destructive/10 text-destructive",
 };
 
 const DIFFICULTY_STYLE: Record<string, string> = {
-  "låg": "bg-emerald-100 text-emerald-800",
-  "medel": "bg-amber-100 text-amber-800",
-  "hög": "bg-rose-100 text-rose-800",
+  "låg": "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
+  "medel": "bg-amber-500/15 text-amber-700 dark:text-amber-400",
+  "hög": "bg-rose-500/15 text-rose-700 dark:text-rose-400",
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -410,7 +410,7 @@ const AdminContentPlanner = () => {
                 return (
                   <div key={c.slug} className="flex items-center justify-between p-2 rounded-md bg-muted/40">
                     <span>{c.name}</span>
-                    <span className={cn("text-xs font-medium", weak ? "text-rose-600" : "text-emerald-700")}>{n} artikl{n === 1 ? "el" : "ar"}</span>
+                    <span className={cn("text-xs font-medium", weak ? "text-destructive" : "text-emerald-600 dark:text-emerald-400")}>{n} artikl{n === 1 ? "el" : "ar"}</span>
                   </div>
                 );
               })}
@@ -482,7 +482,7 @@ const QueueItem = ({ row, onChanged }: { row: QueueRow; onChanged: () => void })
         </div>
         <h4 className="font-medium mt-2 truncate">{row.topic}</h4>
         <code className="text-xs text-muted-foreground font-mono">{row.target_keyword}</code>
-        {row.last_error && <p className="text-xs text-rose-600 mt-1">Fel: {row.last_error}</p>}
+        {row.last_error && <p className="text-xs text-destructive mt-1">Fel: {row.last_error}</p>}
       </div>
       <div className="flex items-center gap-1.5">
         {row.status === "ready_for_review" && row.generated_article_id && (
