@@ -205,7 +205,7 @@ const SupplierLandingPage = () => {
               Starta gratis – betala bara för leads du vill ha
             </h2>
             <p className="text-muted-foreground mb-4 text-lg">
-              Du betalar aldrig för att visa ditt företag. Köp lead-krediter när du hittar ett uppdrag som passar – från 299 kr per lead.
+              Du betalar aldrig för att visa ditt företag. Köp lead-krediter när du hittar ett uppdrag som passar – från 119 kr per lead (öppningserbjudande).
             </p>
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground mb-8">
               <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-accent" /> {TRIAL_LEADS} gratis leads vid start</span>
