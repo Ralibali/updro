@@ -104,16 +104,16 @@ export const MAX_OFFERS_PER_PROJECT = 5
 // Stripe product/price mapping
 export const STRIPE_PRODUCTS = {
   monthly: {
-    product_id: 'prod_U7LtMgsCkuq80V',
-    price_id: 'price_1T97BeHzffTezY82Ofnh2oqp',
+    product_id: 'prod_UNNHPlzFIuEL0e',
+    price_id: 'price_1TOcX1HzffTezY8204n36Q31',
     name: 'Månadskort',
     price: 1995,
     per: '/månad',
     mode: 'subscription' as const,
   },
   lead: {
-    product_id: 'prod_U7Lv49HZivr8Hu',
-    price_id: 'price_1T97DOHzffTezY823D7MLIkq',
+    product_id: 'prod_UNNHEXppo9nyyz',
+    price_id: 'price_1TOcX2HzffTezY82yzbAX5ZD',
     name: 'Enskilt lead',
     price: 119,
     per: 'per lead',
