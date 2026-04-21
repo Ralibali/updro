@@ -16,11 +16,13 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Sparkles, Loader2, Plus, Play, SkipForward, Trash2, Calendar as CalendarIcon, Rocket, Download } from "lucide-react";
+import { Sparkles, Loader2, Plus, Play, SkipForward, Rocket, Download } from "lucide-react";
 import { exportCsv } from "@/lib/exportCsv";
 import { setSEOMeta } from "@/lib/seoHelpers";
 import { CITIES, SERVICE_CATEGORIES } from "@/lib/seoCities";
 import { cn } from "@/lib/utils";
+import { QueueDragList } from "@/components/admin/QueueDragList";
+import { PublishCalendar } from "@/components/admin/PublishCalendar";
 
 // Inline types until supabase types regenerate
 interface QueueRow {
@@ -387,9 +389,13 @@ const AdminContentPlanner = () => {
           {queue.length === 0 ? (
             <Card><CardContent className="p-12 text-center text-muted-foreground">Kön är tom. Generera förslag och spara dem hit.</CardContent></Card>
           ) : (
-            <div className="space-y-2">
-              {queue.map((q) => <QueueItem key={q.id} row={q} onChanged={() => queryClient.invalidateQueries({ queryKey: ["article-queue"] })} />)}
-            </div>
+            <>
+              <p className="text-xs text-muted-foreground">Dra och släpp för att ändra prioritet (högst överst körs först).</p>
+              <QueueDragList
+                rows={queue as any}
+                onChanged={() => queryClient.invalidateQueries({ queryKey: ["article-queue"] })}
+              />
+            </>
           )}
         </TabsContent>
 
