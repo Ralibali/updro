@@ -18,9 +18,13 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get("Authorization")!;
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("No authorization header");
+
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data, error: userError } = await supabaseClient.auth.getUser(token);
+    if (userError) throw new Error(`Auth error: ${userError.message}`);
+
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
@@ -40,6 +44,7 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://updro.se";
     const checkoutMode = mode === "subscription" ? "subscription" : "payment";
+    const billingReturnUrl = `${origin}/dashboard/supplier/fakturering`;
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -47,8 +52,8 @@ serve(async (req) => {
       client_reference_id: user.id,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: checkoutMode as any,
-      success_url: `${origin}/dashboard/leverantor/betalning?success=true`,
-      cancel_url: `${origin}/dashboard/leverantor/betalning?canceled=true`,
+      success_url: `${billingReturnUrl}?success=true`,
+      cancel_url: `${billingReturnUrl}?canceled=true`,
       metadata: { user_id: user.id },
     });
 
