@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -13,9 +13,18 @@ import { toast } from 'sonner'
 import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT_TEMPLATES } from '@/lib/constants'
 import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2 } from 'lucide-react'
 
+const inferTitleFromDescription = (description: string) => {
+  const cleaned = description.trim().replace(/\s+/g, ' ')
+  if (!cleaned) return ''
+  const sentence = cleaned.split(/[.!?]/)[0]?.trim() || cleaned
+  return sentence.length > 80 ? `${sentence.slice(0, 77)}...` : sentence
+}
+
 const ProjectWizard = () => {
-  const { user, isAuthenticated, profile, signUp } = useAuth()
+  const { user, isAuthenticated, signUp } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const initialDescription = searchParams.get('beskrivning')?.trim() || ''
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
@@ -23,8 +32,8 @@ const ProjectWizard = () => {
 
   const [form, setForm] = useState({
     category: '',
-    title: '',
-    description: '',
+    title: inferTitleFromDescription(initialDescription),
+    description: initialDescription,
     budget_range: '',
     start_time: '',
     is_company: true,
@@ -335,7 +344,6 @@ const ProjectWizard = () => {
           {step === 3 && !isAuthenticated && (
             <div className="space-y-6">
               <h2 className="font-display text-2xl font-bold">Sista steget – skapa gratis konto</h2>
-
 
               <div>
                 <Label>Namn *</Label>
