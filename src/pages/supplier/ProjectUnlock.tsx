@@ -249,6 +249,13 @@ const ProjectUnlock = () => {
           </div>
 
           {/* Offer form */}
+          {(project.offer_count || 0) >= 5 ? (
+            <div className="bg-card rounded-xl border p-6 text-center">
+              <Lock className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+              <h2 className="font-display text-lg font-semibold mb-2">Det här uppdraget har redan fått max antal offerter.</h2>
+              <p className="text-sm text-muted-foreground">Beställaren tar inte emot fler offerter just nu.</p>
+            </div>
+          ) : (
           <div className="bg-card rounded-xl border p-5">
             <div className="flex items-center justify-between gap-3 mb-4">
               <h2 className="font-display text-lg font-semibold">Skicka offert</h2>
@@ -323,6 +330,7 @@ const ProjectUnlock = () => {
               </Button>
             </form>
           </div>
+          )}
         </>
       ) : (
         <div className="bg-card rounded-xl border p-6 text-center">
