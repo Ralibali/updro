@@ -173,68 +173,90 @@ export interface SitemapEntry {
   loc: string
   changefreq: 'daily' | 'weekly' | 'monthly'
   priority: number
+  lastmod?: string
 }
 
+const todayIso = () => new Date().toISOString().split('T')[0]
+
 /**
- * Generate all sitemap entries with metadata
+ * Generate all sitemap entries with metadata.
+ * Only indexable, public, canonical URLs are included.
+ * App/account/admin/auth routes are intentionally excluded.
  */
 export const getAllSitemapEntries = (): SitemapEntry[] => {
+  const today = todayIso()
   const entries: SitemapEntry[] = [
-    { loc: '/', changefreq: 'daily', priority: 1.0 },
-    { loc: '/publicera', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/byraer', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/priser', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/om-oss', changefreq: 'monthly', priority: 0.6 },
-    { loc: '/artiklar', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/verktyg', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/stader', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/jamfor', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/guider', changefreq: 'weekly', priority: 0.7 },
-    { loc: '/integritetspolicy', changefreq: 'monthly', priority: 0.3 },
-    { loc: '/villkor', changefreq: 'monthly', priority: 0.3 },
+    { loc: '/', changefreq: 'daily', priority: 1.0, lastmod: today },
+    { loc: '/publicera', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/byraer', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/priser', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/om-oss', changefreq: 'monthly', priority: 0.6, lastmod: today },
+    { loc: '/artiklar', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/verktyg', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/stader', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/jamfor', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/hitta-webbyra', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/hitta-seo-byra', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/hitta-digital-byra', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/redaktionell-policy', changefreq: 'monthly', priority: 0.4, lastmod: today },
+    { loc: '/metod', changefreq: 'monthly', priority: 0.4, lastmod: today },
+    { loc: '/integritetspolicy', changefreq: 'yearly' as any, priority: 0.3 },
+    { loc: '/villkor', changefreq: 'yearly' as any, priority: 0.3 },
+    { loc: '/cookies', changefreq: 'yearly' as any, priority: 0.3 },
   ]
 
   // Pillar + sub pages
   for (const page of SEO_PAGES) {
-    entries.push({ loc: `/${page.categorySlug}`, changefreq: 'weekly', priority: 0.9 })
+    entries.push({ loc: `/${page.categorySlug}`, changefreq: 'weekly', priority: 0.9, lastmod: today })
     for (const sub of page.subPages) {
-      entries.push({ loc: `/${page.categorySlug}/${sub.slug}`, changefreq: 'weekly', priority: 0.7 })
+      entries.push({ loc: `/${page.categorySlug}/${sub.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
     }
   }
 
-  // City hubs
+  // Cities + city × category
   for (const city of CITIES) {
-    entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7 })
+    entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7, lastmod: today })
+    entries.push({ loc: `/byraer/${city.slug}`, changefreq: 'weekly', priority: 0.8, lastmod: today })
+    for (const cat of SERVICE_CATEGORIES) {
+      entries.push({ loc: `/byraer/${city.slug}/${cat.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
+    }
   }
 
   // Comparison pages
   for (const comp of COMPARISON_PAGES) {
-    entries.push({ loc: `/${comp.slug}`, changefreq: 'monthly', priority: 0.8 })
+    entries.push({ loc: `/${comp.slug}`, changefreq: 'monthly', priority: 0.8, lastmod: today })
   }
 
-  // Articles
+  // Articles — use real updatedDate / publishedDate per article
   for (const article of ARTICLES) {
-    entries.push({ loc: `/artiklar/${article.slug}`, changefreq: 'monthly', priority: 0.7 })
+    entries.push({
+      loc: `/artiklar/${article.slug}`,
+      changefreq: 'monthly',
+      priority: 0.7,
+      lastmod: article.updatedDate || article.publishedDate,
+    })
   }
 
   // Tools
   for (const tool of TOOLS) {
-    entries.push({ loc: `/verktyg/${tool.slug}`, changefreq: 'monthly', priority: 0.7 })
+    entries.push({ loc: `/verktyg/${tool.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
   }
 
   return entries
 }
 
 /**
- * Generate sitemap XML string
+ * Generate sitemap XML string.
+ * Each <url> uses real lastmod when available; falls back to today.
  */
 export const generateSitemapXml = (): string => {
   const entries = getAllSitemapEntries()
-  const today = new Date().toISOString().split('T')[0]
+  const today = todayIso()
 
-  const urls = entries.map(e =>
-    `  <url><loc>https://updro.se${e.loc}</loc><lastmod>${today}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
-  ).join('\n')
+  const urls = entries.map(e => {
+    const lastmod = e.lastmod || today
+    return `  <url><loc>https://updro.se${e.loc}</loc><lastmod>${lastmod}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority.toFixed(1)}</priority></url>`
+  }).join('\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
