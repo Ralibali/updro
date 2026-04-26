@@ -51,12 +51,20 @@ const SitemapPage = () => {
           Alla sidor på Updro.se – {entries.length} sidor totalt.
         </p>
 
-        <div className="flex gap-3 mb-10">
+        <div className="flex flex-wrap gap-3 mb-10">
+          <a
+            href="/sitemap-index.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            Visa sitemap-index.xml
+          </a>
           <a
             href="/sitemap.xml"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-primary/90 transition-colors"
+            className="bg-secondary text-secondary-foreground px-4 py-2 rounded-xl text-sm font-medium hover:bg-secondary/80 transition-colors"
           >
             Visa sitemap.xml
           </a>

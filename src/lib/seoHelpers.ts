@@ -247,22 +247,68 @@ export const getAllSitemapEntries = (): SitemapEntry[] => {
 }
 
 /**
- * Generate sitemap XML string.
- * Each <url> uses real lastmod when available; falls back to today.
+ * Classify a sitemap entry into a section file.
+ * Used to split the sitemap into logical, cacheable shards.
  */
-export const generateSitemapXml = (): string => {
-  const entries = getAllSitemapEntries()
-  const today = todayIso()
+const classifySection = (loc: string): SitemapSection => {
+  if (loc.startsWith('/artiklar/')) return 'articles'
+  if (loc.startsWith('/verktyg/')) return 'tools'
+  if (loc.startsWith('/jamfor') || /^\/basta-/.test(loc)) return 'comparisons'
+  if (loc.startsWith('/byraer/') || loc.startsWith('/stader/')) return 'cities'
+  return 'main'
+}
 
+export type SitemapSection = 'main' | 'cities' | 'articles' | 'tools' | 'comparisons'
+
+export const SITEMAP_SECTIONS: SitemapSection[] = ['main', 'cities', 'articles', 'tools', 'comparisons']
+
+const renderUrlset = (entries: SitemapEntry[]): string => {
+  const today = todayIso()
   const urls = entries.map(e => {
     const lastmod = e.lastmod || today
-    return `  <url><loc>https://updro.se${e.loc}</loc><lastmod>${lastmod}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority.toFixed(1)}</priority></url>`
+    return `  <url><loc>${SITE_URL}${e.loc}</loc><lastmod>${lastmod}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority.toFixed(1)}</priority></url>`
   }).join('\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>`
+}
+
+/**
+ * Generate the full flat sitemap (used as /sitemap.xml fallback and dev preview).
+ */
+export const generateSitemapXml = (): string => {
+  return renderUrlset(getAllSitemapEntries())
+}
+
+/**
+ * Generate one section sitemap. Returns null if section is empty.
+ */
+export const generateSectionSitemapXml = (section: SitemapSection): string | null => {
+  const entries = getAllSitemapEntries().filter(e => classifySection(e.loc) === section)
+  if (entries.length === 0) return null
+  return renderUrlset(entries)
+}
+
+/**
+ * Build a sitemap index pointing only to non-empty section sitemaps.
+ */
+export const generateSitemapIndexXml = (): string => {
+  const today = todayIso()
+  const sections = SITEMAP_SECTIONS.filter(s => {
+    const entries = getAllSitemapEntries().filter(e => classifySection(e.loc) === s)
+    return entries.length > 0
+  })
+
+  const items = sections.map(s =>
+    `  <sitemap><loc>${SITE_URL}/sitemap-${s}.xml</loc><lastmod>${today}</lastmod></sitemap>`
+  ).join('\n')
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${items}
+</sitemapindex>`
 }
 
 export const SITE_URL_BASE = SITE_URL

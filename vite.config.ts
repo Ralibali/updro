@@ -11,12 +11,25 @@ function sitemapPlugin(): Plugin {
     name: 'vite-plugin-dynamic-sitemap',
     configureServer(s) {
       server = s;
-      // Serve /sitemap.xml dynamically during dev
       s.middlewares.use(async (req, res, next) => {
-        if (req.url !== '/sitemap.xml') return next();
+        const url = req.url || '';
+        const match = url.match(/^\/(sitemap(?:-[a-z]+)?|sitemap-index)\.xml(?:\?.*)?$/);
+        if (!match) return next();
         try {
           const mod = await s.ssrLoadModule('/src/lib/seoHelpers.ts');
-          const xml = mod.generateSitemapXml();
+          const name = match[1];
+          let xml: string | null = null;
+          if (name === 'sitemap') xml = mod.generateSitemapXml();
+          else if (name === 'sitemap-index') xml = mod.generateSitemapIndexXml();
+          else {
+            const section = name.replace(/^sitemap-/, '');
+            xml = mod.generateSectionSitemapXml(section);
+          }
+          if (!xml) {
+            res.statusCode = 404;
+            res.end('Not found');
+            return;
+          }
           res.setHeader('Content-Type', 'application/xml; charset=utf-8');
           res.end(xml);
         } catch (e) {
@@ -26,18 +39,27 @@ function sitemapPlugin(): Plugin {
       });
     },
     async generateBundle() {
-      // Single source of truth: re-use generateSitemapXml from seoHelpers
       const mod = await import('./src/lib/seoHelpers');
-      const xml = mod.generateSitemapXml();
 
-      this.emitFile({
-        type: 'asset',
-        fileName: 'sitemap.xml',
-        source: xml,
-      });
+      // Flat sitemap (kept for backward compatibility / fallback)
+      const flat = mod.generateSitemapXml();
+      this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: flat });
 
-      const count = (xml.match(/<url>/g) || []).length;
-      console.log(`✅ sitemap.xml generated (${count} URLs)`);
+      // Sitemap index + per-section sitemaps
+      const indexXml = mod.generateSitemapIndexXml();
+      this.emitFile({ type: 'asset', fileName: 'sitemap-index.xml', source: indexXml });
+
+      const sections = mod.SITEMAP_SECTIONS as Array<Parameters<typeof mod.generateSectionSitemapXml>[0]>;
+      let total = 0;
+      for (const section of sections) {
+        const xml = mod.generateSectionSitemapXml(section);
+        if (!xml) continue;
+        this.emitFile({ type: 'asset', fileName: `sitemap-${section}.xml`, source: xml });
+        total += (xml.match(/<url>/g) || []).length;
+      }
+
+      const flatCount = (flat.match(/<url>/g) || []).length;
+      console.log(`✅ sitemap.xml (${flatCount}) + sitemap-index.xml (${sections.length} sections, ${total} URLs) generated`);
     },
   };
 }
