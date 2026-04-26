@@ -49,7 +49,7 @@ function sitemapPlugin(): Plugin {
       const indexXml = mod.generateSitemapIndexXml();
       this.emitFile({ type: 'asset', fileName: 'sitemap-index.xml', source: indexXml });
 
-      const sections: string[] = mod.SITEMAP_SECTIONS;
+      const sections = mod.SITEMAP_SECTIONS as Array<Parameters<typeof mod.generateSectionSitemapXml>[0]>;
       let total = 0;
       for (const section of sections) {
         const xml = mod.generateSectionSitemapXml(section);
