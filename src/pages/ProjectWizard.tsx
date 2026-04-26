@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -11,7 +11,10 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { CATEGORIES, CATEGORY_ICONS, BUDGET_OPTIONS, START_TIME_OPTIONS, PROJECT_TEMPLATES } from '@/lib/constants'
-import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Building2, User, Sparkles, Mail, Loader2, Wand2, CheckCircle2 } from 'lucide-react'
+import AiBriefAssistant from '@/components/project/AiBriefAssistant'
+import type { BriefSuggestion } from '@/lib/briefAnalysis'
+import type { Category, BudgetRange, StartTime } from '@/types'
 
 const inferTitleFromDescription = (description: string) => {
   const cleaned = description.trim().replace(/\s+/g, ' ')
@@ -21,7 +24,7 @@ const inferTitleFromDescription = (description: string) => {
 }
 
 const ProjectWizard = () => {
-  const { user, isAuthenticated, signUp } = useAuth()
+  const { user, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const initialDescription = searchParams.get('beskrivning')?.trim() || ''
@@ -29,31 +32,44 @@ const ProjectWizard = () => {
   const [loading, setLoading] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+  const [submittedAsGuest, setSubmittedAsGuest] = useState(false)
 
   const [form, setForm] = useState({
-    category: '',
+    category: '' as Category | '',
     title: inferTitleFromDescription(initialDescription),
     description: initialDescription,
-    budget_range: '',
-    start_time: '',
+    budget_range: '' as BudgetRange | '',
+    start_time: '' as StartTime | '',
     is_company: true,
     company_name: '',
-    // Auth fields (step 3)
+    // Guest contact (step 3)
     full_name: '',
     email: '',
-    password: '',
+    phone: '',
   })
 
   const templates = form.category ? PROJECT_TEMPLATES[form.category] || [] : []
 
   const applyTemplate = (t: typeof templates[0]) => {
     setSelectedTemplate(t.id)
-    setForm(prev => ({ ...prev, title: t.title, description: t.description, budget_range: t.budget_hint }))
+    setForm(prev => ({ ...prev, title: t.title, description: t.description, budget_range: t.budget_hint as BudgetRange }))
   }
 
   const clearTemplate = () => {
     setSelectedTemplate(null)
     setForm(prev => ({ ...prev, title: '', description: '', budget_range: '' }))
+  }
+
+  const applyAiBrief = (brief: BriefSuggestion) => {
+    setForm(prev => ({
+      ...prev,
+      category: brief.category,
+      title: brief.title,
+      description: brief.description,
+      budget_range: brief.budget_range,
+      start_time: brief.start_time,
+    }))
+    setSelectedTemplate(null)
   }
 
   const handleImproveDescription = async () => {
@@ -70,7 +86,7 @@ const ProjectWizard = () => {
       } else if (data?.error) {
         toast.error(data.error)
       }
-    } catch (e: any) {
+    } catch (e) {
       toast.error('Kunde inte förbättra beskrivningen just nu.')
       console.error(e)
     } finally {
@@ -82,67 +98,63 @@ const ProjectWizard = () => {
 
   const handlePublish = async () => {
     setLoading(true)
-    let userId = user?.id
 
-    // If not authenticated, create account first and save project for later
-    if (!isAuthenticated) {
-      // Save project data to localStorage so it can be created after email verification
-      const pendingProject = {
+    // Authenticated buyer → klassiskt projects-flöde
+    if (isAuthenticated && user?.id) {
+      const { error: projectError } = await supabase.from('projects').insert({
+        buyer_id: user.id,
         title: form.title,
         description: form.description,
-        category: form.category,
-        budget_range: form.budget_range,
-        start_time: form.start_time,
+        category: form.category as string,
+        budget_range: form.budget_range as string,
+        start_time: form.start_time as string,
         is_company: form.is_company,
-      }
-      localStorage.setItem('pending_project', JSON.stringify(pendingProject))
-
-      const { error } = await signUp({
-        email: form.email,
-        password: form.password,
-        role: 'buyer',
-        full_name: form.full_name,
-        company_name: form.is_company ? form.company_name : undefined,
+        status: 'pending',
       })
-      if (error) {
-        toast.error(error.message || 'Kunde inte skapa konto')
-        localStorage.removeItem('pending_project')
-        setLoading(false)
+
+      setLoading(false)
+
+      if (projectError) {
+        console.error('Project insert error:', projectError)
+        toast.error(`Kunde inte publicera uppdraget: ${projectError.message}`)
         return
       }
-
-      // Show verify email step
-      setLoading(false)
-      setStep(4)
+      toast.success('Uppdraget är inskickat och väntar på godkännande! ✅')
+      navigate('/dashboard/buyer')
       return
     }
 
-    if (!userId) {
-      toast.error('Något gick fel. Försök igen.')
+    // Gäst → spara i guest_leads (e-post först, lösenord ej blockerande)
+    if (!form.email || !form.full_name) {
+      toast.error('Vi behöver namn och e-post för att skicka leads till byråerna.')
       setLoading(false)
       return
     }
 
-    const { error: projectError } = await supabase.from('projects').insert({
-      buyer_id: userId,
+    const { error: guestError } = await (supabase as any).from('guest_leads').insert({
+      email: form.email.trim().toLowerCase(),
+      full_name: form.full_name.trim(),
+      company_name: form.is_company ? form.company_name?.trim() || null : null,
+      phone: form.phone?.trim() || null,
       title: form.title,
       description: form.description,
-      category: form.category,
-      budget_range: form.budget_range,
-      start_time: form.start_time,
+      category: form.category as string,
+      budget_range: form.budget_range as string,
+      start_time: form.start_time as string,
       is_company: form.is_company,
-      status: 'pending',
+      source: 'publicera',
     })
 
     setLoading(false)
 
-    if (projectError) {
-      console.error('Project insert error:', projectError)
-      toast.error(`Kunde inte publicera uppdraget: ${projectError.message}`)
-    } else {
-      toast.success('Uppdraget är inskickat och väntar på godkännande! ✅')
-      navigate('/dashboard/buyer')
+    if (guestError) {
+      console.error('Guest lead insert error:', guestError)
+      toast.error('Kunde inte skicka in uppdraget. Försök igen om en stund.')
+      return
     }
+
+    setSubmittedAsGuest(true)
+    setStep(4)
   }
 
   return (
@@ -156,6 +168,9 @@ const ProjectWizard = () => {
           {step === 1 && (
             <div className="space-y-6">
               <h2 className="font-display text-2xl font-bold">Berätta om ditt uppdrag</h2>
+
+              {/* AI brief assistant */}
+              <AiBriefAssistant onAccept={applyAiBrief} initialText={form.description} />
 
               {/* Category */}
               <div>
@@ -249,7 +264,7 @@ const ProjectWizard = () => {
                     <button
                       key={opt.value}
                       type="button"
-                      onClick={() => setForm(prev => ({ ...prev, budget_range: opt.value }))}
+                      onClick={() => setForm(prev => ({ ...prev, budget_range: opt.value as BudgetRange }))}
                       className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${form.budget_range === opt.value ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
                     >
                       <span>{opt.icon}</span>
@@ -267,7 +282,7 @@ const ProjectWizard = () => {
                     <button
                       key={opt.value}
                       type="button"
-                      onClick={() => setForm(prev => ({ ...prev, start_time: opt.value }))}
+                      onClick={() => setForm(prev => ({ ...prev, start_time: opt.value as StartTime }))}
                       className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium transition-all ${form.start_time === opt.value ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}
                     >
                       <span>{opt.icon}</span>
@@ -340,10 +355,13 @@ const ProjectWizard = () => {
             </div>
           )}
 
-          {/* STEP 3 - Account creation */}
+          {/* STEP 3 - Guest contact (e-post först, lösenord ej obligatoriskt) */}
           {step === 3 && !isAuthenticated && (
             <div className="space-y-6">
-              <h2 className="font-display text-2xl font-bold">Sista steget – skapa gratis konto</h2>
+              <h2 className="font-display text-2xl font-bold">Sista steget – kontaktuppgifter</h2>
+              <p className="text-sm text-muted-foreground">
+                Vi behöver din e-post för att matcha dig med relevanta byråer. Du kan skapa konto efteråt – ditt uppdrag sparas direkt.
+              </p>
 
               <div>
                 <Label>Namn *</Label>
@@ -354,8 +372,8 @@ const ProjectWizard = () => {
                 <Input type="email" value={form.email} onChange={e => setForm(prev => ({ ...prev, email: e.target.value }))} className="rounded-xl mt-1" required />
               </div>
               <div>
-                <Label>Lösenord *</Label>
-                <Input type="password" value={form.password} onChange={e => setForm(prev => ({ ...prev, password: e.target.value }))} className="rounded-xl mt-1" minLength={6} required />
+                <Label>Telefon (valfritt)</Label>
+                <Input type="tel" value={form.phone} onChange={e => setForm(prev => ({ ...prev, phone: e.target.value }))} className="rounded-xl mt-1" />
               </div>
 
               <div className="flex gap-3">
@@ -364,12 +382,12 @@ const ProjectWizard = () => {
                 </Button>
                 <Button
                   onClick={handlePublish}
-                  disabled={loading || !form.full_name || !form.email || !form.password}
+                  disabled={loading || !form.full_name || !form.email}
                   className="flex-1 bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5"
                 >
-                  {loading ? 'Skapar konto...' : (
+                  {loading ? 'Skickar...' : (
                     <>
-                      Publicera uppdrag gratis
+                      Skicka uppdrag gratis
                       <Sparkles className="ml-2 h-4 w-4" />
                     </>
                   )}
@@ -377,20 +395,30 @@ const ProjectWizard = () => {
               </div>
             </div>
           )}
-          {/* STEP 4 - Verify email */}
+
+          {/* STEP 4 - Confirmation */}
           {step === 4 && (
             <div className="space-y-6 text-center py-12">
-              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                <Mail className="h-8 w-8 text-primary" />
+              <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                <CheckCircle2 className="h-8 w-8 text-emerald-600" />
               </div>
-              <h2 className="font-display text-2xl font-bold">Kolla din e-post!</h2>
+              <h2 className="font-display text-2xl font-bold">Ditt uppdrag är mottaget!</h2>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Vi har skickat ett verifieringsmail till <strong className="text-foreground">{form.email}</strong>. 
-                Klicka på länken i mailet för att aktivera ditt konto – ditt uppdrag publiceras automatiskt efter det.
+                {submittedAsGuest ? (
+                  <>Vi matchar dig med relevanta byråer. Bekräftelse skickas till <strong className="text-foreground">{form.email}</strong>.</>
+                ) : (
+                  <>Vi har skickat ett verifieringsmail till <strong className="text-foreground">{form.email}</strong>.</>
+                )}
               </p>
-              <p className="text-sm text-muted-foreground">
-                Hittar du inte mailet? Kolla skräpposten.
-              </p>
+              {submittedAsGuest && (
+                <div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left">
+                  <p className="text-sm font-semibold mb-2">Vill du följa offerterna live?</p>
+                  <p className="text-xs text-muted-foreground mb-3">Skapa ett gratis konto med samma e-post – vi kopplar leadet automatiskt.</p>
+                  <Link to="/registrera">
+                    <Button className="w-full rounded-xl">Skapa konto</Button>
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>
