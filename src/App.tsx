@@ -98,6 +98,7 @@ const AdminArticleGenerator = lazy(() => import("./pages/admin/AdminArticleGener
 const AdminStripeLog = lazy(() => import("./pages/admin/AdminStripeLog"));
 const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
 const AdminVisitors = lazy(() => import("./pages/admin/AdminVisitors"));
+const AdminMarketplaceHealth = lazy(() => import("./pages/admin/AdminMarketplaceHealth"));
 
 const queryClient = new QueryClient();
 
@@ -221,6 +222,7 @@ const App = () => (
               <Route path="/admin/stripe" element={<ProtectedRoute role="admin"><AdminStripeLog /></ProtectedRoute>} />
               <Route path="/admin/audit" element={<ProtectedRoute role="admin"><AdminAuditLog /></ProtectedRoute>} />
               <Route path="/admin/besokare" element={<ProtectedRoute role="admin"><AdminVisitors /></ProtectedRoute>} />
+              <Route path="/admin/marketplace-health" element={<ProtectedRoute role="admin"><AdminMarketplaceHealth /></ProtectedRoute>} />
 
               {/* SEO pillar + sub pages (catch-all) */}
               <Route path="/:category" element={<PillarPage />} />

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
-import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal, Sparkles } from 'lucide-react'
+import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal, Sparkles, Activity } from 'lucide-react'
+import MarketplaceHealthPanel from '@/components/admin/MarketplaceHealthPanel'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 
@@ -20,6 +21,7 @@ const navItems = [
   { label: 'Stripe-logg', href: '/admin/stripe', icon: Receipt },
   { label: 'Audit-logg', href: '/admin/audit', icon: Shield },
   { label: 'Notifikationer', href: '/admin/notifikationer', icon: Bell },
+  { label: 'Marketplace health', href: '/admin/marketplace-health', icon: Activity },
   { label: 'Inställningar', href: '/admin/installningar', icon: Settings },
 ]
 
@@ -193,6 +195,10 @@ const AdminDashboard = () => {
       </div>
 
       <ContentStatusWidget />
+
+      <div className="mb-8">
+        <MarketplaceHealthPanel />
+      </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="bg-card rounded-xl border p-5">
