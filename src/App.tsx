@@ -69,6 +69,7 @@ const KnowledgeBankIndex = lazy(() => import("./pages/seo/KnowledgeBankIndex"));
 const HittaWebbbyraPage = lazy(() => import("./pages/seo/SEOLandingPages").then(m => ({ default: m.HittaWebbbyraPage })));
 const HittaSeoByraPage = lazy(() => import("./pages/seo/SEOLandingPages").then(m => ({ default: m.HittaSeoByraPage })));
 const HittaDigitalByraPage = lazy(() => import("./pages/seo/SEOLandingPages").then(m => ({ default: m.HittaDigitalByraPage })));
+const PartnaAlternativPage = lazy(() => import("./pages/seo/PartnaAlternativPage"));
 
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const BuyerProjects = lazy(() => import("./pages/buyer/BuyerProjects"));
@@ -152,6 +153,10 @@ const App = () => (
               <Route path="/hitta-webbyra" element={<HittaWebbbyraPage />} />
               <Route path="/hitta-seo-byra" element={<HittaSeoByraPage />} />
               <Route path="/hitta-digital-byra" element={<HittaDigitalByraPage />} />
+              <Route path="/partna-alternativ" element={<PartnaAlternativPage />} />
+              <Route path="/updro-vs-partna" element={<Navigate to="/partna-alternativ" replace />} />
+              <Route path="/jamfor-partna" element={<Navigate to="/partna-alternativ" replace />} />
+              <Route path="/alternativ-till-partna" element={<Navigate to="/partna-alternativ" replace />} />
 
               {/* Content hubs */}
               <Route path="/artiklar" element={<ArticlesIndex />} />
