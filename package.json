@@ -11,8 +11,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "postbuild": "react-snap"
+    "prerender": "react-snap"
   },
+  "//note": "Run `npm run build && npm run prerender` locally or in CI (requires Chromium). Do not run prerender in Lovable hosting build — Chrome is not available there.",
   "reactSnap": {
     "source": "dist",
     "destination": "dist",
@@ -37,13 +38,11 @@
     ],
     "skipThirdPartyRequests": true,
     "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
-    "minifyHtml": { "collapseWhitespace": false, "removeComments": false },
     "inlineCss": false,
     "concurrency": 4,
     "removeStyleTags": false,
     "removeScriptTags": false,
-    "preconnectThirdParty": false,
-    "fixWebpackChunksIssue": "CRA2"
+    "preconnectThirdParty": false
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
