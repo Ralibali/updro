@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -12,11 +12,61 @@ import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constan
 import { timeAgo } from '@/lib/dateUtils'
 import { numWord } from '@/lib/numberWords'
 import { toast } from 'sonner'
-import { Lock, Unlock, Mail, Phone, User, Building2, Paperclip, X } from 'lucide-react'
+import { Lock, Unlock, Mail, Phone, User, Building2, Paperclip, X, CreditCard, Sparkles, Gauge } from 'lucide-react'
+
+const scoreProject = (project: any) => {
+  let score = 0
+  const reasons: string[] = []
+
+  const descriptionLength = project?.description?.length || 0
+  if (descriptionLength >= 500) {
+    score += 30
+    reasons.push('Detaljerad brief')
+  } else if (descriptionLength >= 220) {
+    score += 20
+    reasons.push('Tydlig brief')
+  } else if (descriptionLength >= 80) {
+    score += 10
+  }
+
+  if (project?.budget_range && project.budget_range !== 'unknown') {
+    score += 25
+    reasons.push('Angiven budget')
+  }
+
+  if (project?.start_time === 'asap' || project?.start_time === 'within_month') {
+    score += 20
+    reasons.push('Nära startdatum')
+  } else if (project?.start_time) {
+    score += 10
+  }
+
+  if (project?.is_company) {
+    score += 15
+    reasons.push('Företagskund')
+  }
+
+  if ((project?.offer_count || 0) < 3) {
+    score += 10
+    reasons.push('Låg konkurrens')
+  }
+
+  const normalized = Math.min(100, score)
+  const label = normalized >= 75 ? 'Hög kvalitet' : normalized >= 45 ? 'Medel kvalitet' : 'Låg kvalitet'
+  const tone = normalized >= 75 ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : normalized >= 45 ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-slate-700 bg-slate-50 border-slate-200'
+
+  return { score: normalized, label, tone, reasons }
+}
+
+const getOfferTemplate = (project: any) => {
+  const title = `Offert: ${project?.title || 'digitalt projekt'}`
+  const description = `Hej!\n\nTack för en tydlig projektbeskrivning. Vi kan hjälpa er med ${project?.category?.toLowerCase?.() || 'det digitala projektet'} och föreslår att vi börjar med ett kort uppstartsmöte där vi går igenom mål, omfattning, tidsplan och tekniska krav.\n\nFörslag på upplägg:\n1. Uppstart och kravgenomgång\n2. Design/struktur och prioritering av funktioner\n3. Produktion och löpande avstämningar\n4. Test, lansering och överlämning\n\nI offerten ingår tydlig projektledning, löpande kommunikation och rekommendationer för nästa steg.\n\nVänliga hälsningar`
+  return { title, description }
+}
 
 const ProjectUnlock = () => {
   const { id } = useParams()
-  const { user, supplierProfile, refreshProfile } = useAuth()
+  const { user, supplierProfile, refreshProfile, hasActiveSubscription } = useAuth()
   const navigate = useNavigate()
   const [project, setProject] = useState<any>(null)
   const [buyer, setBuyer] = useState<any>(null)
@@ -47,11 +97,20 @@ const ProjectUnlock = () => {
     fetchData()
   }, [id, user])
 
+  const leadScore = project ? scoreProject(project) : null
+
+  const applyOfferTemplate = () => {
+    if (!project) return
+    const template = getOfferTemplate(project)
+    setForm(prev => ({ ...prev, title: prev.title || template.title, description: prev.description || template.description }))
+    toast.success('Offertmall ifylld')
+  }
+
   const handleUnlock = async () => {
     if (!user || !supplierProfile || !id) return
     const credits = supplierProfile.lead_credits || 0
-    if (credits <= 0) {
-      toast.error('Inga lead-krediter kvar. Uppgradera din plan.')
+    if (credits <= 0 && !hasActiveSubscription) {
+      toast.error('Inga lead-krediter kvar. Köp lead eller starta månadskort.')
       return
     }
 
@@ -67,10 +126,12 @@ const ProjectUnlock = () => {
       return
     }
 
-    await supabase.from('supplier_profiles').update({
-      lead_credits: credits - 1,
-      ...(isTrialCredit ? { trial_leads_used: (supplierProfile.trial_leads_used || 0) + 1 } : {}),
-    }).eq('id', user.id)
+    if (!hasActiveSubscription) {
+      await supabase.from('supplier_profiles').update({
+        lead_credits: Math.max(0, credits - 1),
+        ...(isTrialCredit ? { trial_leads_used: (supplierProfile.trial_leads_used || 0) + 1 } : {}),
+      }).eq('id', user.id)
+    }
 
     setIsUnlocked(true)
     await refreshProfile()
@@ -131,6 +192,7 @@ const ProjectUnlock = () => {
   }
 
   const creditsLeft = supplierProfile?.lead_credits || 0
+  const canUnlock = creditsLeft > 0 || hasActiveSubscription
 
   if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
 
@@ -138,7 +200,14 @@ const ProjectUnlock = () => {
     <div className="max-w-3xl">
       {/* Project info – always visible */}
       <div className="bg-card rounded-xl border p-5 mb-6">
-        <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+        <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
+          <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+          {leadScore && (
+            <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${leadScore.tone}`}>
+              <Gauge className="h-3.5 w-3.5" /> {leadScore.label} · {leadScore.score}/100
+            </span>
+          )}
+        </div>
         <h1 className="font-display text-xl font-bold">{project.title}</h1>
         <p className="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">{project.description}</p>
         <div className="flex gap-4 mt-3 text-xs text-muted-foreground flex-wrap">
@@ -146,7 +215,13 @@ const ProjectUnlock = () => {
           <span>{START_TIME_LABELS[project.start_time] || ''}</span>
           <span>{project.city || 'Sverige'}</span>
           <span>{timeAgo(project.created_at)}</span>
+          <span>{project.offer_count || 0} av max 5 offerter</span>
         </div>
+        {leadScore && leadScore.reasons.length > 0 && (
+          <div className="mt-4 rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
+            <strong className="text-foreground">Varför detta kan vara ett bra lead:</strong> {leadScore.reasons.join(' · ')}
+          </div>
+        )}
       </div>
 
       {/* Contact info – locked or unlocked */}
@@ -175,7 +250,12 @@ const ProjectUnlock = () => {
 
           {/* Offer form */}
           <div className="bg-card rounded-xl border p-5">
-            <h2 className="font-display text-lg font-semibold mb-4">Skicka offert</h2>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h2 className="font-display text-lg font-semibold">Skicka offert</h2>
+              <Button type="button" variant="outline" size="sm" onClick={applyOfferTemplate} className="gap-1.5">
+                <Sparkles className="h-4 w-4" /> Snabb offertmall
+              </Button>
+            </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label>Offert-titel *</Label>
@@ -251,12 +331,30 @@ const ProjectUnlock = () => {
           <p className="text-sm text-muted-foreground mb-4">
             Använd en lead-kredit för att se beställarens kontaktuppgifter och skicka en offert.
           </p>
-          <Button
-            onClick={() => creditsLeft > 0 ? setConfirmOpen(true) : toast.error('Inga lead-krediter kvar. Uppgradera din plan.')}
-            className="bg-primary hover:bg-primary/90"
-          >
-            🔓 Lås upp ({numWord(creditsLeft)} krediter kvar)
-          </Button>
+          {canUnlock ? (
+            <Button
+              onClick={() => setConfirmOpen(true)}
+              className="bg-primary hover:bg-primary/90"
+            >
+              🔓 Lås upp ({hasActiveSubscription ? 'obegränsat' : `${numWord(creditsLeft)} krediter kvar`})
+            </Button>
+          ) : (
+            <div className="space-y-3">
+              <p className="rounded-xl bg-muted/60 px-4 py-3 text-sm text-muted-foreground">
+                Du har inga krediter kvar. Köp ett enskilt lead eller starta månadskort för obegränsad tillgång.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link to="/dashboard/supplier/fakturering">
+                  <Button className="gap-2 bg-primary hover:bg-primary/90">
+                    <CreditCard className="h-4 w-4" /> Köp lead / månadskort
+                  </Button>
+                </Link>
+                <Link to="/priser">
+                  <Button variant="outline">Se priser</Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -266,7 +364,7 @@ const ProjectUnlock = () => {
             <DialogTitle>Lås upp kontaktuppgifter?</DialogTitle>
             <DialogDescription>
               Använd en lead-kredit för att få tillgång till beställarens kontaktuppgifter för "{project?.title}" och kunna skicka offert.
-              Du har {numWord(creditsLeft)} krediter kvar.
+              Du har {hasActiveSubscription ? 'obegränsad tillgång via månadskort' : `${numWord(creditsLeft)} krediter kvar`}.
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 mt-4">
