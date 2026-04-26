@@ -19,6 +19,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps) => {
+  useNoindex()
   const location = useLocation()
 
   return (
