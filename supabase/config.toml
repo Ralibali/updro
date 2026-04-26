@@ -4,11 +4,11 @@ project_id = "opgjoevvlwhsddscqmpe"
   [functions.auth-email-hook]
     verify_jwt = false
   [functions.check-subscription]
-    verify_jwt = false
+    verify_jwt = true
   [functions.create-checkout]
-    verify_jwt = false
+    verify_jwt = true
   [functions.customer-portal]
-    verify_jwt = false
+    verify_jwt = true
   [functions.offer-reminder-cron]
     verify_jwt = false
   [functions.sitemap]
@@ -16,4 +16,4 @@ project_id = "opgjoevvlwhsddscqmpe"
   [functions.improve-description]
     verify_jwt = false
   [functions.generate-article]
-    verify_jwt = false
+    verify_jwt = true
