@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import TrialBanner from '@/components/TrialBanner'
+import SupplierNotificationsList from '@/components/supplier/SupplierNotificationsList'
 import { ArrowRight } from 'lucide-react'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
@@ -53,6 +54,11 @@ const SupplierDashboard = () => {
           <p className="text-sm text-muted-foreground">Genomförda projekt</p>
           <p className="text-2xl font-bold font-display">{supplierProfile?.completed_projects || 0}</p>
         </div>
+      </div>
+
+      {/* Notiser */}
+      <div className="mb-8">
+        <SupplierNotificationsList />
       </div>
 
       {/* Matched projects */}
