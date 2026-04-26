@@ -43,35 +43,48 @@ export interface SEOMeta {
   ogImage?: string
   ogType?: string
   noindex?: boolean
+  /** Override og:url specifically (defaults to canonical) */
+  ogUrl?: string
 }
 
+const ROBOTS_INDEX = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+const ROBOTS_NOINDEX = 'noindex, nofollow'
+
+/**
+ * Stable, idempotent SEO setter.
+ * - Indexable pages always get full robots directive (NEVER removes the robots tag).
+ * - Canonical is always present, self-referential by default.
+ * - OG / Twitter metadata is always updated for every page.
+ * - Noindex pages get noindex,nofollow AND a canonical pointing to themselves
+ *   (never inheriting the home canonical), so they don't inherit signals.
+ */
 export const setSEOMeta = (meta: SEOMeta) => {
-  const { title, description, canonical, ogImage, ogType = 'website', noindex } = meta
+  if (typeof document === 'undefined') return
+  const { title, description, canonical, ogImage, ogType = 'website', noindex, ogUrl } = meta
 
   // Title
-  document.title = title
+  if (document.title !== title) document.title = title
 
-  // Meta description
+  // Description
   setOrCreateMeta('description', description)
 
-  // Canonical
-  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
-  const canonicalUrl = canonical || `${SITE_URL}${window.location.pathname}`
-  if (link) {
-    link.href = canonicalUrl
-  } else {
-    link = document.createElement('link')
-    link.rel = 'canonical'
-    link.href = canonicalUrl
-    document.head.appendChild(link)
-  }
+  // Canonical (always present, never removed)
+  const path = typeof window !== 'undefined' ? window.location.pathname : '/'
+  const canonicalUrl = canonical || `${SITE_URL}${path}`
+  setOrCreateLink('canonical', canonicalUrl)
+
+  // Robots — ALWAYS present, never removed
+  setOrCreateMeta('robots', noindex ? ROBOTS_NOINDEX : ROBOTS_INDEX)
+
+  const finalOgImage = ogImage || DEFAULT_OG_IMAGE
+  const finalOgUrl = ogUrl || canonicalUrl
 
   // Open Graph
   setOrCreateMetaProperty('og:title', title)
   setOrCreateMetaProperty('og:description', description)
-  setOrCreateMetaProperty('og:url', canonicalUrl)
+  setOrCreateMetaProperty('og:url', finalOgUrl)
   setOrCreateMetaProperty('og:type', ogType)
-  setOrCreateMetaProperty('og:image', ogImage || DEFAULT_OG_IMAGE)
+  setOrCreateMetaProperty('og:image', finalOgImage)
   setOrCreateMetaProperty('og:site_name', SITE_NAME)
   setOrCreateMetaProperty('og:locale', 'sv_SE')
 
@@ -79,14 +92,23 @@ export const setSEOMeta = (meta: SEOMeta) => {
   setOrCreateMeta('twitter:card', 'summary_large_image')
   setOrCreateMeta('twitter:title', title)
   setOrCreateMeta('twitter:description', description)
-  setOrCreateMeta('twitter:image', ogImage || DEFAULT_OG_IMAGE)
+  setOrCreateMeta('twitter:image', finalOgImage)
+}
 
-  // Robots
-  if (noindex) {
-    setOrCreateMeta('robots', 'noindex, nofollow')
+function setOrCreateLink(rel: string, href: string) {
+  // Remove any duplicates first to enforce single instance
+  const all = document.querySelectorAll(`link[rel="${rel}"]`)
+  if (all.length > 1) {
+    for (let i = 1; i < all.length; i++) all[i].remove()
+  }
+  let el = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null
+  if (el) {
+    if (el.href !== href) el.href = href
   } else {
-    const robotsMeta = document.querySelector('meta[name="robots"]')
-    if (robotsMeta) robotsMeta.remove()
+    el = document.createElement('link')
+    el.rel = rel
+    el.href = href
+    document.head.appendChild(el)
   }
 }
 
