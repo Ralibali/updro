@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 /**
  * SEO Helpers – Centralized meta tag, canonical, and OG management
  */
