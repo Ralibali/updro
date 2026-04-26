@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import Navbar from '@/components/Navbar'
 import { cn } from '@/lib/utils'
+import { useNoindex } from '@/hooks/useNoindex'
 import type { LucideIcon } from 'lucide-react'
 
 interface NavItem {
@@ -18,6 +19,7 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps) => {
+  useNoindex()
   const location = useLocation()
 
   return (

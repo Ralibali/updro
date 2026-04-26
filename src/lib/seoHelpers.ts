@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 /**
  * SEO Helpers – Centralized meta tag, canonical, and OG management
  */
@@ -43,35 +44,48 @@ export interface SEOMeta {
   ogImage?: string
   ogType?: string
   noindex?: boolean
+  /** Override og:url specifically (defaults to canonical) */
+  ogUrl?: string
 }
 
+const ROBOTS_INDEX = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+const ROBOTS_NOINDEX = 'noindex, nofollow'
+
+/**
+ * Stable, idempotent SEO setter.
+ * - Indexable pages always get full robots directive (NEVER removes the robots tag).
+ * - Canonical is always present, self-referential by default.
+ * - OG / Twitter metadata is always updated for every page.
+ * - Noindex pages get noindex,nofollow AND a canonical pointing to themselves
+ *   (never inheriting the home canonical), so they don't inherit signals.
+ */
 export const setSEOMeta = (meta: SEOMeta) => {
-  const { title, description, canonical, ogImage, ogType = 'website', noindex } = meta
+  if (typeof document === 'undefined') return
+  const { title, description, canonical, ogImage, ogType = 'website', noindex, ogUrl } = meta
 
   // Title
-  document.title = title
+  if (document.title !== title) document.title = title
 
-  // Meta description
+  // Description
   setOrCreateMeta('description', description)
 
-  // Canonical
-  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
-  const canonicalUrl = canonical || `${SITE_URL}${window.location.pathname}`
-  if (link) {
-    link.href = canonicalUrl
-  } else {
-    link = document.createElement('link')
-    link.rel = 'canonical'
-    link.href = canonicalUrl
-    document.head.appendChild(link)
-  }
+  // Canonical (always present, never removed)
+  const path = typeof window !== 'undefined' ? window.location.pathname : '/'
+  const canonicalUrl = canonical || `${SITE_URL}${path}`
+  setOrCreateLink('canonical', canonicalUrl)
+
+  // Robots — ALWAYS present, never removed
+  setOrCreateMeta('robots', noindex ? ROBOTS_NOINDEX : ROBOTS_INDEX)
+
+  const finalOgImage = ogImage || DEFAULT_OG_IMAGE
+  const finalOgUrl = ogUrl || canonicalUrl
 
   // Open Graph
   setOrCreateMetaProperty('og:title', title)
   setOrCreateMetaProperty('og:description', description)
-  setOrCreateMetaProperty('og:url', canonicalUrl)
+  setOrCreateMetaProperty('og:url', finalOgUrl)
   setOrCreateMetaProperty('og:type', ogType)
-  setOrCreateMetaProperty('og:image', ogImage || DEFAULT_OG_IMAGE)
+  setOrCreateMetaProperty('og:image', finalOgImage)
   setOrCreateMetaProperty('og:site_name', SITE_NAME)
   setOrCreateMetaProperty('og:locale', 'sv_SE')
 
@@ -79,14 +93,23 @@ export const setSEOMeta = (meta: SEOMeta) => {
   setOrCreateMeta('twitter:card', 'summary_large_image')
   setOrCreateMeta('twitter:title', title)
   setOrCreateMeta('twitter:description', description)
-  setOrCreateMeta('twitter:image', ogImage || DEFAULT_OG_IMAGE)
+  setOrCreateMeta('twitter:image', finalOgImage)
+}
 
-  // Robots
-  if (noindex) {
-    setOrCreateMeta('robots', 'noindex, nofollow')
+function setOrCreateLink(rel: string, href: string) {
+  // Remove any duplicates first to enforce single instance
+  const all = document.querySelectorAll(`link[rel="${rel}"]`)
+  if (all.length > 1) {
+    for (let i = 1; i < all.length; i++) all[i].remove()
+  }
+  let el = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null
+  if (el) {
+    if (el.href !== href) el.href = href
   } else {
-    const robotsMeta = document.querySelector('meta[name="robots"]')
-    if (robotsMeta) robotsMeta.remove()
+    el = document.createElement('link')
+    el.rel = rel
+    el.href = href
+    document.head.appendChild(el)
   }
 }
 
@@ -151,68 +174,90 @@ export interface SitemapEntry {
   loc: string
   changefreq: 'daily' | 'weekly' | 'monthly'
   priority: number
+  lastmod?: string
 }
 
+const todayIso = () => new Date().toISOString().split('T')[0]
+
 /**
- * Generate all sitemap entries with metadata
+ * Generate all sitemap entries with metadata.
+ * Only indexable, public, canonical URLs are included.
+ * App/account/admin/auth routes are intentionally excluded.
  */
 export const getAllSitemapEntries = (): SitemapEntry[] => {
+  const today = todayIso()
   const entries: SitemapEntry[] = [
-    { loc: '/', changefreq: 'daily', priority: 1.0 },
-    { loc: '/publicera', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/byraer', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/priser', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/om-oss', changefreq: 'monthly', priority: 0.6 },
-    { loc: '/artiklar', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/verktyg', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/stader', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/jamfor', changefreq: 'weekly', priority: 0.8 },
-    { loc: '/guider', changefreq: 'weekly', priority: 0.7 },
-    { loc: '/integritetspolicy', changefreq: 'monthly', priority: 0.3 },
-    { loc: '/villkor', changefreq: 'monthly', priority: 0.3 },
+    { loc: '/', changefreq: 'daily', priority: 1.0, lastmod: today },
+    { loc: '/publicera', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/byraer', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/priser', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/om-oss', changefreq: 'monthly', priority: 0.6, lastmod: today },
+    { loc: '/artiklar', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/verktyg', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/stader', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/jamfor', changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: '/hitta-webbyra', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/hitta-seo-byra', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/hitta-digital-byra', changefreq: 'weekly', priority: 0.9, lastmod: today },
+    { loc: '/redaktionell-policy', changefreq: 'monthly', priority: 0.4, lastmod: today },
+    { loc: '/metod', changefreq: 'monthly', priority: 0.4, lastmod: today },
+    { loc: '/integritetspolicy', changefreq: 'yearly' as any, priority: 0.3 },
+    { loc: '/villkor', changefreq: 'yearly' as any, priority: 0.3 },
+    { loc: '/cookies', changefreq: 'yearly' as any, priority: 0.3 },
   ]
 
   // Pillar + sub pages
   for (const page of SEO_PAGES) {
-    entries.push({ loc: `/${page.categorySlug}`, changefreq: 'weekly', priority: 0.9 })
+    entries.push({ loc: `/${page.categorySlug}`, changefreq: 'weekly', priority: 0.9, lastmod: today })
     for (const sub of page.subPages) {
-      entries.push({ loc: `/${page.categorySlug}/${sub.slug}`, changefreq: 'weekly', priority: 0.7 })
+      entries.push({ loc: `/${page.categorySlug}/${sub.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
     }
   }
 
-  // City hubs
+  // Cities + city × category
   for (const city of CITIES) {
-    entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7 })
+    entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7, lastmod: today })
+    entries.push({ loc: `/byraer/${city.slug}`, changefreq: 'weekly', priority: 0.8, lastmod: today })
+    for (const cat of SERVICE_CATEGORIES) {
+      entries.push({ loc: `/byraer/${city.slug}/${cat.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
+    }
   }
 
   // Comparison pages
   for (const comp of COMPARISON_PAGES) {
-    entries.push({ loc: `/${comp.slug}`, changefreq: 'monthly', priority: 0.8 })
+    entries.push({ loc: `/${comp.slug}`, changefreq: 'monthly', priority: 0.8, lastmod: today })
   }
 
-  // Articles
+  // Articles — use real updatedDate / publishedDate per article
   for (const article of ARTICLES) {
-    entries.push({ loc: `/artiklar/${article.slug}`, changefreq: 'monthly', priority: 0.7 })
+    entries.push({
+      loc: `/artiklar/${article.slug}`,
+      changefreq: 'monthly',
+      priority: 0.7,
+      lastmod: article.updatedDate || article.publishedDate,
+    })
   }
 
   // Tools
   for (const tool of TOOLS) {
-    entries.push({ loc: `/verktyg/${tool.slug}`, changefreq: 'monthly', priority: 0.7 })
+    entries.push({ loc: `/verktyg/${tool.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
   }
 
   return entries
 }
 
 /**
- * Generate sitemap XML string
+ * Generate sitemap XML string.
+ * Each <url> uses real lastmod when available; falls back to today.
  */
 export const generateSitemapXml = (): string => {
   const entries = getAllSitemapEntries()
-  const today = new Date().toISOString().split('T')[0]
+  const today = todayIso()
 
-  const urls = entries.map(e =>
-    `  <url><loc>https://updro.se${e.loc}</loc><lastmod>${today}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
-  ).join('\n')
+  const urls = entries.map(e => {
+    const lastmod = e.lastmod || today
+    return `  <url><loc>https://updro.se${e.loc}</loc><lastmod>${lastmod}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority.toFixed(1)}</priority></url>`
+  }).join('\n')
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

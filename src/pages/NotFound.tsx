@@ -1,17 +1,29 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { setSEOMeta } from '@/lib/seoHelpers'
+import { useNoindex } from '@/hooks/useNoindex'
 
 const NotFound = () => {
   const location = useLocation();
+  useNoindex();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
     setSEOMeta({
       title: 'Sidan hittades inte (404) | Updro',
       description: 'Sidan du söker finns inte. Gå tillbaka till startsidan för att hitta rätt.',
+      canonical: `https://updro.se${location.pathname}`,
       noindex: true,
     })
+    // Best-effort soft signal for crawlers — sets a custom header-like meta.
+    // Real 404 status requires hosting support; we at least keep noindex hard.
+    let prerenderStatus = document.querySelector('meta[name="prerender-status-code"]') as HTMLMetaElement | null
+    if (!prerenderStatus) {
+      prerenderStatus = document.createElement('meta')
+      prerenderStatus.name = 'prerender-status-code'
+      document.head.appendChild(prerenderStatus)
+    }
+    prerenderStatus.content = '404'
   }, [location.pathname]);
 
   return (

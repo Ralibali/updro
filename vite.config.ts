@@ -26,57 +26,9 @@ function sitemapPlugin(): Plugin {
       });
     },
     async generateBundle() {
-      // At build time, dynamically import the data to generate sitemap
-      // We construct the XML inline from the same data sources
-      const seoData = await import('./src/lib/seoData');
-      const seoCities = await import('./src/lib/seoCities');
-      const seoComparisons = await import('./src/lib/seoComparisons');
-      const seoArticles = await import('./src/lib/seoArticles');
-      const seoTools = await import('./src/lib/seoTools');
-
-      const today = new Date().toISOString().split('T')[0];
-      const BASE = 'https://updro.se';
-
-      interface Entry { loc: string; changefreq: string; priority: number }
-      const entries: Entry[] = [
-        { loc: '/', changefreq: 'daily', priority: 1.0 },
-        { loc: '/publicera', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/byraer', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/priser', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/om-oss', changefreq: 'monthly', priority: 0.6 },
-        { loc: '/artiklar', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/verktyg', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/stader', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/jamfor', changefreq: 'weekly', priority: 0.8 },
-        { loc: '/guider', changefreq: 'weekly', priority: 0.7 },
-        { loc: '/integritetspolicy', changefreq: 'monthly', priority: 0.3 },
-        { loc: '/villkor', changefreq: 'monthly', priority: 0.3 },
-      ];
-
-      for (const page of seoData.SEO_PAGES) {
-        entries.push({ loc: `/${page.categorySlug}`, changefreq: 'weekly', priority: 0.9 });
-        for (const sub of page.subPages) {
-          entries.push({ loc: `/${page.categorySlug}/${sub.slug}`, changefreq: 'weekly', priority: 0.7 });
-        }
-      }
-      for (const city of seoCities.CITIES) {
-        entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7 });
-      }
-      for (const comp of seoComparisons.COMPARISON_PAGES) {
-        entries.push({ loc: `/${comp.slug}`, changefreq: 'monthly', priority: 0.8 });
-      }
-      for (const article of seoArticles.ARTICLES) {
-        entries.push({ loc: `/artiklar/${article.slug}`, changefreq: 'monthly', priority: 0.7 });
-      }
-      for (const tool of seoTools.TOOLS) {
-        entries.push({ loc: `/verktyg/${tool.slug}`, changefreq: 'monthly', priority: 0.7 });
-      }
-
-      const urls = entries.map(e =>
-        `  <url><loc>${BASE}${e.loc}</loc><lastmod>${today}</lastmod><changefreq>${e.changefreq}</changefreq><priority>${e.priority}</priority></url>`
-      ).join('\n');
-
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+      // Single source of truth: re-use generateSitemapXml from seoHelpers
+      const mod = await import('./src/lib/seoHelpers');
+      const xml = mod.generateSitemapXml();
 
       this.emitFile({
         type: 'asset',
@@ -84,7 +36,8 @@ function sitemapPlugin(): Plugin {
         source: xml,
       });
 
-      console.log(`✅ sitemap.xml generated (${entries.length} URLs)`);
+      const count = (xml.match(/<url>/g) || []).length;
+      console.log(`✅ sitemap.xml generated (${count} URLs)`);
     },
   };
 }

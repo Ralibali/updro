@@ -1,5 +1,8 @@
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { useNoindex } from '@/hooks/useNoindex'
+import { useEffect } from 'react'
+import { setSEOMeta } from '@/lib/seoHelpers'
 
 interface PlaceholderPageProps {
   title: string
@@ -7,6 +10,15 @@ interface PlaceholderPageProps {
 }
 
 const PlaceholderPage = ({ title, description }: PlaceholderPageProps) => {
+  useNoindex()
+  useEffect(() => {
+    setSEOMeta({
+      title: `${title} | Updro`,
+      description: description || 'Denna sida är under konstruktion.',
+      noindex: true,
+    })
+  }, [title, description])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

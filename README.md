@@ -1,73 +1,83 @@
-# Welcome to your Lovable project
+# Updro
 
-## Project info
+Sveriges marknadsplats för digitala uppdrag. Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+**Live:** https://updro.se
 
-## How can I edit this code?
+## Tjänster
 
-There are several ways of editing your application.
+Updro matchar köpare och digitala byråer inom:
 
-**Use Lovable**
+- Webbutveckling och hemsidor
+- SEO och innehållsmarknadsföring
+- Google Ads och Meta Ads
+- E-handel (Shopify, WooCommerce, Centra)
+- Apputveckling
+- Digital marknadsföring
+- Design och varumärke
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Affärsmodell
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Köpare:** Helt gratis. Publicerar uppdrag, jämför offerter, väljer byrå.
+- **Byråer:** 119 kr per upplåst lead, eller månadskort 1 995 kr/mån för obegränsad åtkomst. 7 dagars gratis premium-trial.
 
-**Use your preferred IDE**
+## Tech stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Frontend:** React 18 + TypeScript, Vite 5, Tailwind CSS, shadcn/ui
+- **Backend:** Lovable Cloud (Supabase) – Postgres, Auth, Edge Functions, Storage
+- **Betalningar:** Stripe (subscriptions + one-time leads)
+- **E-post:** Resend via auth-email-hook Edge Function
+- **AI:** Lovable AI Gateway (Gemini 2.5 / GPT-5) för artikelgenerering
+- **Hosting:** Lovable
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## SEO-strategi
 
-Follow these steps:
+Updro använder programmatisk SEO för att täcka kombinationer av tjänst × stad:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- ~25 städer × 10 tjänstekategorier = 250 city-category sidor
+- Pillar pages + sub-pages för varje tjänst
+- Artikelhubb med löpande publicering via AI-pipeline + redaktionell granskning
+- Verktygssidor (priskalkylator, etc.)
+- Jämförelsesidor (Wix vs Squarespace, etc.)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Alla publika sidor har:
+- Unik `<title>` och `<meta description>`
+- Självrefererande `<link rel="canonical">`
+- `robots: index, follow, max-image-preview:large, max-snippet:-1`
+- OG / Twitter-metadata
+- JSON-LD structured data (Article, Service, BreadcrumbList, FAQPage, LocalBusiness)
+- Genererad sitemap vid build
 
-# Step 3: Install the necessary dependencies.
-npm i
+App-, konto- och admin-sidor har `noindex, nofollow` och är inte i sitemap.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Prerendering
+
+För att Google ska få full HTML utan att vänta på klient-JS finns react-snap konfigurerat:
+
+```bash
+npm run build
+npm run prerender   # Kräver lokal Chromium / Puppeteer
+```
+
+Detta är ett valbart steg som körs lokalt eller i CI – inte i Lovable's hosting build.
+
+## Utveckling
+
+```bash
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Kräver Node 20+. Miljövariabler för Supabase finns i `.env` och hanteras automatiskt av Lovable Cloud.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Test
 
-**Use GitHub Codespaces**
+```bash
+npm test
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Kontakt
 
-## What technologies are used for this project?
+[info@auroramedia.se](mailto:info@auroramedia.se)
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Updro drivs av **Aurora Media AB**.
