@@ -9,6 +9,7 @@ const footerColumns = [
     title: 'För kunder',
     links: [
       { label: 'Starta förfrågan', href: '/publicera' },
+      { label: 'Hemsida pris-kalkylator', href: '/hemsida-pris-kalkylator' },
       { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
       { label: 'Hitta SEO-byrå', href: '/hitta-seo-byra' },
       { label: 'Hitta digital byrå', href: '/hitta-digital-byra' },
@@ -21,6 +22,18 @@ const footerColumns = [
       { label: 'Registrera din byrå', href: '/registrera/byra' },
       { label: 'Byrå-dashboard', href: '/dashboard/supplier' },
       { label: 'Priser', href: '/priser' },
+      { label: 'Få leads från Updro', href: '/landing/byra' },
+    ],
+  },
+  {
+    title: 'SEO & jämförelser',
+    links: [
+      { label: 'Partna alternativ', href: '/partna-alternativ' },
+      { label: 'Bästa webbyrån', href: '/basta-webbyran' },
+      { label: 'Bästa SEO-byrån', href: '/basta-seo-byran' },
+      { label: 'Webbutveckling pris', href: '/webbutveckling/pris' },
+      { label: 'SEO pris', href: '/seo/pris' },
+      { label: 'Artiklar', href: '/artiklar' },
     ],
   },
   {
@@ -29,7 +42,6 @@ const footerColumns = [
       { label: 'Om Updro', href: '/om-oss' },
       { label: 'Vår metod', href: '/metod' },
       { label: 'Redaktionell policy', href: '/redaktionell-policy' },
-      { label: 'Artiklar', href: '/artiklar' },
       { label: 'Användarvillkor', href: '/villkor' },
       { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Cookiepolicy', href: '/cookies' },
@@ -66,15 +78,17 @@ const cityLinks = [
 ]
 
 const popularCombos = [
-  { label: 'Webbyrå Stockholm', href: '/byraer/stockholm/webbutveckling' },
-  { label: 'SEO Göteborg', href: '/byraer/goteborg/seo' },
+  { label: 'Webbyrå Stockholm', href: '/webbyra-stockholm' },
+  { label: 'Webbyrå Göteborg', href: '/webbyra-goteborg' },
+  { label: 'Webbyrå Malmö', href: '/webbyra-malmo' },
+  { label: 'SEO-byrå Stockholm', href: '/seo-byra-stockholm' },
+  { label: 'SEO-byrå Göteborg', href: '/seo-byra-goteborg' },
+  { label: 'SEO-byrå Malmö', href: '/seo-byra-malmo' },
   { label: 'E-handel Malmö', href: '/byraer/malmo/ehandel' },
   { label: 'Webbyrå Linköping', href: '/byraer/linkoping/webbutveckling' },
   { label: 'Google Ads Uppsala', href: '/byraer/uppsala/google-ads' },
   { label: 'Apputveckling Stockholm', href: '/byraer/stockholm/apputveckling' },
   { label: 'Designbyrå Göteborg', href: '/byraer/goteborg/grafisk-design' },
-  { label: 'Digital marknadsföring Helsingborg', href: '/byraer/helsingborg/digital-marknadsforing' },
-  { label: 'UX-byrå Umeå', href: '/byraer/umea/ux-ui-design' },
   { label: 'SEO-byrå Jönköping', href: '/byraer/jonkoping/seo' },
 ]
 
@@ -82,7 +96,7 @@ const Footer = () => {
   return (
     <footer className="bg-foreground text-background" role="contentinfo">
       <div className="container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
           <div>
             <Logo size="md" className="[&_span]:text-background" />
             <p className="mt-3 text-sm text-background/60">
@@ -91,6 +105,7 @@ const Footer = () => {
             <p className="mt-4 text-xs text-background/50">
               © {new Date().getFullYear()} Updro – Aurora Media AB
             </p>
+            <p className="text-xs text-background/50">Org.nr 559272-0220</p>
             <p className="text-xs text-background/50">info@auroramedia.se</p>
           </div>
 
@@ -137,7 +152,7 @@ const Footer = () => {
 
         {/* Popular combos */}
         <div className="border-t border-background/10 mt-8 pt-8">
-          <h4 className="font-display text-sm mb-3 text-background/80">Populära kombinationer</h4>
+          <h4 className="font-display text-sm mb-3 text-background/80">Populära sökningar</h4>
           <p className="text-sm text-background/60 flex flex-wrap items-center gap-x-2 gap-y-2">
             {popularCombos.map((c, i) => (
               <span key={c.href} className="flex items-center gap-2">
