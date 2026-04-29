@@ -11,39 +11,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prerender": "react-snap"
+    "verify": "npm run lint && npm test && npm run build"
   },
-  "//note": "Run `npm run build && npm run prerender` locally or in CI (requires Chromium). Do not run prerender in Lovable hosting build — Chrome is not available there.",
-  "reactSnap": {
-    "source": "dist",
-    "destination": "dist",
-    "include": [
-      "/",
-      "/publicera",
-      "/byraer",
-      "/priser",
-      "/om-oss",
-      "/artiklar",
-      "/verktyg",
-      "/stader",
-      "/jamfor",
-      "/hitta-webbyra",
-      "/hitta-seo-byra",
-      "/hitta-digital-byra",
-      "/redaktionell-policy",
-      "/metod",
-      "/integritetspolicy",
-      "/villkor",
-      "/cookies"
-    ],
-    "skipThirdPartyRequests": true,
-    "puppeteerArgs": ["--no-sandbox", "--disable-setuid-sandbox"],
-    "inlineCss": false,
-    "concurrency": 4,
-    "removeStyleTags": false,
-    "removeScriptTags": false,
-    "preconnectThirdParty": false
-  },
+  "//note": "SEO-prerendering and sitemap generation run inside the Vite build through vite.config.ts. react-snap is kept only because the current package-lock references it; do not use react-snap for hosting builds.",
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
