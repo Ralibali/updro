@@ -3,13 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "description": "Root workspace scripts for the Updro emergent branch. The active app lives in frontend/.",
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
-    "dev": "npm --prefix frontend run dev",
-    "build": "npm --prefix frontend run build",
-    "preview": "npm --prefix frontend run preview",
-    "lint": "npm --prefix frontend run lint",
-    "test": "npm --prefix frontend run test",
-    "install:frontend": "npm --prefix frontend install",
+    "dev": "npm --workspace frontend run dev",
+    "build": "npm --workspace frontend run build",
+    "preview": "npm --workspace frontend run preview",
+    "lint": "npm --workspace frontend run lint",
+    "test": "npm --workspace frontend run test",
     "verify": "npm run lint && npm test && npm run build"
   },
   "engines": {
