@@ -42,15 +42,30 @@ const howItWorksSchema = {
 
 const organizationSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': ['Organization', 'ProfessionalService'],
   '@id': 'https://updro.se/#organization',
   name: 'Updro',
+  legalName: 'Aurora Media AB',
   url: 'https://updro.se',
-  logo: 'https://updro.se/logo-updro.png',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://updro.se/logo-updro.png',
+    width: 512,
+    height: 512,
+  },
+  image: 'https://updro.se/og-image.png',
   description:
-    'Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.',
-  foundingDate: '2026',
-  founder: { '@type': 'Organization', name: 'Aurora Media AB' },
+    'Sveriges marknadsplats för digitala uppdrag. Beskriv ditt projekt gratis och få offerter från kvalitetssäkrade webbyråer, SEO-byråer, UX-byråer, e-handelsbyråer och digitala marknadsföringsbyråer.',
+  slogan: 'Hitta rätt byrå för ditt digitala projekt',
+  knowsAbout: [
+    'Webbutveckling',
+    'SEO',
+    'UX/UI-design',
+    'E-handel',
+    'Google Ads',
+    'Digital marknadsföring',
+    'Apputveckling',
+  ],
   contactPoint: {
     '@type': 'ContactPoint',
     email: 'info@auroramedia.se',
@@ -58,7 +73,6 @@ const organizationSchema = {
     availableLanguage: ['Swedish', 'English'],
   },
   areaServed: { '@type': 'Country', name: 'Sweden' },
-  sameAs: [],
 }
 
 const websiteSchema = {
@@ -68,19 +82,14 @@ const websiteSchema = {
   url: 'https://updro.se',
   name: 'Updro',
   inLanguage: 'sv-SE',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://updro.se/byraer?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
 }
 
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
-      title: 'Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser',
+      title: 'Updro – Jämför offerter från webbyrå, SEO-byrå & UX-byrå i Sverige',
       description:
-        'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis.',
+        'Beskriv ditt projekt gratis och få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 h. Webbutveckling, SEO, UX/UI, e-handel, Google Ads & apputveckling i hela Sverige.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)

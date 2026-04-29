@@ -28,14 +28,13 @@ const AboutPage = () => {
       description:
         'Updro är en svensk marknadsplats där företag jämför offerter från kvalitetssäkrade digitala byråer.',
       mainEntity: {
-        '@type': 'Organization',
+        '@type': ['Organization', 'ProfessionalService'],
         '@id': 'https://updro.se/#organization',
         name: 'Updro',
         legalName: 'Aurora Media AB',
         url: 'https://updro.se',
         email: 'info@auroramedia.se',
         founder: { '@type': 'Person', name: 'Christoffer Daranyi' },
-        foundingDate: '2026',
         address: { '@type': 'PostalAddress', addressCountry: 'SE', addressLocality: 'Linköping' },
         taxID: '559272-0220',
       },

@@ -64,6 +64,33 @@ function sitemapPlugin(): Plugin {
   };
 }
 
+/**
+ * Static HTML prerender plugin – emits per-route index.html files with
+ * route-specific <title>, <meta>, canonical, JSON-LD and a semantic body
+ * shell. Works without Chromium, so it runs on any static host (Lovable etc.).
+ */
+function prerenderPlugin(): Plugin {
+  return {
+    name: 'vite-plugin-seo-prerender',
+    apply: 'build',
+    async closeBundle() {
+      try {
+        const outDir = path.resolve(__dirname, 'dist');
+        const mod = await import('./src/prerender/prerender');
+        const result = mod.prerenderAll(outDir);
+        if (result.sampleFailures.length) {
+          console.warn('⚠️ Prerender partial failures:');
+          for (const f of result.sampleFailures) console.warn('   ·', f);
+        }
+        console.log(`✅ SEO prerender: ${result.total} routes written to dist/`);
+      } catch (e) {
+        console.error('❌ SEO prerender failed:', e);
+        throw e;
+      }
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -85,7 +112,46 @@ export default defineConfig(({ mode }) => {
       react(),
       mode === "development" && componentTagger(),
       sitemapPlugin(),
+      prerenderPlugin(),
     ].filter(Boolean),
+    build: {
+      // Ensure CWV-friendly output: split vendor code so the initial SEO-landing
+      // load pulls only the minimum JS needed for first paint.
+      chunkSizeWarningLimit: 650,
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (!id.includes('node_modules')) return undefined;
+            // Heavy viz deps – only used on admin analytics; keep out of main bundle.
+            if (id.includes('recharts') || id.includes('/d3-')) return 'vendor-charts';
+            if (id.includes('framer-motion')) return 'vendor-motion';
+            if (id.includes('@supabase')) return 'vendor-supabase';
+            if (id.includes('@tanstack')) return 'vendor-query';
+            if (id.includes('@radix-ui')) return 'vendor-radix';
+            if (id.includes('lucide-react')) return 'vendor-icons';
+            if (
+              id.includes('react-hook-form') ||
+              id.includes('/zod/') ||
+              id.includes('@hookform')
+            ) {
+              return 'vendor-forms';
+            }
+            if (id.includes('date-fns') || id.includes('react-day-picker')) return 'vendor-date';
+            if (id.includes('embla-carousel')) return 'vendor-carousel';
+            if (id.includes('react-router')) return 'vendor-react';
+            if (
+              id.includes('/react/') ||
+              id.includes('/react-dom/') ||
+              id.includes('/scheduler/') ||
+              id.includes('/use-sync-external-store/')
+            ) {
+              return 'vendor-react';
+            }
+            return 'vendor';
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

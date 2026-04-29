@@ -7,9 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- Primary SEO -->
-    <title>Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser</title>
-    <meta name="description" content="Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis." />
-    <meta name="keywords" content="jämför offerter, webbyrå, digitala byråer, webbutveckling, SEO byrå, e-handel byrå, apputveckling, digital marknadsföring, Sverige" />
+    <title>Updro – Jämför offerter från webbyrå, SEO-byrå & UX-byrå i Sverige</title>
+    <meta name="description" content="Beskriv ditt projekt gratis och få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 h. Webbutveckling, SEO, UX/UI, e-handel, Google Ads & apputveckling i hela Sverige." />
     <meta name="author" content="Updro – Aurora Media AB" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://updro.se/" />
@@ -21,8 +20,8 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://updro.se/" />
-    <meta property="og:title" content="Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser" />
-    <meta property="og:description" content="Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis." />
+    <meta property="og:title" content="Updro – Jämför offerter från webbyrå, SEO-byrå & UX-byrå i Sverige" />
+    <meta property="og:description" content="Beskriv ditt projekt gratis och få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 h. Webbutveckling, SEO, UX/UI, e-handel och mer." />
     <meta property="og:image" content="https://updro.se/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -32,8 +31,8 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser" />
-    <meta name="twitter:description" content="Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Helt gratis." />
+    <meta name="twitter:title" content="Updro – Jämför offerter från webbyrå, SEO-byrå & UX-byrå i Sverige" />
+    <meta name="twitter:description" content="Beskriv ditt projekt gratis och få upp till 5 offerter från kvalitetssäkrade digitala byråer inom 24 h." />
     <meta name="twitter:image" content="https://updro.se/og-image.png" />
 
     <!-- Performance hints -->
@@ -59,29 +58,39 @@
       "@context": "https://schema.org",
       "@graph": [
         {
-          "@type": "Organization",
+          "@type": ["Organization", "ProfessionalService"],
           "@id": "https://updro.se/#organization",
           "name": "Updro",
           "legalName": "Aurora Media AB",
           "url": "https://updro.se",
-          "logo": "https://updro.se/logo-updro.png",
-          "description": "Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.",
-          "foundingDate": "2026",
-          "founder": {
-            "@type": "Organization",
-            "name": "Aurora Media AB"
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://updro.se/logo-updro.png",
+            "width": 512,
+            "height": 512
           },
+          "image": "https://updro.se/og-image.png",
+          "description": "Sveriges marknadsplats för digitala uppdrag. Beskriv ditt projekt gratis och få offerter från kvalitetssäkrade webbyråer, SEO-byråer, UX-byråer, e-handelsbyråer och digitala marknadsföringsbyråer.",
+          "slogan": "Hitta rätt byrå för ditt digitala projekt",
           "areaServed": {
             "@type": "Country",
             "name": "Sweden"
           },
+          "knowsAbout": [
+            "Webbutveckling",
+            "SEO",
+            "UX/UI-design",
+            "E-handel",
+            "Google Ads",
+            "Digital marknadsföring",
+            "Apputveckling"
+          ],
           "contactPoint": {
             "@type": "ContactPoint",
             "contactType": "customer service",
             "email": "info@auroramedia.se",
             "availableLanguage": ["Swedish", "English"]
-          },
-          "sameAs": []
+          }
         },
         {
           "@type": "WebSite",
@@ -89,12 +98,7 @@
           "url": "https://updro.se",
           "name": "Updro",
           "publisher": { "@id": "https://updro.se/#organization" },
-          "inLanguage": "sv-SE",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://updro.se/byraer?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
+          "inLanguage": "sv-SE"
         },
         {
           "@type": "BreadcrumbList",
@@ -120,31 +124,17 @@
       gtag('consent', 'default', {
         analytics_storage: 'denied',
         ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
         wait_for_update: 500,
       });
     </script>
 
-    <!-- Google Ads + GA4 (gtag.js) – deferred -->
-    <script>
-      window.addEventListener('DOMContentLoaded', function() {
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-C0XMZG0KDQ';
-        document.head.appendChild(s);
-        gtag('js', new Date());
-        gtag('config', 'G-C0XMZG0KDQ');
-        gtag('config', 'AW-10941540384');
-      });
-    </script>
+    <!-- GA4 + Google Ads loads ONLY after consent (see CookieConsent.tsx) -->
   </head>
 
   <body>
-    <div id="root">
-      <!-- Prerendered H1 fallback for slow crawlers (replaced when React mounts) -->
-      <h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
-        Updro – Jämför offerter från digitala byråer i Sverige
-      </h1>
-    </div>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

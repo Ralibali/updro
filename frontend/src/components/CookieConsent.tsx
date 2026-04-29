@@ -3,21 +3,47 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 
 const COOKIE_KEY = 'updro_cookie_consent'
+const GA_ID = 'G-C0XMZG0KDQ'
+const ADS_ID = 'AW-10941540384'
+
+let gtagScriptInjected = false
+
+/** Load gtag.js exactly once – only after the user has granted consent */
+const injectGtagScript = () => {
+  if (gtagScriptInjected) return
+  if (typeof document === 'undefined') return
+  gtagScriptInjected = true
+  const s = document.createElement('script')
+  s.async = true
+  s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
+  document.head.appendChild(s)
+  const gtag = (window as any).gtag
+  if (typeof gtag === 'function') {
+    gtag('js', new Date())
+    gtag('config', GA_ID, { anonymize_ip: true })
+    gtag('config', ADS_ID)
+  }
+}
 
 /** Apply consent to gtag – block analytics until user accepts */
 const applyConsent = (level: 'all' | 'necessary') => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    if (level === 'all') {
-      (window as any).gtag('consent', 'update', {
-        analytics_storage: 'granted',
-        ad_storage: 'granted',
-      })
-    } else {
-      (window as any).gtag('consent', 'update', {
-        analytics_storage: 'denied',
-        ad_storage: 'denied',
-      })
-    }
+  if (typeof window === 'undefined' || !(window as any).gtag) return
+  const gtag = (window as any).gtag
+  if (level === 'all') {
+    gtag('consent', 'update', {
+      analytics_storage: 'granted',
+      ad_storage: 'granted',
+      ad_user_data: 'granted',
+      ad_personalization: 'granted',
+    })
+    injectGtagScript()
+  } else {
+    gtag('consent', 'update', {
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+    })
   }
 }
 
@@ -30,15 +56,11 @@ const CookieConsent = () => {
       try {
         const { level } = JSON.parse(raw)
         applyConsent(level)
-      } catch {}
-    } else {
-      // Default: deny until consent
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('consent', 'default', {
-          analytics_storage: 'denied',
-          ad_storage: 'denied',
-        })
+      } catch {
+        // Invalid stored value – ask again
+        setVisible(true)
       }
+    } else {
       setVisible(true)
     }
   }, [])
