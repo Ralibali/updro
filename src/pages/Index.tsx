@@ -1,17 +1,18 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/home/HeroSection'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
-import AgencyTrustSection from '@/components/home/AgencyTrustSection'
-import TwoSidedSection from '@/components/home/TwoSidedSection'
-import StatsSection from '@/components/home/StatsSection'
-import TestimonialsSection from '@/components/home/TestimonialsSection'
-import FAQSection from '@/components/home/FAQSection'
-import CTASection from '@/components/home/CTASection'
-import NewsletterSection from '@/components/home/NewsletterSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
+
+const AgencyTrustSection = lazy(() => import('@/components/home/AgencyTrustSection'))
+const TwoSidedSection = lazy(() => import('@/components/home/TwoSidedSection'))
+const StatsSection = lazy(() => import('@/components/home/StatsSection'))
+const TestimonialsSection = lazy(() => import('@/components/home/TestimonialsSection'))
+const FAQSection = lazy(() => import('@/components/home/FAQSection'))
+const CTASection = lazy(() => import('@/components/home/CTASection'))
+const NewsletterSection = lazy(() => import('@/components/home/NewsletterSection'))
 
 const howItWorksSchema = {
   '@context': 'https://schema.org',
@@ -49,7 +50,6 @@ const organizationSchema = {
   logo: 'https://updro.se/logo-updro.png',
   description:
     'Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.',
-  foundingDate: '2026',
   founder: { '@type': 'Organization', name: 'Aurora Media AB' },
   contactPoint: {
     '@type': 'ContactPoint',
@@ -75,6 +75,18 @@ const websiteSchema = {
   },
 }
 
+const BelowFold = () => (
+  <Suspense fallback={null}>
+    <AgencyTrustSection />
+    <TwoSidedSection />
+    <StatsSection />
+    <TestimonialsSection />
+    <NewsletterSection />
+    <FAQSection />
+    <CTASection />
+  </Suspense>
+)
+
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
@@ -94,8 +106,7 @@ const Index = () => {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
-        {/* AI-friendly answer-first paragraph (often quoted by LLMs) */}
-        <section className="container py-10 md:py-12">
+        <section className="container py-8 md:py-12">
           <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
             <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
             <p className="mt-3 text-foreground/85 leading-relaxed">
@@ -107,13 +118,7 @@ const Index = () => {
         </section>
         <CategoriesSection />
         <HowItWorksSection />
-        <AgencyTrustSection />
-        <TwoSidedSection />
-        <StatsSection />
-        <TestimonialsSection />
-        <NewsletterSection />
-        <FAQSection />
-        <CTASection />
+        <BelowFold />
       </main>
       <Footer />
     </div>
