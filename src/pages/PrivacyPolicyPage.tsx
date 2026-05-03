@@ -7,131 +7,112 @@ const PrivacyPolicyPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Integritetspolicy | Updro',
-      description: 'Läs Updros integritetspolicy. Här beskriver vi hur vi hanterar dina personuppgifter i enlighet med GDPR.',
+      description: 'Läs Updros integritetspolicy. Här beskriver Aurora Media AB hur personuppgifter hanteras enligt GDPR.',
       canonical: 'https://updro.se/integritetspolicy',
     })
   }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 py-16 px-4">
         <article className="max-w-3xl mx-auto prose prose-slate">
           <h1 className="font-display text-3xl font-bold mb-2">Integritetspolicy</h1>
-          <p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: {new Date().toLocaleDateString('sv-SE')}</p>
+          <p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-05-03</p>
 
           <section className="space-y-6 text-sm leading-relaxed text-foreground/80">
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">1. Personuppgiftsansvarig</h2>
-              <p>Aurora Media AB (org.nr. 559272-0220), nedan "Updro", "vi" eller "oss", är personuppgiftsansvarig för behandlingen av dina personuppgifter på updro.se.</p>
-              <p className="mt-1">Kontakt: <a href="mailto:gdpr@updro.se" className="text-primary hover:underline">gdpr@updro.se</a></p>
+              <p><strong>Aurora Media AB</strong>, org.nr. <strong>559272-0220</strong>, är personuppgiftsansvarig för behandlingen av personuppgifter på Updro och updro.se.</p>
+              <p className="mt-1">Kontakt: <a href="mailto:info@auroramedia.se" className="text-primary hover:underline">info@auroramedia.se</a></p>
             </div>
 
             <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">2. Vilka uppgifter vi samlar in</h2>
-              <p>Vi samlar in följande personuppgifter:</p>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">2. Vilka uppgifter vi behandlar</h2>
+              <p>Vilka uppgifter vi behandlar beror på hur du använder tjänsten.</p>
               <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li><strong>Kontouppgifter:</strong> namn, e-postadress, telefonnummer, stad, företagsnamn</li>
-                <li><strong>Profildata:</strong> logotyp, portfolio, bio, webbplats (för byråer)</li>
-                <li><strong>Kommunikation:</strong> meddelanden mellan beställare och byråer</li>
-                <li><strong>Betalningsuppgifter:</strong> hanteras av Stripe — vi lagrar aldrig kortuppgifter</li>
-                <li><strong>Tekniska data:</strong> IP-adress, webbläsartyp, enhet (via cookies)</li>
-                <li><strong>Användningsdata:</strong> sidvisningar, klick, sökningar</li>
+                <li><strong>Kontakt- och kontouppgifter:</strong> namn, e-postadress, telefonnummer, företagsnamn, stad och roll.</li>
+                <li><strong>Uppdragsinformation:</strong> projektbeskrivning, budget, tidsplan, bransch, önskade tjänster och övrig information du lämnar i formulär.</li>
+                <li><strong>Byråprofil:</strong> företagsuppgifter, presentation, kategorier, webbplats, portfolio och annan information som byråer själva anger.</li>
+                <li><strong>Kommunikation:</strong> meddelanden, offerter och annan kontakt mellan beställare, byråer och Updro.</li>
+                <li><strong>Betalnings- och transaktionsuppgifter:</strong> betalstatus, abonnemang, fakturaunderlag och kvitton. Kortuppgifter hanteras av Stripe och lagras inte av oss.</li>
+                <li><strong>Teknisk information:</strong> IP-adress, webbläsare, enhet, loggar, säkerhetshändelser och cookieval.</li>
+                <li><strong>Analys- och marknadsföringsdata:</strong> sidvisningar, konverteringar och kampanjdata om du samtycker till sådana cookies.</li>
               </ul>
             </div>
 
             <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">3. Rättslig grund</h2>
-              <p>Vi behandlar dina personuppgifter baserat på:</p>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">3. Varför vi behandlar uppgifter och rättslig grund</h2>
               <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li><strong>Avtal (Art. 6.1b GDPR):</strong> för att tillhandahålla tjänsten och hantera ditt konto</li>
-                <li><strong>Berättigat intresse (Art. 6.1f):</strong> för att förbättra tjänsten, förhindra missbruk och skicka servicemeddelanden</li>
-                <li><strong>Samtycke (Art. 6.1a):</strong> för marknadsföring och icke-nödvändiga cookies</li>
-                <li><strong>Rättslig förpliktelse (Art. 6.1c):</strong> för bokföring och skatteändamål</li>
+                <li><strong>Tillhandahålla tjänsten:</strong> skapa konto, publicera uppdrag, matcha beställare och byråer, hantera offerter och meddelanden. Rättslig grund: avtal eller åtgärder innan avtal.</li>
+                <li><strong>Kundservice och drift:</strong> svara på frågor, felsöka, skydda tjänsten och förebygga missbruk. Rättslig grund: berättigat intresse.</li>
+                <li><strong>Betalning och bokföring:</strong> hantera betalningar, kvitton, fakturor och redovisning. Rättslig grund: avtal och rättslig förpliktelse.</li>
+                <li><strong>Analys:</strong> förstå hur webbplatsen används och förbättra tjänsten. Rättslig grund: samtycke när icke-nödvändiga cookies används.</li>
+                <li><strong>Marknadsföring och konverteringsmätning:</strong> mäta effekten av annonser och förbättra relevansen i marknadsföring. Rättslig grund: samtycke för cookies och liknande teknik.</li>
               </ul>
             </div>
 
             <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">4. Hur vi använder uppgifterna</h2>
-              <ul className="list-disc pl-5 space-y-1">
-                <li>Skapa och hantera ditt konto</li>
-                <li>Matcha beställare med relevanta byråer</li>
-                <li>Möjliggöra offerter, meddelanden och avtal</li>
-                <li>Hantera betalningar och fakturering</li>
-                <li>Skicka servicenotiser (nya offerter, meddelanden etc.)</li>
-                <li>Förbättra och utveckla tjänsten</li>
-                <li>Förhindra missbruk och bedrägerier</li>
-              </ul>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">4. Cookies, Google Analytics och Google Ads</h2>
+              <p>Vi använder nödvändiga cookies för att webbplatsen ska fungera och för att spara ditt cookieval. Analys- och marknadsföringscookies laddas först om du aktivt väljer att acceptera dem i cookie-bannern.</p>
+              <p className="mt-2">Efter samtycke kan vi använda Google Analytics och Google Ads för statistik, konverteringsmätning och marknadsföringsanalys. Google-taggen laddas inte för analys eller annonsering innan sådant samtycke har lämnats.</p>
+              <p className="mt-2">Du kan när som helst ändra ditt val via knappen “Cookieinställningar” på webbplatsen.</p>
             </div>
 
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">5. Delning av uppgifter</h2>
-              <p>Vi delar personuppgifter med:</p>
+              <p>Vi delar endast personuppgifter när det behövs för tjänsten, drift, säkerhet, betalning eller lagkrav.</p>
               <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li><strong>Motparten i ett uppdrag:</strong> beställare ser byråns profil och offertuppgifter, byråer ser beställarens uppdragsinformation</li>
-                <li><strong>Stripe:</strong> betalningshantering (PCI DSS-certifierad)</li>
-                <li><strong>Hostingleverantörer:</strong> inom EU/EES (Supabase, Lovable)</li>
-                <li><strong>Myndigheter:</strong> om vi är skyldiga enligt lag</li>
+                <li><strong>Beställare och byråer:</strong> relevanta uppgifter delas mellan parter i ett uppdrag för att möjliggöra kontakt, offert och leverans.</li>
+                <li><strong>Stripe:</strong> betalningshantering, abonnemang och transaktionsunderlag.</li>
+                <li><strong>Supabase/Lovable:</strong> hosting, databas, autentisering och teknisk drift.</li>
+                <li><strong>Google:</strong> analys och annonsmätning endast efter samtycke.</li>
+                <li><strong>Resend eller motsvarande e-postleverantör:</strong> transaktionsmail och servicemeddelanden.</li>
+                <li><strong>Myndigheter:</strong> om vi är skyldiga enligt lag.</li>
               </ul>
-              <p className="mt-2">Vi säljer aldrig dina personuppgifter till tredje part.</p>
+              <p className="mt-2">Vi säljer inte personuppgifter.</p>
             </div>
 
             <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">6. Datalagring och radering</h2>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">6. Överföring utanför EU/EES</h2>
+              <p>Vår ambition är att behandla personuppgifter inom EU/EES när det är möjligt. Vissa leverantörer, till exempel Google eller Stripe, kan innebära överföring till länder utanför EU/EES. När sådan överföring sker ska den skyddas genom lämpliga skyddsåtgärder, exempelvis EU-kommissionens standardavtalsklausuler eller annat giltigt överföringsstöd.</p>
+            </div>
+
+            <div>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">7. Lagringstid</h2>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Kontodata:</strong> bevaras så länge du har ett aktivt konto + 12 månader efter radering</li>
-                <li><strong>Transaktionsdata:</strong> bevaras i 7 år (bokföringslagen)</li>
-                <li><strong>Meddelanden:</strong> raderas 24 månader efter projektets avslut</li>
-                <li><strong>Cookies:</strong> se avsnitt 8</li>
+                <li><strong>Kontouppgifter:</strong> sparas så länge kontot är aktivt och därefter så länge det behövs för support, säkerhet eller rättsliga krav.</li>
+                <li><strong>Uppdrag, offerter och meddelanden:</strong> sparas så länge det behövs för att tillhandahålla tjänsten och hantera historik, tvister eller support.</li>
+                <li><strong>Bokföringsmaterial:</strong> sparas enligt bokföringslagens krav.</li>
+                <li><strong>Cookieval:</strong> sparas normalt upp till 12 månader eller tills du ändrar ditt val.</li>
+                <li><strong>Analysdata:</strong> sparas enligt inställningarna hos aktuell analysleverantör och bara om du har samtyckt.</li>
               </ul>
             </div>
 
             <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">7. Dina rättigheter (GDPR)</h2>
-              <p>Du har rätt att:</p>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">8. Dina rättigheter</h2>
+              <p>Du har enligt GDPR rätt att:</p>
               <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li><strong>Tillgång:</strong> begära ut vilka uppgifter vi har om dig (registerutdrag)</li>
-                <li><strong>Rättelse:</strong> korrigera felaktiga uppgifter</li>
-                <li><strong>Radering:</strong> begära att vi raderar dina uppgifter ("rätten att bli glömd")</li>
-                <li><strong>Dataportabilitet:</strong> få ut dina uppgifter i maskinläsbart format</li>
-                <li><strong>Begränsning:</strong> begränsa hur vi behandlar dina uppgifter</li>
-                <li><strong>Invändning:</strong> invända mot behandling baserad på berättigat intresse</li>
-                <li><strong>Återkalla samtycke:</strong> när som helst för samtyckebaserad behandling</li>
+                <li>begära tillgång till dina personuppgifter,</li>
+                <li>begära rättelse av felaktiga uppgifter,</li>
+                <li>begära radering i vissa fall,</li>
+                <li>begära begränsning av behandling,</li>
+                <li>invända mot behandling som grundas på berättigat intresse,</li>
+                <li>begära dataportabilitet när behandlingen grundas på avtal eller samtycke,</li>
+                <li>återkalla samtycke för framtida behandling.</li>
               </ul>
-              <p className="mt-2">Kontakta oss på <a href="mailto:gdpr@updro.se" className="text-primary hover:underline">gdpr@updro.se</a> för att utöva dina rättigheter. Vi svarar inom 30 dagar.</p>
-              <p className="mt-1">Du har även rätt att lämna klagomål till <strong>Integritetsskyddsmyndigheten (IMY)</strong>: <a href="https://www.imy.se" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">www.imy.se</a></p>
-            </div>
-
-            <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">8. Cookies</h2>
-              <p>Vi använder cookies för att:</p>
-              <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li><strong>Nödvändiga cookies:</strong> autentisering, sessionshantering (kräver ej samtycke)</li>
-                <li><strong>Analyscookies:</strong> förbättra tjänsten (kräver samtycke)</li>
-                <li><strong>Marknadsföringscookies:</strong> anpassad annonsering (kräver samtycke)</li>
-              </ul>
-              <p className="mt-2">Du kan hantera dina cookie-inställningar via cookie-bannern som visas vid ditt första besök, eller genom att kontakta oss.</p>
+              <p className="mt-2">Kontakta oss på <a href="mailto:info@auroramedia.se" className="text-primary hover:underline">info@auroramedia.se</a> om du vill utöva dina rättigheter. Vi svarar normalt inom 30 dagar.</p>
+              <p className="mt-1">Du har också rätt att lämna klagomål till Integritetsskyddsmyndigheten, IMY: <a href="https://www.imy.se" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">www.imy.se</a>.</p>
             </div>
 
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">9. Säkerhet</h2>
-              <p>Vi skyddar dina uppgifter genom:</p>
-              <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li>Krypterad dataöverföring (TLS/SSL)</li>
-                <li>Krypterad lagring av lösenord (bcrypt)</li>
-                <li>Row Level Security (RLS) i databasen</li>
-                <li>Stripe PCI DSS Level 1 för betalningar</li>
-                <li>Regelbundna säkerhetsgranskningar</li>
-              </ul>
+              <p>Vi arbetar med tekniska och organisatoriska säkerhetsåtgärder för att skydda personuppgifter, bland annat åtkomstbegränsning, krypterad överföring, autentisering, loggning och säkerhetsregler i databasen.</p>
             </div>
 
             <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">10. Överföring till tredjeland</h2>
-              <p>Vår primära databehandling sker inom EU/EES. Om uppgifter överförs utanför EU/EES säkerställer vi att lämpliga skyddsåtgärder finns, t.ex. EU:s standardavtalsklausuler (SCC) eller adequacy decision.</p>
-            </div>
-
-            <div>
-              <h2 className="font-display text-lg font-semibold text-foreground mb-2">11. Ändringar</h2>
-              <p>Vi kan uppdatera denna policy vid behov. Väsentliga ändringar meddelas via e-post eller notis i tjänsten. Den senaste versionen finns alltid tillgänglig på denna sida.</p>
+              <h2 className="font-display text-lg font-semibold text-foreground mb-2">10. Ändringar</h2>
+              <p>Vi kan uppdatera denna integritetspolicy när tjänsten, leverantörer eller lagkrav förändras. Den senaste versionen finns alltid på denna sida.</p>
             </div>
           </section>
         </article>
