@@ -37,8 +37,6 @@
     <meta name="twitter:image" content="https://updro.se/og-image.png" />
 
     <!-- Performance hints -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://opgjoevvlwhsddscqmpe.supabase.co" />
 
     <!-- Favicon -->
@@ -52,6 +50,30 @@
     <!-- Theme color -->
     <meta name="theme-color" content="#111111" />
     <meta name="msapplication-TileColor" content="#111111" />
+
+    <!-- Prevent raw SEO fallback from being visible to visitors while the app bootstraps. -->
+    <style>
+      #root > #static-seo-content {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        clip-path: inset(50%) !important;
+        white-space: nowrap !important;
+      }
+      #root:has(#static-seo-content)::before {
+        content: "Laddar Updro…";
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background: #fbfaf8;
+        color: #211b17;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 1rem;
+      }
+    </style>
 
     <!-- Structured Data: Organization + WebSite + BreadcrumbList (global) -->
     <script type="application/ld+json">
@@ -129,10 +151,11 @@
 
   <body>
     <div id="root">
-      <!-- Prerendered H1 fallback for slow crawlers (replaced when React mounts) -->
-      <h1 style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
-        Updro – Jämför offerter från digitala byråer i Sverige
-      </h1>
+      <!-- Hidden SEO fallback for slow crawlers. The app clears this before mounting. -->
+      <main id="static-seo-content" aria-hidden="true">
+        <h1>Updro – Jämför offerter från digitala byråer i Sverige</h1>
+        <p>Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar.</p>
+      </main>
     </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
