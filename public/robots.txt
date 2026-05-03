@@ -1,23 +1,15 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/
 Disallow: /dashboard
+Disallow: /dashboard/
 Disallow: /logga-in
 Disallow: /registrera
+Disallow: /registrera/
 Disallow: /aterstall-losenord
+Disallow: /landing
+Disallow: /landing/
 
-# AI crawlers – tillåt att vi syns i ChatGPT/Perplexity/Claude
-User-agent: GPTBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
+# Sitemap-index är primär. /sitemap.xml genereras också som flat fallback i build.
 Sitemap: https://updro.se/sitemap-index.xml
-Sitemap: https://updro.se/sitemap.xml
