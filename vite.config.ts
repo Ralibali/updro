@@ -3,6 +3,15 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { Plugin } from "vite";
+import {
+  generateSectionSitemapXml,
+  generateSitemapIndexXml,
+  generateSitemapXml,
+  getAllStaticSeoRoutes,
+  getNoindexSeoRoutes,
+  renderStaticHtml,
+  SITEMAP_SECTIONS,
+} from "./src/lib/seoStatic";
 
 function seoBuildPlugin(): Plugin {
   return {
@@ -13,12 +22,11 @@ function seoBuildPlugin(): Plugin {
         const match = url.match(/^\/(sitemap(?:-[a-z]+)?|sitemap-index)\.xml(?:\?.*)?$/);
         if (!match) return next();
         try {
-          const mod = await s.ssrLoadModule('/src/lib/seoStatic.ts');
           const name = match[1];
           let xml: string | null = null;
-          if (name === 'sitemap') xml = mod.generateSitemapXml();
-          else if (name === 'sitemap-index') xml = mod.generateSitemapIndexXml();
-          else xml = mod.generateSectionSitemapXml(name.replace(/^sitemap-/, ''));
+          if (name === 'sitemap') xml = generateSitemapXml();
+          else if (name === 'sitemap-index') xml = generateSitemapIndexXml();
+          else xml = generateSectionSitemapXml(name.replace(/^sitemap-/, '') as any);
           if (!xml) {
             res.statusCode = 404;
             res.end('Not found');
@@ -34,34 +42,33 @@ function seoBuildPlugin(): Plugin {
     },
     async closeBundle() {
       const fs = await import('node:fs/promises');
-      const mod = await import('./src/lib/seoStatic');
       const distDir = path.resolve(process.cwd(), 'dist');
       const template = await fs.readFile(path.join(distDir, 'index.html'), 'utf8');
 
-      const flat = mod.generateSitemapXml();
+      const flat = generateSitemapXml();
       await fs.writeFile(path.join(distDir, 'sitemap.xml'), flat, 'utf8');
 
-      const indexXml = mod.generateSitemapIndexXml();
+      const indexXml = generateSitemapIndexXml();
       await fs.writeFile(path.join(distDir, 'sitemap-index.xml'), indexXml, 'utf8');
 
       let sectionUrlCount = 0;
-      for (const section of mod.SITEMAP_SECTIONS) {
-        const xml = mod.generateSectionSitemapXml(section);
+      for (const section of SITEMAP_SECTIONS) {
+        const xml = generateSectionSitemapXml(section);
         if (!xml) continue;
         await fs.writeFile(path.join(distDir, `sitemap-${section}.xml`), xml, 'utf8');
         sectionUrlCount += (xml.match(/<url>/g) || []).length;
       }
 
-      const routes = mod.getAllStaticSeoRoutes();
+      const routes = getAllStaticSeoRoutes();
       for (const route of routes) {
-        const routeHtml = mod.renderStaticHtml(template, route);
+        const routeHtml = renderStaticHtml(template, route);
         const routeDir = path.join(distDir, route.path === '/' ? '' : route.path.replace(/^\//, ''));
         await fs.mkdir(routeDir, { recursive: true });
         await fs.writeFile(path.join(routeDir, 'index.html'), routeHtml, 'utf8');
       }
 
       const flatCount = (flat.match(/<url>/g) || []).length;
-      const noindexCount = mod.getNoindexSeoRoutes().length;
+      const noindexCount = getNoindexSeoRoutes().length;
       console.log(`✅ SEO build: ${routes.length} HTML routes, ${flatCount} indexable sitemap URLs, ${sectionUrlCount} section URLs, ${noindexCount} noindex programmatic URLs`);
     },
   };
