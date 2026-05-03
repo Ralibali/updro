@@ -1,15 +1,16 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "next-themes";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
 import { COMPARISON_PAGES } from "./lib/seoComparisons";
+import { getNoindexSeoRoutes } from "./lib/seoStatic";
 import SupplierLayout from "@/components/SupplierLayout";
 import BuyerLayout from "@/components/BuyerLayout";
 
@@ -111,6 +112,35 @@ const PageLoader = () => (
 
 const PageTracker = () => { usePageTracking(); return null; };
 
+const NoindexGuard = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    const path = location.pathname.replace(/\/$/, '') || '/';
+    const noindexPaths = new Set(getNoindexSeoRoutes().map(route => route.path));
+    const privatePrefixes = ['/admin', '/dashboard'];
+    const privateExact = ['/logga-in', '/registrera', '/registrera/byra', '/aterstall-losenord', '/landing', '/landing/byra'];
+    const shouldNoindex = noindexPaths.has(path) || privateExact.includes(path) || privatePrefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
+
+    if (!shouldNoindex || typeof document === 'undefined') return;
+
+    const applyNoindex = () => {
+      let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
+      if (!robots) {
+        robots = document.createElement('meta');
+        robots.name = 'robots';
+        document.head.appendChild(robots);
+      }
+      robots.content = 'noindex, nofollow';
+    };
+
+    applyNoindex();
+    window.setTimeout(applyNoindex, 0);
+  }, [location.pathname]);
+
+  return null;
+};
+
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
   <QueryClientProvider client={queryClient}>
@@ -120,6 +150,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <PageTracker />
+          <NoindexGuard />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* Public */}
