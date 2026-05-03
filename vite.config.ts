@@ -7,9 +7,8 @@ import {
   generateSectionSitemapXml,
   generateSitemapIndexXml,
   generateSitemapXml,
-  getAllStaticSeoRoutes,
+  getIndexableSeoRoutes,
   getNoindexSeoRoutes,
-  renderStaticHtml,
   SITEMAP_SECTIONS,
 } from "./src/lib/seoStatic";
 
@@ -43,7 +42,6 @@ function seoBuildPlugin(): Plugin {
     async closeBundle() {
       const fs = await import('node:fs/promises');
       const distDir = path.resolve(process.cwd(), 'dist');
-      const template = await fs.readFile(path.join(distDir, 'index.html'), 'utf8');
 
       const flat = generateSitemapXml();
       await fs.writeFile(path.join(distDir, 'sitemap.xml'), flat, 'utf8');
@@ -59,17 +57,10 @@ function seoBuildPlugin(): Plugin {
         sectionUrlCount += (xml.match(/<url>/g) || []).length;
       }
 
-      const routes = getAllStaticSeoRoutes();
-      for (const route of routes) {
-        const routeHtml = renderStaticHtml(template, route);
-        const routeDir = path.join(distDir, route.path === '/' ? '' : route.path.replace(/^\//, ''));
-        await fs.mkdir(routeDir, { recursive: true });
-        await fs.writeFile(path.join(routeDir, 'index.html'), routeHtml, 'utf8');
-      }
-
       const flatCount = (flat.match(/<url>/g) || []).length;
       const noindexCount = getNoindexSeoRoutes().length;
-      console.log(`✅ SEO build: ${routes.length} HTML routes, ${flatCount} indexable sitemap URLs, ${sectionUrlCount} section URLs, ${noindexCount} noindex programmatic URLs`);
+      const routeCount = getIndexableSeoRoutes().length + noindexCount;
+      console.log(`✅ SEO build: sitemap generated for ${flatCount} indexable URLs, ${sectionUrlCount} section URLs, ${noindexCount} noindex programmatic URLs, ${routeCount} registered routes`);
     },
   };
 }
