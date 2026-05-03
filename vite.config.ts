@@ -91,6 +91,24 @@ export default defineConfig(({ mode }) => {
         overlay: false,
       },
     },
+    build: {
+      cssCodeSplit: true,
+      sourcemap: false,
+      chunkSizeWarningLimit: 900,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined;
+            if (id.includes('@supabase')) return 'vendor-supabase';
+            if (id.includes('framer-motion')) return 'vendor-motion';
+            if (id.includes('recharts') || id.includes('d3-')) return 'vendor-charts';
+            if (id.includes('@radix-ui')) return 'vendor-radix';
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor-react';
+            return 'vendor';
+          },
+        },
+      },
+    },
     plugins: [
       react(),
       mode === "development" && componentTagger(),
