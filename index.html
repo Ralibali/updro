@@ -45,9 +45,9 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
 
-    <!-- Discovery: RSS + sitemap (helps AI crawlers and Google News) -->
+    <!-- Discovery: RSS + sitemap -->
     <link rel="alternate" type="application/rss+xml" title="Updro – Artiklar" href="https://updro.se/rss.xml" />
-    <link rel="sitemap" type="application/xml" href="https://updro.se/sitemap.xml" />
+    <link rel="sitemap" type="application/xml" href="https://updro.se/sitemap-index.xml" />
 
     <!-- Theme color -->
     <meta name="theme-color" content="#111111" />
@@ -63,10 +63,10 @@
           "@id": "https://updro.se/#organization",
           "name": "Updro",
           "legalName": "Aurora Media AB",
+          "identifier": "559272-0220",
           "url": "https://updro.se",
           "logo": "https://updro.se/logo-updro.png",
           "description": "Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.",
-          "foundingDate": "2026",
           "founder": {
             "@type": "Organization",
             "name": "Aurora Media AB"
@@ -112,7 +112,7 @@
     }
     </script>
 
-    <!-- Consent defaults (denied until user accepts cookies) -->
+    <!-- Consent defaults. Google scripts are loaded by CookieConsent only after opt-in. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -120,20 +120,9 @@
       gtag('consent', 'default', {
         analytics_storage: 'denied',
         ad_storage: 'denied',
-        wait_for_update: 500,
-      });
-    </script>
-
-    <!-- Google Ads + GA4 (gtag.js) – deferred -->
-    <script>
-      window.addEventListener('DOMContentLoaded', function() {
-        var s = document.createElement('script');
-        s.async = true;
-        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-C0XMZG0KDQ';
-        document.head.appendChild(s);
-        gtag('js', new Date());
-        gtag('config', 'G-C0XMZG0KDQ');
-        gtag('config', 'AW-10941540384');
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        wait_for_update: 500
       });
     </script>
   </head>
