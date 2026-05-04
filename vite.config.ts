@@ -90,11 +90,18 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks(id) {
             if (!id.includes('node_modules')) return undefined;
+            // React core MUST be in its own chunk and include all transitive deps
+            // (scheduler, react-is, use-sync-external-store, object-assign) so other
+            // chunks don't try to use React APIs before it's initialized.
+            if (
+              /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|react-is|use-sync-external-store|object-assign)[\\/]/.test(id)
+            ) {
+              return 'vendor-react';
+            }
             if (id.includes('@supabase')) return 'vendor-supabase';
             if (id.includes('framer-motion')) return 'vendor-motion';
             if (id.includes('recharts') || id.includes('d3-')) return 'vendor-charts';
             if (id.includes('@radix-ui')) return 'vendor-radix';
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor-react';
             return 'vendor';
           },
         },
