@@ -86,27 +86,12 @@ export default defineConfig(({ mode }) => {
     build: {
       cssCodeSplit: true,
       sourcemap: false,
-      chunkSizeWarningLimit: 900,
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (!id.includes('node_modules')) return undefined;
-            // React core MUST be in its own chunk and include all transitive deps
-            // (scheduler, react-is, use-sync-external-store, object-assign) so other
-            // chunks don't try to use React APIs before it's initialized.
-            if (
-              /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|react-is|use-sync-external-store|object-assign)[\\/]/.test(id)
-            ) {
-              return 'vendor-react';
-            }
-            if (id.includes('@supabase')) return 'vendor-supabase';
-            if (id.includes('framer-motion')) return 'vendor-motion';
-            if (id.includes('recharts') || id.includes('d3-')) return 'vendor-charts';
-            if (id.includes('@radix-ui')) return 'vendor-radix';
-            return 'vendor';
-          },
-        },
-      },
+      chunkSizeWarningLimit: 1500,
+      // NOTE: Do NOT add custom manualChunks here. A custom split was previously
+      // causing "Cannot read properties of undefined (reading 'forwardRef')" in
+      // production because libs like @radix-ui were placed in a vendor chunk
+      // that loaded before the React chunk initialized. Let Vite/Rollup handle
+      // chunking automatically — it correctly hoists shared deps.
     },
     plugins: [
       react(),
