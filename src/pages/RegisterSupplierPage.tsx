@@ -73,8 +73,10 @@ const RegisterSupplierPage = () => {
     if (error) {
       toast.error(error.message || 'Något gick fel vid registrering.')
     } else {
-      toast.success('Konto skapat! 🎉 Välkommen till Updro!')
-      navigate('/dashboard/supplier')
+      toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
+        duration: 8000,
+      })
+      navigate('/')
     }
   }
 
