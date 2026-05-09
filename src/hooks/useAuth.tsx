@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import type { User, Session } from '@supabase/supabase-js'
 import type { Profile, SupplierProfile, UserRole } from '@/types'
-import { TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
 import { toast } from 'sonner'
 
 interface AuthContextType {
