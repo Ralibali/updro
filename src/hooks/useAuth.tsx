@@ -151,58 +151,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const signUp = async (data: SignUpData) => {
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: data.email,
-      password: data.password,
-      options: {
-        emailRedirectTo: window.location.origin,
-      },
-    })
+    const { data: result, error } = await supabase.functions.invoke<{
+      error?: string
+      userId?: string
+      session?: Session | null
+    }>('create-account', { body: data })
 
-    if (authError || !authData.user) return { error: authError as Error | null }
-
-    const userId = authData.user.id
-
-    // Insert profile
-    const { error: profileError } = await supabase.from('profiles').insert({
-      id: userId,
-      role: data.role,
-      full_name: data.full_name,
-      email: data.email,
-      company_name: data.company_name || null,
-      city: data.city || null,
-      phone: data.phone || null,
-    })
-
-    if (profileError) return { error: profileError as Error }
-
-    // If supplier, create supplier profile with trial
-    if (data.role === 'supplier') {
-      const slug = (data.company_name || data.full_name)
-        .toLowerCase()
-        .replace(/[^a-z0-9åäö]+/g, '-')
-        .replace(/(^-|-$)/g, '')
-        + '-' + userId.slice(0, 6)
-
-      const trialEnds = new Date()
-      trialEnds.setDate(trialEnds.getDate() + TRIAL_DAYS)
-
-      const { error: supplierError } = await supabase.from('supplier_profiles').insert({
-        id: userId,
-        slug,
-        plan: 'trial',
-        trial_ends_at: trialEnds.toISOString(),
-        lead_credits: TRIAL_LEADS,
-        trial_leads_used: 0,
-        categories: data.categories || [],
-        org_number: data.org_number || null,
-      })
-
-      if (supplierError) return { error: supplierError as Error }
+    if (error || result?.error) {
+      return { error: new Error(result?.error || error?.message || 'Något gick fel vid registrering.') }
     }
 
-    // Fetch the newly created profile so state is ready before navigation
-    await fetchProfile(userId)
+    if (result?.session) {
+      await supabase.auth.setSession(result.session)
+      setSession(result.session)
+      setUser(result.session.user)
+      await fetchProfile(result.session.user.id)
+    }
 
     return { error: null }
   }
