@@ -90,9 +90,9 @@ const BelowFold = () => (
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
-      title: 'Updro – Jämför offerter från digitala byråer i Sverige | Gratis & utan förpliktelser',
+      title: 'Updro – Jämför offerter från digitala byråer',
       description:
-        'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Webbutveckling, SEO, e-handel, apputveckling och mer. Helt gratis.',
+        'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer i Sverige inom 24 timmar. Helt gratis.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)

@@ -10,7 +10,7 @@ import { Star, MapPin, CheckCircle, Globe, ArrowRight } from 'lucide-react'
 import { timeAgo } from '@/lib/dateUtils'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
-import { setSEOMeta } from '@/lib/seoHelpers'
+import { setSEOMeta, setJsonLd } from '@/lib/seoHelpers'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
@@ -36,11 +36,38 @@ const AgencyProfilePage = () => {
   useEffect(() => {
     if (agency && profile) {
       const name = profile.company_name || profile.full_name || 'Byrå'
+      const url = `https://updro.se/byra/${slug}`
       setSEOMeta({
         title: `${name} – Byråprofil | Updro`,
         description: `Se ${name}s profil på Updro. Betyg, tjänster, portfölj och kontaktuppgifter.`,
-        canonical: `https://updro.se/byra/${slug}`,
+        canonical: url,
+        ogType: 'profile',
       })
+
+      const schema: any = {
+        '@context': 'https://schema.org',
+        '@type': 'ProfessionalService',
+        '@id': url,
+        name,
+        url,
+        description: agency.bio || `${name} – byrå på Updro.`,
+        areaServed: profile.city || 'Sverige',
+        address: profile.city
+          ? { '@type': 'PostalAddress', addressLocality: profile.city, addressCountry: 'SE' }
+          : undefined,
+        image: agency.logo_url || undefined,
+        sameAs: agency.website_url ? [agency.website_url] : undefined,
+      }
+      if (agency.review_count > 0 && agency.avg_rating > 0) {
+        schema.aggregateRating = {
+          '@type': 'AggregateRating',
+          ratingValue: Number(agency.avg_rating).toFixed(1),
+          reviewCount: agency.review_count,
+          bestRating: 5,
+          worstRating: 1,
+        }
+      }
+      setJsonLd('agency-jsonld', schema)
     }
   }, [agency, profile, slug])
 
