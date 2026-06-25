@@ -11,22 +11,27 @@ const CountUp = ({ target, suffix = '', prefix = '' }: CountUpProps) => {
   const [inView, setInView] = useState(false)
   const ref = useRef<HTMLSpanElement>(null)
   const count = useMotionValue(0)
-  const rounded = useTransform(count, (v) => `${prefix}${Math.round(v)}${suffix}`)
+  const rounded = useTransform(count, value => `${prefix}${Math.round(value)}${suffix}`)
   const [display, setDisplay] = useState(`${prefix}0${suffix}`)
 
   useEffect(() => {
     if (!inView) return
     const controls = animate(count, target, { duration: 1.5, ease: 'easeOut' })
-    const unsub = rounded.on('change', (v) => setDisplay(v))
-    return () => { controls.stop(); unsub() }
+    const unsubscribe = rounded.on('change', value => setDisplay(value))
+    return () => {
+      controls.stop()
+      unsubscribe()
+    }
   }, [inView, target, count, rounded])
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setInView(true) }, { threshold: 0.5 })
-    obs.observe(el)
-    return () => obs.disconnect()
+    const element = ref.current
+    if (!element) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setInView(true)
+    }, { threshold: 0.5 })
+    observer.observe(element)
+    return () => observer.disconnect()
   }, [])
 
   return <span ref={ref}>{display}</span>
@@ -34,33 +39,31 @@ const CountUp = ({ target, suffix = '', prefix = '' }: CountUpProps) => {
 
 const stats = [
   { target: 5, suffix: '', label: 'offerter per förfrågan (max)' },
-  { target: 24, suffix: 'h', label: 'genomsnittlig svarstid' },
+  { target: 3, suffix: '', label: 'enkla steg till inskickat uppdrag' },
   { target: 100, suffix: '%', label: 'gratis för uppdragsgivare' },
 ]
 
-const StatsSection = () => {
-  return (
-    <section className="py-16 bg-surface-alt border-y border-border">
-      <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto text-center">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-            >
-              <div className="font-display text-5xl md:text-6xl text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                <CountUp target={stat.target} suffix={stat.suffix} />
-              </div>
-              <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
-            </motion.div>
-          ))}
-        </div>
+const StatsSection = () => (
+  <section className="py-16 bg-surface-alt border-y border-border">
+    <div className="container">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto text-center">
+        {stats.map((stat, index) => (
+          <motion.div
+            key={stat.label}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: index * 0.1 }}
+          >
+            <div className="font-display text-5xl md:text-6xl text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <CountUp target={stat.target} suffix={stat.suffix} />
+            </div>
+            <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
+          </motion.div>
+        ))}
       </div>
-    </section>
-  )
-}
+    </div>
+  </section>
+)
 
 export default StatsSection
