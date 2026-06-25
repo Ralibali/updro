@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
+import { trackPageView } from '@/lib/analytics'
 
 function getSessionId() {
   let id = sessionStorage.getItem('_sid')
   if (!id) {
-    id = crypto.randomUUID()
+    id = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`
     sessionStorage.setItem('_sid', id)
   }
   return id
@@ -31,23 +34,33 @@ export function usePageTracking() {
     lastPath.current = path
 
     const sessionId = getSessionId()
+
+    // Internal, cookie-independent page view used by the admin analytics.
     supabase.from('page_views').insert({
       session_id: sessionId,
       path,
       referrer: document.referrer || null,
       device_type: getDeviceType(),
-    }).then(() => {})
+    }).then(({ error }) => {
+      if (error && import.meta.env.DEV) console.warn('Page view tracking failed', error)
+    })
+
+    // React Router does not trigger automatic GA4 page views after navigation.
+    // Query parameters are deliberately excluded to avoid leaking project briefs.
+    trackPageView(path)
   }, [location.pathname])
 }
 
 /** Track a click event. Call from onClick handlers on important CTAs. */
 export function trackClick(eventName: string, elementText?: string, metadata?: Record<string, any>) {
-  const sessionId = sessionStorage.getItem('_sid') || 'unknown'
+  const sessionId = sessionStorage.getItem('_sid') || getSessionId()
   supabase.from('click_events').insert({
     session_id: sessionId,
     event_name: eventName,
     element_text: elementText || null,
     path: window.location.pathname,
     metadata: metadata || {},
-  }).then(() => {})
+  }).then(({ error }) => {
+    if (error && import.meta.env.DEV) console.warn('Click tracking failed', error)
+  })
 }
