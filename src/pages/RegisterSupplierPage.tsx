@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
+import { ArrowRight, Check, CreditCard, Gift, MessageCircle, Shield, Sparkles } from 'lucide-react'
+import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { toast } from 'sonner'
-import { CATEGORIES, CATEGORY_ICONS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
-import { Check, Gift, Shield, MessageCircle, CreditCard, Star, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useAuth } from '@/hooks/useAuth'
+import { supabase } from '@/integrations/supabase/client'
+import { trackSignUp } from '@/lib/analytics'
+import { CATEGORIES, CATEGORY_ICONS, TRIAL_DAYS, TRIAL_LEADS } from '@/lib/constants'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
 const RegisterSupplierPage = () => {
@@ -37,17 +39,18 @@ const RegisterSupplierPage = () => {
     })
   }, [])
 
-  const toggleCategory = (cat: string) => {
+  const toggleCategory = (category: string) => {
     setForm(prev => ({
       ...prev,
-      categories: prev.categories.includes(cat)
-        ? prev.categories.filter(c => c !== cat)
-        : [...prev.categories, cat],
+      categories: prev.categories.includes(category)
+        ? prev.categories.filter(item => item !== category)
+        : [...prev.categories, category],
     }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (loading) return
     if (!form.accepted) {
       toast.error('Du måste godkänna villkoren.')
       return
@@ -57,31 +60,45 @@ const RegisterSupplierPage = () => {
       return
     }
 
+    const email = form.email.trim().toLowerCase()
     setLoading(true)
     const { error } = await signUp({
-      email: form.email,
+      email,
       password: form.password,
       role: 'supplier',
-      full_name: form.full_name,
-      company_name: form.company_name,
-      phone: form.phone || undefined,
+      full_name: form.full_name.trim(),
+      company_name: form.company_name.trim(),
+      phone: form.phone.trim() || undefined,
       categories: form.categories,
-      org_number: form.org_number || undefined,
+      org_number: form.org_number.trim() || undefined,
     })
-    setLoading(false)
 
     if (error) {
+      setLoading(false)
       toast.error(error.message || 'Något gick fel vid registrering.')
-    } else {
-      toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
-        duration: 8000,
-      })
-      navigate('/')
+      return
     }
+
+    if (form.newsletter) {
+      const { error: newsletterError } = await supabase
+        .from('newsletter_subscribers')
+        .insert({ email, source: 'supplier_registration' })
+
+      if (newsletterError && newsletterError.code !== '23505') {
+        console.warn('Newsletter opt-in could not be saved', newsletterError)
+      }
+    }
+
+    trackSignUp('supplier')
+    setLoading(false)
+    toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
+      duration: 8000,
+    })
+    navigate('/')
   }
 
   const benefits = [
-    { icon: Gift, text: `${TRIAL_LEADS} gratis lead-krediter (värde 1 495 kr)` },
+    { icon: Gift, text: `${TRIAL_LEADS} gratis lead-krediter` },
     { icon: Shield, text: `${TRIAL_DAYS} dagars fri provperiod` },
     { icon: MessageCircle, text: 'Inbyggd chatt med beställare' },
     { icon: CreditCard, text: 'Inget kreditkort krävs' },
@@ -92,186 +109,108 @@ const RegisterSupplierPage = () => {
       <Navbar />
       <main className="flex-1">
         <div className="grid lg:grid-cols-2 min-h-[calc(100vh-4rem)]">
-          {/* Left - Campaign */}
-          <div
-            className="relative p-8 lg:p-16 flex flex-col justify-center text-white overflow-hidden"
-            style={{
-              background: 'linear-gradient(160deg, hsl(245 62% 38%), hsl(245 58% 48%), hsl(260 50% 42%))',
-            }}
-          >
-            {/* Subtle radial accent */}
+          <div className="relative p-8 lg:p-16 flex flex-col justify-center text-white overflow-hidden" style={{ background: 'linear-gradient(160deg, hsl(245 62% 38%), hsl(245 58% 48%), hsl(260 50% 42%))' }}>
             <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 blur-3xl -translate-y-1/3 translate-x-1/4" />
             <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-white/5 blur-3xl translate-y-1/3 -translate-x-1/4" />
 
-            <div className="relative z-10">
-              <span className="text-5xl mb-6 block">🎁</span>
-              <h2 className="font-display text-3xl lg:text-4xl font-bold mb-2">
-                Prova Updro gratis
-              </h2>
-              <p className="text-white/70 mb-8 text-lg">
-                Vad du får direkt:
-              </p>
+            <div className="relative z-10 max-w-xl">
+              <span className="text-5xl mb-6 block" aria-hidden="true">🎁</span>
+              <h1 className="font-display text-3xl lg:text-4xl font-bold mb-3">Prova Updro gratis</h1>
+              <p className="text-white/75 mb-8 text-lg">Skapa en synlig byråprofil och välj själv vilka uppdrag ni vill svara på.</p>
 
               <div className="space-y-4 mb-10">
-                {benefits.map((b) => (
-                  <div key={b.text} className="flex items-center gap-3">
-                    <div className="rounded-lg bg-white/10 p-2">
-                      <b.icon className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="text-white/90">{b.text}</span>
+                {benefits.map(benefit => (
+                  <div key={benefit.text} className="flex items-center gap-3">
+                    <div className="rounded-lg bg-white/10 p-2"><benefit.icon className="h-5 w-5 text-white" /></div>
+                    <span className="text-white/90">{benefit.text}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Testimonial */}
               <div className="rounded-2xl p-6 bg-white/10 backdrop-blur-md border border-white/15">
-                <div className="flex gap-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-5 w-5" />
+                  <p className="font-semibold">Nylanserad marknadsplats</p>
                 </div>
-                <p className="text-sm text-white/90 italic mb-3">
-                  "Vi fick vår första kund via Updro redan dag 3. Äntligen en plattform där beställarna faktiskt svarar!"
-                </p>
-                <p className="text-xs text-white/50">
-                  — Fredrik L., VD på Webbninja AB
+                <p className="text-sm text-white/80 leading-relaxed">
+                  Updro bygger nu upp sitt nätverk av seriösa svenska byråer och beställare. Därför får nya byråer prova de första leadsen utan kostnad och utan kortuppgifter.
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Right - Form */}
-          <div className="p-8 lg:p-16 flex items-center">
+          <div className="p-6 sm:p-8 lg:p-16 flex items-center">
             <div className="w-full max-w-lg mx-auto">
-              <h2 className="font-display text-2xl font-bold mb-6">Skapa byråkonto</h2>
+              <h2 className="font-display text-2xl font-bold mb-2">Skapa byråkonto</h2>
+              <p className="text-sm text-muted-foreground mb-6">Tar bara några minuter. Ni kan komplettera profilen efteråt.</p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <Label>Byrånamn *</Label>
-                    <Input
-                      value={form.company_name}
-                      onChange={(e) => setForm(prev => ({ ...prev, company_name: e.target.value }))}
-                      className="rounded-xl mt-1"
-                      required
-                    />
+                    <Label htmlFor="supplier-company">Byrånamn *</Label>
+                    <Input id="supplier-company" autoComplete="organization" maxLength={160} value={form.company_name} onChange={event => setForm(prev => ({ ...prev, company_name: event.target.value }))} className="rounded-xl mt-1" required />
                   </div>
                   <div>
-                    <Label>Ditt namn *</Label>
-                    <Input
-                      value={form.full_name}
-                      onChange={(e) => setForm(prev => ({ ...prev, full_name: e.target.value }))}
-                      className="rounded-xl mt-1"
-                      required
-                    />
+                    <Label htmlFor="supplier-name">Ditt namn *</Label>
+                    <Input id="supplier-name" autoComplete="name" maxLength={120} value={form.full_name} onChange={event => setForm(prev => ({ ...prev, full_name: event.target.value }))} className="rounded-xl mt-1" required />
                   </div>
                 </div>
 
                 <div>
-                  <Label>E-post *</Label>
-                  <Input
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm(prev => ({ ...prev, email: e.target.value }))}
-                    className="rounded-xl mt-1"
-                    required
-                  />
+                  <Label htmlFor="supplier-email">E-post *</Label>
+                  <Input id="supplier-email" type="email" autoComplete="email" maxLength={254} value={form.email} onChange={event => setForm(prev => ({ ...prev, email: event.target.value }))} className="rounded-xl mt-1" required />
+                </div>
+                <div>
+                  <Label htmlFor="supplier-password">Lösenord *</Label>
+                  <Input id="supplier-password" type="password" autoComplete="new-password" value={form.password} onChange={event => setForm(prev => ({ ...prev, password: event.target.value }))} className="rounded-xl mt-1" minLength={6} required />
+                  <p className="mt-1 text-xs text-muted-foreground">Minst sex tecken.</p>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="supplier-phone">Telefon</Label>
+                    <Input id="supplier-phone" type="tel" autoComplete="tel" maxLength={40} value={form.phone} onChange={event => setForm(prev => ({ ...prev, phone: event.target.value }))} className="rounded-xl mt-1" />
+                  </div>
+                  <div>
+                    <Label htmlFor="supplier-org">Org-nummer</Label>
+                    <Input id="supplier-org" maxLength={32} value={form.org_number} onChange={event => setForm(prev => ({ ...prev, org_number: event.target.value }))} placeholder="XXXXXX-XXXX" className="rounded-xl mt-1" />
+                  </div>
                 </div>
 
                 <div>
-                  <Label>Lösenord *</Label>
-                  <Input
-                    type="password"
-                    value={form.password}
-                    onChange={(e) => setForm(prev => ({ ...prev, password: e.target.value }))}
-                    className="rounded-xl mt-1"
-                    minLength={6}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <Label>Telefon</Label>
-                  <Input
-                    value={form.phone}
-                    onChange={(e) => setForm(prev => ({ ...prev, phone: e.target.value }))}
-                    className="rounded-xl mt-1"
-                  />
-                </div>
-
-                <div>
-                  <Label>Org-nummer</Label>
-                  <Input
-                    value={form.org_number}
-                    onChange={(e) => setForm(prev => ({ ...prev, org_number: e.target.value }))}
-                    placeholder="XXXXXX-XXXX"
-                    className="rounded-xl mt-1"
-                  />
-                </div>
-
-                {/* Category chips */}
-                <div>
-                  <Label>Kategorier (välj minst 1) *</Label>
+                  <Label>Kategorier (välj minst en) *</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {CATEGORIES.map((cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => toggleCategory(cat)}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border transition-all ${
-                          form.categories.includes(cat)
-                            ? 'bg-brand-blue text-primary-foreground border-brand-blue'
-                            : 'bg-card text-foreground/70 border-border hover:border-brand-blue/50'
-                        }`}
-                      >
-                        <span>{CATEGORY_ICONS[cat]}</span>
-                        {cat}
-                        {form.categories.includes(cat) && <Check className="h-3 w-3" />}
-                      </button>
-                    ))}
+                    {CATEGORIES.map(category => {
+                      const selected = form.categories.includes(category)
+                      return (
+                        <button key={category} type="button" aria-pressed={selected} onClick={() => toggleCategory(category)} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border transition-all ${selected ? 'bg-brand-blue text-primary-foreground border-brand-blue' : 'bg-card text-foreground/70 border-border hover:border-brand-blue/50'}`}>
+                          <span aria-hidden="true">{CATEGORY_ICONS[category]}</span>
+                          {category}
+                          {selected && <Check className="h-3 w-3" />}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2 pt-2">
-                  <Checkbox
-                    id="terms"
-                    checked={form.accepted}
-                    onCheckedChange={(v) => setForm(prev => ({ ...prev, accepted: v === true }))}
-                  />
-                  <label htmlFor="terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
+                  <Checkbox id="supplier-terms" checked={form.accepted} onCheckedChange={value => setForm(prev => ({ ...prev, accepted: value === true }))} />
+                  <label htmlFor="supplier-terms" className="text-xs text-muted-foreground leading-tight cursor-pointer">
                     Jag godkänner <Link to="/villkor" className="text-brand-blue hover:underline">villkoren</Link> och{' '}
                     <Link to="/integritetspolicy" className="text-brand-blue hover:underline">integritetspolicyn</Link> *
                   </label>
                 </div>
-
                 <div className="flex items-start gap-2">
-                  <Checkbox
-                    id="newsletter"
-                    checked={form.newsletter || false}
-                    onCheckedChange={(v) => setForm(prev => ({ ...prev, newsletter: v === true }))}
-                  />
-                  <label htmlFor="newsletter" className="text-xs text-muted-foreground leading-tight cursor-pointer">
-                    Ja, jag vill ta emot nyheter och tips via e-post
-                  </label>
+                  <Checkbox id="supplier-newsletter" checked={form.newsletter} onCheckedChange={value => setForm(prev => ({ ...prev, newsletter: value === true }))} />
+                  <label htmlFor="supplier-newsletter" className="text-xs text-muted-foreground leading-tight cursor-pointer">Ja, jag vill ta emot nyheter och tips via e-post</label>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-6 text-base font-semibold transition-all active:scale-95"
-                >
-                  {loading ? 'Skapar konto...' : (
-                    <>
-                      Skapa konto & aktivera {TRIAL_LEADS} gratis leads
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
+                <Button type="submit" disabled={loading} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-6 text-base font-semibold">
+                  {loading ? 'Skapar konto...' : <>Skapa konto och få {TRIAL_LEADS} gratis leads<ArrowRight className="ml-2 h-4 w-4" /></>}
                 </Button>
               </form>
 
-              <p className="text-center text-xs text-muted-foreground mt-4 flex items-center justify-center gap-2">
-                🔒 Säker registrering · Inga kortuppgifter · Avbryt när som helst
-              </p>
+              <p className="text-center text-xs text-muted-foreground mt-4">🔒 Säker registrering · Inga kortuppgifter · Ingen bindningstid</p>
+              <p className="text-center text-sm text-muted-foreground mt-5">Har ni redan konto? <Link to="/logga-in" className="text-primary hover:underline font-medium">Logga in</Link></p>
             </div>
           </div>
         </div>
