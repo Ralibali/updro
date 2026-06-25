@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Check, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { trackLeadStarted } from '@/lib/analytics'
+import { trackClick } from '@/hooks/usePageTracking'
 
 const mockOffers = [
   {
-    name: 'Aurora Media AB',
+    name: 'Exempel: Webbyrå',
     tag: 'Webbutveckling',
     price: '85 000 – 120 000 kr',
     delivery: '6 veckor',
@@ -14,7 +16,7 @@ const mockOffers = [
     rotate: -3,
   },
   {
-    name: 'Nordic Studio',
+    name: 'Exempel: Designstudio',
     tag: 'Design & UX',
     price: '60 000 – 90 000 kr',
     delivery: '4 veckor',
@@ -23,7 +25,7 @@ const mockOffers = [
     offset: true,
   },
   {
-    name: 'Skog & Co',
+    name: 'Exempel: SEO-byrå',
     tag: 'SEO',
     price: '15 000 kr / mån',
     delivery: 'Löpande',
@@ -38,13 +40,16 @@ const HeroSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'conversion', {
-        send_to: 'AW-10941540384/hero_lead',
-        event_callback: () => {},
-      })
-    }
-    navigate(`/publicera${query ? `?beskrivning=${encodeURIComponent(query)}` : ''}`)
+    const description = query.trim()
+
+    // This is the beginning of the funnel, not a completed conversion.
+    trackLeadStarted('homepage_hero')
+    trackClick('lead_started', 'Starta gratis – tar 2 min', {
+      source: 'homepage_hero',
+      has_description: description.length > 0,
+    })
+
+    navigate(`/publicera${description ? `?beskrivning=${encodeURIComponent(description)}` : ''}`)
   }
 
   return (
@@ -53,35 +58,43 @@ const HeroSection = () => {
         <div className="grid md:grid-cols-12 gap-10 md:gap-12 items-center">
           <div className="md:col-span-7 text-left">
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-foreground leading-[1.05] [text-wrap:balance]">
-              Jämför offerter från digitala byråer – hitta rätt webbyrå på minuter
+              Jämför offerter från digitala byråer – utan att jaga dem själv
             </h1>
 
             <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Beskriv ditt projekt. Få upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Helt gratis, helt utan förpliktelser.
+              Beskriv vad du behöver hjälp med. Updro matchar uppdraget med relevanta svenska byråer och du kan jämföra upp till fem offerter. Gratis och utan förpliktelser.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3 max-w-xl">
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Beskriv ditt projekt – t.ex. 'Ny e-handelssajt i Shopify'"
-                className="flex-1 h-14 rounded-xl text-base px-5 border-border bg-card shadow-sm"
-              />
-              <Button
-                type="submit"
-                size="lg"
-                className="h-14 bg-foreground hover:bg-foreground/90 text-background rounded-xl px-8 text-base font-semibold shadow-md whitespace-nowrap"
-              >
-                Få offerter gratis
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+            <form onSubmit={handleSubmit} className="mt-8 md:mt-10 max-w-xl">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  name="project-description"
+                  aria-label="Kort beskrivning av projektet"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="T.ex. ny Shopify-butik eller hjälp med SEO"
+                  className="flex-1 h-14 rounded-xl text-base px-5 border-border bg-card shadow-sm"
+                  maxLength={500}
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-14 bg-foreground hover:bg-foreground/90 text-background rounded-xl px-7 text-base font-semibold shadow-md whitespace-nowrap"
+                >
+                  Starta gratis – tar 2 min
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Ingen registrering krävs för att skicka in din förfrågan.
+              </p>
             </form>
 
-            <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
               {[
                 '100% gratis',
-                'Svar inom 24h',
-                'Kvalitetssäkrade byråer',
+                'Ingen bindning',
+                'Upp till 5 offerter',
               ].map((text) => (
                 <span key={text} className="flex items-center gap-1.5">
                   <Check className="h-4 w-4 text-brand-mint" strokeWidth={2} />
@@ -91,7 +104,10 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div className="hidden md:block md:col-span-5 relative h-[430px]" aria-label="Exempel på offerter">
+          <div className="hidden md:block md:col-span-5 relative h-[430px]" aria-label="Illustrerade exempel på hur offerter kan se ut">
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full border bg-background/90 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
+              Illustrerade exempel
+            </div>
             {mockOffers.map((offer, i) => (
               <div
                 key={offer.name}
@@ -99,7 +115,7 @@ const HeroSection = () => {
                   offer.offset ? 'translate-x-6' : ''
                 }`}
                 style={{
-                  top: `${i * 105}px`,
+                  top: `${35 + i * 105}px`,
                   zIndex: i + 1,
                   transform: `${offer.offset ? 'translateX(1.5rem) ' : ''}rotate(${offer.rotate}deg)`,
                 }}
@@ -111,7 +127,7 @@ const HeroSection = () => {
                       {offer.tag}
                     </span>
                   </div>
-                  <div className="flex gap-0.5" aria-label={`${offer.stars} av 5 stjärnor`}>
+                  <div className="flex gap-0.5" aria-label={`${offer.stars} av 5 stjärnor i exemplet`}>
                     {[...Array(offer.stars)].map((_, j) => (
                       <Star key={j} className="h-3 w-3 fill-accent text-accent" />
                     ))}
