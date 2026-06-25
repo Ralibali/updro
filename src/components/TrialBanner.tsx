@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Sparkles, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -6,10 +6,25 @@ import { numWord } from '@/lib/numberWords'
 
 const TrialBanner = () => {
   const { isOnTrial, trialLeadsLeft, trialDaysLeft, trialExpired, isSupplier } = useAuth()
+  const location = useLocation()
 
   if (!isSupplier) return null
 
   if (trialExpired) {
+    // Never cover the billing page with a blocking overlay. An expired supplier
+    // must still be able to see the plans and complete a purchase.
+    if (location.pathname === '/dashboard/supplier/fakturering') {
+      return (
+        <div className="rounded-xl px-4 py-3 mb-6 flex items-center gap-3 bg-orange-50 border border-orange-200">
+          <AlertTriangle className="h-4 w-4 text-orange-600 shrink-0" />
+          <div>
+            <p className="text-sm font-semibold text-orange-900">Din provperiod är slut</p>
+            <p className="text-xs text-orange-800">Välj ett enskilt lead eller månadskort nedan för att fortsätta.</p>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="fixed inset-0 z-50 bg-foreground/60 flex items-center justify-center p-4">
         <div className="bg-card rounded-2xl p-8 max-w-lg w-full shadow-lg text-center">
