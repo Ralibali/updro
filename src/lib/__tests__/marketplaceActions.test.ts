@@ -1,14 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-const rpcMock = vi.fn() as unknown as (name: string, params: unknown) => unknown
-const uploadMock = vi.fn() as unknown as (path: string, file: File, options?: unknown) => unknown
-const createSignedUrlMock = vi.fn() as unknown as (path: string, expiresIn: number) => unknown
+const rpcMock = vi.fn()
+const uploadMock = vi.fn()
+const createSignedUrlMock = vi.fn()
 const fromStorageMock = vi.fn(() => ({ upload: uploadMock, createSignedUrl: createSignedUrlMock }))
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    rpc: (name: string, params: unknown) => rpcMock(name, params),
-    storage: { from: (bucket: string) => fromStorageMock(bucket) },
+    rpc: (name: string, params: unknown) => (rpcMock as any)(name, params),
+    storage: { from: (bucket: string) => (fromStorageMock as any)(bucket) },
   },
 }))
 
