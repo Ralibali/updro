@@ -13,6 +13,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { BUDGET_LABELS, CATEGORY_STYLES, START_TIME_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
 import { numWord } from '@/lib/numberWords'
+import {
+  OFFER_ATTACHMENT_ACCEPT,
+  submitProjectOffer,
+  unlockProject,
+  uploadOfferAttachment,
+  validateOfferAttachment,
+} from '@/lib/marketplaceActions'
 
 const scoreProject = (project: any) => {
   let score = 0
