@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-const rpcMock = vi.fn()
-const uploadMock = vi.fn()
-const createSignedUrlMock = vi.fn()
+const rpcMock = vi.fn() as unknown as (name: string, params: unknown) => unknown
+const uploadMock = vi.fn() as unknown as (path: string, file: File, options?: unknown) => unknown
+const createSignedUrlMock = vi.fn() as unknown as (path: string, expiresIn: number) => unknown
 const fromStorageMock = vi.fn(() => ({ upload: uploadMock, createSignedUrl: createSignedUrlMock }))
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -135,16 +135,16 @@ describe('validateOfferAttachment', () => {
 
   it('stoppar otillåtna filtyper med svenskt felmeddelande', () => {
     const file = makeFile('malware.exe', 1024, 'application/octet-stream')
-    const result = validateOfferAttachment(file)
+    const result = validateOfferAttachment(file) as { ok: false; error: string }
     expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.error).toMatch(/Filtypen stöds inte/)
+    expect(result.error).toMatch(/Filtypen stöds inte/)
   })
 
   it('stoppar för stora filer med svenskt felmeddelande', () => {
     const file = makeFile('stor.pdf', OFFER_ATTACHMENT_MAX_BYTES + 1, 'application/pdf')
-    const result = validateOfferAttachment(file)
+    const result = validateOfferAttachment(file) as { ok: false; error: string }
     expect(result.ok).toBe(false)
-    if (!result.ok) expect(result.error).toMatch(/för stor/i)
+    expect(result.error).toMatch(/för stor/i)
   })
 })
 
