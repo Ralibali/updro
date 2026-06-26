@@ -7,8 +7,8 @@ const fromStorageMock = vi.fn(() => ({ upload: uploadMock, createSignedUrl: crea
 
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
-    rpc: (...args: unknown[]) => rpcMock(...args),
-    storage: { from: (...args: unknown[]) => fromStorageMock(...args) },
+    rpc: (name: string, params: unknown) => rpcMock(name, params),
+    storage: { from: (bucket: string) => fromStorageMock(bucket) },
   },
 }))
 
