@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Loader2, Lock, Unlock } from 'lucide-react'
+import { BadgeCheck, Loader2, Lock, Unlock } from 'lucide-react'
 import { toast } from 'sonner'
 import TrialBanner from '@/components/TrialBanner'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { BUDGET_LABELS, CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
+import { leadScoreLabel } from '@/lib/leadQuality'
 import { unlockProject } from '@/lib/marketplaceActions'
 import { numWord } from '@/lib/numberWords'
 
@@ -105,10 +106,17 @@ const BrowseProjects = () => {
               const isUnlocked = unlocked.has(project.id)
               const maxOffers = project.max_offers || 3
               const isClosed = (project.offer_count || 0) >= maxOffers || project.status === 'closed'
+              const leadScore = project.lead_score || 0
+              const isVerified = Boolean(project.verified_at)
               return (
                 <article key={project.id} className={`bg-card rounded-xl border p-5 transition-all ${isUnlocked ? 'border-accent/30' : ''}`}>
                   <div className="flex items-start justify-between gap-3 mb-2">
-                    <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+                      <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${leadScore >= 75 ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : leadScore >= 50 ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-border bg-muted/40 text-muted-foreground'}`}>
+                        {isVerified && <BadgeCheck className="h-3.5 w-3.5" />}{leadScore}/100 · {leadScoreLabel(leadScore)}
+                      </span>
+                    </div>
                     {isUnlocked ? (
                       <span className="text-xs text-accent font-semibold flex items-center gap-1"><Unlock className="h-3 w-3" />Upplåst</span>
                     ) : (
@@ -117,6 +125,12 @@ const BrowseProjects = () => {
                   </div>
                   <h2 className="font-semibold">{project.title}</h2>
                   <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap line-clamp-5">{project.description}</p>
+                  <div className="flex flex-wrap gap-2 mt-3 text-xs">
+                    {project.email_verified && <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">E-post verifierad</span>}
+                    {project.phone_verified && <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">Telefon verifierad</span>}
+                    {project.budget_verified && <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">Budget bekräftad</span>}
+                    {project.brief_verified && <span className="rounded-full bg-emerald-50 px-2 py-1 text-emerald-800">Brief granskad</span>}
+                  </div>
                   <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[project.budget_range] || 'Budget diskuteras'} · {project.city || 'Sverige'} · {timeAgo(project.created_at)} · {project.offer_count || 0} av {maxOffers} offerter</p>
 
                   {isUnlocked ? (
