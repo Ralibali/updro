@@ -36,6 +36,7 @@ const ProjectWizardV2 = () => {
   const [loading, setLoading] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
   const [website, setWebsite] = useState('')
+  const [confirmationEmailSent, setConfirmationEmailSent] = useState(false)
   const [form, setForm] = useState({
     category: '' as Category | '',
     title: inferTitle(initialDescription),
@@ -122,11 +123,6 @@ const ProjectWizardV2 = () => {
         return
       }
 
-      if (website.trim()) {
-        setStep(4)
-        return
-      }
-
       const email = form.email.trim().toLowerCase()
       if (form.full_name.trim().length < 2) throw new Error('Ange ditt namn.')
       if (!validEmail(email)) throw new Error('Ange en giltig e-postadress.')
@@ -134,22 +130,25 @@ const ProjectWizardV2 = () => {
       const lastSubmission = Number(localStorage.getItem(SUBMISSION_KEY) || 0)
       if (Date.now() - lastSubmission < 45_000) throw new Error('Vänta en liten stund innan du skickar ett nytt uppdrag.')
 
-      const { error } = await (supabase as any).from('guest_leads').insert({
-        email,
-        full_name: form.full_name.trim(),
-        company_name: form.is_company ? form.company_name.trim() || null : null,
-        phone: form.phone.trim() || null,
-        title,
-        description,
-        category: form.category as string,
-        budget_range: form.budget_range as string,
-        start_time: form.start_time as string,
-        is_company: form.is_company,
-        source: 'publicera',
+      const { data, error } = await supabase.functions.invoke('submit-guest-lead', {
+        body: {
+          website,
+          email,
+          full_name: form.full_name.trim(),
+          company_name: form.is_company ? form.company_name.trim() : '',
+          phone: form.phone.trim(),
+          title,
+          description,
+          category: form.category,
+          budget_range: form.budget_range,
+          start_time: form.start_time,
+          is_company: form.is_company,
+        },
       })
-      if (error) throw error
+      if (error || data?.error) throw new Error(data?.error || error?.message || 'Kunde inte skicka uppdraget.')
 
       localStorage.setItem(SUBMISSION_KEY, String(Date.now()))
+      setConfirmationEmailSent(Boolean(data?.email_sent))
       trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'guest' })
       trackClick('lead_submitted', 'Skicka uppdrag gratis', { category: form.category, user_type: 'guest' })
       setStep(4)
@@ -197,7 +196,7 @@ const ProjectWizardV2 = () => {
             <div className="flex gap-3"><Button type="button" variant="outline" onClick={() => setStep(2)}><ArrowLeft className="mr-2 h-4 w-4" />Tillbaka</Button><Button type="button" onClick={publish} disabled={loading || form.full_name.trim().length < 2 || !validEmail(form.email)} className="flex-1 bg-accent hover:bg-brand-mint-hover text-accent-foreground">{loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Skickar...</> : <>Skicka uppdrag gratis<Sparkles className="ml-2 h-4 w-4" /></>}</Button></div>
           </div>}
 
-          {step === 4 && <div className="space-y-6 text-center py-12" aria-live="polite"><div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center"><CheckCircle2 className="h-8 w-8 text-emerald-600" /></div><h2 className="font-display text-2xl font-bold">Ditt uppdrag är mottaget!</h2><p className="text-muted-foreground max-w-md mx-auto">Förfrågan är sparad och matchas nu med relevanta byråer. De kan kontakta dig via uppgifterna du angav.</p><div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left"><p className="text-sm font-semibold mb-2">Vill du följa offerterna live?</p><p className="text-xs text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress så kopplas uppdraget till kontot.</p><Link to="/registrera"><Button className="w-full">Skapa gratis konto</Button></Link></div></div>}
+          {step === 4 && <div className="space-y-6 text-center py-12" aria-live="polite"><div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center"><CheckCircle2 className="h-8 w-8 text-emerald-600" /></div><h2 className="font-display text-2xl font-bold">Ditt uppdrag är mottaget!</h2><p className="text-muted-foreground max-w-md mx-auto">{confirmationEmailSent ? <>En bekräftelse har skickats till <strong className="text-foreground">{form.email.trim().toLowerCase()}</strong>. Vi matchar nu uppdraget med relevanta byråer.</> : <>Förfrågan är sparad och matchas nu med relevanta byråer. De kan kontakta dig via uppgifterna du angav.</>}</p><div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left"><p className="text-sm font-semibold mb-2">Vill du följa offerterna live?</p><p className="text-xs text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress så kopplas uppdraget till kontot.</p><Link to="/registrera"><Button className="w-full">Skapa gratis konto</Button></Link></div></div>}
         </div>
       </main>
       <Footer />
