@@ -7,7 +7,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const MAX_PER_RUN = 5;
+const MAX_PER_RUN = 1;
 const MAX_RETRIES = 3;
 const DELAY_MS = 10_000;
 
