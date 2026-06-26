@@ -1,3 +1,3 @@
 # Verifiering
 
-Tillfällig fil för CI-kontroll av aktuell main.
+Branch för kontroll av kritiska lead-, admin- och UX-förbättringar.
