@@ -335,17 +335,22 @@ const ProjectUnlock = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label>Bifoga fil (PDF, DOC eller DOCX, max 10 MB)</Label>
+                  <Label>Bifoga fil (PDF, DOC, DOCX, JPG eller PNG, max 10 MB)</Label>
                   {file ? (
                     <div className="mt-1 flex items-center gap-2 bg-muted rounded-xl px-3 py-2 text-sm"><Paperclip className="h-4 w-4" /><span className="truncate flex-1">{file.name}</span><button type="button" onClick={() => setFile(null)}><X className="h-4 w-4" /></button></div>
                   ) : (
                     <label className="mt-1 flex items-center gap-2 cursor-pointer border border-dashed rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50">
                       <Paperclip className="h-4 w-4" /><span>Välj fil...</span>
-                      <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={event => {
+                      <input type="file" accept={OFFER_ATTACHMENT_ACCEPT} className="hidden" onChange={event => {
                         const selected = event.target.files?.[0]
                         if (!selected) return
-                        if (selected.size > 10 * 1024 * 1024) toast.error('Filen är för stor (max 10 MB).')
-                        else setFile(selected)
+                        const validation = validateOfferAttachment(selected)
+                        if (validation.ok !== true) {
+                          toast.error(validation.error)
+                          event.target.value = ''
+                          return
+                        }
+                        setFile(selected)
                       }} />
                     </label>
                   )}
