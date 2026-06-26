@@ -103,13 +103,13 @@ export const uploadOfferAttachment = async (
   file: File,
 ): Promise<string> => {
   const validation = validateOfferAttachment(file)
-  if (!validation.ok) throw new Error(validation.error)
-  const ok = validation as Extract<AttachmentValidation, { ok: true }>
-
-  const path = buildOfferAttachmentPath(supplierId, projectId, file, ok.extension)
+  if (!validation.ok) {
+    throw new Error(validation.error)
+  }
+  const path = buildOfferAttachmentPath(supplierId, projectId, file, validation.extension)
   const { error } = await supabase.storage
     .from(OFFER_ATTACHMENT_BUCKET)
-    .upload(path, file, { contentType: ok.contentType, upsert: false })
+    .upload(path, file, { contentType: validation.contentType, upsert: false })
   if (error) throw error
   return path
 }
