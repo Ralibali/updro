@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { getProjectBuyerContact } from '@/lib/buyerContact'
 
 describe('getProjectBuyerContact', () => {
-  it('prioriterar registrerad profil', () => {
+  it('prioriterar alltid registrerad profil', () => {
     const contact = getProjectBuyerContact({
       profiles: { full_name: 'Registrerad kund' },
       guest_leads: { full_name: 'Gästkund' },
