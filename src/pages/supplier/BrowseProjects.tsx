@@ -82,7 +82,7 @@ const BrowseProjects = () => {
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <div>
             <h1 className="font-display text-2xl font-bold">Tillgängliga uppdrag</h1>
-            <p className="text-sm text-muted-foreground mt-1">Välj de uppdrag som passar er kompetens och kapacitet.</p>
+            <p className="text-sm text-muted-foreground mt-1">Välj de uppdrag som passar er kompetens och kapacitet. Högst tre byråer får lämna offert.</p>
           </div>
           <Select value={filterCat} onValueChange={setFilterCat}>
             <SelectTrigger className="w-48"><SelectValue placeholder="Alla kategorier" /></SelectTrigger>
@@ -103,7 +103,8 @@ const BrowseProjects = () => {
           <div className="space-y-4">
             {filtered.map(project => {
               const isUnlocked = unlocked.has(project.id)
-              const isClosed = (project.offer_count || 0) >= (project.max_offers || 5) || project.status === 'closed'
+              const maxOffers = project.max_offers || 3
+              const isClosed = (project.offer_count || 0) >= maxOffers || project.status === 'closed'
               return (
                 <article key={project.id} className={`bg-card rounded-xl border p-5 transition-all ${isUnlocked ? 'border-accent/30' : ''}`}>
                   <div className="flex items-start justify-between gap-3 mb-2">
@@ -116,7 +117,7 @@ const BrowseProjects = () => {
                   </div>
                   <h2 className="font-semibold">{project.title}</h2>
                   <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap line-clamp-5">{project.description}</p>
-                  <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[project.budget_range] || 'Budget diskuteras'} · {project.city || 'Sverige'} · {timeAgo(project.created_at)} · {project.offer_count || 0} av {project.max_offers || 5} offerter</p>
+                  <p className="text-xs text-muted-foreground mt-2">{BUDGET_LABELS[project.budget_range] || 'Budget diskuteras'} · {project.city || 'Sverige'} · {timeAgo(project.created_at)} · {project.offer_count || 0} av {maxOffers} offerter</p>
 
                   {isUnlocked ? (
                     <Link to={`/dashboard/supplier/uppdrag/${project.id}`}><Button size="sm" className="mt-3 bg-primary hover:bg-primary/90">Visa kontakt och svara →</Button></Link>
