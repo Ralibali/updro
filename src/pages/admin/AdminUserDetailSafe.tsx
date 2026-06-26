@@ -69,7 +69,7 @@ const AdminUserDetailSafe = () => {
   const toggleSupplierFlag = async (field: 'is_featured' | 'is_verified') => {
     if (!id || !supplier) return
     const value = !supplier[field]
-    const { error } = await supabase.from('supplier_profiles').update({ [field]: value }).eq('id', id)
+    const { error } = await supabase.from('supplier_profiles').update({ [field]: value } as any).eq('id', id)
     if (error) return toast.error('Kunde inte uppdatera byrån.')
     setSupplier({ ...supplier, [field]: value })
     toast.success('Byråinställningen är uppdaterad.')
