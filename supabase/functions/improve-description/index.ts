@@ -6,13 +6,37 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const jsonResponse = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { ...corsHeaders, "Content-Type": "application/json" },
+});
+
 serve(async (req) => {
-  if (req.method === "OPTIONS")
-    return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { title, category, description } = await req.json();
+    const body = await req.json();
 
+    if (body?.action === "submit_guest_lead") {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL");
+      const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!supabaseUrl || !serviceKey) return jsonResponse({ error: "Servern är inte korrekt konfigurerad." }, 500);
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/submit-guest-lead`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${serviceKey}`,
+          "apikey": serviceKey,
+        },
+        body: JSON.stringify(body.payload || {}),
+      });
+
+      const result = await response.json();
+      return jsonResponse(result, response.status);
+    }
+
+    const { title, category, description } = body;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -49,37 +73,18 @@ Behåll kärnan i originalets budskap. Svara ENBART med den förbättrade beskri
     );
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "För många förfrågningar, försök igen om en stund." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI-krediter slut." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
-      return new Response(
-        JSON.stringify({ error: "AI-fel" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (response.status === 429) return jsonResponse({ error: "För många förfrågningar, försök igen om en stund." }, 429);
+      if (response.status === 402) return jsonResponse({ error: "AI-krediter slut." }, 402);
+      const responseText = await response.text();
+      console.error("AI gateway error:", response.status, responseText);
+      return jsonResponse({ error: "AI-fel" }, 500);
     }
 
     const data = await response.json();
     const improved = data.choices?.[0]?.message?.content?.trim() || "";
-
-    return new Response(JSON.stringify({ improved }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  } catch (e) {
-    console.error("improve-description error:", e);
-    return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "Okänt fel" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ improved });
+  } catch (error) {
+    console.error("improve-description error:", error);
+    return jsonResponse({ error: error instanceof Error ? error.message : "Okänt fel" }, 500);
   }
 });
