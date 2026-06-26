@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { LeadRefundReason, requestLeadRefund } from '@/lib/marketplaceActions'
 
@@ -26,7 +27,9 @@ type GuaranteeRequest = {
 }
 
 const LeadGuaranteeCard = ({ projectId }: { projectId: string }) => {
+  const { user } = useAuth()
   const [request, setRequest] = useState<GuaranteeRequest | null>(null)
+  const [eligible, setEligible] = useState(false)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState<LeadRefundReason | ''>('')
   const [details, setDetails] = useState('')
@@ -34,20 +37,36 @@ const LeadGuaranteeCard = ({ projectId }: { projectId: string }) => {
   const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
     let mounted = true
-    ;(supabase as any)
-      .from('lead_refund_requests')
-      .select('id, status, credit_refunded, admin_note')
-      .eq('project_id', projectId)
-      .maybeSingle()
-      .then(({ data, error }: any) => {
-        if (!mounted) return
-        if (error) console.error('Lead guarantee unavailable', error)
-        else setRequest(data || null)
-        setLoading(false)
-      })
+    Promise.all([
+      (supabase as any)
+        .from('unlocked_leads')
+        .select('id')
+        .eq('supplier_id', user.id)
+        .eq('project_id', projectId)
+        .maybeSingle(),
+      (supabase as any)
+        .from('lead_refund_requests')
+        .select('id, status, credit_refunded, admin_note')
+        .eq('supplier_id', user.id)
+        .eq('project_id', projectId)
+        .maybeSingle(),
+    ]).then(([unlockResult, requestResult]: any[]) => {
+      if (!mounted) return
+      if (unlockResult.error) console.error('Could not verify unlocked lead', unlockResult.error)
+      if (requestResult.error) console.error('Lead guarantee unavailable', requestResult.error)
+      setEligible(Boolean(unlockResult.data))
+      setRequest(requestResult.data || null)
+      setLoading(false)
+    })
+
     return () => { mounted = false }
-  }, [projectId])
+  }, [projectId, user])
 
   const submit = async () => {
     if (!reason || details.trim().length < 10) return
@@ -64,7 +83,7 @@ const LeadGuaranteeCard = ({ projectId }: { projectId: string }) => {
     }
   }
 
-  if (loading) return null
+  if (loading || !eligible) return null
 
   if (request) {
     const pending = request.status === 'pending'
