@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { BUDGET_LABELS, CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
+import { unlockProject } from '@/lib/marketplaceActions'
 import { numWord } from '@/lib/numberWords'
 
 const BrowseProjects = () => {
@@ -56,30 +57,14 @@ const BrowseProjects = () => {
 
     setUnlocking(true)
     try {
-      const isTrialCredit = supplierProfile.plan === 'trial'
-      const { error } = await supabase.from('unlocked_leads').insert({
-        supplier_id: user.id,
-        project_id: projectId,
-        used_trial_credit: isTrialCredit,
-      })
-
-      if (error && error.code !== '23505') throw error
-
-      if (!error && !hasActiveSubscription) {
-        const { error: creditError } = await supabase.from('supplier_profiles').update({
-          lead_credits: Math.max(0, credits - 1),
-          ...(isTrialCredit ? { trial_leads_used: (supplierProfile.trial_leads_used || 0) + 1 } : {}),
-        }).eq('id', user.id)
-        if (creditError) throw creditError
-      }
-
-      setUnlocked(prev => new Set([...prev, projectId]))
+      const result = await unlockProject(projectId)
+      setUnlocked(previous => new Set([...previous, projectId]))
       await refreshProfile()
-      toast.success(error?.code === '23505' ? 'Uppdraget är redan upplåst.' : 'Uppdrag upplåst! 🔓')
+      toast.success(result.already_unlocked ? 'Uppdraget är redan upplåst.' : 'Uppdrag upplåst! 🔓')
       setConfirmProject(null)
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      toast.error('Kunde inte låsa upp uppdraget.')
+      toast.error(error?.message || 'Kunde inte låsa upp uppdraget.')
     } finally {
       setUnlocking(false)
     }
