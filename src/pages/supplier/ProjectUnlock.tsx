@@ -13,6 +13,13 @@ import { Textarea } from '@/components/ui/textarea'
 import { BUDGET_LABELS, CATEGORY_STYLES, START_TIME_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
 import { numWord } from '@/lib/numberWords'
+import {
+  OFFER_ATTACHMENT_ACCEPT,
+  submitProjectOffer,
+  unlockProject,
+  uploadOfferAttachment,
+  validateOfferAttachment,
+} from '@/lib/marketplaceActions'
 
 const scoreProject = (project: any) => {
   let score = 0
@@ -145,41 +152,50 @@ const ProjectUnlock = () => {
     fetchData()
   }, [id, user])
 
-  const handleUnlock = async () => {
-    if (!user || !supplierProfile || !id || !project || unlocking) return
-    const credits = supplierProfile.lead_credits || 0
-
-    if (credits <= 0 && !hasActiveSubscription) {
-      toast.error('Inga lead-krediter kvar. Köp lead eller starta månadskort.')
-      return
+  const translateUnlockError = (error: any): string => {
+    const raw = typeof error?.message === 'string' ? error.message : ''
+    if (/inga lead-krediter/i.test(raw)) return 'Du har inga lead-krediter kvar.'
+    if (/provperiod/i.test(raw)) return 'Din provperiod har gått ut.'
+    if (/tar inte emot fler offerter/i.test(raw) || /uppdraget finns inte/i.test(raw)) {
+      return 'Uppdraget tar inte emot fler offerter just nu.'
     }
+    if (/byråprofilen/i.test(raw)) return 'Byråprofilen kunde inte hittas.'
+    if (/inloggad/i.test(raw)) return 'Du måste vara inloggad.'
+    return raw || 'Kunde inte låsa upp uppdraget.'
+  }
+
+  const translateOfferError = (error: any): string => {
+    const raw = typeof error?.message === 'string' ? error.message : ''
+    if (error?.code === '23505' || /redan skickat/i.test(raw)) {
+      return 'Du har redan skickat en offert på detta uppdrag.'
+    }
+    if (/tar inte emot fler offerter/i.test(raw) || /max(_| )offerter/i.test(raw) || /stängt/i.test(raw)) {
+      return 'Uppdraget är fullt eller stängt och tar inte emot fler offerter.'
+    }
+    if (/lås.*upp/i.test(raw) || /låst/i.test(raw)) {
+      return 'Du måste låsa upp uppdraget innan du kan skicka en offert.'
+    }
+    return raw || 'Kunde inte skicka offerten.'
+  }
+
+  const handleUnlock = async () => {
+    if (!user || !id || !project || unlocking) return
 
     setUnlocking(true)
     try {
-      const isTrialCredit = supplierProfile.plan === 'trial'
-      const { error } = await supabase.from('unlocked_leads').insert({
-        supplier_id: user.id,
-        project_id: id,
-        used_trial_credit: isTrialCredit,
-      })
-      if (error && error.code !== '23505') throw error
-
-      if (!hasActiveSubscription && !error) {
-        const { error: creditError } = await supabase.from('supplier_profiles').update({
-          lead_credits: Math.max(0, credits - 1),
-          ...(isTrialCredit ? { trial_leads_used: (supplierProfile.trial_leads_used || 0) + 1 } : {}),
-        }).eq('id', user.id)
-        if (creditError) throw creditError
-      }
-
+      const result = await unlockProject(id)
       setIsUnlocked(true)
       await loadContact(project)
       await refreshProfile()
       setConfirmOpen(false)
-      toast.success('Kontaktuppgifter upplåsta! 🔓')
-    } catch (error) {
+      if (result?.already_unlocked) {
+        toast.info('Uppdraget var redan upplåst – inga krediter drogs.')
+      } else {
+        toast.success('Kontaktuppgifter upplåsta! 🔓')
+      }
+    } catch (error: any) {
       console.error(error)
-      toast.error('Kunde inte låsa upp uppdraget.')
+      toast.error(translateUnlockError(error))
     } finally {
       setUnlocking(false)
     }
@@ -207,48 +223,39 @@ const ProjectUnlock = () => {
     }
 
     setSubmitting(true)
-    let attachmentUrl: string | null = null
 
     try {
+      let attachmentPath: string | null = null
       if (file) {
-        const extension = file.name.split('.').pop()?.toLowerCase() || 'pdf'
-        const path = `${user.id}/${id}-${Date.now()}.${extension}`
-        const { error: uploadError } = await supabase.storage
-          .from('offer-attachments')
-          .upload(path, file, { contentType: file.type, upsert: false })
-        if (uploadError) throw uploadError
-
-        attachmentUrl = supabase.storage.from('offer-attachments').getPublicUrl(path).data.publicUrl
+        const validation = validateOfferAttachment(file)
+        if (validation.ok !== true) {
+          toast.error(validation.error)
+          setSubmitting(false)
+          return
+        }
+        attachmentPath = await uploadOfferAttachment(user.id, id, file)
       }
 
-      const { error } = await supabase.from('offers').insert({
-        project_id: id,
-        supplier_id: user.id,
+      await submitProjectOffer({
+        projectId: id,
         title: form.title.trim(),
         description: form.description.trim(),
         price,
-        delivery_weeks: form.delivery_weeks ? Number.parseInt(form.delivery_weeks, 10) : null,
-        payment_plan: form.payment_plan,
-        attachment_url: attachmentUrl,
-      } as any)
-      if (error) throw error
-
-      const { error: countError } = await supabase
-        .from('projects')
-        .update({ offer_count: (project.offer_count || 0) + 1 })
-        .eq('id', id)
-      if (countError) console.warn('Offer count update failed', countError)
+        deliveryWeeks: form.delivery_weeks ? Number.parseInt(form.delivery_weeks, 10) : null,
+        paymentPlan: form.payment_plan,
+        attachmentUrl: attachmentPath,
+      })
 
       toast.success('Offert skickad! 🎉')
       navigate('/dashboard/supplier/offerter')
     } catch (error: any) {
       console.error(error)
-      if (error?.code === '23505') toast.error('Du har redan skickat en offert på detta uppdrag.')
-      else toast.error(error?.message || 'Kunde inte skicka offerten.')
+      toast.error(translateOfferError(error))
     } finally {
       setSubmitting(false)
     }
   }
+
 
   if (pageLoading) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
   if (!project) return <div className="rounded-xl border p-6 text-sm text-muted-foreground">Uppdraget kunde inte hittas.</div>
@@ -328,17 +335,22 @@ const ProjectUnlock = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label>Bifoga fil (PDF, DOC eller DOCX, max 10 MB)</Label>
+                  <Label>Bifoga fil (PDF, DOC, DOCX, JPG eller PNG, max 10 MB)</Label>
                   {file ? (
                     <div className="mt-1 flex items-center gap-2 bg-muted rounded-xl px-3 py-2 text-sm"><Paperclip className="h-4 w-4" /><span className="truncate flex-1">{file.name}</span><button type="button" onClick={() => setFile(null)}><X className="h-4 w-4" /></button></div>
                   ) : (
                     <label className="mt-1 flex items-center gap-2 cursor-pointer border border-dashed rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50">
                       <Paperclip className="h-4 w-4" /><span>Välj fil...</span>
-                      <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={event => {
+                      <input type="file" accept={OFFER_ATTACHMENT_ACCEPT} className="hidden" onChange={event => {
                         const selected = event.target.files?.[0]
                         if (!selected) return
-                        if (selected.size > 10 * 1024 * 1024) toast.error('Filen är för stor (max 10 MB).')
-                        else setFile(selected)
+                        const validation = validateOfferAttachment(selected)
+                        if (validation.ok !== true) {
+                          toast.error(validation.error)
+                          event.target.value = ''
+                          return
+                        }
+                        setFile(selected)
                       }} />
                     </label>
                   )}
