@@ -1,7 +1,20 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from 'vitest'
+import { getProjectBuyerContact } from '@/lib/buyerContact'
 
-describe("example", () => {
-  it("should pass", () => {
-    expect(true).toBe(true);
-  });
-});
+describe('getProjectBuyerContact', () => {
+  it('prioriterar registrerad profil', () => {
+    const contact = getProjectBuyerContact({
+      profiles: { full_name: 'Registrerad kund' },
+      guest_leads: { full_name: 'Gästkund' },
+    })
+    expect(contact?.full_name).toBe('Registrerad kund')
+  })
+
+  it('använder gästlead när profil saknas', () => {
+    const contact = getProjectBuyerContact({
+      profiles: null,
+      guest_leads: { full_name: 'Gästkund' },
+    })
+    expect(contact?.full_name).toBe('Gästkund')
+  })
+})
