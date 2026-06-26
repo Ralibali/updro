@@ -62,7 +62,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Beskriv vad du behöver hjälp med. Updro matchar uppdraget med relevanta svenska byråer och du kan jämföra upp till fem offerter. Gratis och utan förpliktelser.
+              Beskriv vad du behöver hjälp med. Updro matchar uppdraget med relevanta svenska byråer och du kan jämföra upp till tre relevanta offerter. Gratis och utan förpliktelser.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-8 md:mt-10 max-w-xl">
@@ -94,7 +94,7 @@ const HeroSection = () => {
               {[
                 '100% gratis',
                 'Ingen bindning',
-                'Upp till 5 offerter',
+                'Högst 3 offerter',
               ].map((text) => (
                 <span key={text} className="flex items-center gap-1.5">
                   <Check className="h-4 w-4 text-brand-mint" strokeWidth={2} />
