@@ -125,3 +125,46 @@ export const getOfferAttachmentSignedUrl = async (
   if (!data?.signedUrl) throw new Error('Kunde inte skapa signerad länk.')
   return data.signedUrl
 }
+
+export type LeadRefundReason =
+  | 'invalid_contact'
+  | 'no_response'
+  | 'fake_lead'
+  | 'duplicate'
+  | 'wrong_scope'
+  | 'other'
+
+export const requestLeadRefund = async (
+  projectId: string,
+  reason: LeadRefundReason,
+  details: string,
+): Promise<string> => {
+  const { data, error } = await (supabase as any).rpc('request_lead_refund', {
+    p_project_id: projectId,
+    p_reason: reason,
+    p_details: details.trim() || null,
+  })
+
+  if (error) throw error
+  return data as string
+}
+
+export type LeadRefundReviewResult = {
+  status: 'approved' | 'rejected'
+  credit_refunded: boolean
+}
+
+export const reviewLeadRefundRequest = async (
+  requestId: string,
+  decision: 'approved' | 'rejected',
+  adminNote: string,
+): Promise<LeadRefundReviewResult> => {
+  const { data, error } = await (supabase as any).rpc('review_lead_refund_request', {
+    p_request_id: requestId,
+    p_decision: decision,
+    p_admin_note: adminNote.trim() || null,
+  })
+
+  if (error) throw error
+  return data as LeadRefundReviewResult
+}
