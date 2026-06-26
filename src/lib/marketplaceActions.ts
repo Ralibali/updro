@@ -103,7 +103,7 @@ export const uploadOfferAttachment = async (
   file: File,
 ): Promise<string> => {
   const validation = validateOfferAttachment(file)
-  if (!validation.ok) {
+  if (validation.ok !== true) {
     throw new Error(validation.error)
   }
   const path = buildOfferAttachmentPath(supplierId, projectId, file, validation.extension)
