@@ -92,7 +92,7 @@ const Index = () => {
     setSEOMeta({
       title: 'Updro – Jämför offerter från digitala byråer',
       description:
-        'Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer i Sverige inom 24 timmar. Helt gratis.',
+        'Beskriv ditt projekt och få upp till tre relevanta offerter från kvalitetssäkrade digitala byråer i Sverige inom 24 timmar. Helt gratis.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)
@@ -110,7 +110,7 @@ const Index = () => {
           <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
             <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
             <p className="mt-3 text-foreground/85 leading-relaxed">
-              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag och får upp till fem offerter
+              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag och får upp till tre relevanta offerter
               från kvalitetssäkrade byråer inom 24 timmar. Tjänsten är gratis för uppdragsgivare och täcker
               webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring i hela Sverige.
             </p>
