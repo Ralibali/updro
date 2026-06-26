@@ -112,7 +112,8 @@ serve(async (req: Request) => {
             faq: article.faq || [],
             related_links: article.relatedLinks || [],
             read_time_minutes: article.readTimeMinutes || null,
-            status: "draft",
+            status: "published",
+            published_at: new Date().toISOString(),
             generated_by: "gemini-2.5-pro",
           })
           .select("id")
