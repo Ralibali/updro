@@ -33,10 +33,10 @@ const Navbar = () => {
         <div className="container flex min-h-16 items-center justify-between gap-3 py-2">
           <Logo />
 
-          <nav className="hidden md:flex items-center gap-6" aria-label="Huvudnavigation">
-            <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Hitta byrå
-            </Link>
+          <nav className="hidden items-center gap-6 md:flex" aria-label="Huvudnavigation">
+            <a href="/#hur-det-fungerar" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Så fungerar det
+            </a>
 
             <div
               className="relative"
@@ -45,20 +45,20 @@ const Navbar = () => {
             >
               <button
                 type="button"
-                className="flex min-h-11 items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="flex min-h-11 items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                 aria-expanded={servicesOpen}
               >
-                Kategorier <ChevronDown className="h-3.5 w-3.5" />
+                Tjänster <ChevronDown className="h-3.5 w-3.5" />
               </button>
               {servicesOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
-                  <div className="bg-white dark:bg-card border rounded-xl shadow-lg p-4 w-[520px] grid grid-cols-2 gap-1">
+                <div className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-2">
+                  <div className="grid w-[520px] grid-cols-2 gap-1 rounded-2xl border bg-white p-4 shadow-xl dark:bg-card">
                     {categoryLinks.map(link => (
                       <Link
                         key={link.href}
                         to={link.href}
                         onClick={() => setServicesOpen(false)}
-                        className="text-sm px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                        className="rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                       >
                         {link.label}
                       </Link>
@@ -68,37 +68,37 @@ const Navbar = () => {
               )}
             </div>
 
-            <Link to="/registrera/byra" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              För byråer
+            <Link to="/byraer" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Utforska byråer
             </Link>
 
-            <Link to="/om-oss" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-              Om Updro
+            <Link to="/registrera/byra" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              För byråer
             </Link>
           </nav>
 
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden items-center gap-2 md:flex">
             <ThemeToggle />
             {isAuthenticated ? (
               <>
                 {isSupplier && isOnTrial && (
-                  <span className="text-xs font-semibold bg-primary/10 text-primary rounded-full px-3 py-1 flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" /> Trial: {trialLeadsLeft} leads
+                  <span className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                    <Sparkles className="h-3 w-3" /> Provperiod: {trialLeadsLeft} kvar
                   </span>
                 )}
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full min-h-11 min-w-11">
+                    <Button variant="ghost" size="icon" className="min-h-11 min-w-11 rounded-full">
                       <Avatar className="h-8 w-8">
-                        <AvatarFallback className="text-xs bg-primary/10 text-primary">{initials}</AvatarFallback>
+                        <AvatarFallback className="bg-primary/10 text-xs text-primary">{initials}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
-                    {isAdmin && <DropdownMenuItem asChild><Link to="/admin">Admin</Link></DropdownMenuItem>}
+                    {isAdmin && <DropdownMenuItem asChild><Link to="/admin">Administration</Link></DropdownMenuItem>}
                     {isAdmin && <DropdownMenuItem asChild><Link to="/admin/uppdrag">Sök uppdrag</Link></DropdownMenuItem>}
-                    {!isAdmin && <DropdownMenuItem asChild><Link to={dashboardLink}>Dashboard</Link></DropdownMenuItem>}
+                    {!isAdmin && <DropdownMenuItem asChild><Link to={dashboardLink}>Översikt</Link></DropdownMenuItem>}
                     <DropdownMenuItem asChild><Link to={isAdmin ? '/admin/installningar' : isBuyer ? '/dashboard/buyer/profil' : '/dashboard/supplier/profil'}>Min profil</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={signOut} className="text-destructive">Logga ut</DropdownMenuItem>
                   </DropdownMenuContent>
@@ -108,8 +108,8 @@ const Navbar = () => {
               <>
                 <Link to="/logga-in"><Button variant="ghost" size="sm" className="min-h-11">Logga in</Button></Link>
                 <Link to="/publicera">
-                  <Button size="sm" className="min-h-11 bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl px-5 shadow-md">
-                    Starta förfrågan
+                  <Button size="sm" className="min-h-11 rounded-xl bg-brand-orange px-5 text-white shadow-md hover:bg-brand-orange-hover">
+                    Beskriv ditt uppdrag
                   </Button>
                 </Link>
               </>
@@ -118,7 +118,7 @@ const Navbar = () => {
 
           <button
             type="button"
-            className="md:hidden min-h-12 min-w-12 inline-flex items-center justify-center rounded-xl text-foreground relative z-[60] active:bg-muted"
+            className="relative z-[60] inline-flex min-h-12 min-w-12 items-center justify-center rounded-xl text-foreground active:bg-muted md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Stäng meny' : 'Öppna meny'}
             aria-expanded={mobileOpen}
@@ -130,25 +130,28 @@ const Navbar = () => {
       </header>
 
       {mobileOpen && (
-        <div id="mobile-menu" className="md:hidden fixed inset-x-0 top-16 bottom-0 z-[9999] bg-background overflow-y-auto overscroll-contain border-t">
-          <nav className="flex flex-col p-4 gap-2 pb-[calc(2rem+env(safe-area-inset-bottom))]" aria-label="Mobilnavigation">
-            <Link to="/byraer" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
-              Hitta byrå
+        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-16 z-[9999] overflow-y-auto overscroll-contain border-t bg-background md:hidden">
+          <nav className="flex flex-col gap-2 p-4 pb-[calc(2rem+env(safe-area-inset-bottom))]" aria-label="Mobilnavigation">
+            <a href="/#hur-det-fungerar" className="flex min-h-12 items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
+              Så fungerar det
+            </a>
+            <Link to="/byraer" className="flex min-h-12 items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
+              Utforska byråer
             </Link>
-            <Link to="/registrera/byra" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
+            <Link to="/registrera/byra" className="flex min-h-12 items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               För byråer
             </Link>
-            <Link to="/om-oss" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
+            <Link to="/om-oss" className="flex min-h-12 items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               Om Updro
             </Link>
 
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-5 px-3">Kategorier</p>
+            <p className="mt-5 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Tjänster</p>
             <div className="grid grid-cols-1 gap-1">
               {categoryLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="min-h-11 flex items-center rounded-xl px-3 text-base text-foreground active:bg-muted"
+                  className="flex min-h-11 items-center rounded-xl px-3 text-base text-foreground active:bg-muted"
                   onClick={closeMobile}
                 >
                   {link.label}
@@ -156,26 +159,26 @@ const Navbar = () => {
               ))}
             </div>
 
-            <div className="border-t pt-4 mt-4 flex flex-col gap-3">
-              <div className="flex items-center justify-between px-3 min-h-12">
-                <span className="text-sm text-muted-foreground">Tema</span>
+            <div className="mt-4 flex flex-col gap-3 border-t pt-4">
+              <div className="flex min-h-12 items-center justify-between px-3">
+                <span className="text-sm text-muted-foreground">Utseende</span>
                 <ThemeToggle />
               </div>
               {isAuthenticated ? (
                 <>
                   <Link to={dashboardLink} onClick={closeMobile}>
-                    <Button variant="outline" className="w-full min-h-12 rounded-xl">Dashboard</Button>
+                    <Button variant="outline" className="min-h-12 w-full rounded-xl">Översikt</Button>
                   </Link>
-                  <Button variant="ghost" className="w-full min-h-12 rounded-xl text-destructive" onClick={() => { signOut(); closeMobile() }}>Logga ut</Button>
+                  <Button variant="ghost" className="min-h-12 w-full rounded-xl text-destructive" onClick={() => { signOut(); closeMobile() }}>Logga ut</Button>
                 </>
               ) : (
                 <>
                   <Link to="/logga-in" onClick={closeMobile}>
-                    <Button variant="outline" className="w-full min-h-12 rounded-xl">Logga in</Button>
+                    <Button variant="outline" className="min-h-12 w-full rounded-xl">Logga in</Button>
                   </Link>
                   <Link to="/publicera" onClick={closeMobile}>
-                    <Button className="w-full min-h-12 rounded-xl bg-brand-orange hover:bg-brand-orange-hover text-white">
-                      Starta förfrågan
+                    <Button className="min-h-12 w-full rounded-xl bg-brand-orange text-white hover:bg-brand-orange-hover">
+                      Beskriv ditt uppdrag
                     </Button>
                   </Link>
                 </>
