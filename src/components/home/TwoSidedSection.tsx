@@ -4,80 +4,81 @@ import { Check, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const buyerBullets = [
-  'Gratis att använda',
-  'Upp till fem offerter',
-  'Jämför priser & portfolio',
-  'Ingen registrering krävs',
+  'Kostnadsfritt och utan bindning',
+  'Upp till fem relevanta offerter',
+  'Jämför pris, upplägg och erfarenhet',
+  'Skicka förfrågan utan att skapa konto',
 ]
 
 const supplierBullets = [
-  'Nå nya kunder',
-  'Välj uppdrag som passar er',
-  'Gratis basregistrering',
-  'Betala bara per avslut',
+  'Hitta uppdrag som passar er kompetens',
+  'Se kategori, budget och ort före upplåsning',
+  'Börja med fem kostnadsfria kundförfrågningar',
+  'Välj styckpris eller månadsabonnemang',
 ]
 
 const TwoSidedSection = () => {
   return (
-    <section className="py-20">
+    <section className="py-20 md:py-24">
       <div className="container">
-        <motion.h2
-          className="font-display text-3xl md:text-5xl text-center mb-14 text-foreground"
+        <motion.div
+          className="mx-auto mb-12 max-w-2xl text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          Oavsett vilken sida du är på
-        </motion.h2>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">Två sidor, ett enklare samarbete</p>
+          <h2 className="font-display text-3xl text-foreground md:text-5xl">
+            Byggt för både beställare och byråer
+          </h2>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* Buyer side */}
+        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
           <motion.div
-            className="rounded-2xl bg-foreground text-background p-8 md:p-10"
-            initial={{ opacity: 0, x: -40 }}
+            className="rounded-3xl bg-foreground p-8 text-background shadow-xl shadow-foreground/10 md:p-10"
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h3 className="font-display text-3xl mb-6">Hitta byrå</h3>
-            <ul className="space-y-3 mb-8">
-              {buyerBullets.map((b) => (
-                <li key={b} className="flex items-center gap-3 text-sm">
-                  <Check className="h-4 w-4 text-brand-mint shrink-0" strokeWidth={2} />
-                  {b}
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-background/60">För beställare</p>
+            <h3 className="font-display text-3xl md:text-4xl">Hitta rätt byrå utan onödigt letande</h3>
+            <ul className="mb-9 mt-7 space-y-3">
+              {buyerBullets.map((bullet) => (
+                <li key={bullet} className="flex items-start gap-3 text-sm leading-relaxed">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-mint" strokeWidth={2.2} />
+                  {bullet}
                 </li>
               ))}
             </ul>
             <Link to="/publicera">
-              <motion.div whileHover={{ scale: 1.02 }} className="inline-block">
-                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl px-6 font-semibold">
-                  Starta din förfrågan
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </motion.div>
+              <Button className="rounded-xl bg-accent px-6 font-semibold text-accent-foreground hover:bg-accent/90">
+                Beskriv ditt uppdrag
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </Link>
           </motion.div>
 
-          {/* Supplier side */}
           <motion.div
-            className="rounded-2xl border border-border bg-surface-alt p-8 md:p-10"
-            initial={{ opacity: 0, x: 40 }}
+            className="rounded-3xl border border-border bg-surface-alt p-8 md:p-10"
+            initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h3 className="font-display text-3xl mb-6 text-foreground">Registrera din byrå</h3>
-            <ul className="space-y-3 mb-8">
-              {supplierBullets.map((b) => (
-                <li key={b} className="flex items-center gap-3 text-sm text-foreground">
-                  <Check className="h-4 w-4 text-foreground shrink-0" strokeWidth={2} />
-                  {b}
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">För byråer</p>
+            <h3 className="font-display text-3xl text-foreground md:text-4xl">Lägg tiden på rätt kundförfrågningar</h3>
+            <ul className="mb-9 mt-7 space-y-3">
+              {supplierBullets.map((bullet) => (
+                <li key={bullet} className="flex items-start gap-3 text-sm leading-relaxed text-foreground">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" strokeWidth={2.2} />
+                  {bullet}
                 </li>
               ))}
             </ul>
             <Link to="/registrera/byra">
-              <Button variant="ghost" className="px-0 text-foreground hover:bg-transparent hover:text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2">
-                Ansök som byrå
+              <Button variant="outline" className="rounded-xl px-6 font-semibold">
+                Registrera byrån
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>

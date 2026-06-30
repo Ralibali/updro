@@ -1,51 +1,63 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
-  Globe, ShoppingCart, Search, Megaphone,
-  Smartphone, Palette, Mail, BarChart2,
+  ArrowUpRight,
+  Bot,
+  Code2,
+  Globe,
+  Megaphone,
+  Palette,
+  Search,
+  ShoppingCart,
+  Smartphone,
 } from 'lucide-react'
 
 const categories = [
-  { icon: Globe, label: 'Webbutveckling', desc: 'Hemsidor, sajter, landningssidor', slug: 'webbutveckling' },
-  { icon: ShoppingCart, label: 'E-handel', desc: 'Shopify, WooCommerce, Magento', slug: 'ehandel' },
-  { icon: Search, label: 'SEO & sökmotoroptimering', desc: 'Organisk synlighet på Google', slug: 'seo' },
-  { icon: Megaphone, label: 'Digital marknadsföring', desc: 'Meta Ads, Google Ads, sociala medier', slug: 'digital-marknadsforing' },
-  { icon: Smartphone, label: 'Apputveckling', desc: 'iOS, Android, React Native', slug: 'app-utveckling' },
-  { icon: Palette, label: 'Design & UX', desc: 'Grafisk profil, UI/UX, varumärke', slug: 'grafisk-design' },
-  { icon: Mail, label: 'E-postmarknadsföring', desc: 'Nyhetsbrev, automation, CRM', slug: 'e-postmarknadsforing' },
-  { icon: BarChart2, label: 'Analys & data', desc: 'Google Analytics, dashboards, BI', slug: 'analys-data' },
+  { icon: Globe, label: 'Webbutveckling', desc: 'Ny webbplats, landningssida eller modernisering', slug: 'webbutveckling' },
+  { icon: ShoppingCart, label: 'E-handel', desc: 'Webbutik, konvertering, betalning och integrationer', slug: 'ehandel' },
+  { icon: Search, label: 'SEO', desc: 'Bättre synlighet och fler relevanta besökare', slug: 'seo' },
+  { icon: Megaphone, label: 'Digital marknadsföring', desc: 'Annonsering, strategi och löpande tillväxt', slug: 'digital-marknadsforing' },
+  { icon: Smartphone, label: 'App-utveckling', desc: 'Mobilappar och digitala tjänster för iOS och Android', slug: 'app-utveckling' },
+  { icon: Palette, label: 'Grafisk design/UX', desc: 'Varumärke, gränssnitt och bättre användarupplevelse', slug: 'grafisk-design' },
+  { icon: Bot, label: 'AI-utveckling', desc: 'AI-assistenter, automationer och smartare arbetsflöden', slug: 'ai-utveckling' },
+  { icon: Code2, label: 'Mjukvaruutveckling', desc: 'Interna system, integrationer och skräddarsydda lösningar', slug: 'mjukvaruutveckling' },
 ]
 
 const CategoriesSection = () => {
   return (
-    <section className="py-20">
+    <section className="py-20 md:py-24">
       <div className="container">
-        <div className="text-center mb-14">
-          <h2 className="font-display text-3xl md:text-5xl text-foreground">
-            Hitta rätt byrå för ditt uppdrag
+        <div className="mx-auto mb-12 max-w-2xl text-center md:mb-14">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">Vad behöver du hjälp med?</p>
+          <h2 className="font-display text-3xl text-foreground md:text-5xl">
+            Hitta kompetensen som tar projektet vidare
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-xl mx-auto">
-            Välj kategori – vi matchar dig med rätt byråer automatiskt
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+            Välj området som ligger närmast ditt behov. Du kan beskriva detaljerna och kombinera flera behov i nästa steg.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-          {categories.map((cat, i) => (
+        <div className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {categories.map((category, index) => (
             <motion.div
-              key={cat.slug}
-              className={i === 0 || i === categories.length - 1 ? 'md:col-span-2' : ''}
+              key={category.slug}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
             >
               <Link
-                to={`/publicera?kategori=${encodeURIComponent(cat.label)}`}
-                className="group flex h-full flex-col items-start gap-3 rounded-2xl bg-card hover:bg-surface-alt p-6 transition-colors duration-200 hover:-translate-y-0.5 transition-transform"
+                to={`/publicera?kategori=${encodeURIComponent(category.label)}`}
+                className="group flex h-full min-h-[190px] flex-col rounded-3xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-foreground/20 hover:shadow-lg"
               >
-                <cat.icon className="h-7 w-7 text-foreground" strokeWidth={1.5} />
-                <span className="font-display text-lg text-foreground leading-tight">{cat.label}</span>
-                <span className="text-xs text-muted-foreground leading-snug">{cat.desc}</span>
+                <div className="flex items-start justify-between">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-secondary text-foreground transition-transform duration-200 group-hover:scale-105">
+                    <category.icon className="h-6 w-6" strokeWidth={1.6} />
+                  </div>
+                  <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                </div>
+                <span className="mt-6 font-display text-xl leading-tight text-foreground">{category.label}</span>
+                <span className="mt-2 text-sm leading-relaxed text-muted-foreground">{category.desc}</span>
               </Link>
             </motion.div>
           ))}
