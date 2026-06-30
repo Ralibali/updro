@@ -1,8 +1,8 @@
 name: Test report
 
 on:
-  push:
-    branches: [improve-copy-ux-2026-07]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
