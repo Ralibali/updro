@@ -149,9 +149,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <MotionConfig reducedMotion="user">
+          <a href="#main-content" className="skip-link">Hoppa till innehåll</a>
           <PageTracker />
           <NoindexGuard />
           <Suspense fallback={<PageLoader />}>
+            <div id="main-content">
             <Routes>
               {/* Public */}
               <Route path="/" element={<Index />} />
