@@ -195,6 +195,8 @@ const App = () => (
               <Route path="/updro-vs-partna" element={<Navigate to="/partna-alternativ" replace />} />
               <Route path="/jamfor-partna" element={<Navigate to="/partna-alternativ" replace />} />
               <Route path="/alternativ-till-partna" element={<Navigate to="/partna-alternativ" replace />} />
+              <Route path="/for-byraer/byt-fran-partna" element={<BytFranPartnaPage />} />
+
 
               {/* Content hubs */}
               <Route path="/artiklar" element={<ArticlesIndex />} />
