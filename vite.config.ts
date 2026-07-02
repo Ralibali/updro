@@ -90,9 +90,8 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            'vendor-motion': ['framer-motion'],
+            // Only split libs that don't depend on React's runtime init order.
             'vendor-supabase': ['@supabase/supabase-js'],
-            'vendor-router': ['react-router-dom'],
           },
         },
       },
