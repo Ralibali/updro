@@ -53,7 +53,7 @@ const SupplierOffers = () => {
 
   useEffect(() => {
     if (!user) return
-    supabase.from('offers').select('*, projects(title, category, city)').eq('supplier_id', user.id).order('created_at', { ascending: false })
+    supabase.from('offers').select('*, projects(title, category, city, buyer_id)').eq('supplier_id', user.id).order('created_at', { ascending: false })
       .then(({ data }) => { if (data) setOffers(data) })
   }, [user])
 
