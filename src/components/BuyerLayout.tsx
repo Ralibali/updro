@@ -20,6 +20,8 @@ const BuyerLayout = () => {
       <Outlet />
     </Suspense>
   </DashboardLayout>
-)
+  )
+}
+
 
 export default BuyerLayout
