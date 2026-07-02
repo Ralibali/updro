@@ -47,11 +47,11 @@ const LeadGuaranteeAdminPanel = () => {
         .limit(200)
       if (error) throw error
 
-      const projectIds = [...new Set((requests || []).map((row: any) => row.project_id))]
-      const supplierIds = [...new Set((requests || []).map((row: any) => row.supplier_id))]
+      const projectIds = [...new Set((requests || []).map((row: any) => row.project_id as string))]
+      const supplierIds = [...new Set((requests || []).map((row: any) => row.supplier_id as string))]
       const [{ data: projects }, { data: suppliers }] = await Promise.all([
-        projectIds.length ? supabase.from('projects').select('id, title, category').in('id', projectIds) : Promise.resolve({ data: [] as any[] }),
-        supplierIds.length ? supabase.from('profiles').select('id, full_name, company_name, email').in('id', supplierIds) : Promise.resolve({ data: [] as any[] }),
+        projectIds.length ? supabase.from('projects').select('id, title, category').in('id', projectIds as string[]) : Promise.resolve({ data: [] as any[] }),
+        supplierIds.length ? supabase.from('profiles').select('id, full_name, company_name, email').in('id', supplierIds as string[]) : Promise.resolve({ data: [] as any[] }),
       ])
 
       const projectMap = new Map((projects || []).map((item: any) => [item.id, item]))
