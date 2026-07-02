@@ -21,6 +21,21 @@ function getDeviceType(): string {
   return 'desktop'
 }
 
+// Filter obvious bots/crawlers/preview tools from internal analytics so the
+// admin dashboard reflects real human traffic. This does NOT affect Lovable's
+// external analytics (hosting-side), only the page_views table.
+const BOT_UA_PATTERN = /bot|crawler|spider|crawling|headless|lighthouse|slurp|bingpreview|facebookexternalhit|embedly|whatsapp|slackbot|telegrambot|discordbot|preview|pingdom|monitor|axios|python-requests|curl\//i
+
+function isLikelyBot(): boolean {
+  if (typeof navigator === 'undefined') return true
+  const ua = navigator.userAgent || ''
+  if (!ua) return true
+  if (BOT_UA_PATTERN.test(ua)) return true
+  // navigator.webdriver is true for automated browsers (Playwright, Selenium).
+  if ((navigator as Navigator & { webdriver?: boolean }).webdriver) return true
+  return false
+}
+
 export function usePageTracking() {
   const location = useLocation()
   const lastPath = useRef('')
@@ -34,16 +49,20 @@ export function usePageTracking() {
     lastPath.current = path
 
     const sessionId = getSessionId()
+    const bot = isLikelyBot()
 
     // Internal, cookie-independent page view used by the admin analytics.
-    supabase.from('page_views').insert({
-      session_id: sessionId,
-      path,
-      referrer: document.referrer || null,
-      device_type: getDeviceType(),
-    }).then(({ error }) => {
-      if (error && import.meta.env.DEV) console.warn('Page view tracking failed', error)
-    })
+    // Bot/preview traffic is skipped so admin numbers reflect real humans.
+    if (!bot) {
+      supabase.from('page_views').insert({
+        session_id: sessionId,
+        path,
+        referrer: document.referrer || null,
+        device_type: getDeviceType(),
+      }).then(({ error }) => {
+        if (error && import.meta.env.DEV) console.warn('Page view tracking failed', error)
+      })
+    }
 
     // React Router does not trigger automatic GA4 page views after navigation.
     // Query parameters are deliberately excluded to avoid leaking project briefs.
