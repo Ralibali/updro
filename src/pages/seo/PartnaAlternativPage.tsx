@@ -161,7 +161,54 @@ const PartnaAlternativPage = () => {
           </div>
         </section>
 
-        <section className="container pb-16">
+        <section className="container pb-4">
+          <div className="rounded-3xl border-2 border-foreground bg-secondary p-6 md:p-10">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Räkneexempel</p>
+            <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold tracking-tight">
+              {CALC.leads} leads i månaden – så mycket skiljer det
+            </h2>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border bg-card p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Partna (per lead)</p>
+                <p className="mt-3 font-display text-3xl font-bold">
+                  {(CALC.leads * CALC.partnaPerLead).toLocaleString('sv-SE')} kr
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {CALC.leads} leads × {CALC.partnaPerLead} kr
+                </p>
+              </div>
+              <div className="rounded-2xl border-2 border-accent bg-card p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-accent">Updro månadskort</p>
+                <p className="mt-3 font-display text-3xl font-bold">
+                  {CALC.updroMonth.toLocaleString('sv-SE')} kr
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Obegränsat antal leads / månad
+                </p>
+              </div>
+              <div className="rounded-2xl border bg-card p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Skillnad</p>
+                <p className="mt-3 font-display text-3xl font-bold text-accent">
+                  {(CALC.leads * CALC.partnaPerLead - CALC.updroMonth).toLocaleString('sv-SE')} kr
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  lägre kostnad per månad med Updro
+                </p>
+              </div>
+            </div>
+            <ul className="mt-6 grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
+              <li>• Updro: {CALC.updroPerLead} kr/lead eller {CALC.updroMonth.toLocaleString('sv-SE')} kr/mån obegränsat</li>
+              <li>• Partna: {CALC.partnaPerLead} kr/lead eller {CALC.partnaMonth.toLocaleString('sv-SE')} kr/mån för {CALC.partnaMonthLeads} leads</li>
+              <li>• Updro visar max tre byråer per uppdrag</li>
+              <li>• Partna anger upp till sex byråer per förfrågan</li>
+            </ul>
+            <p className="mt-6 rounded-xl border border-dashed border-muted-foreground/40 bg-background/60 p-4 text-xs text-muted-foreground">
+              <strong>Notering:</strong> Priser och villkor är samlade från publikt tillgänglig information om Partna och Updro och kan ändras. Kontrollera alltid aktuella priser och villkor direkt hos respektive plattform innan beslut.
+            </p>
+          </div>
+        </section>
+
+
           <div className="max-w-3xl">
             <h2 className="font-display text-3xl font-bold mb-6">Vanliga frågor</h2>
             <div className="space-y-3">
