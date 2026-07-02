@@ -100,8 +100,8 @@ const PartnaAlternativPage = () => {
           <div className="mt-12 grid gap-4 md:grid-cols-4">
             {[
               ['Gratis', 'för uppdragsgivare'],
-              ['Upp till 5', 'relevanta offerter'],
-              ['24h', 'mål för återkoppling'],
+              ['Max 3', 'handplockade offerter'],
+              ['24h', 'svar från byråer'],
               ['Sverige', 'digitala byråer i flera kategorier'],
             ].map(([value, label]) => (
               <div key={value} className="rounded-2xl border bg-card p-5">
@@ -111,6 +111,7 @@ const PartnaAlternativPage = () => {
             ))}
           </div>
         </section>
+
 
         <section className="border-y bg-muted/30 py-16">
           <div className="container">
