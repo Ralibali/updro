@@ -210,19 +210,26 @@ const ProjectDetail = () => {
                           </div>
                         )}
 
-                        {offer.status === 'pending' && (
-                          <div className="flex gap-2 mt-4">
-                            <Button size="sm" onClick={() => setConfirmOffer(offer)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                              <Check className="mr-1 h-3 w-3" /> Acceptera
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => handleDecline(offer.id)}>
-                              <X className="mr-1 h-3 w-3" /> Avböj
-                            </Button>
+                        <div className="flex gap-2 mt-4 flex-wrap">
+                          {offer.status === 'pending' && (
+                            <>
+                              <Button size="sm" onClick={() => setConfirmOffer(offer)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                                <Check className="mr-1 h-3 w-3" /> Acceptera
+                              </Button>
+                              <Button size="sm" variant="outline" onClick={() => handleDecline(offer.id)}>
+                                <X className="mr-1 h-3 w-3" /> Avböj
+                              </Button>
+                            </>
+                          )}
+                          {(offer.status === 'pending' || offer.status === 'accepted') && (
                             <Link to={`/dashboard/buyer/chatt?project=${id}&user=${offer.supplier_id}`}>
-                              <Button size="sm" variant="outline">💬 Chatta</Button>
+                              <Button size="sm" variant={offer.status === 'accepted' ? 'default' : 'outline'}>
+                                💬 Chatta med byrån
+                              </Button>
                             </Link>
-                          </div>
-                        )}
+                          )}
+                        </div>
+
                       </div>
                     )
                   })}
