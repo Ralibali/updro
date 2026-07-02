@@ -7,16 +7,34 @@ import { Button } from '@/components/ui/button'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 
 const comparisonRows = [
+  ['Antal offerter per uppdrag', 'Max tre handplockade offerter per uppdrag.', 'Upp till sex offerter per förfrågan enligt Partnas publika information.'],
+  ['Pris per lead (byrå)', 'Cirka 119 kr per lead.', 'Cirka 490 kr per lead enligt Partnas publika prislista.'],
+  ['Månadskort (byrå)', '1 995 kr/mån för obegränsat antal leads.', '1 950 kr/mån för upp till 10 leads enligt Partnas publika prislista.'],
+  ['För beställare', 'Gratis. Svar inom 24 timmar.', 'Gratis offertförfrågan.'],
   ['Primärt fokus', 'Digitala byråer: webb, SEO, e-handel, appar, design och marknadsföring.', 'Digitala projekt och byråmatchning inom flera närliggande områden.'],
-  ['För beställare', 'Gratis projektpublicering, tydligt formulär och fokus på relevanta offerter.', 'Gratis offertförfrågan och jämförelse av byråer.'],
-  ['Byråmatchning', 'Byggt för att sortera på kategori, budget, stad och kvalitet.', 'Matchning mot anslutna leverantörer.'],
-  ['När Updro passar bäst', 'När du vill jämföra digitala byråer snabbt och få tydlig prisbild innan du väljer.', 'När du vill använda en mer etablerad offertplattform.'],
 ]
+
+const CALC = {
+  leads: 20,
+  partnaPerLead: 490,
+  updroMonth: 1995,
+  updroPerLead: 119,
+  partnaMonth: 1950,
+  partnaMonthLeads: 10,
+}
 
 const faqs = [
   {
     q: 'Är Updro ett alternativ till Partna?',
     a: 'Ja. Updro är ett svenskt alternativ för företag som vill jämföra offerter från digitala byråer inom webbutveckling, SEO, e-handel, appar och digital marknadsföring.',
+  },
+  {
+    q: 'Vad kostar Updro för en byrå jämfört med Partna?',
+    a: 'Updro tar cirka 119 kr per lead eller 1 995 kr/mån för obegränsat antal leads. Partna anger cirka 490 kr per lead och 1 950 kr/mån för upp till 10 leads. Aktuella priser och villkor bör alltid kontrolleras direkt hos respektive plattform.',
+  },
+  {
+    q: 'Hur många offerter kan en beställare få?',
+    a: 'På Updro får du max tre handplockade offerter per uppdrag för att göra jämförelsen enkel. Partna anger upp till sex offerter enligt publik information.',
   },
   {
     q: 'Kostar det något att använda Updro som beställare?',
@@ -27,6 +45,7 @@ const faqs = [
     a: 'Updro passar särskilt bra när du vill hitta en digital byrå, förstå ungefärlig budget och jämföra flera alternativ innan du bestämmer dig.',
   },
 ]
+
 
 const PartnaAlternativPage = () => {
   useEffect(() => {
