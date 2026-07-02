@@ -1,17 +1,21 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Check, Clock, ShieldCheck } from 'lucide-react'
+import { useNavigate, Link } from 'react-router-dom'
+import {
+  ArrowRight, Globe, ShoppingCart, Search,
+  Smartphone, Megaphone, Palette,
+} from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { trackLeadStarted } from '@/lib/analytics'
 import { trackClick } from '@/hooks/usePageTracking'
-import UpdroSeal from '@/components/shared/UpdroSeal'
 
-const mockOffers = [
-  { initials: 'NA', city: 'Stockholm', price: '48 500 kr', delay: 'efter 4 h', rotate: -2, top: 8 },
-  { initials: 'LB', city: 'Göteborg', price: '62 000 kr', delay: 'efter 11 h', rotate: 1, top: 120 },
-  { initials: 'MK', city: 'Malmö', price: '54 900 kr', delay: 'efter 19 h', rotate: -1, top: 232 },
+const categories = [
+  { icon: Globe, label: 'Webbutveckling', slug: 'webbutveckling' },
+  { icon: ShoppingCart, label: 'E-handel', slug: 'ehandel' },
+  { icon: Search, label: 'SEO', slug: 'seo' },
+  { icon: Smartphone, label: 'Apputveckling', slug: 'app-utveckling' },
+  { icon: Megaphone, label: 'Digital marknadsföring', slug: 'digital-marknadsforing' },
+  { icon: Palette, label: 'Design & UX', slug: 'grafisk-design' },
 ]
 
 const HeroSection = () => {
@@ -31,36 +35,40 @@ const HeroSection = () => {
   }
 
   return (
-    <section className="relative overflow-hidden bg-hero-gradient">
-      <div className="container relative z-10 py-14 md:py-24">
-        <div className="grid md:grid-cols-12 gap-10 md:gap-12 items-center">
-          <div className="md:col-span-7 text-left">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-foreground leading-[1.05] [text-wrap:balance]">
-              Tre granskade offerter. Inom 24 timmar.
-            </h1>
+    <section className="relative bg-background border-b border-foreground/10">
+      <div className="container py-14 md:py-20 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Content column */}
+          <div className="lg:col-span-7 flex flex-col space-y-8">
+            <motion.span
+              initial={reduce ? undefined : { opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="inline-block self-start px-3 py-1 border border-foreground text-[11px] font-bold uppercase tracking-widest bg-secondary font-display"
+            >
+              Sveriges marknadsplats för digitala uppdrag
+            </motion.span>
 
-            <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Beskriv ditt projekt. Updro matchar dig med byråer som verifierats mot Bolagsverket – och du jämför max tre handplockade offerter. Gratis.
-            </p>
+            <motion.h1
+              initial={reduce ? undefined : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.05 }}
+              className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-foreground [text-wrap:balance]"
+            >
+              Tre granskade offerter.{' '}
+              <span className="text-accent">Inom 24 timmar.</span>
+            </motion.h1>
 
-            {/* Mobile compact stack preview */}
-            <div className="md:hidden mt-8">
-              <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-primary/10 text-primary grid place-items-center font-mono text-sm font-semibold">
-                    NA
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground">Stockholm</p>
-                    <p className="font-mono text-xs text-muted-foreground">48 500 kr · efter 4 h</p>
-                  </div>
-                  <UpdroSeal size="sm" />
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground font-mono">+ 2 offerter till</p>
-              </div>
-            </div>
+            <motion.p
+              initial={reduce ? undefined : { opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.12 }}
+              className="text-lg md:text-xl text-foreground/80 max-w-xl leading-relaxed"
+            >
+              Beskriv ditt projekt. Updro matchar dig med byråer som verifierats mot Bolagsverket – och du jämför max tre handplockade offerter. <span className="font-semibold text-foreground">Gratis.</span>
+            </motion.p>
 
-            <form onSubmit={handleSubmit} className="mt-8 md:mt-10 max-w-xl">
+            <form onSubmit={handleSubmit} className="w-full max-w-xl">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Input
                   name="project-description"
@@ -68,75 +76,60 @@ const HeroSection = () => {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="T.ex. ny Shopify-butik eller hjälp med SEO"
-                  className="flex-1 h-14 rounded-xl text-base px-5 border-border bg-card shadow-sm"
+                  className="flex-1 h-14 rounded-none text-base px-5 border-2 border-foreground bg-card focus-visible:ring-0 focus-visible:border-accent"
                   maxLength={500}
                 />
-                <Button
+                <button
                   type="submit"
-                  size="lg"
-                  className="h-14 rounded-xl px-7 text-base font-semibold shadow-md whitespace-nowrap"
+                  className="h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all whitespace-nowrap inline-flex items-center justify-center gap-2"
                 >
                   Starta gratis – tar 2 min
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Ingen registrering krävs för att skicka in din förfrågan.
+              <p className="mt-3 text-xs text-muted-foreground">
+                Ingen registrering krävs. Svar inom 24 timmar.
               </p>
             </form>
 
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-primary" strokeWidth={2} aria-hidden="true" />
-                Verifierade byråer
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-primary" strokeWidth={2} aria-hidden="true" />
-                Svar inom 24 h
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Check className="h-4 w-4 text-primary" strokeWidth={2} aria-hidden="true" />
-                Alltid gratis
-              </span>
+            <div className="flex flex-wrap gap-2 pt-2">
+              {['Verifierade byråer', 'Svar inom 24h', 'Alltid gratis'].map((chip) => (
+                <div
+                  key={chip}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-secondary border border-foreground/15 text-xs font-medium"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  {chip}
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="hidden md:block md:col-span-5 relative h-[420px]" aria-label="Illustrerad offertstack">
-            <p className="absolute right-0 -top-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Exempel</p>
-            {mockOffers.map((offer, i) => (
-              <motion.div
-                key={offer.initials}
-                initial={reduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={reduce ? { duration: 0 } : { delay: 0.15 + i * 0.4, duration: 0.5, ease: 'easeOut' }}
-                className="absolute left-0 right-0 mx-auto w-[88%] max-w-sm rounded-2xl border border-border bg-card p-5 shadow-lg"
-                style={{
-                  top: `${offer.top}px`,
-                  zIndex: i + 1,
-                  transform: `rotate(${offer.rotate}deg)`,
-                }}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="h-11 w-11 rounded-full bg-primary/10 text-primary grid place-items-center font-mono text-sm font-semibold">
-                    {offer.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-display text-lg text-foreground leading-tight">Byrå {offer.initials}</p>
-                    <p className="text-xs text-muted-foreground">{offer.city}</p>
-                  </div>
-                  <UpdroSeal size="sm" />
-                </div>
-                <div className="mt-4 flex items-end justify-between pt-3 border-t border-border">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono">Offert</p>
-                    <p className="font-mono text-base font-semibold text-foreground">{offer.price}</p>
-                  </div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground bg-muted px-2 py-1 rounded">
-                    {offer.delay}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
+          {/* Categories grid column */}
+          <div className="lg:col-span-5">
+            <div className="grid grid-cols-2 gap-4">
+              {categories.map((cat, i) => (
+                <motion.div
+                  key={cat.slug}
+                  initial={reduce ? undefined : { opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
+                  className={i % 2 === 1 ? 'mt-8' : ''}
+                >
+                  <Link
+                    to={`/publicera?kategori=${encodeURIComponent(cat.label)}`}
+                    className="group block p-6 bg-secondary border-2 border-foreground hover:bg-foreground transition-colors duration-200 h-full"
+                  >
+                    <div className="w-10 h-10 mb-4 flex items-center justify-center bg-background border-2 border-foreground group-hover:bg-background">
+                      <cat.icon className="w-5 h-5 text-foreground" strokeWidth={2} />
+                    </div>
+                    <h3 className="font-display font-bold text-base leading-tight text-foreground group-hover:text-background transition-colors">
+                      {cat.label}
+                    </h3>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
