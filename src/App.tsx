@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
+import { MotionConfig } from "framer-motion";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -149,9 +150,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <MotionConfig reducedMotion="user">
+          <a href="#main-content" className="skip-link">Hoppa till innehåll</a>
           <PageTracker />
           <NoindexGuard />
           <Suspense fallback={<PageLoader />}>
+            <div id="main-content">
             <Routes>
               {/* Public */}
               <Route path="/" element={<Index />} />
@@ -261,8 +265,10 @@ const App = () => (
 
               <Route path="*" element={<NotFound />} />
             </Routes>
+            </div>
           </Suspense>
           <CookieConsent />
+          </MotionConfig>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

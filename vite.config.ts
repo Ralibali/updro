@@ -87,11 +87,14 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: true,
       sourcemap: false,
       chunkSizeWarningLimit: 1500,
-      // NOTE: Do NOT add custom manualChunks here. A custom split was previously
-      // causing "Cannot read properties of undefined (reading 'forwardRef')" in
-      // production because libs like @radix-ui were placed in a vendor chunk
-      // that loaded before the React chunk initialized. Let Vite/Rollup handle
-      // chunking automatically — it correctly hoists shared deps.
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Only split libs that don't depend on React's runtime init order.
+            'vendor-supabase': ['@supabase/supabase-js'],
+          },
+        },
+      },
     },
     plugins: [
       react(),

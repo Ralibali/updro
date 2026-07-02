@@ -4,129 +4,132 @@
 
 @layer base {
   :root {
-    --background: 40 20% 98%;
-    --foreground: 20 14% 10%;
+    /* Granskad — light */
+    --background: 150 8% 98%;
+    --foreground: 160 15% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 20 14% 10%;
+    --card-foreground: 160 15% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 20 14% 10%;
+    --popover-foreground: 160 15% 11%;
 
-    --primary: 20 14% 10%;
-    --primary-foreground: 40 20% 98%;
+    --primary: 155 32% 17%;
+    --primary-foreground: 150 8% 98%;
 
-    --secondary: 35 15% 94%;
-    --secondary-foreground: 20 14% 20%;
+    --secondary: 150 10% 93%;
+    --secondary-foreground: 160 15% 15%;
 
-    --muted: 35 15% 94%;
-    --muted-foreground: 25 8% 35%;
+    --muted: 150 10% 93%;
+    --muted-foreground: 155 12% 30%;
 
-    --accent: 18 85% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 40 76% 53%;
+    --accent-foreground: 160 15% 11%;
 
     --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 30 15% 88%;
-    --input: 30 15% 88%;
-    --ring: 18 85% 55%;
+    --border: 150 12% 88%;
+    --input: 150 12% 88%;
+    --ring: 152 28% 30%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
-    /* Updro custom tokens */
-    --brand-dark: 20 14% 10%;
-    --brand-blue: 20 14% 10%;
-    --brand-blue-hover: 20 14% 18%;
-    --brand-indigo: 20 14% 10%;
-    --brand-orange: 18 85% 55%;
-    --brand-orange-hover: 18 85% 48%;
-    --brand-mint: 150 35% 32%;
-    --brand-mint-hover: 150 35% 26%;
-    --brand-coral: 18 85% 55%;
-    --brand-amber: 35 75% 55%;
-    --brand-amber-glow: 35 75% 65%;
-    --surface-alt: 35 20% 96%;
-    --surface-2: 35 15% 94%;
-    --surface-3: 30 15% 91%;
-    --text-secondary: 25 8% 35%;
-    --border-strong: 30 15% 78%;
+    /* Updro brand tokens (Granskad) */
+    --brand-dark: 155 32% 17%;          /* Gran */
+    --brand-mint: 152 28% 30%;          /* Mossa */
+    --brand-mint-hover: 152 28% 24%;
+    --brand-amber: 40 76% 53%;          /* Honung */
+    --brand-amber-glow: 40 85% 62%;
+    /* Legacy aliases → route to new palette */
+    --brand-blue: 155 32% 17%;
+    --brand-blue-hover: 152 28% 24%;
+    --brand-indigo: 155 32% 17%;
+    --brand-orange: 40 76% 53%;
+    --brand-orange-hover: 40 76% 45%;
+    --brand-coral: 40 76% 53%;
 
-    --shadow-sm: 0 1px 2px rgba(30, 20, 10, 0.04);
-    --shadow-md: 0 4px 16px rgba(30, 20, 10, 0.06);
-    --shadow-lg: 0 12px 32px rgba(30, 20, 10, 0.08);
-    --shadow-brand: 0 4px 24px rgba(200, 90, 40, 0.15);
+    --surface-alt: 150 10% 96%;
+    --surface-2: 150 10% 94%;
+    --surface-3: 150 10% 91%;
+    --text-secondary: 155 12% 30%;
+    --border-strong: 150 12% 78%;
 
-    --sidebar-background: 35 20% 96%;
-    --sidebar-foreground: 25 8% 35%;
-    --sidebar-primary: 20 14% 10%;
-    --sidebar-primary-foreground: 40 20% 98%;
-    --sidebar-accent: 35 15% 92%;
-    --sidebar-accent-foreground: 20 14% 10%;
-    --sidebar-border: 30 15% 88%;
-    --sidebar-ring: 18 85% 55%;
+    --shadow-sm: 0 1px 2px rgba(24, 36, 32, 0.05);
+    --shadow-md: 0 4px 16px rgba(24, 36, 32, 0.07);
+    --shadow-lg: 0 12px 32px rgba(24, 36, 32, 0.09);
+    --shadow-brand: 0 4px 24px rgba(30, 58, 47, 0.15);
+
+    --sidebar-background: 150 10% 96%;
+    --sidebar-foreground: 155 12% 30%;
+    --sidebar-primary: 155 32% 17%;
+    --sidebar-primary-foreground: 150 8% 98%;
+    --sidebar-accent: 150 10% 92%;
+    --sidebar-accent-foreground: 155 32% 17%;
+    --sidebar-border: 150 12% 88%;
+    --sidebar-ring: 152 28% 30%;
   }
 
   .dark {
-    --background: 20 10% 8%;
-    --foreground: 35 15% 92%;
+    --background: 160 15% 8%;
+    --foreground: 150 10% 92%;
 
-    --card: 20 10% 11%;
-    --card-foreground: 35 15% 92%;
+    --card: 158 14% 11%;
+    --card-foreground: 150 10% 92%;
 
-    --popover: 20 10% 11%;
-    --popover-foreground: 35 15% 92%;
+    --popover: 158 14% 11%;
+    --popover-foreground: 150 10% 92%;
 
-    --primary: 35 15% 92%;
-    --primary-foreground: 20 14% 10%;
+    --primary: 150 30% 70%;
+    --primary-foreground: 160 15% 11%;
 
-    --secondary: 20 8% 15%;
-    --secondary-foreground: 35 15% 85%;
+    --secondary: 158 12% 16%;
+    --secondary-foreground: 150 10% 88%;
 
-    --muted: 20 8% 14%;
-    --muted-foreground: 25 5% 70%;
+    --muted: 158 12% 15%;
+    --muted-foreground: 150 8% 72%;
 
-    --accent: 18 85% 58%;
-    --accent-foreground: 20 14% 10%;
+    --accent: 40 82% 60%;
+    --accent-foreground: 160 15% 11%;
 
-    --destructive: 0 65% 50%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 20 8% 18%;
-    --input: 20 8% 18%;
-    --ring: 18 85% 58%;
+    --border: 158 12% 20%;
+    --input: 158 12% 20%;
+    --ring: 150 30% 60%;
 
-    /* Updro custom tokens */
-    --brand-dark: 20 10% 5%;
-    --brand-blue: 35 15% 92%;
-    --brand-blue-hover: 35 15% 82%;
-    --brand-indigo: 35 15% 92%;
-    --brand-orange: 18 85% 58%;
-    --brand-orange-hover: 18 85% 50%;
-    --brand-mint: 150 35% 58%;
-    --brand-mint-hover: 150 35% 50%;
-    --brand-coral: 18 85% 58%;
-    --brand-amber: 35 75% 58%;
-    --brand-amber-glow: 35 75% 68%;
-    --surface-alt: 20 10% 11%;
-    --surface-2: 20 8% 13%;
-    --surface-3: 20 8% 16%;
-    --text-secondary: 25 5% 70%;
-    --border-strong: 20 8% 25%;
+    --brand-dark: 160 15% 6%;
+    --brand-mint: 150 30% 60%;
+    --brand-mint-hover: 150 30% 52%;
+    --brand-amber: 40 82% 60%;
+    --brand-amber-glow: 40 88% 68%;
+    --brand-blue: 150 30% 70%;
+    --brand-blue-hover: 150 30% 62%;
+    --brand-indigo: 150 30% 70%;
+    --brand-orange: 40 82% 60%;
+    --brand-orange-hover: 40 82% 52%;
+    --brand-coral: 40 82% 60%;
+
+    --surface-alt: 158 14% 11%;
+    --surface-2: 158 12% 13%;
+    --surface-3: 158 12% 16%;
+    --text-secondary: 150 8% 72%;
+    --border-strong: 158 12% 26%;
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-    --shadow-brand: 0 4px 24px rgba(200, 90, 40, 0.25);
+    --shadow-brand: 0 4px 24px rgba(30, 58, 47, 0.35);
 
-    --sidebar-background: 20 10% 6%;
-    --sidebar-foreground: 25 5% 70%;
-    --sidebar-primary: 35 15% 92%;
-    --sidebar-primary-foreground: 20 10% 6%;
-    --sidebar-accent: 20 8% 13%;
-    --sidebar-accent-foreground: 35 15% 92%;
-    --sidebar-border: 20 8% 16%;
-    --sidebar-ring: 18 85% 58%;
+    --sidebar-background: 160 15% 6%;
+    --sidebar-foreground: 150 8% 72%;
+    --sidebar-primary: 150 30% 70%;
+    --sidebar-primary-foreground: 160 15% 6%;
+    --sidebar-accent: 158 12% 13%;
+    --sidebar-accent-foreground: 150 10% 92%;
+    --sidebar-border: 158 12% 16%;
+    --sidebar-ring: 150 30% 60%;
   }
 }
 
@@ -150,88 +153,64 @@
     min-width: 320px;
     overflow-x: clip;
     text-rendering: optimizeLegibility;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Schibsted Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-variant-numeric: tabular-nums;
   }
 
-  img,
-  svg,
-  video,
-  canvas,
-  iframe {
-    max-width: 100%;
-  }
+  img, svg, video, canvas, iframe { max-width: 100%; }
+  img, video { height: auto; }
+  table { max-width: 100%; }
 
-  img,
-  video {
-    height: auto;
-  }
+  input, select, textarea, button { font: inherit; }
+  input, select, textarea { font-size: 16px; }
 
-  table {
-    max-width: 100%;
-  }
-
-  input,
-  select,
-  textarea,
-  button {
-    font: inherit;
-  }
-
-  input,
-  select,
-  textarea {
-    font-size: 16px;
-  }
-
-  button,
-  a,
-  input,
-  select,
-  textarea,
-  [role="button"] {
-    touch-action: manipulation;
-  }
+  button, a, input, select, textarea, [role="button"] { touch-action: manipulation; }
 
   :focus-visible {
-    outline: 3px solid hsl(var(--ring));
-    outline-offset: 3px;
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
   }
 
   h1, h2, h3, h4, .font-display {
-    font-family: Georgia, "Times New Roman", serif;
-    font-weight: 400;
+    font-family: "Bricolage Grotesque", Georgia, "Times New Roman", serif;
+    font-weight: 700;
     letter-spacing: -0.02em;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  p,
-  li,
-  a,
-  button,
-  input,
-  textarea {
+  h1, h2, h3, h4, p, li, a, button, input, textarea {
     overflow-wrap: anywhere;
   }
 
   code, .font-mono {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       scroll-behavior: auto !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  /* Skip link — visible only when focused */
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 1rem;
+    z-index: 100;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: top 0.2s;
+  }
+  .skip-link:focus {
+    top: 1rem;
   }
 }
 
@@ -251,22 +230,20 @@
 @layer utilities {
   .text-brand-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(18 85% 55%), hsl(35 75% 55%));
+    background-image: linear-gradient(135deg, hsl(155 32% 17%), hsl(152 28% 30%));
   }
 
   .bg-hero-gradient {
     background:
-      radial-gradient(ellipse at top left, hsl(35 40% 94%), transparent 60%),
-      radial-gradient(ellipse at bottom right, hsl(18 40% 94%), transparent 60%),
-      hsl(40 20% 98%);
+      linear-gradient(180deg, hsl(150 8% 98%) 0%, hsl(150 10% 95%) 100%);
   }
 
   .bg-mint-gradient {
-    background: linear-gradient(135deg, hsl(18 85% 55% / 0.06), hsl(35 75% 55% / 0.08));
+    background: linear-gradient(135deg, hsl(155 32% 17% / 0.05), hsl(40 76% 53% / 0.06));
   }
 
   .shadow-blue {
-    box-shadow: 0 4px 24px rgba(200, 90, 40, 0.18);
+    box-shadow: 0 4px 24px rgba(30, 58, 47, 0.18);
   }
 
   .glass {
@@ -282,6 +259,6 @@
   }
 
   .gradient-border {
-    border-image: linear-gradient(135deg, hsl(18 85% 55%), hsl(35 75% 55%)) 1;
+    border-image: linear-gradient(135deg, hsl(155 32% 17%), hsl(40 76% 53%)) 1;
   }
 }
