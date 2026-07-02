@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { Outlet } from 'react-router-dom'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Home, ClipboardList, MessageCircle, UserCircle } from 'lucide-react'
+import { useBuyerOfferNotifications } from '@/hooks/useBuyerOfferNotifications'
 
 const navItems = [
   { label: 'Översikt', href: '/dashboard/buyer', icon: Home },
@@ -10,9 +11,12 @@ const navItems = [
   { label: 'Min profil', href: '/dashboard/buyer/profil', icon: UserCircle },
 ]
 
-const BuyerLayout = () => (
+const BuyerLayout = () => {
+  useBuyerOfferNotifications()
+  return (
   <DashboardLayout navItems={navItems} ctaButton={{ label: '+ Nytt uppdrag', href: '/publicera' }}>
     <Suspense fallback={<div className="animate-pulse h-40 bg-muted rounded-xl" />}>
+
       <Outlet />
     </Suspense>
   </DashboardLayout>
