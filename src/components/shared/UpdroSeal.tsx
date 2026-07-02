@@ -65,9 +65,14 @@ const UpdroSeal = ({
         </text>
         <circle cx="60" cy="60" r="28" fill={isVerified ? inkFill : 'transparent'} stroke={ringColor} strokeWidth="1.25" strokeDasharray={dash} />
         {isVerified ? (
-          <g transform="translate(60 60)">
-            <Check x={-12} y={-12} width={24} height={24} stroke={inkText} strokeWidth={3} />
-          </g>
+          <path
+            d="M 50 60 L 57 68 L 72 52"
+            fill="none"
+            stroke={inkText}
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
         ) : (
           <text
             x="60"
