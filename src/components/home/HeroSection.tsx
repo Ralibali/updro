@@ -55,8 +55,8 @@ const HeroSection = () => {
               transition={{ duration: 0.45, delay: 0.05 }}
               className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-foreground [text-wrap:balance]"
             >
-              Tre granskade offerter.{' '}
-              <span className="text-accent">Inom 24 timmar.</span>
+              Tre handplockade offerter.{' '}
+              <span className="text-accent">Inom 24 timmar. Gratis.</span>
             </motion.h1>
 
             <motion.p
@@ -65,8 +65,9 @@ const HeroSection = () => {
               transition={{ duration: 0.45, delay: 0.12 }}
               className="text-lg md:text-xl text-foreground/80 max-w-xl leading-relaxed"
             >
-              Beskriv ditt projekt. Updro matchar dig med byråer som verifierats mot Bolagsverket – och du jämför max tre handplockade offerter. <span className="font-semibold text-foreground">Gratis.</span>
+              Beskriv ditt projekt så matchar Updro dig med upp till tre handplockade byråer. Du får offerter inom 24 timmar och jämför i lugn och ro. <span className="font-semibold text-foreground">Alltid gratis.</span>
             </motion.p>
+
 
             <form onSubmit={handleSubmit} className="w-full max-w-xl">
               <div className="flex flex-col sm:flex-row gap-3">
