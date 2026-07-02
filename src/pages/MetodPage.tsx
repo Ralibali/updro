@@ -12,9 +12,10 @@ const checks = [
   },
   {
     icon: ShieldCheck,
-    title: 'Verifiering av organisationsnummer',
-    body: 'Vi kontrollerar org.nr mot Bolagsverkets register. F-skatt och momsregistrering kontrolleras via Skatteverket. Aktiv styrelse är ett krav.',
+    title: 'Kontroll av organisationsnummer',
+    body: 'Vi begär in organisationsnummer och stämmer av mot publika register manuellt vid granskning. Byrån ska ha F-skatt och aktiv verksamhet. En automatiserad realtidsintegration mot Bolagsverket är under uppbyggnad.',
   },
+
   {
     icon: UserCheck,
     title: 'Mänsklig granskning',

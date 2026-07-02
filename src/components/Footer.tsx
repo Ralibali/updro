@@ -29,6 +29,8 @@ const footerColumns = [
     title: 'SEO & jämförelser',
     links: [
       { label: 'Partna alternativ', href: '/partna-alternativ' },
+      { label: 'Byt från Partna (byråer)', href: '/for-byraer/byt-fran-partna' },
+
       { label: 'Bästa webbyrån', href: '/basta-webbyran' },
       { label: 'Bästa SEO-byrån', href: '/basta-seo-byran' },
       { label: 'Webbutveckling pris', href: '/webbutveckling/pris' },

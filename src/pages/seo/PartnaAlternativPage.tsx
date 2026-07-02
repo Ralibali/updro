@@ -7,16 +7,34 @@ import { Button } from '@/components/ui/button'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 
 const comparisonRows = [
+  ['Antal offerter per uppdrag', 'Max tre handplockade offerter per uppdrag.', 'Upp till sex offerter per förfrågan enligt Partnas publika information.'],
+  ['Pris per lead (byrå)', 'Cirka 119 kr per lead.', 'Cirka 490 kr per lead enligt Partnas publika prislista.'],
+  ['Månadskort (byrå)', '1 995 kr/mån för obegränsat antal leads.', '1 950 kr/mån för upp till 10 leads enligt Partnas publika prislista.'],
+  ['För beställare', 'Gratis. Svar inom 24 timmar.', 'Gratis offertförfrågan.'],
   ['Primärt fokus', 'Digitala byråer: webb, SEO, e-handel, appar, design och marknadsföring.', 'Digitala projekt och byråmatchning inom flera närliggande områden.'],
-  ['För beställare', 'Gratis projektpublicering, tydligt formulär och fokus på relevanta offerter.', 'Gratis offertförfrågan och jämförelse av byråer.'],
-  ['Byråmatchning', 'Byggt för att sortera på kategori, budget, stad och kvalitet.', 'Matchning mot anslutna leverantörer.'],
-  ['När Updro passar bäst', 'När du vill jämföra digitala byråer snabbt och få tydlig prisbild innan du väljer.', 'När du vill använda en mer etablerad offertplattform.'],
 ]
+
+const CALC = {
+  leads: 20,
+  partnaPerLead: 490,
+  updroMonth: 1995,
+  updroPerLead: 119,
+  partnaMonth: 1950,
+  partnaMonthLeads: 10,
+}
 
 const faqs = [
   {
     q: 'Är Updro ett alternativ till Partna?',
     a: 'Ja. Updro är ett svenskt alternativ för företag som vill jämföra offerter från digitala byråer inom webbutveckling, SEO, e-handel, appar och digital marknadsföring.',
+  },
+  {
+    q: 'Vad kostar Updro för en byrå jämfört med Partna?',
+    a: 'Updro tar cirka 119 kr per lead eller 1 995 kr/mån för obegränsat antal leads. Partna anger cirka 490 kr per lead och 1 950 kr/mån för upp till 10 leads. Aktuella priser och villkor bör alltid kontrolleras direkt hos respektive plattform.',
+  },
+  {
+    q: 'Hur många offerter kan en beställare få?',
+    a: 'På Updro får du max tre handplockade offerter per uppdrag för att göra jämförelsen enkel. Partna anger upp till sex offerter enligt publik information.',
   },
   {
     q: 'Kostar det något att använda Updro som beställare?',
@@ -27,6 +45,7 @@ const faqs = [
     a: 'Updro passar särskilt bra när du vill hitta en digital byrå, förstå ungefärlig budget och jämföra flera alternativ innan du bestämmer dig.',
   },
 ]
+
 
 const PartnaAlternativPage = () => {
   useEffect(() => {
@@ -81,8 +100,8 @@ const PartnaAlternativPage = () => {
           <div className="mt-12 grid gap-4 md:grid-cols-4">
             {[
               ['Gratis', 'för uppdragsgivare'],
-              ['Upp till 5', 'relevanta offerter'],
-              ['24h', 'mål för återkoppling'],
+              ['Max 3', 'handplockade offerter'],
+              ['24h', 'svar från byråer'],
               ['Sverige', 'digitala byråer i flera kategorier'],
             ].map(([value, label]) => (
               <div key={value} className="rounded-2xl border bg-card p-5">
@@ -92,6 +111,7 @@ const PartnaAlternativPage = () => {
             ))}
           </div>
         </section>
+
 
         <section className="border-y bg-muted/30 py-16">
           <div className="container">
@@ -141,8 +161,56 @@ const PartnaAlternativPage = () => {
           </div>
         </section>
 
+        <section className="container pb-4">
+          <div className="rounded-3xl border-2 border-foreground bg-secondary p-6 md:p-10">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Räkneexempel</p>
+            <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold tracking-tight">
+              {CALC.leads} leads i månaden – så mycket skiljer det
+            </h2>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              <div className="rounded-2xl border bg-card p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Partna (per lead)</p>
+                <p className="mt-3 font-display text-3xl font-bold">
+                  {(CALC.leads * CALC.partnaPerLead).toLocaleString('sv-SE')} kr
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {CALC.leads} leads × {CALC.partnaPerLead} kr
+                </p>
+              </div>
+              <div className="rounded-2xl border-2 border-accent bg-card p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-accent">Updro månadskort</p>
+                <p className="mt-3 font-display text-3xl font-bold">
+                  {CALC.updroMonth.toLocaleString('sv-SE')} kr
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Obegränsat antal leads / månad
+                </p>
+              </div>
+              <div className="rounded-2xl border bg-card p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Skillnad</p>
+                <p className="mt-3 font-display text-3xl font-bold text-accent">
+                  {(CALC.leads * CALC.partnaPerLead - CALC.updroMonth).toLocaleString('sv-SE')} kr
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  lägre kostnad per månad med Updro
+                </p>
+              </div>
+            </div>
+            <ul className="mt-6 grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
+              <li>• Updro: {CALC.updroPerLead} kr/lead eller {CALC.updroMonth.toLocaleString('sv-SE')} kr/mån obegränsat</li>
+              <li>• Partna: {CALC.partnaPerLead} kr/lead eller {CALC.partnaMonth.toLocaleString('sv-SE')} kr/mån för {CALC.partnaMonthLeads} leads</li>
+              <li>• Updro visar max tre byråer per uppdrag</li>
+              <li>• Partna anger upp till sex byråer per förfrågan</li>
+            </ul>
+            <p className="mt-6 rounded-xl border border-dashed border-muted-foreground/40 bg-background/60 p-4 text-xs text-muted-foreground">
+              <strong>Notering:</strong> Priser och villkor är samlade från publikt tillgänglig information om Partna och Updro och kan ändras. Kontrollera alltid aktuella priser och villkor direkt hos respektive plattform innan beslut.
+            </p>
+          </div>
+        </section>
+
         <section className="container pb-16">
           <div className="max-w-3xl">
+
             <h2 className="font-display text-3xl font-bold mb-6">Vanliga frågor</h2>
             <div className="space-y-3">
               {faqs.map(item => (

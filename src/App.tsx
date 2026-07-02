@@ -72,6 +72,8 @@ const HittaWebbbyraPage = lazy(() => import("./pages/seo/SEOLandingPages").then(
 const HittaSeoByraPage = lazy(() => import("./pages/seo/SEOLandingPages").then(m => ({ default: m.HittaSeoByraPage })));
 const HittaDigitalByraPage = lazy(() => import("./pages/seo/SEOLandingPages").then(m => ({ default: m.HittaDigitalByraPage })));
 const PartnaAlternativPage = lazy(() => import("./pages/seo/PartnaAlternativPage"));
+const BytFranPartnaPage = lazy(() => import("./pages/seo/BytFranPartnaPage"));
+
 
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const BuyerProjects = lazy(() => import("./pages/buyer/BuyerProjects"));
@@ -193,6 +195,8 @@ const App = () => (
               <Route path="/updro-vs-partna" element={<Navigate to="/partna-alternativ" replace />} />
               <Route path="/jamfor-partna" element={<Navigate to="/partna-alternativ" replace />} />
               <Route path="/alternativ-till-partna" element={<Navigate to="/partna-alternativ" replace />} />
+              <Route path="/for-byraer/byt-fran-partna" element={<BytFranPartnaPage />} />
+
 
               {/* Content hubs */}
               <Route path="/artiklar" element={<ArticlesIndex />} />

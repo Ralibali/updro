@@ -59,8 +59,9 @@ const UpdroSeal = ({
         >
           <textPath href={`#seal-arc-${size}-${variant}`} startOffset="0">
             {isVerified
-              ? 'VERIFIERAD · UPDRO · BOLAGSVERKET · F-SKATT · '
+              ? 'GRANSKAD · UPDRO · HANDPLOCKAD · '
               : 'GRANSKAS · UPDRO · GRANSKAS · '}
+
           </textPath>
         </text>
         <circle cx="60" cy="60" r="28" fill={isVerified ? inkFill : 'transparent'} stroke={ringColor} strokeWidth="1.25" strokeDasharray={dash} />
