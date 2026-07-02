@@ -229,21 +229,29 @@
 
 @layer utilities {
   .text-brand-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(155 32% 17%), hsl(152 28% 30%));
+    color: hsl(var(--accent));
   }
 
   .bg-hero-gradient {
-    background:
-      linear-gradient(180deg, hsl(150 8% 98%) 0%, hsl(150 10% 95%) 100%);
+    background: hsl(var(--background));
   }
 
   .bg-mint-gradient {
-    background: linear-gradient(135deg, hsl(155 32% 17% / 0.05), hsl(40 76% 53% / 0.06));
+    background: hsl(var(--secondary));
   }
 
   .shadow-blue {
-    box-shadow: 0 4px 24px rgba(30, 58, 47, 0.18);
+    box-shadow: 4px 4px 0 0 hsl(var(--foreground));
+  }
+
+  .shadow-hard {
+    box-shadow: 4px 4px 0 0 hsl(var(--foreground));
+  }
+  .shadow-hard-sm {
+    box-shadow: 2px 2px 0 0 hsl(var(--foreground));
+  }
+  .shadow-hard-lg {
+    box-shadow: 6px 6px 0 0 hsl(var(--foreground));
   }
 
   .glass {
