@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Send, ArrowLeft } from 'lucide-react'
@@ -6,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { timeAgo } from '@/lib/dateUtils'
+
 
 interface Conversation {
   otherId: string
@@ -19,6 +21,7 @@ interface Conversation {
 
 const ChatPage = () => {
   const { user } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [activeConvo, setActiveConvo] = useState<Conversation | null>(null)
   const [messages, setMessages] = useState<any[]>([])
@@ -34,10 +37,8 @@ const ChatPage = () => {
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .order('created_at', { ascending: false })
 
-      if (!msgs) return
-
       const convoMap = new Map<string, Conversation>()
-      msgs.forEach((m: any) => {
+      ;(msgs || []).forEach((m: any) => {
         const otherId = m.sender_id === user.id ? m.receiver_id : m.sender_id
         const key = `${otherId}-${m.project_id}`
         if (!convoMap.has(key)) {
@@ -52,10 +53,50 @@ const ChatPage = () => {
           })
         }
       })
+
+      // Auto-open a conversation from ?project=X&user=Y (used from offer cards).
+      const paramProject = searchParams.get('project')
+      const paramUser = searchParams.get('user')
+      let opened: Conversation | null = null
+      if (paramProject && paramUser && paramUser !== user.id) {
+        const key = `${paramUser}-${paramProject}`
+        let convo = convoMap.get(key) || null
+        if (!convo) {
+          // No messages yet — synthesize an empty convo so the user can start writing.
+          const [projRes, profRes, spRes] = await Promise.all([
+            supabase.from('projects').select('title').eq('id', paramProject).maybeSingle(),
+            supabase.from('profiles').select('full_name, company_name').eq('id', paramUser).maybeSingle(),
+            supabase.from('supplier_profiles').select('contact_name').eq('id', paramUser).maybeSingle(),
+          ])
+          const proj = projRes.data as { title?: string } | null
+          const prof = profRes.data as { full_name?: string; company_name?: string } | null
+          const sp = spRes.data as { contact_name?: string } | null
+          convo = {
+            otherId: paramUser,
+            otherName: prof?.company_name || sp?.contact_name || prof?.full_name || 'Motpart',
+            projectTitle: proj?.title || '',
+            projectId: paramProject,
+            lastMessage: '',
+            lastAt: new Date().toISOString(),
+            unread: 0,
+          }
+
+          convoMap.set(key, convo)
+        }
+        opened = convo
+      }
+
       setConversations(Array.from(convoMap.values()))
+      if (opened) {
+        setActiveConvo(opened)
+        // Clean the URL so a reload doesn't keep re-forcing this convo open.
+        setSearchParams({}, { replace: true })
+      }
     }
     fetchConvos()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
+
 
   useEffect(() => {
     if (!activeConvo || !user) return
