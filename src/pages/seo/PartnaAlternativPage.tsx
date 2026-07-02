@@ -208,8 +208,9 @@ const PartnaAlternativPage = () => {
           </div>
         </section>
 
-
+        <section className="container pb-16">
           <div className="max-w-3xl">
+
             <h2 className="font-display text-3xl font-bold mb-6">Vanliga frågor</h2>
             <div className="space-y-3">
               {faqs.map(item => (
