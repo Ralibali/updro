@@ -94,7 +94,7 @@ const HeroSection = () => {
             </form>
 
             <div className="flex flex-wrap gap-2 pt-2">
-              {['Verifierade byråer', 'Svar inom 24h', 'Alltid gratis'].map((chip) => (
+              {['Handplockade byråer', 'Svar inom 24h', 'Alltid gratis'].map((chip) => (
                 <div
                   key={chip}
                   className="flex items-center gap-2 px-3 py-1.5 bg-secondary border border-foreground/15 text-xs font-medium"
