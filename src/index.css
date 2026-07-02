@@ -70,65 +70,66 @@
   }
 
   .dark {
-    --background: 160 15% 8%;
-    --foreground: 150 10% 92%;
+    /* Paper & Ink + Ember — dark */
+    --background: 0 0% 8%;
+    --foreground: 42 25% 95%;
 
-    --card: 158 14% 11%;
-    --card-foreground: 150 10% 92%;
+    --card: 0 0% 12%;
+    --card-foreground: 42 25% 95%;
 
-    --popover: 158 14% 11%;
-    --popover-foreground: 150 10% 92%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 42 25% 95%;
 
-    --primary: 150 30% 70%;
-    --primary-foreground: 160 15% 11%;
+    --primary: 42 25% 95%;
+    --primary-foreground: 0 0% 10%;
 
-    --secondary: 158 12% 16%;
-    --secondary-foreground: 150 10% 88%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 42 25% 95%;
 
-    --muted: 158 12% 15%;
-    --muted-foreground: 150 8% 72%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 40 10% 70%;
 
-    --accent: 40 82% 60%;
-    --accent-foreground: 160 15% 11%;
+    --accent: 14 79% 57%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 158 12% 20%;
-    --input: 158 12% 20%;
-    --ring: 150 30% 60%;
+    --border: 0 0% 22%;
+    --input: 0 0% 22%;
+    --ring: 14 79% 57%;
 
-    --brand-dark: 160 15% 6%;
-    --brand-mint: 150 30% 60%;
-    --brand-mint-hover: 150 30% 52%;
-    --brand-amber: 40 82% 60%;
-    --brand-amber-glow: 40 88% 68%;
-    --brand-blue: 150 30% 70%;
-    --brand-blue-hover: 150 30% 62%;
-    --brand-indigo: 150 30% 70%;
-    --brand-orange: 40 82% 60%;
-    --brand-orange-hover: 40 82% 52%;
-    --brand-coral: 40 82% 60%;
+    --brand-dark: 0 0% 6%;
+    --brand-mint: 42 25% 95%;
+    --brand-mint-hover: 42 25% 88%;
+    --brand-amber: 14 79% 57%;
+    --brand-amber-glow: 14 85% 65%;
+    --brand-blue: 42 25% 95%;
+    --brand-blue-hover: 42 25% 88%;
+    --brand-indigo: 42 25% 95%;
+    --brand-orange: 14 79% 57%;
+    --brand-orange-hover: 14 75% 50%;
+    --brand-coral: 14 79% 57%;
 
-    --surface-alt: 158 14% 11%;
-    --surface-2: 158 12% 13%;
-    --surface-3: 158 12% 16%;
-    --text-secondary: 150 8% 72%;
-    --border-strong: 158 12% 26%;
+    --surface-alt: 0 0% 12%;
+    --surface-2: 0 0% 15%;
+    --surface-3: 0 0% 18%;
+    --text-secondary: 40 10% 70%;
+    --border-strong: 42 25% 95%;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-    --shadow-brand: 0 4px 24px rgba(30, 58, 47, 0.35);
+    --shadow-sm: 2px 2px 0 0 hsl(42 25% 95%);
+    --shadow-md: 3px 3px 0 0 hsl(42 25% 95%);
+    --shadow-lg: 6px 6px 0 0 hsl(42 25% 95%);
+    --shadow-brand: 4px 4px 0 0 hsl(14 79% 57%);
 
-    --sidebar-background: 160 15% 6%;
-    --sidebar-foreground: 150 8% 72%;
-    --sidebar-primary: 150 30% 70%;
-    --sidebar-primary-foreground: 160 15% 6%;
-    --sidebar-accent: 158 12% 13%;
-    --sidebar-accent-foreground: 150 10% 92%;
-    --sidebar-border: 158 12% 16%;
-    --sidebar-ring: 150 30% 60%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 40 10% 70%;
+    --sidebar-primary: 42 25% 95%;
+    --sidebar-primary-foreground: 0 0% 10%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 42 25% 95%;
+    --sidebar-border: 0 0% 22%;
+    --sidebar-ring: 14 79% 57%;
   }
 }
 
