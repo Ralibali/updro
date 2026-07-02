@@ -4,70 +4,69 @@
 
 @layer base {
   :root {
-    /* Granskad — light */
-    --background: 150 8% 98%;
-    --foreground: 160 15% 11%;
+    /* Paper & Ink + Ember — light */
+    --background: 42 25% 95%;           /* #f5f3ee paper */
+    --foreground: 0 0% 10%;             /* #1a1a1a ink */
 
     --card: 0 0% 100%;
-    --card-foreground: 160 15% 11%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 160 15% 11%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 155 32% 17%;
-    --primary-foreground: 150 8% 98%;
+    --primary: 0 0% 10%;                /* ink primary */
+    --primary-foreground: 42 25% 95%;
 
-    --secondary: 150 10% 93%;
-    --secondary-foreground: 160 15% 15%;
+    --secondary: 40 21% 89%;            /* #e8e4dd surface */
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 150 10% 93%;
-    --muted-foreground: 155 12% 30%;
+    --muted: 40 21% 89%;
+    --muted-foreground: 0 0% 32%;
 
-    --accent: 40 76% 53%;
-    --accent-foreground: 160 15% 11%;
+    --accent: 14 79% 57%;               /* #e85d3a ember */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 150 12% 88%;
-    --input: 150 12% 88%;
-    --ring: 152 28% 30%;
+    --border: 40 15% 82%;
+    --input: 40 15% 82%;
+    --ring: 14 79% 57%;
 
-    --radius: 0.625rem;
+    --radius: 0.25rem;                  /* sharper, brutalist */
 
-    /* Updro brand tokens (Granskad) */
-    --brand-dark: 155 32% 17%;          /* Gran */
-    --brand-mint: 152 28% 30%;          /* Mossa */
-    --brand-mint-hover: 152 28% 24%;
-    --brand-amber: 40 76% 53%;          /* Honung */
-    --brand-amber-glow: 40 85% 62%;
-    /* Legacy aliases → route to new palette */
-    --brand-blue: 155 32% 17%;
-    --brand-blue-hover: 152 28% 24%;
-    --brand-indigo: 155 32% 17%;
-    --brand-orange: 40 76% 53%;
-    --brand-orange-hover: 40 76% 45%;
-    --brand-coral: 40 76% 53%;
+    /* Updro brand tokens — Ember system */
+    --brand-dark: 0 0% 10%;
+    --brand-mint: 0 0% 10%;
+    --brand-mint-hover: 0 0% 6%;
+    --brand-amber: 14 79% 57%;
+    --brand-amber-glow: 14 85% 65%;
+    --brand-blue: 0 0% 10%;
+    --brand-blue-hover: 0 0% 6%;
+    --brand-indigo: 0 0% 10%;
+    --brand-orange: 14 79% 57%;
+    --brand-orange-hover: 14 75% 50%;
+    --brand-coral: 14 79% 57%;
 
-    --surface-alt: 150 10% 96%;
-    --surface-2: 150 10% 94%;
-    --surface-3: 150 10% 91%;
-    --text-secondary: 155 12% 30%;
-    --border-strong: 150 12% 78%;
+    --surface-alt: 40 21% 92%;
+    --surface-2: 40 21% 89%;
+    --surface-3: 40 18% 85%;
+    --text-secondary: 0 0% 32%;
+    --border-strong: 0 0% 10%;
 
-    --shadow-sm: 0 1px 2px rgba(24, 36, 32, 0.05);
-    --shadow-md: 0 4px 16px rgba(24, 36, 32, 0.07);
-    --shadow-lg: 0 12px 32px rgba(24, 36, 32, 0.09);
-    --shadow-brand: 0 4px 24px rgba(30, 58, 47, 0.15);
+    --shadow-sm: 2px 2px 0 0 hsl(0 0% 10%);
+    --shadow-md: 3px 3px 0 0 hsl(0 0% 10%);
+    --shadow-lg: 6px 6px 0 0 hsl(0 0% 10%);
+    --shadow-brand: 4px 4px 0 0 hsl(0 0% 10%);
 
-    --sidebar-background: 150 10% 96%;
-    --sidebar-foreground: 155 12% 30%;
-    --sidebar-primary: 155 32% 17%;
-    --sidebar-primary-foreground: 150 8% 98%;
-    --sidebar-accent: 150 10% 92%;
-    --sidebar-accent-foreground: 155 32% 17%;
-    --sidebar-border: 150 12% 88%;
-    --sidebar-ring: 152 28% 30%;
+    --sidebar-background: 42 25% 95%;
+    --sidebar-foreground: 0 0% 32%;
+    --sidebar-primary: 0 0% 10%;
+    --sidebar-primary-foreground: 42 25% 95%;
+    --sidebar-accent: 40 21% 89%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 40 15% 82%;
+    --sidebar-ring: 14 79% 57%;
   }
 
   .dark {
