@@ -63,20 +63,24 @@ const ChatPage = () => {
         let convo = convoMap.get(key) || null
         if (!convo) {
           // No messages yet — synthesize an empty convo so the user can start writing.
-          const [{ data: proj }, { data: prof }, { data: sp }] = await Promise.all([
+          const [projRes, profRes, spRes] = await Promise.all([
             supabase.from('projects').select('title').eq('id', paramProject).maybeSingle(),
             supabase.from('profiles').select('full_name, company_name').eq('id', paramUser).maybeSingle(),
-            supabase.from('supplier_profiles').select('company_name, contact_name').eq('user_id', paramUser).maybeSingle(),
+            supabase.from('supplier_profiles').select('contact_name').eq('id', paramUser).maybeSingle(),
           ])
+          const proj = projRes.data as { title?: string } | null
+          const prof = profRes.data as { full_name?: string; company_name?: string } | null
+          const sp = spRes.data as { contact_name?: string } | null
           convo = {
             otherId: paramUser,
-            otherName: sp?.company_name || prof?.company_name || sp?.contact_name || prof?.full_name || 'Motpart',
+            otherName: prof?.company_name || sp?.contact_name || prof?.full_name || 'Motpart',
             projectTitle: proj?.title || '',
             projectId: paramProject,
             lastMessage: '',
             lastAt: new Date().toISOString(),
             unread: 0,
           }
+
           convoMap.set(key, convo)
         }
         opened = convo
