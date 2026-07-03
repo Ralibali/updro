@@ -94,10 +94,47 @@ interface SuggestRequest {
   excludeSlugs?: string[];
 }
 
+async function requireAdmin(req: Request): Promise<Response | null> {
+  const authHeader = req.headers.get("Authorization") || "";
+  const token = authHeader.replace(/^Bearer\s+/i, "");
+  if (!token) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+  const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+  const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+  const { data, error } = await admin.auth.getUser(token);
+  if (error || !data?.user) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  const { data: prof } = await admin
+    .from("profiles")
+    .select("role")
+    .eq("id", data.user.id)
+    .maybeSingle();
+  if (prof?.role !== "admin") {
+    return new Response(JSON.stringify({ error: "Forbidden" }), {
+      status: 403,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  return null;
+}
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const authFail = await requireAdmin(req);
+    if (authFail) return authFail;
+
     const body = (await req.json().catch(() => ({}))) as SuggestRequest;
     const count = Math.min(20, Math.max(1, Number(body.count) || 10));
     const focus = (body.focus || "").trim();
@@ -112,6 +149,7 @@ serve(async (req: Request) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
 
     const userPrompt = `Föreslå ${count} nya artikeltopics för Updro.
 
