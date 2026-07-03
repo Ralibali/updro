@@ -11,6 +11,32 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: corsHeaders })
   }
 
+  // Require authentication: valid Supabase JWT or the service-role key (internal callers).
+  const authHeader = req.headers.get('Authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '')
+  const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
+  const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || ''
+  let authorized = false
+  if (token && SERVICE_ROLE && token === SERVICE_ROLE) {
+    authorized = true
+  } else if (token && SUPABASE_URL && SERVICE_ROLE) {
+    try {
+      const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2')
+      const admin = createClient(SUPABASE_URL, SERVICE_ROLE)
+      const { data, error } = await admin.auth.getUser(token)
+      if (!error && data?.user) authorized = true
+    } catch (_) {
+      authorized = false
+    }
+  }
+  if (!authorized) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+
   try {
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
     if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY is not configured')

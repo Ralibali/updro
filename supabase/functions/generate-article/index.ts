@@ -207,11 +207,33 @@ function validateStructure(article: any): string[] {
   return errs;
 }
 
+async function isAuthorized(req: Request): Promise<boolean> {
+  const authHeader = req.headers.get("Authorization") || "";
+  const token = authHeader.replace(/^Bearer\s+/i, "");
+  if (!token) return false;
+  const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  if (SERVICE_ROLE && token === SERVICE_ROLE) return true;
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+  const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+  const { data, error } = await admin.auth.getUser(token);
+  if (error || !data?.user) return false;
+  const { data: prof } = await admin
+    .from("profiles").select("role").eq("id", data.user.id).maybeSingle();
+  return prof?.role === "admin";
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
 
   try {
+    if (!(await isAuthorized(req))) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const body = await req.json();
     const {
       topic,

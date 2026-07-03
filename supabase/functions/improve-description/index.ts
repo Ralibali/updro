@@ -36,9 +36,29 @@ serve(async (req) => {
       return jsonResponse(result, response.status);
     }
 
+    // The AI-improve action must be authenticated to prevent anonymous credit abuse.
+    // The submit_guest_lead action stays public (used by the public wizard).
+    const authHeader = req.headers.get("Authorization") || "";
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
+    const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    let userAuthenticated = false;
+    if (token && SUPABASE_URL && SERVICE_ROLE) {
+      try {
+        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+        const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
+        const { data, error } = await admin.auth.getUser(token);
+        if (!error && data?.user) userAuthenticated = true;
+      } catch (_) {}
+    }
+    if (!userAuthenticated) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+
     const { title, category, description } = body;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
