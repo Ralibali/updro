@@ -191,13 +191,19 @@ const Calculator = () => {
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-3">
         <Link
           to={`/publicera?kategori=${encodeURIComponent(type.query)}`}
-          className="inline-flex items-center gap-2 h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+          className="inline-flex items-center gap-2 h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all self-start"
         >
           Få exakta offerter för ditt projekt
           <ArrowRight className="w-4 h-4" />
+        </Link>
+        <Link
+          to={`/priser/${type.guideSlug}`}
+          className="text-sm text-muted-foreground hover:text-accent inline-flex items-center gap-1 self-start"
+        >
+          Läs hela prisguiden för {type.label.toLowerCase()} <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
     </div>
