@@ -41,6 +41,7 @@ const SupplierLandingPage = lazy(() => import("./pages/SupplierLandingPage"));
 const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
 const MetodPage = lazy(() => import("./pages/MetodPage"));
 const AdminContentPlanner = lazy(() => import("./pages/admin/AdminContentPlanner"));
+const PriceGuidePage = lazy(() => import("./pages/PriceGuidePage"));
 
 // Redirect helper for legacy /guider/:slug and /kunskapsbank/:slug -> /artiklar/:slug
 const RedirectToArtikel = () => {
@@ -165,6 +166,7 @@ const App = () => (
               <Route path="/byraer" element={<BrowseAgenciesPage />} />
               <Route path="/byraer/:slug" element={<AgencyProfilePage />} />
               <Route path="/priser" element={<PricingPage />} />
+              <Route path="/priser/:slug" element={<PriceGuidePage />} />
               <Route path="/om-oss" element={<AboutPage />} />
               <Route path="/support" element={<PlaceholderPage title="Support" />} />
               <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />

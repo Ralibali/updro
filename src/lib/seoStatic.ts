@@ -3,6 +3,7 @@ import { CITIES, SERVICE_CATEGORIES } from './seoCities'
 import { COMPARISON_PAGES } from './seoComparisons'
 import { ARTICLES } from './seoArticles'
 import { TOOLS } from './seoTools'
+import { PRICE_GUIDES } from './priceGuideData'
 
 export const SITE_URL = 'https://updro.se'
 export type SitemapSection = 'main' | 'cities' | 'articles' | 'tools' | 'comparisons'
@@ -80,6 +81,7 @@ const contentRoutes = (): StaticSeoRoute[] => [
   ...COMPARISON_PAGES.map((p: any) => ({ path: `/${p.slug}`, title: p.metaTitle || p.title || `${words(p.slug)} | Updro`, description: trunc(p.metaDesc || p.description || `Jämför ${words(p.slug)}.`), h1: p.h1 || p.title || words(p.slug), priority: 0.8, changefreq: 'monthly' as const, lastmod: today(), links: [{ label: 'Alla jämförelser', href: '/jamfor' }] })),
   ...ARTICLES.map((a: any) => ({ path: `/artiklar/${a.slug}`, title: a.metaTitle || a.title || `${words(a.slug)} | Updro`, description: trunc(a.metaDesc || a.excerpt || a.description || `Läs Updros guide om ${words(a.slug)}.`), h1: a.title || words(a.slug), priority: 0.7, changefreq: 'monthly' as const, lastmod: a.updatedDate || a.publishedDate || today(), links: [{ label: 'Alla artiklar', href: '/artiklar' }] })),
   ...TOOLS.map((t: any) => ({ path: `/verktyg/${t.slug}`, title: t.metaTitle || t.title || `${words(t.slug)} | Updro`, description: trunc(t.metaDesc || t.description || `Använd Updros kostnadsfria verktyg för ${words(t.slug)}.`), h1: t.h1 || t.title || words(t.slug), priority: 0.7, changefreq: 'monthly' as const, lastmod: today(), links: [{ label: 'Alla verktyg', href: '/verktyg' }] })),
+  ...PRICE_GUIDES.map((g) => ({ path: `/priser/${g.slug}`, title: g.title, description: trunc(g.metaDescription), h1: g.h1, priority: 0.8, changefreq: 'monthly' as const, lastmod: today(), links: [{ label: 'Alla prisguider', href: '/priser' }, ...PRICE_GUIDES.filter(o => o.slug !== g.slug).map(o => ({ label: o.h1, href: `/priser/${o.slug}` }))], faq: g.faq.slice(0, 5) })),
 ]
 
 export const getAllStaticSeoRoutes = () => {

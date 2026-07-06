@@ -12,6 +12,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { setSEOMeta } from '@/lib/seoHelpers'
+import { PRICE_MATRIX, PROJECT_TYPES, type LevelKey } from '@/lib/priceGuideData'
 
 /* -------------------- Live feed data -------------------- */
 const LIVE_POOL = [
@@ -106,49 +107,8 @@ const CountUp = ({ end, suffix = '', prefix = '', duration = 1200 }: {
 }
 
 /* -------------------- Calculator -------------------- */
-const PROJECT_TYPES = [
-  { id: 'hemsida', label: 'Ny hemsida', query: 'Ny hemsida' },
-  { id: 'ehandel', label: 'E-handel', query: 'E-handel' },
-  { id: 'seo', label: 'SEO', query: 'SEO' },
-  { id: 'ads', label: 'Google Ads', query: 'Google Ads' },
-  { id: 'app', label: 'Apputveckling', query: 'Apputveckling' },
-  { id: 'design', label: 'Design & varumärke', query: 'Design & varumärke' },
-] as const
-
-type LevelKey = 'enkel' | 'standard' | 'avancerad'
-
-const PRICE_MATRIX: Record<string, Record<LevelKey, { range: string; time: string; matches: number }>> = {
-  hemsida: {
-    enkel: { range: '25 000 – 45 000 kr', time: '2–3 veckor', matches: 24 },
-    standard: { range: '45 000 – 90 000 kr', time: '4–6 veckor', matches: 31 },
-    avancerad: { range: '90 000 – 180 000 kr', time: '8–12 veckor', matches: 18 },
-  },
-  ehandel: {
-    enkel: { range: '50 000 – 90 000 kr', time: '4–6 veckor', matches: 17 },
-    standard: { range: '90 000 – 180 000 kr', time: '6–10 veckor', matches: 22 },
-    avancerad: { range: '180 000 – 400 000 kr', time: '10–16 veckor', matches: 12 },
-  },
-  seo: {
-    enkel: { range: '8 000 – 15 000 kr/mån', time: 'löpande', matches: 28 },
-    standard: { range: '15 000 – 30 000 kr/mån', time: 'löpande', matches: 21 },
-    avancerad: { range: '30 000 – 60 000 kr/mån', time: 'löpande', matches: 11 },
-  },
-  ads: {
-    enkel: { range: '6 000 – 12 000 kr/mån', time: 'löpande', matches: 19 },
-    standard: { range: '12 000 – 25 000 kr/mån', time: 'löpande', matches: 15 },
-    avancerad: { range: '25 000 – 50 000 kr/mån', time: 'löpande', matches: 9 },
-  },
-  app: {
-    enkel: { range: '100 000 – 200 000 kr', time: '8–12 veckor', matches: 11 },
-    standard: { range: '200 000 – 450 000 kr', time: '12–20 veckor', matches: 14 },
-    avancerad: { range: '450 000 – 900 000 kr', time: '20–32 veckor', matches: 7 },
-  },
-  design: {
-    enkel: { range: '20 000 – 40 000 kr', time: '2–3 veckor', matches: 26 },
-    standard: { range: '40 000 – 80 000 kr', time: '3–5 veckor', matches: 20 },
-    avancerad: { range: '80 000 – 160 000 kr', time: '5–8 veckor', matches: 12 },
-  },
-}
+/* PRICE_MATRIX + PROJECT_TYPES lever nu i src/lib/priceGuideData.ts
+   – single source of truth för kalkylatorn och /priser/:slug-guiderna. */
 
 const Calculator = () => {
   const [type, setType] = useState<typeof PROJECT_TYPES[number]>(PROJECT_TYPES[0])
@@ -231,13 +191,19 @@ const Calculator = () => {
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-3">
         <Link
           to={`/publicera?kategori=${encodeURIComponent(type.query)}`}
-          className="inline-flex items-center gap-2 h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+          className="inline-flex items-center gap-2 h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all self-start"
         >
           Få exakta offerter för ditt projekt
           <ArrowRight className="w-4 h-4" />
+        </Link>
+        <Link
+          to={`/priser/${type.guideSlug}`}
+          className="text-sm text-muted-foreground hover:text-accent inline-flex items-center gap-1 self-start"
+        >
+          Läs hela prisguiden för {type.label.toLowerCase()} <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
     </div>
