@@ -246,13 +246,13 @@ const Calculator = () => {
 
 /* -------------------- Categories -------------------- */
 const CATEGORIES = [
-  { icon: Globe, name: 'Webbutveckling', desc: 'Hemsidor, plattformar, CMS', count: 42, to: '/kategori/webbutveckling' },
-  { icon: ShoppingCart, name: 'E-handel', desc: 'Shopify, Woo, custom', count: 28, to: '/kategori/ehandel' },
-  { icon: Search, name: 'SEO', desc: 'Teknisk & innehålls-SEO', count: 34, to: '/kategori/seo' },
-  { icon: Megaphone, name: 'Google Ads', desc: 'Sök, display, shopping', count: 26, to: '/kategori/google-ads' },
-  { icon: Smartphone, name: 'Apputveckling', desc: 'iOS, Android, React Native', count: 18, to: '/kategori/apputveckling' },
-  { icon: Palette, name: 'Design & UX', desc: 'Varumärke, gränssnitt', count: 31, to: '/kategori/grafisk-design' },
-  { icon: Sparkles, name: 'Digital marknadsföring', desc: 'Sociala medier, content', count: 29, to: '/kategori/digital-marknadsforing' },
+  { icon: Globe, name: 'Webbutveckling', desc: 'Hemsidor, plattformar, CMS', count: 42, to: '/byraer/kategori/webbutveckling' },
+  { icon: ShoppingCart, name: 'E-handel', desc: 'Shopify, Woo, custom', count: 28, to: '/byraer/kategori/ehandel' },
+  { icon: Search, name: 'SEO', desc: 'Teknisk & innehålls-SEO', count: 34, to: '/byraer/kategori/seo' },
+  { icon: Megaphone, name: 'Google Ads', desc: 'Sök, display, shopping', count: 26, to: '/byraer/kategori/google-ads' },
+  { icon: Smartphone, name: 'Apputveckling', desc: 'iOS, Android, React Native', count: 18, to: '/byraer/kategori/apputveckling' },
+  { icon: Palette, name: 'Design & UX', desc: 'Varumärke, gränssnitt', count: 31, to: '/byraer/kategori/grafisk-design' },
+  { icon: Sparkles, name: 'Digital marknadsföring', desc: 'Sociala medier, content', count: 29, to: '/byraer/kategori/digital-marknadsforing' },
 ]
 
 /* -------------------- FAQ -------------------- */
@@ -577,7 +577,7 @@ const LandingPage = () => {
                   Kvalificerade uppdrag från riktiga köpare med budget. Lås upp enstaka leads för <span className="font-mono">119 kr</span> eller kör obegränsat för <span className="font-mono">1 995 kr/mån</span>. Testa premium gratis i 7 dagar.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Link to="/registrera-byra">
+                  <Link to="/registrera/byra">
                     <Button size="lg" className="rounded-xl px-8 py-6 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground">
                       Registrera din byrå
                       <ArrowRight className="ml-2 h-4 w-4" />
