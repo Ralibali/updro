@@ -577,7 +577,7 @@ const LandingPage = () => {
                   Kvalificerade uppdrag från riktiga köpare med budget. Lås upp enstaka leads för <span className="font-mono">119 kr</span> eller kör obegränsat för <span className="font-mono">1 995 kr/mån</span>. Testa premium gratis i 7 dagar.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Link to="/registrera-byra">
+                  <Link to="/registrera/byra">
                     <Button size="lg" className="rounded-xl px-8 py-6 text-base font-semibold bg-accent hover:bg-accent/90 text-accent-foreground">
                       Registrera din byrå
                       <ArrowRight className="ml-2 h-4 w-4" />
