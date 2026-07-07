@@ -19,3 +19,7 @@ project_id = "opgjoevvlwhsddscqmpe"
     verify_jwt = true
   [functions.create-account]
     verify_jwt = false
+  [functions.submit-guest-lead]
+    verify_jwt = false
+  [functions.analyze-brief]
+    verify_jwt = false
