@@ -27,13 +27,57 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
 }[character] || character))
 
+async function hashIp(ip: string) {
+  try {
+    const buffer = new TextEncoder().encode(ip)
+    const digest = await crypto.subtle.digest('SHA-256', buffer)
+    return Array.from(new Uint8Array(digest)).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('')
+  } catch { return null }
+}
+
+async function logCall(entry: {
+  status: number
+  duration_ms: number
+  error?: string | null
+  meta?: Record<string, unknown>
+  ip_hash?: string | null
+}) {
+  try {
+    const url = Deno.env.get('SUPABASE_URL')
+    const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    if (!url || !key) return
+    const admin = createClient(url, key, { auth: { persistSession: false } })
+    await admin.from('edge_function_logs').insert({
+      function_name: 'submit-guest-lead',
+      status_code: entry.status,
+      duration_ms: entry.duration_ms,
+      ok: entry.status >= 200 && entry.status < 400,
+      error: entry.error || null,
+      meta: entry.meta || {},
+      ip_hash: entry.ip_hash || null,
+    })
+  } catch (error) {
+    console.error('log insert failed', error)
+  }
+}
+
 Deno.serve(async request => {
   if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
-  if (request.method !== 'POST') return respond({ error: 'Metoden stöds inte.' }, 405)
+  const started = Date.now()
+  const rawIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || ''
+  const ip_hash = rawIp ? await hashIp(rawIp) : null
+  const finish = (response: Response, error?: string, meta: Record<string, unknown> = {}) => {
+    const duration_ms = Date.now() - started
+    console.log(JSON.stringify({ fn: 'submit-guest-lead', status: response.status, duration_ms, error: error || null, ...meta }))
+    logCall({ status: response.status, duration_ms, error, meta, ip_hash })
+    return response
+  }
+
+  if (request.method !== 'POST') return finish(respond({ error: 'Metoden stöds inte.' }, 405), 'method_not_allowed')
 
   try {
     const payload = await request.json()
-    if (text(payload.website, 200)) return respond({ success: true })
+    if (text(payload.website, 200)) return finish(respond({ success: true }), null, { reason: 'honeypot' })
 
     const email = text(payload.email, 254).toLowerCase()
     const fullName = text(payload.full_name, 120)
@@ -45,26 +89,26 @@ Deno.serve(async request => {
     const budgetRange = text(payload.budget_range, 40)
     const startTime = text(payload.start_time, 40)
 
-    if (!validEmail(email)) return respond({ error: 'Ange en giltig e-postadress.' }, 400)
-    if (fullName.length < 2) return respond({ error: 'Ange ditt namn.' }, 400)
-    if (title.length < 3 || description.length < 20) return respond({ error: 'Beskriv uppdraget tydligare.' }, 400)
+    if (!validEmail(email)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
+    if (fullName.length < 2) return finish(respond({ error: 'Ange ditt namn.' }, 400), 'missing_name')
+    if (title.length < 3 || description.length < 20) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
     if (!allowedCategories.has(category) || !allowedBudgets.has(budgetRange) || !allowedStarts.has(startTime)) {
-      return respond({ error: 'Kontrollera kategori, budget och önskad start.' }, 400)
+      return finish(respond({ error: 'Kontrollera kategori, budget och önskad start.' }, 400), 'invalid_enums')
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
-    if (!supabaseUrl || !serviceKey) return respond({ error: 'Servern är inte korrekt konfigurerad.' }, 500)
+    if (!supabaseUrl || !serviceKey) return finish(respond({ error: 'Servern är inte korrekt konfigurerad.' }, 500), 'missing_env')
 
     const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } })
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
     const recent = await admin.from('guest_leads').select('id', { count: 'exact', head: true }).eq('email', email).gte('created_at', tenMinutesAgo)
-    if ((recent.count || 0) > 0) return respond({ error: 'Ett uppdrag har nyligen skickats från denna e-postadress. Vänta en stund.' }, 429)
+    if ((recent.count || 0) > 0) return finish(respond({ error: 'Ett uppdrag har nyligen skickats från denna e-postadress. Vänta en stund.' }, 429), 'rate_limit_10min', { category })
 
     const daily = await admin.from('guest_leads').select('id', { count: 'exact', head: true }).eq('email', email).gte('created_at', oneDayAgo)
-    if ((daily.count || 0) >= 3) return respond({ error: 'För många uppdrag har skickats från denna e-postadress idag.' }, 429)
+    if ((daily.count || 0) >= 3) return finish(respond({ error: 'För många uppdrag har skickats från denna e-postadress idag.' }, 429), 'rate_limit_24h', { category })
 
     const inserted = await admin.from('guest_leads').insert({
       email, full_name: fullName, company_name: companyName || null, phone: phone || null,
@@ -99,9 +143,9 @@ Deno.serve(async request => {
       if (!response.ok) console.error('Confirmation email failed', await response.text())
     }
 
-    return respond({ success: true, lead_id: inserted.data.id, email_sent: emailSent }, 201)
+    return finish(respond({ success: true, lead_id: inserted.data.id, email_sent: emailSent }, 201), null, { category, budget_range: budgetRange, email_sent: emailSent })
   } catch (error) {
     console.error('submit-guest-lead failed', error)
-    return respond({ error: 'Kunde inte skicka in uppdraget. Försök igen.' }, 500)
+    return finish(respond({ error: 'Kunde inte skicka in uppdraget. Försök igen.' }, 500), error instanceof Error ? error.message : 'unknown_error')
   }
 })
