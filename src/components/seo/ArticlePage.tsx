@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
 import { findArticle, ARTICLES, ARTICLE_TYPE_LABEL, type ArticlePage as ArticleType } from '@/lib/seoArticles'
