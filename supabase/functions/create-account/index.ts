@@ -156,6 +156,25 @@ serve(async (req) => {
       }
     }
 
+    // Link any guest projects with the same email to the new buyer account.
+    if (role === "buyer") {
+      try {
+        const { data: leads } = await adminClient
+          .from("guest_leads")
+          .select("id")
+          .eq("email", email);
+        const leadIds = (leads || []).map((row: { id: string }) => row.id);
+        if (leadIds.length) {
+          await adminClient
+            .from("projects")
+            .update({ buyer_id: user.id, guest_lead_id: null })
+            .in("guest_lead_id", leadIds);
+        }
+      } catch (linkError) {
+        console.error("create-account guest link failed", linkError);
+      }
+    }
+
     return json({
       userId: user.id,
       session: authData.session,

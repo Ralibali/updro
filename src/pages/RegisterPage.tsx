@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Building2, User } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
@@ -16,10 +16,13 @@ import { setSEOMeta } from '@/lib/seoHelpers'
 const RegisterPage = () => {
   const { signUp } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const prefilledEmail = searchParams.get('email')?.trim().toLowerCase() || ''
+  const linkedProject = searchParams.get('project') || ''
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     full_name: '',
-    email: '',
+    email: prefilledEmail,
     password: '',
     acceptedTerms: false,
     newsletter: false,
@@ -97,6 +100,13 @@ const RegisterPage = () => {
               <p className="text-xs text-muted-foreground mt-1">Få fem gratis leads</p>
             </Link>
           </div>
+
+          {linkedProject && (
+            <div className="mb-4 rounded-xl border border-brand-blue/30 bg-brand-blue/5 p-4 text-sm">
+              <p className="font-semibold text-brand-blue">Du har en offert som väntar</p>
+              <p className="text-muted-foreground mt-1">Använd samma e-postadress som du angav när du publicerade uppdraget – vi kopplar uppdraget till ditt konto automatiskt.</p>
+            </div>
+          )}
 
           <div className="bg-card rounded-2xl border p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
