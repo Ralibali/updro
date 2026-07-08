@@ -252,6 +252,42 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_function_logs: {
+        Row: {
+          created_at: string
+          duration_ms: number
+          error: string | null
+          function_name: string
+          id: string
+          ip_hash: string | null
+          meta: Json
+          ok: boolean
+          status_code: number
+        }
+        Insert: {
+          created_at?: string
+          duration_ms: number
+          error?: string | null
+          function_name: string
+          id?: string
+          ip_hash?: string | null
+          meta?: Json
+          ok: boolean
+          status_code: number
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number
+          error?: string | null
+          function_name?: string
+          id?: string
+          ip_hash?: string | null
+          meta?: Json
+          ok?: boolean
+          status_code?: number
+        }
+        Relationships: []
+      }
       guides: {
         Row: {
           category: string | null
