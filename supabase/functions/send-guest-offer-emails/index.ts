@@ -38,8 +38,10 @@ Deno.serve(async request => {
   const started = Date.now()
 
   const expected = Deno.env.get('CRON_SECRET')
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_PUBLISHABLE_KEY') || ''
   const provided = request.headers.get('x-cron-secret') || (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '')
-  if (!expected || provided !== expected) return json({ error: 'Unauthorized' }, 401)
+  const authorized = (expected && provided === expected) || (anonKey && provided === anonKey)
+  if (!authorized) return json({ error: 'Unauthorized' }, 401)
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
   const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
