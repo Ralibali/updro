@@ -76,6 +76,25 @@ const AgencyCategoryPage = () => {
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{category.description}</p>
       </section>
 
+      {/* Top CTA */}
+      <section className="container pb-8">
+        <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))]">
+          <h2 className="font-display text-2xl md:text-3xl font-bold">
+            Låt {category.name}-byråerna komma till dig – beskriv ditt projekt så får du upp till 5 offerter gratis
+          </h2>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link
+              to={`/publicera?kategori=${encodeURIComponent(category.name)}`}
+              onClick={() => trackLeadStarted('seo_category')}
+              className="inline-flex items-center gap-2 h-12 px-6 bg-accent text-accent-foreground font-bold font-display uppercase tracking-wide hover:bg-[hsl(14_75%_50%)] transition-colors"
+            >
+              Publicera uppdrag
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="container pb-16">
         <h2 className="font-display text-xl font-semibold mb-6">{agencies.length} {category.name.toLowerCase()}-byråer i Sverige</h2>
         {agencies.length === 0 ? (
