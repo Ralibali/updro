@@ -7,7 +7,8 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import NotFound from '@/pages/NotFound'
 import SEOLeadCTA from '@/components/seo/SEOLeadCTA'
-import { ChevronRight, MapPin, Star } from 'lucide-react'
+import { ChevronRight, MapPin, Star, ArrowRight } from 'lucide-react'
+import { trackLeadStarted } from '@/lib/analytics'
 
 const AgencyCategoryPage = () => {
   const { kategori } = useParams<{ kategori: string }>()
