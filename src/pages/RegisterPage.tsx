@@ -101,6 +101,13 @@ const RegisterPage = () => {
             </Link>
           </div>
 
+          {linkedProject && (
+            <div className="mb-4 rounded-xl border border-brand-blue/30 bg-brand-blue/5 p-4 text-sm">
+              <p className="font-semibold text-brand-blue">Du har en offert som väntar</p>
+              <p className="text-muted-foreground mt-1">Använd samma e-postadress som du angav när du publicerade uppdraget – vi kopplar uppdraget till ditt konto automatiskt.</p>
+            </div>
+          )}
+
           <div className="bg-card rounded-2xl border p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
