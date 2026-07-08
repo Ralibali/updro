@@ -37,10 +37,10 @@ Deno.serve(async request => {
   if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
   const started = Date.now()
 
-  const expected = Deno.env.get('CRON_SECRET')
-  const anonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_PUBLISHABLE_KEY') || ''
+  const guestToken = Deno.env.get('GUEST_CRON_TOKEN')
+  const cronSecret = Deno.env.get('CRON_SECRET')
   const provided = request.headers.get('x-cron-secret') || (request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '')
-  const authorized = (expected && provided === expected) || (anonKey && provided === anonKey)
+  const authorized = (guestToken && provided === guestToken) || (cronSecret && provided === cronSecret)
   if (!authorized) return json({ error: 'Unauthorized' }, 401)
 
   const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
