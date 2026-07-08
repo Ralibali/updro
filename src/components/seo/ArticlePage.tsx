@@ -10,6 +10,28 @@ import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 import AuthorBio from '@/components/shared/AuthorBio'
 import ShareButtons from '@/components/shared/ShareButtons'
+import { trackLeadStarted } from '@/lib/analytics'
+
+const ArticleCTA = () => (
+  <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))] my-10">
+    <h2 className="font-display text-2xl md:text-3xl font-bold">
+      Redo att ta in offerter? Publicera ditt projekt gratis
+    </h2>
+    <p className="mt-3 text-background/80 max-w-2xl">
+      Beskriv projektet på 3 minuter och få upp till fem offerter från kvalitetssäkrade svenska byråer inom 24 timmar.
+    </p>
+    <div className="mt-6 flex flex-wrap gap-3">
+      <Link
+        to="/publicera"
+        onClick={() => trackLeadStarted('seo_article')}
+        className="inline-flex items-center gap-2 h-12 px-6 bg-accent text-accent-foreground font-bold font-display uppercase tracking-wide hover:bg-[hsl(14_75%_50%)] transition-colors"
+      >
+        Publicera uppdrag
+        <ArrowRight className="w-4 h-4" />
+      </Link>
+    </div>
+  </div>
+)
 
 const ArticlePage = () => {
   const { slug } = useParams<{ slug: string }>()
