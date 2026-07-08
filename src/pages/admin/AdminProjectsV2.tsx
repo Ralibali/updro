@@ -34,7 +34,7 @@ const AdminProjectsV2 = () => {
     setLoading(true)
     const { data, error } = await (supabase as any)
       .from('projects')
-      .select('*, profiles!projects_buyer_id_fkey(full_name, company_name, email, phone, city), guest_leads!projects_guest_lead_id_fkey(full_name, company_name, email, phone)')
+      .select('*, profiles!projects_buyer_id_fkey(full_name, company_name, email, phone, city)')
       .order('created_at', { ascending: false })
       .limit(500)
     setLoading(false)
