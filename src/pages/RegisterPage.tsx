@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Building2, User } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
@@ -16,10 +16,13 @@ import { setSEOMeta } from '@/lib/seoHelpers'
 const RegisterPage = () => {
   const { signUp } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const prefilledEmail = searchParams.get('email')?.trim().toLowerCase() || ''
+  const linkedProject = searchParams.get('project') || ''
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     full_name: '',
-    email: '',
+    email: prefilledEmail,
     password: '',
     acceptedTerms: false,
     newsletter: false,
