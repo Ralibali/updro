@@ -288,6 +288,115 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_leads: {
+        Row: {
+          budget_range: string
+          category: string
+          company_name: string | null
+          created_at: string
+          description: string
+          email: string
+          full_name: string
+          id: string
+          is_company: boolean
+          phone: string | null
+          source: string
+          start_time: string
+          title: string
+        }
+        Insert: {
+          budget_range: string
+          category: string
+          company_name?: string | null
+          created_at?: string
+          description: string
+          email: string
+          full_name: string
+          id?: string
+          is_company?: boolean
+          phone?: string | null
+          source?: string
+          start_time: string
+          title: string
+        }
+        Update: {
+          budget_range?: string
+          category?: string
+          company_name?: string | null
+          created_at?: string
+          description?: string
+          email?: string
+          full_name?: string
+          id?: string
+          is_company?: boolean
+          phone?: string | null
+          source?: string
+          start_time?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      guest_offer_email_queue: {
+        Row: {
+          attempts: number
+          created_at: string
+          guest_lead_id: string
+          id: string
+          last_error: string | null
+          offer_id: string
+          project_id: string
+          sent_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          guest_lead_id: string
+          id?: string
+          last_error?: string | null
+          offer_id: string
+          project_id: string
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          guest_lead_id?: string
+          id?: string
+          last_error?: string | null
+          offer_id?: string
+          project_id?: string
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guest_offer_email_queue_guest_lead_id_fkey"
+            columns: ["guest_lead_id"]
+            isOneToOne: false
+            referencedRelation: "guest_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guest_offer_email_queue_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: true
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "guest_offer_email_queue_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guides: {
         Row: {
           category: string | null
@@ -601,11 +710,12 @@ export type Database = {
       projects: {
         Row: {
           budget_range: string | null
-          buyer_id: string
+          buyer_id: string | null
           category: string
           city: string | null
           created_at: string | null
           description: string
+          guest_lead_id: string | null
           id: string
           is_company: boolean | null
           max_offers: number | null
@@ -618,11 +728,12 @@ export type Database = {
         }
         Insert: {
           budget_range?: string | null
-          buyer_id: string
+          buyer_id?: string | null
           category: string
           city?: string | null
           created_at?: string | null
           description: string
+          guest_lead_id?: string | null
           id?: string
           is_company?: boolean | null
           max_offers?: number | null
@@ -635,11 +746,12 @@ export type Database = {
         }
         Update: {
           budget_range?: string | null
-          buyer_id?: string
+          buyer_id?: string | null
           category?: string
           city?: string | null
           created_at?: string | null
           description?: string
+          guest_lead_id?: string | null
           id?: string
           is_company?: boolean | null
           max_offers?: number | null
@@ -663,6 +775,13 @@ export type Database = {
             columns: ["buyer_id"]
             isOneToOne: false
             referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_guest_lead_id_fkey"
+            columns: ["guest_lead_id"]
+            isOneToOne: false
+            referencedRelation: "guest_leads"
             referencedColumns: ["id"]
           },
         ]
