@@ -22,6 +22,7 @@ const navItems = [
   { label: 'Audit-logg', href: '/admin/audit', icon: Shield },
   { label: 'Notifikationer', href: '/admin/notifikationer', icon: Bell },
   { label: 'Marketplace health', href: '/admin/marketplace-health', icon: Activity },
+  { label: 'Edge-funktioner', href: '/admin/edge-funktioner', icon: Activity },
   { label: 'Inställningar', href: '/admin/installningar', icon: Settings },
 ]
 
