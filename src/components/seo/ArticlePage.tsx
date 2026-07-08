@@ -197,13 +197,17 @@ const ArticlePage = () => {
       <div className="container pb-12">
         <div className="max-w-3xl space-y-10">
           {page.sections.map((section, i) => (
-            <section key={i}>
-              <h2 className="font-display text-2xl font-bold mb-4">{section.heading}</h2>
-              <div className="prose prose-lg text-muted-foreground max-w-none">
-                {renderMarkdown(section.content)}
-              </div>
-            </section>
+            <React.Fragment key={i}>
+              <section>
+                <h2 className="font-display text-2xl font-bold mb-4">{section.heading}</h2>
+                <div className="prose prose-lg text-muted-foreground max-w-none">
+                  {renderMarkdown(section.content)}
+                </div>
+              </section>
+              {i === 0 && <ArticleCTA />}
+            </React.Fragment>
           ))}
+          <ArticleCTA />
         </div>
         <div className="max-w-3xl mt-10 space-y-5">
           {/* Update / review meta */}
