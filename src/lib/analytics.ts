@@ -42,6 +42,16 @@ export const trackLeadStarted = (source: string) => {
   })
 }
 
+/** Dedupes the given event once per browser session using sessionStorage. */
+export const trackOnceInSession = (key: string, fn: () => void): boolean => {
+  if (typeof sessionStorage === 'undefined') { fn(); return true }
+  const stamp = `updro:evt:${key}`
+  if (sessionStorage.getItem(stamp)) return false
+  sessionStorage.setItem(stamp, '1')
+  fn()
+  return true
+}
+
 export const trackLeadSubmitted = ({
   source,
   category,
