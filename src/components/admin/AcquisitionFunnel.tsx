@@ -5,14 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/integrations/supabase/client'
 
 const sinceThirtyDays = () => new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-
 const rate = (value: number, base: number) => base > 0 ? Math.round((value / base) * 1000) / 10 : 0
 
 const AcquisitionFunnel = () => {
-  const since = sinceThirtyDays()
+  const since = useMemo(sinceThirtyDays, [])
 
   const { data: pageViews = [], isLoading: viewsLoading } = useQuery({
-    queryKey: ['acquisition-funnel-page-views', since.slice(0, 10)],
+    queryKey: ['acquisition-funnel-page-views', since],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('page_views')
@@ -24,7 +23,7 @@ const AcquisitionFunnel = () => {
   })
 
   const { data: events = [], isLoading: eventsLoading } = useQuery({
-    queryKey: ['acquisition-funnel-click-events', since.slice(0, 10)],
+    queryKey: ['acquisition-funnel-click-events', since],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('click_events')
@@ -35,8 +34,8 @@ const AcquisitionFunnel = () => {
     },
   })
 
-  const { count: projectCount = 0, isLoading: projectsLoading } = useQuery({
-    queryKey: ['acquisition-funnel-projects', since.slice(0, 10)],
+  const projectsQuery = useQuery({
+    queryKey: ['acquisition-funnel-projects', since],
     queryFn: async () => {
       const { count, error } = await supabase
         .from('projects')
@@ -45,8 +44,8 @@ const AcquisitionFunnel = () => {
       if (error) throw error
       return count || 0
     },
-    select: count => ({ count }),
-  }).data || { count: 0, isLoading: false }
+  })
+  const projectCount = projectsQuery.data || 0
 
   const funnel = useMemo(() => {
     const visitors = new Set(pageViews.map(view => view.session_id)).size
@@ -56,16 +55,16 @@ const AcquisitionFunnel = () => {
     const submitted = new Set(events.filter(event => event.event_name === 'lead_submitted').map(event => event.session_id)).size
 
     return [
-      { label: 'Besökare', value: visitors, rate: 100, icon: Users },
-      { label: 'Såg formuläret', value: wizardVisitors, rate: rate(wizardVisitors, visitors), icon: Eye },
-      { label: 'Startade leadflödet', value: started, rate: rate(started, visitors), icon: FilePenLine },
-      { label: 'Nådde sista steget', value: detailsReached, rate: rate(detailsReached, visitors), icon: ArrowRight },
-      { label: 'Skickade in', value: submitted, rate: rate(submitted, visitors), icon: Send },
-      { label: 'Projekt i databasen', value: projectCount, rate: rate(projectCount, visitors), icon: Send },
+      { label: 'Besökare', value: visitors, conversion: 100, icon: Users },
+      { label: 'Såg formuläret', value: wizardVisitors, conversion: rate(wizardVisitors, visitors), icon: Eye },
+      { label: 'Startade leadflödet', value: started, conversion: rate(started, visitors), icon: FilePenLine },
+      { label: 'Nådde sista steget', value: detailsReached, conversion: rate(detailsReached, visitors), icon: ArrowRight },
+      { label: 'Skickade in', value: submitted, conversion: rate(submitted, visitors), icon: Send },
+      { label: 'Projekt i databasen', value: projectCount, conversion: rate(projectCount, visitors), icon: Send },
     ]
   }, [pageViews, events, projectCount])
 
-  const loading = viewsLoading || eventsLoading || projectsLoading
+  const loading = viewsLoading || eventsLoading || projectsQuery.isLoading
   const visitors = funnel[0]?.value || 0
   const projects = funnel[funnel.length - 1]?.value || 0
 
@@ -87,7 +86,7 @@ const AcquisitionFunnel = () => {
                 <div key={step.label} className="rounded-xl border bg-card p-4">
                   <div className="flex items-center justify-between">
                     <step.icon className="h-4 w-4 text-primary" />
-                    <span className="text-[10px] font-semibold text-muted-foreground">{step.rate}% av besökare</span>
+                    <span className="text-[10px] font-semibold text-muted-foreground">{step.conversion}% av besökare</span>
                   </div>
                   <p className="mt-3 font-display text-2xl font-bold">{step.value}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{step.label}</p>
