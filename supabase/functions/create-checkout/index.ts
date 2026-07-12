@@ -100,7 +100,7 @@ serve(async req => {
       client_reference_id: user.id,
       line_items: [{ price: selected.priceId, quantity: 1 }],
       mode: selected.mode,
-      success_url: `${billingReturnUrl}?success=true`,
+      success_url: `${billingReturnUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${billingReturnUrl}?canceled=true`,
       metadata,
       subscription_data: selected.mode === "subscription" ? { metadata } : undefined,
