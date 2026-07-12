@@ -21,6 +21,11 @@ Deno.serve(async request => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
+  if (!stripeKey || !webhookSecret || !supabaseUrl || !serviceKey) {
+    console.error("stripe-webhook missing required secrets");
+    return json({ error: "Webhook is not configured" }, 500);
+  }
+
   let subscriptionPriceIds: Set<string>;
   try {
     subscriptionPriceIds = getSubscriptionPriceIds();
@@ -30,12 +35,6 @@ Deno.serve(async request => {
     return json({ error: "Webhook is not configured" }, 500);
   }
 
-
-
-  if (!stripeKey || !webhookSecret || !supabaseUrl || !serviceKey) {
-    console.error("stripe-webhook missing required secrets");
-    return json({ error: "Webhook is not configured" }, 500);
-  }
 
   const signature = request.headers.get("stripe-signature");
   if (!signature) return json({ error: "Missing Stripe signature" }, 400);
