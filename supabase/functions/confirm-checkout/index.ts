@@ -1,5 +1,6 @@
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
+import { isBillingPlanId } from "../_shared/billing-plans.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -47,7 +48,7 @@ Deno.serve(async request => {
     }
 
     const purchaseType = session.metadata?.purchase_type;
-    if (purchaseType !== "lead" && purchaseType !== "monthly" && purchaseType !== "yearly") {
+    if (!isBillingPlanId(purchaseType)) {
       return json({ error: "Okänd betalningsprodukt." }, 400);
     }
 

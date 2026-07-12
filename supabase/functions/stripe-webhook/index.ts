@@ -1,5 +1,6 @@
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
+import { BillingConfigError, getSubscriptionPriceIds, isBillingPlanId } from "../_shared/billing-plans.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,15 +20,21 @@ Deno.serve(async request => {
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-  const monthlyPriceId = Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31";
-  const yearlyPriceId = Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg";
-  const subscriptionPriceIds = new Set([monthlyPriceId, yearlyPriceId]);
-
 
   if (!stripeKey || !webhookSecret || !supabaseUrl || !serviceKey) {
     console.error("stripe-webhook missing required secrets");
     return json({ error: "Webhook is not configured" }, 500);
   }
+
+  let subscriptionPriceIds: Set<string>;
+  try {
+    subscriptionPriceIds = getSubscriptionPriceIds();
+  } catch (error) {
+    const message = error instanceof BillingConfigError ? error.message : String(error);
+    console.error("stripe-webhook billing config error:", message);
+    return json({ error: "Webhook is not configured" }, 500);
+  }
+
 
   const signature = request.headers.get("stripe-signature");
   if (!signature) return json({ error: "Missing Stripe signature" }, 400);
@@ -85,7 +92,7 @@ Deno.serve(async request => {
       const supplierId = await resolveSupplierId(customerId, session.metadata?.user_id || session.client_reference_id);
 
       if (!supplierId) throw new Error("Supplier could not be resolved for checkout session");
-      if (purchaseType !== "lead" && purchaseType !== "monthly" && purchaseType !== "yearly") throw new Error("Unknown purchase type");
+      if (!isBillingPlanId(purchaseType)) throw new Error("Unknown purchase type");
 
       const paymentReady = session.payment_status === "paid" || session.payment_status === "no_payment_required";
       if (paymentReady) {
