@@ -136,7 +136,9 @@ serve(async req => {
       current_period_start: new Date(activeSubscription.current_period_start * 1000).toISOString(),
       trial_end: activeSubscription.trial_end ? new Date(activeSubscription.trial_end * 1000).toISOString() : null,
       subscription_end: new Date(activeSubscription.current_period_end * 1000).toISOString(),
+      credits: creditsBlock,
     });
+
 
 
   } catch (error) {
