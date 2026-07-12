@@ -99,8 +99,10 @@ const ProjectWizardV2 = () => {
       toast.error(`Skriv minst ${20 - descriptionLength} tecken till.`)
       return
     }
-    trackLeadStarted('project_wizard')
-    trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1 })
+    trackOnceInSession('lead_started', () => trackLeadStarted('project_wizard'))
+    trackOnceInSession('lead_step_completed:1', () => {
+      trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1 })
+    })
     setStep(2)
   }
 
@@ -145,27 +147,12 @@ const ProjectWizardV2 = () => {
         if (error) throw error
         const newProjectId = String(inserted?.id || '')
         if (newProjectId && (attribution.first || attribution.latest)) {
-          const row = {
-            project_id: newProjectId,
-            first_source: attribution.first?.source ?? null,
-            first_medium: attribution.first?.medium ?? null,
-            first_campaign: attribution.first?.campaign ?? null,
-            first_term: attribution.first?.term ?? null,
-            first_content: attribution.first?.content ?? null,
-            first_landing_path: attribution.first?.landing_path ?? null,
-            first_referrer: attribution.first?.referrer ?? null,
-            first_touch_at: attribution.first?.timestamp ?? null,
-            latest_source: attribution.latest?.source ?? null,
-            latest_medium: attribution.latest?.medium ?? null,
-            latest_campaign: attribution.latest?.campaign ?? null,
-            latest_term: attribution.latest?.term ?? null,
-            latest_content: attribution.latest?.content ?? null,
-            latest_landing_path: attribution.latest?.landing_path ?? null,
-            latest_referrer: attribution.latest?.referrer ?? null,
-            latest_touch_at: attribution.latest?.timestamp ?? null,
-          }
-          const { error: attrError } = await supabase.from('project_attributions').insert(row)
-          if (attrError && import.meta.env.DEV) console.warn('Attribution insert failed', attrError)
+          const { error: attrError } = await supabase.rpc('save_project_attribution', {
+            p_project_id: newProjectId,
+            p_first: attribution.first as unknown as never,
+            p_latest: attribution.latest as unknown as never,
+          })
+          if (attrError && import.meta.env.DEV) console.warn('Attribution RPC failed', attrError)
         }
         trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer' })
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
