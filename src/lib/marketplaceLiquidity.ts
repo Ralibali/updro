@@ -128,7 +128,7 @@ export const buildProjectQueue = (
 
     const ageHours = hoursSince(p.created_at, now)
     const unlocksN = unlocksByProject.get(p.id) ?? 0
-    const offersN = offersByProject.get(p.id) ?? Number(p.offer_count ?? 0) ?? 0
+    const offersN = offersByProject.get(p.id) ?? (Number(p.offer_count ?? 0) || 0)
     const matching = countMatchingSuppliers(p.category, suppliers)
 
     const flags: ProjectFlag[] = []
