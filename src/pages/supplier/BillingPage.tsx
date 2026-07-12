@@ -76,9 +76,10 @@ const BillingPage = () => {
 
   const handleCheckout = async (planId: string) => {
     if (loading) return
-    const product = planId === 'monthly' ? STRIPE_PRODUCTS.monthly : STRIPE_PRODUCTS.lead
+    const product = STRIPE_PRODUCTS[planId as keyof typeof STRIPE_PRODUCTS] ?? STRIPE_PRODUCTS.lead
     setLoading(planId)
     trackBeginCheckout(planId, product.price)
+
 
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
