@@ -12,6 +12,7 @@ import ProjectStepper from '@/components/shared/ProjectStepper'
 import BuyerDecisionCard from '@/components/shared/BuyerDecisionCard'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
+import ProjectOutcomeCard from '@/components/buyer/ProjectOutcomeCard'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -123,6 +124,15 @@ const ProjectDetail = () => {
               onScrollToOffers={scrollToOffers}
               onProjectClosed={handleProjectClosed}
             />
+
+            {id && (
+              <ProjectOutcomeCard
+                projectId={id}
+                buyerId={project.buyer_id}
+                offers={offers}
+              />
+            )}
+
 
             <div ref={offersRef}>
               <h2 className="font-display text-lg font-semibold mb-4">
