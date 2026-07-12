@@ -851,6 +851,95 @@ export type Database = {
           },
         ]
       }
+      project_outcomes: {
+        Row: {
+          actual_value_sek: number | null
+          buyer_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          outcome: string
+          project_id: string
+          selected_offer_id: string | null
+          selected_supplier_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          actual_value_sek?: number | null
+          buyer_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          outcome: string
+          project_id: string
+          selected_offer_id?: string | null
+          selected_supplier_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          actual_value_sek?: number | null
+          buyer_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          outcome?: string
+          project_id?: string
+          selected_offer_id?: string | null
+          selected_supplier_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_outcomes_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_outcomes_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_outcomes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_outcomes_selected_offer_id_fkey"
+            columns: ["selected_offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_outcomes_selected_supplier_id_fkey"
+            columns: ["selected_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_agency_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_outcomes_selected_supplier_id_fkey"
+            columns: ["selected_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_supplier_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_outcomes_selected_supplier_id_fkey"
+            columns: ["selected_supplier_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           budget_range: string | null
@@ -1482,6 +1571,33 @@ export type Database = {
         }[]
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      report_project_outcome: {
+        Args: {
+          p_actual_value_sek?: number
+          p_comment?: string
+          p_outcome: string
+          p_project_id: string
+          p_selected_offer_id?: string
+        }
+        Returns: {
+          actual_value_sek: number | null
+          buyer_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          outcome: string
+          project_id: string
+          selected_offer_id: string | null
+          selected_supplier_id: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "project_outcomes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       request_lead_refund: {
         Args: { p_details?: string; p_project_id: string; p_reason: string }
         Returns: string
