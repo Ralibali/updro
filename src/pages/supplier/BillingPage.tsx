@@ -28,7 +28,7 @@ const BillingPage = () => {
       if (error) throw error
       if (data) {
         setSubscription(data)
-        if (data.subscribed) await refreshProfile()
+        await refreshProfile()
       }
     } catch (error) {
       if (import.meta.env.DEV) console.warn('Subscription check failed', error)
@@ -44,6 +44,7 @@ const BillingPage = () => {
     if (success) {
       toast.success('Betalningen lyckades! Ditt konto uppdateras inom kort.')
       checkSubscription()
+      window.setTimeout(() => refreshProfile(), 2000)
     } else if (canceled) {
       toast.info('Betalningen avbröts.')
     }
@@ -65,12 +66,11 @@ const BillingPage = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { priceId: product.price_id, mode: product.mode },
+        body: { planId },
       })
       if (error) throw error
       if (!data?.url) throw new Error('Betallänken kunde inte skapas.')
 
-      // Same-tab navigation is not blocked by browsers after the async request.
       window.location.assign(data.url)
     } catch (error: any) {
       toast.error(error?.message || 'Något gick fel vid checkout')
