@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback, createContext, useContext, useRef, ReactNode } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import type { User, Session } from '@supabase/supabase-js'
 import type { Profile, SupplierProfile, UserRole } from '@/types'
@@ -47,77 +46,108 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [supplierProfile, setSupplierProfile] = useState<SupplierProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const pendingProjectInFlight = useRef(false)
+
+  const claimGuestProjects = useCallback(async () => {
+    const { error } = await (supabase as any).rpc('claim_guest_projects')
+    if (error && import.meta.env.DEV) console.warn('Guest projects could not be claimed', error)
+  }, [])
 
   const fetchProfile = useCallback(async (userId: string) => {
-    const { data: profileData } = await supabase
+    const { data: profileData, error: profileError } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
       .single()
 
-    if (profileData) {
-      setProfile(profileData as unknown as Profile)
-
-      if (profileData.role === 'supplier') {
-        const { data: supplierData } = await supabase
-          .from('supplier_profiles')
-          .select('*')
-          .eq('id', userId)
-          .single()
-
-        if (supplierData) {
-          setSupplierProfile(supplierData as unknown as SupplierProfile)
-        }
-      }
+    if (profileError || !profileData) {
+      setProfile(null)
+      setSupplierProfile(null)
+      if (import.meta.env.DEV) console.warn('Profile could not be loaded', profileError)
+      return
     }
-  }, [])
+
+    setProfile(profileData as unknown as Profile)
+
+    if (profileData.role === 'buyer') {
+      setSupplierProfile(null)
+      await claimGuestProjects()
+      return
+    }
+
+    if (profileData.role === 'supplier') {
+      const { data: supplierData, error: supplierError } = await supabase
+        .from('supplier_profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+
+      if (supplierError && import.meta.env.DEV) console.warn('Supplier profile could not be loaded', supplierError)
+      setSupplierProfile(supplierData ? supplierData as unknown as SupplierProfile : null)
+      return
+    }
+
+    setSupplierProfile(null)
+  }, [claimGuestProjects])
 
   const refreshProfile = useCallback(async () => {
-    if (user) {
-      await fetchProfile(user.id)
-    }
+    if (user) await fetchProfile(user.id)
   }, [user, fetchProfile])
 
   const createPendingProject = useCallback(async (userId: string) => {
+    if (pendingProjectInFlight.current) return
     const raw = localStorage.getItem('pending_project')
     if (!raw) return
+
+    pendingProjectInFlight.current = true
     try {
       const pending = JSON.parse(raw)
-      localStorage.removeItem('pending_project')
+      if (!pending?.title || !pending?.description || !pending?.category) {
+        localStorage.removeItem('pending_project')
+        return
+      }
+
       const { error } = await supabase.from('projects').insert({
         buyer_id: userId,
-        title: pending.title,
-        description: pending.description,
+        title: String(pending.title).trim().slice(0, 100),
+        description: String(pending.description).trim().slice(0, 5000),
         category: pending.category,
         budget_range: pending.budget_range,
         start_time: pending.start_time,
         is_company: pending.is_company ?? true,
         status: 'pending',
       })
-      if (!error) {
-        toast.success('Ditt uppdrag har publicerats! ✅')
+
+      if (error) {
+        console.error('Pending project could not be created', error)
+        toast.error('Kontot är klart, men uppdraget kunde inte sparas ännu. Det ligger kvar och försöks igen nästa gång du loggar in.')
+        return
       }
-    } catch {
+
       localStorage.removeItem('pending_project')
+      toast.success('Ditt uppdrag har skickats in för granskning! ✅')
+    } catch (error) {
+      console.error('Invalid pending project', error)
+      localStorage.removeItem('pending_project')
+    } finally {
+      pendingProjectInFlight.current = false
     }
   }, [])
 
   useEffect(() => {
     let isMounted = true
 
-    // First, get the initial session
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!isMounted) return
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
         await fetchProfile(session.user.id)
-        createPendingProject(session.user.id)
+        await createPendingProject(session.user.id)
       }
       if (isMounted) setLoading(false)
     })
 
-    // Then listen for auth changes (don't await inside callback)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         if (!isMounted) return
@@ -125,10 +155,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null)
 
         if (session?.user) {
-          fetchProfile(session.user.id).then(() => {
+          fetchProfile(session.user.id).then(async () => {
+            await createPendingProject(session.user.id)
             if (isMounted) setLoading(false)
-            // Auto-create pending project after email verification
-            createPendingProject(session.user.id)
           })
         } else {
           setProfile(null)
@@ -170,14 +199,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: null }
   }
 
-
   const signOut = async () => {
     await supabase.auth.signOut()
     setProfile(null)
     setSupplierProfile(null)
   }
 
-  // Trial calculations
   const isOnTrial = supplierProfile?.plan === 'trial' &&
     !!supplierProfile.trial_ends_at &&
     new Date(supplierProfile.trial_ends_at) > new Date() &&
@@ -190,12 +217,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     : 0
 
   const trialExpired = supplierProfile?.plan === 'trial' && !isOnTrial
-
-  // Active subscription = monthly plan
   const hasActiveSubscription = supplierProfile?.plan === 'monthly'
-
-  // Can unlock leads = on trial with credits, or has active subscription, or pay-per-lead (always can if willing to pay)
-  const canUnlockLeads = isOnTrial || hasActiveSubscription
+  const canUnlockLeads = hasActiveSubscription || (supplierProfile?.lead_credits ?? 0) > 0
 
   const value: AuthContextType = {
     user,
