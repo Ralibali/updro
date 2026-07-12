@@ -24,4 +24,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
   );
 };
 
+// Re-exporting sonner's `toast` alongside the Toaster component is the shadcn-canonical
+// shape. Fast Refresh warning is safe here.
+// eslint-disable-next-line react-refresh/only-export-components
 export { Toaster, toast };
