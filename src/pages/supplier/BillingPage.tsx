@@ -4,11 +4,26 @@ import { Check, CreditCard, ExternalLink, Loader2, Sparkles } from 'lucide-react
 import { toast } from 'sonner'
 import TrialBanner from '@/components/TrialBanner'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { trackBeginCheckout } from '@/lib/analytics'
 import { PLANS, STRIPE_PRODUCTS, TRIAL_LEADS } from '@/lib/constants'
 import { numWord } from '@/lib/numberWords'
+
+type SwitchPreview = {
+  currency: string
+  amount_due: number
+  subtotal: number
+  total: number
+  proration_amount: number
+  next_payment_attempt: string | null
+  period_end: string | null
+  current_price: { amount: number; interval: string | null }
+  new_price: { amount: number; interval: string | null }
+  target: 'monthly' | 'yearly'
+}
+
 
 const BillingPage = () => {
   const { isOnTrial, trialLeadsLeft, trialDaysLeft, refreshProfile } = useAuth()
