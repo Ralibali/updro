@@ -2,7 +2,6 @@ export const CATEGORIES = [
   'Webbutveckling', 'E-handel', 'Digital marknadsföring',
   'Grafisk design/UX', 'SEO', 'App-utveckling',
   'IT-konsult', 'Sociala medier',
-  // New categories
   'Mjukvaruutveckling', 'Video & foto', 'Varumärke & PR',
   'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling',
 ] as const
@@ -99,9 +98,8 @@ export const START_TIME_LABELS: Record<string, string> = {
 export const TRIAL_LEADS = 5
 export const TRIAL_DAYS = 7
 export const REFERRAL_CREDITS = 3
-export const MAX_OFFERS_PER_PROJECT = 5
+export const MAX_OFFERS_PER_PROJECT = 3
 
-// Stripe product/price mapping
 export const STRIPE_PRODUCTS = {
   monthly: {
     product_id: 'prod_UNNHPlzFIuEL0e',
@@ -128,10 +126,11 @@ export const PLANS = [
     price: 119,
     per: 'per lead',
     features: [
-      'Betala bara för leads du väljer',
-      'Fullständig offert-funktion',
-      'Inbyggd chatt med beställare',
-      'Inga bindningstider',
+      'Se brief, budget och tidsram före upplåsning',
+      'Betala bara för leads ni själva väljer',
+      'Skicka offert och chatta med beställaren',
+      'Begär kreditprövning vid ogiltigt lead',
+      'Ingen bindningstid',
     ],
     cta: 'Köp lead',
     highlighted: false,
@@ -142,16 +141,15 @@ export const PLANS = [
     price: 1995,
     per: '/månad',
     features: [
-      'Obegränsade leads – svara på allt',
-      'Profilsida med logotyp & portfolio',
-      'Framhävd profil i sökning',
-      'Statistik & insikter',
-      'Prioriterad support',
-      'Ingen bindningstid',
+      'Obegränsade lead-upplåsningar under aktiv månad',
+      'Max tre byråer kan lämna offert per uppdrag',
+      'Offert, bilagor och chatt i plattformen',
+      'Hantera abonnemanget via Stripe',
+      'Ingen uppsägningstid',
     ],
     cta: 'Starta månadskort',
     highlighted: true,
-    badge: 'Bäst värde',
+    badge: 'För högre volym',
   },
 ]
 

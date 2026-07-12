@@ -13,18 +13,18 @@ const CTASection = () => {
         transition={{ duration: 0.5 }}
       >
         <span className="inline-block px-3 py-1 border border-foreground text-[11px] font-bold uppercase tracking-widest bg-background font-display mb-6">
-          Kom igång på 2 minuter
+          Kom igång på cirka två minuter
         </span>
         <h2 className="font-display text-4xl md:text-6xl font-bold mb-6 text-foreground leading-[0.95] tracking-tight">
-          Redo att hitta <span className="text-accent">rätt byrå?</span>
+          Redo att jämföra <span className="text-accent">rätt byråer?</span>
         </h2>
         <p className="text-foreground/80 mb-10 text-lg max-w-xl mx-auto">
-          Beskriv ditt projekt och få tre handplockade offerter från kvalitetssäkrade byråer – helt gratis.
+          Beskriv projektet en gång. Briefen granskas och högst tre relevanta byråer kan lämna offert. Gratis och utan förpliktelser.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/publicera">
             <button className="h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all inline-flex items-center justify-center gap-2">
-              Starta din förfrågan
+              Beskriv ditt projekt
               <ArrowRight className="h-4 w-4" />
             </button>
           </Link>

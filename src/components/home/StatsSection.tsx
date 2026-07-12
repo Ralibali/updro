@@ -38,8 +38,8 @@ const CountUp = ({ target, suffix = '', prefix = '' }: CountUpProps) => {
 }
 
 const stats = [
-  { target: 5, suffix: '', label: 'offerter per förfrågan (max)' },
-  { target: 3, suffix: '', label: 'enkla steg till inskickat uppdrag' },
+  { target: 3, suffix: '', label: 'byråer kan lämna offert som mest' },
+  { target: 2, suffix: ' min', label: 'ungefärlig tid att skicka in briefen' },
   { target: 100, suffix: '%', label: 'gratis för uppdragsgivare' },
 ]
 

@@ -18,25 +18,25 @@ const howItWorksSchema = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
   name: 'Hur man jämför offerter på Updro',
-  description: 'Steg-för-steg: Beskriv ditt projekt, få offerter, välj rätt byrå.',
+  description: 'Steg-för-steg: Beskriv ditt projekt, få upp till tre relevanta offerter och välj rätt byrå.',
   step: [
     {
       '@type': 'HowToStep',
       position: 1,
       name: 'Beskriv ditt projekt',
-      text: 'Fyll i ett kort formulär med dina behov, budget och tidsram.',
+      text: 'Fyll i ett kort formulär med behov, budget och önskad start. Ingen registrering krävs.',
     },
     {
       '@type': 'HowToStep',
       position: 2,
-      name: 'Få offerter',
-      text: 'Kvalitetssäkrade byråer skickar offerter inom 24 timmar.',
+      name: 'Briefen granskas och matchas',
+      text: 'Updro granskar förfrågan innan relevanta byråer får möjlighet att svara.',
     },
     {
       '@type': 'HowToStep',
       position: 3,
-      name: 'Jämför & välj',
-      text: 'Jämför pris, kvalitet och omdömen – välj den byrå som passar bäst.',
+      name: 'Jämför och välj',
+      text: 'Högst tre byråer kan lämna offert. Jämför pris, upplägg och kompetens och välj bara när det känns rätt.',
     },
   ],
 }
@@ -48,8 +48,7 @@ const organizationSchema = {
   name: 'Updro',
   url: 'https://updro.se',
   logo: 'https://updro.se/logo-updro.png',
-  description:
-    'Sveriges marknadsplats för digitala uppdrag. Jämför offerter från kvalitetssäkrade digitala byråer.',
+  description: 'Svensk marknadsplats för digitala uppdrag med granskade projektbriefar och högst tre offerter per uppdrag.',
   founder: { '@type': 'Organization', name: 'Aurora Media AB' },
   contactPoint: {
     '@type': 'ContactPoint',
@@ -91,8 +90,7 @@ const Index = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Updro – Jämför offerter från digitala byråer',
-      description:
-        'Beskriv ditt projekt och få upp till tre relevanta offerter från kvalitetssäkrade digitala byråer i Sverige inom 24 timmar. Helt gratis.',
+      description: 'Beskriv ditt projekt och få upp till tre relevanta offerter från svenska digitala byråer. Briefen granskas och tjänsten är gratis för beställare.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)
@@ -110,9 +108,7 @@ const Index = () => {
           <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
             <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
             <p className="mt-3 text-foreground/85 leading-relaxed">
-              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag och får upp till tre relevanta offerter
-              från kvalitetssäkrade byråer inom 24 timmar. Tjänsten är gratis för uppdragsgivare och täcker
-              webbutveckling, SEO, e-handel, apputveckling och digital marknadsföring i hela Sverige.
+              Updro är en svensk marknadsplats där företag beskriver ett digitalt behov utan att först skapa konto. Vi granskar briefen innan den öppnas för matchande byråer, och högst tre byråer kan lämna offert. Tjänsten är gratis för beställare och täcker bland annat webbutveckling, e-handel, AI, SEO, appar och digital marknadsföring.
             </p>
           </div>
         </section>

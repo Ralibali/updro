@@ -1,133 +1,82 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ShieldCheck, Star, Clock, ArrowRight, MapPin, Plus } from 'lucide-react'
+import { ShieldCheck, UsersRound, FileSearch, ArrowRight, LockKeyhole } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
-const trustBadges = [
-  { icon: ShieldCheck, title: 'Granskade byråer', desc: 'Manuellt granskade innan godkännande' },
-  { icon: Star, title: 'Verifierade recensioner', desc: 'Riktiga omdömen från riktiga kunder' },
-  { icon: Clock, title: 'Svar inom 24 timmar', desc: 'Snabb återkoppling, garanterat' },
+const trustPoints = [
+  {
+    icon: FileSearch,
+    title: 'Briefen granskas före publicering',
+    description: 'Nya uppdrag får status väntande tills Updro har kontrollerat att behovet, budgeten och kontaktuppgifterna är användbara.',
+  },
+  {
+    icon: UsersRound,
+    title: 'Högst tre byråer per uppdrag',
+    description: 'Beställaren får ett hanterbart beslutsunderlag och varje byrå möter färre konkurrenter än på en öppen massmarknadsplats.',
+  },
+  {
+    icon: LockKeyhole,
+    title: 'Kontaktuppgifter skyddas',
+    description: 'Byrån ser briefen först och låser bara upp kontakten när uppdraget faktiskt passar. Personuppgifter delas inte öppet.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Kreditprövning vid dåliga leads',
+    description: 'En byrå kan rapportera ogiltig kontakt, falskt uppdrag eller felaktig omfattning och begära att lead-krediten återförs efter granskning.',
+  },
 ]
-
-const foundingAgencies = [
-  { name: 'Aurora Media AB', specialization: 'Digital marknadsföring & Webbutveckling', city: 'Linköping', badge: 'Grundare' },
-]
-
-const ease = [0.22, 1, 0.36, 1] as const
 
 const AgencyTrustSection = () => {
   return (
-    <section className="py-20">
+    <section className="py-20 border-y bg-card">
       <div className="container">
         <motion.div
-          className="text-center mb-12"
+          className="max-w-3xl mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="font-display text-3xl md:text-5xl text-foreground">
-            Kvalitetssäkrade byråer – hela Sverige
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Updros skillnad</p>
+          <h2 className="mt-3 font-display text-3xl md:text-5xl text-foreground">
+            Färre svar. Mer kontroll. Bättre förutsättningar för en riktig affär.
           </h2>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Alla byråer på Updro är granskade och godkända. Vi kontrollerar portfolio, referenskunder och leveranshistorik.
+          <p className="mt-4 text-muted-foreground max-w-2xl leading-relaxed">
+            Updro försöker inte vinna genom att skicka samma förfrågan till så många som möjligt. Produkten är byggd runt granskade briefar, begränsad konkurrens och tydlig transparens för både beställare och byrå.
           </p>
         </motion.div>
 
-        {/* Trust badges – horizontal row, no cards */}
-        <div className="max-w-5xl mx-auto mb-20 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 border-y border-border py-10">
-          {trustBadges.map((badge, i) => (
-            <motion.div
-              key={badge.title}
-              className="flex items-center gap-3"
-              initial={{ opacity: 0, y: 10 }}
+        <div className="grid md:grid-cols-2 gap-5 max-w-5xl">
+          {trustPoints.map((point, index) => (
+            <motion.article
+              key={point.title}
+              className="rounded-2xl border bg-background p-6"
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1, ease }}
+              transition={{ duration: 0.4, delay: index * 0.08 }}
             >
-              <badge.icon className="h-6 w-6 text-foreground shrink-0" strokeWidth={1.5} />
-              <div>
-                <p className="font-display text-base text-foreground leading-tight">{badge.title}</p>
-                <p className="text-xs text-muted-foreground">{badge.desc}</p>
-              </div>
-            </motion.div>
+              <point.icon className="h-6 w-6 text-accent" strokeWidth={1.8} />
+              <h3 className="mt-4 font-display text-xl font-semibold text-foreground">{point.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{point.description}</p>
+            </motion.article>
           ))}
         </div>
 
-        {/* Founding agencies header */}
-        <motion.h3
-          className="font-display text-2xl md:text-3xl text-foreground text-center mb-8"
+        <motion.div
+          className="mt-10 flex flex-col sm:flex-row gap-3"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
         >
-          Första byråer ombord
-        </motion.h3>
-
-        {/* Agency cards – max 2 cols, centered */}
-        <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-          {foundingAgencies.map((agency, i) => (
-            <motion.div
-              key={agency.name}
-              className="bg-card rounded-2xl border border-border p-6 shadow-sm hover:shadow-md transition-shadow"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1, ease }}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center">
-                    <span className="font-display text-foreground text-base">
-                      {agency.name.charAt(0)}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="font-display text-base text-foreground leading-tight">{agency.name}</h4>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
-                      {agency.city}
-                    </div>
-                  </div>
-                </div>
-                <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
-                  {agency.badge}
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">{agency.specialization}</p>
-            </motion.div>
-          ))}
-
-          {/* Add-card: Apply now */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.15, ease }}
-          >
-            <Link
-              to="/registrera/byra"
-              className="group flex h-full min-h-[120px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-transparent p-6 text-center transition-colors hover:border-foreground hover:bg-surface-alt"
-            >
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-foreground transition-transform group-hover:scale-110">
-                <Plus className="h-5 w-5" strokeWidth={1.5} />
-              </div>
-              <p className="font-display text-base text-foreground">Din byrå här?</p>
-              <p className="text-xs text-muted-foreground mt-1">Ansök nu →</p>
-            </Link>
-          </motion.div>
-        </div>
-
-        {/* CTA */}
-        <motion.div
-          className="text-center mt-10"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-        >
-          <Link to="/byraer" className="inline-flex items-center gap-2 text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2 transition-all">
-            Se alla byråer <ArrowRight className="h-4 w-4" />
+          <Link to="/publicera">
+            <Button className="rounded-xl">
+              Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+          <Link to="/registrera/byra">
+            <Button variant="outline" className="rounded-xl">Registrera din byrå</Button>
           </Link>
         </motion.div>
       </div>
