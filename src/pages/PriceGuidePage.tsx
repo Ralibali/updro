@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { ArrowRight, Calculator, ChevronRight, AlertTriangle, Check } from 'lucide-react'
 import Navbar from '@/components/Navbar'
@@ -12,19 +12,11 @@ const SITE = 'https://updro.se'
 const PriceGuidePage = () => {
   const { slug = '' } = useParams()
   const guide = findPriceGuide(slug)
-
-  if (!guide) return <Navigate to="/priser" replace />
-
-  const matrix = PRICE_MATRIX[guide.matrixKey]
-  const canonical = `${SITE}/priser/${guide.slug}`
-
-  const relatedArticles = useMemo(
-    () => guide.relatedArticleSlugs.map((s) => ARTICLES.find((a) => a.slug === s)).filter(Boolean) as typeof ARTICLES,
-    [guide.slug],
-  )
-  const otherGuides = PRICE_GUIDES.filter((g) => g.slug !== guide.slug)
+  const canonical = guide ? `${SITE}/priser/${guide.slug}` : `${SITE}/priser`
 
   useEffect(() => {
+    if (!guide) return
+
     setSEOMeta({ title: guide.title, description: guide.metaDescription, canonical })
     setBreadcrumb([
       { name: 'Hem', url: `${SITE}/` },
@@ -34,14 +26,22 @@ const PriceGuidePage = () => {
     setJsonLd('price-guide-faq', {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: guide.faq.map((f) => ({
+      mainEntity: guide.faq.map(faq => ({
         '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a },
+        name: faq.q,
+        acceptedAnswer: { '@type': 'Answer', text: faq.a },
       })),
     })
     window.scrollTo(0, 0)
   }, [guide, canonical])
+
+  if (!guide) return <Navigate to="/priser" replace />
+
+  const matrix = PRICE_MATRIX[guide.matrixKey]
+  const relatedArticles = guide.relatedArticleSlugs
+    .map(articleSlug => ARTICLES.find(article => article.slug === articleSlug))
+    .filter(Boolean) as typeof ARTICLES
+  const otherGuides = PRICE_GUIDES.filter(otherGuide => otherGuide.slug !== guide.slug)
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -57,7 +57,6 @@ const PriceGuidePage = () => {
         </nav>
       </div>
 
-      {/* Hero */}
       <section className="container pt-8 pb-10 md:pt-14 md:pb-14">
         <div className="max-w-3xl">
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight text-foreground">
@@ -81,7 +80,6 @@ const PriceGuidePage = () => {
         </div>
       </section>
 
-      {/* Pristabell */}
       <section className="container pb-12">
         <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6">
           Prisintervall – {guide.serviceLabel} 2026
@@ -97,7 +95,7 @@ const PriceGuidePage = () => {
               </tr>
             </thead>
             <tbody>
-              {guide.levels.map((row) => {
+              {guide.levels.map(row => {
                 const cell = matrix[row.level]
                 return (
                   <tr key={row.level} className="border-t">
@@ -116,24 +114,22 @@ const PriceGuidePage = () => {
         </p>
       </section>
 
-      {/* Prispåverkare */}
       <section className="container pb-12">
         <div className="max-w-3xl">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-4">
             Vad påverkar priset?
           </h2>
           <ul className="space-y-3">
-            {guide.drivers.map((d, i) => (
-              <li key={i} className="flex gap-3 text-foreground/85 leading-relaxed">
+            {guide.drivers.map((driver, index) => (
+              <li key={index} className="flex gap-3 text-foreground/85 leading-relaxed">
                 <Check className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                <span>{d}</span>
+                <span>{driver}</span>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* Varningssignaler */}
       <section className="container pb-12">
         <div className="max-w-3xl rounded-2xl border bg-secondary/50 p-6 md:p-8">
           <h2 className="font-display text-xl md:text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
@@ -141,24 +137,23 @@ const PriceGuidePage = () => {
             Så genomskådar du en för billig offert
           </h2>
           <ul className="space-y-3">
-            {guide.warnings.map((w, i) => (
-              <li key={i} className="flex gap-3 text-foreground/85 leading-relaxed">
+            {guide.warnings.map((warning, index) => (
+              <li key={index} className="flex gap-3 text-foreground/85 leading-relaxed">
                 <span className="font-mono text-accent flex-shrink-0">→</span>
-                <span>{w}</span>
+                <span>{warning}</span>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      {/* CTA */}
       <section className="container pb-16">
         <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))]">
           <h2 className="font-display text-2xl md:text-4xl font-bold">
             Få exakta priser för just ditt projekt
           </h2>
           <p className="mt-3 text-background/80 max-w-2xl">
-            Beskriv projektet på 3 minuter och få upp till fem offerter från kvalitetssäkrade svenska byråer inom 24 timmar. Gratis.
+            Beskriv projektet på tre minuter och få upp till tre relevanta offerter från svenska byråer. Gratis.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -179,36 +174,34 @@ const PriceGuidePage = () => {
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="container pb-16">
         <div className="max-w-3xl">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-6">
             Vanliga frågor
           </h2>
           <div className="space-y-4">
-            {guide.faq.map((f, i) => (
-              <details key={i} className="group border rounded-xl bg-card p-5 open:shadow-sm">
+            {guide.faq.map((faq, index) => (
+              <details key={index} className="group border rounded-xl bg-card p-5 open:shadow-sm">
                 <summary className="cursor-pointer list-none flex items-start justify-between gap-4 font-display font-semibold text-foreground">
-                  <span>{f.q}</span>
+                  <span>{faq.q}</span>
                   <ChevronRight className="w-5 h-5 flex-shrink-0 mt-0.5 transition-transform group-open:rotate-90" />
                 </summary>
-                <p className="mt-3 text-foreground/80 leading-relaxed">{f.a}</p>
+                <p className="mt-3 text-foreground/80 leading-relaxed">{faq.a}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Intern länkning */}
       <section className="container pb-20">
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             <h2 className="font-display text-lg font-bold text-foreground mb-4">Andra prisguider</h2>
             <ul className="space-y-2">
-              {otherGuides.map((g) => (
-                <li key={g.slug}>
-                  <Link to={`/priser/${g.slug}`} className="text-foreground hover:text-accent inline-flex items-center gap-1">
-                    <ArrowRight className="w-3 h-3" /> {g.h1}
+              {otherGuides.map(otherGuide => (
+                <li key={otherGuide.slug}>
+                  <Link to={`/priser/${otherGuide.slug}`} className="text-foreground hover:text-accent inline-flex items-center gap-1">
+                    <ArrowRight className="w-3 h-3" /> {otherGuide.h1}
                   </Link>
                 </li>
               ))}
@@ -225,13 +218,13 @@ const PriceGuidePage = () => {
                   <ArrowRight className="w-3 h-3" /> {guide.categoryLabel}
                 </Link>
               </li>
-              {relatedArticles.map((a) => (
-                <li key={a.slug}>
+              {relatedArticles.map(article => (
+                <li key={article.slug}>
                   <Link
-                    to={`/artiklar/${a.slug}`}
+                    to={`/artiklar/${article.slug}`}
                     className="text-foreground hover:text-accent inline-flex items-center gap-1"
                   >
-                    <ArrowRight className="w-3 h-3" /> {a.h1}
+                    <ArrowRight className="w-3 h-3" /> {article.h1}
                   </Link>
                 </li>
               ))}
