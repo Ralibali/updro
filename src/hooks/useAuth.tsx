@@ -245,6 +245,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
+// Hook co-located with AuthProvider so both share the same AuthContext instance.
+// Splitting them would either duplicate the context or add a third file for no
+// runtime benefit. Fast Refresh warning is safe here.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) throw new Error('useAuth must be used within an AuthProvider')
