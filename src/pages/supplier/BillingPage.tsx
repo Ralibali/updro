@@ -436,7 +436,7 @@ const BillingPage = () => {
         })}
       </div>
 
-      <Dialog open={!!switchTarget} onOpenChange={open => { if (!open && !confirmingSwitch && !confirmDialog) { setSwitchTarget(null); setSwitchPreview(null) } }}>
+      <Dialog open={!!switchTarget} onOpenChange={open => { if (!open && !confirmDialog) { setSwitchTarget(null); setSwitchPreview(null) } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
