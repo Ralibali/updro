@@ -72,7 +72,6 @@ export function usePageTracking() {
     // React Router does not trigger automatic GA4 page views after navigation.
     // Query parameters are deliberately excluded to avoid leaking project briefs.
     trackPageView(path)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, location.search])
 }
 
