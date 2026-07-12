@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
+import { BillingConfigError, getBillingPlan, getSubscriptionPriceIds } from "../_shared/billing-plans.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -20,14 +21,25 @@ serve(async req => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-  const monthlyPriceId = Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31";
-  const yearlyPriceId = Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg";
-  const subscriptionPriceIds = new Set([monthlyPriceId, yearlyPriceId]);
-
 
   if (!stripeKey || !supabaseUrl || !anonKey || !serviceKey) {
     return json({ error: "Abonnemangskontrollen är inte korrekt konfigurerad." }, 500);
   }
+
+  let subscriptionPriceIds: Set<string>;
+  let yearlyPriceId: string;
+  try {
+    subscriptionPriceIds = getSubscriptionPriceIds();
+    yearlyPriceId = getBillingPlan("yearly").priceId;
+    getBillingPlan("monthly"); // validate presence
+  } catch (error) {
+    if (error instanceof BillingConfigError) {
+      console.error("[CHECK-SUB] Billing config error:", error.message);
+      return json({ error: "Abonnemangskontrollen är inte korrekt konfigurerad." }, 500);
+    }
+    throw error;
+  }
+
 
   try {
     const authHeader = req.headers.get("Authorization");
