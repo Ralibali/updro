@@ -457,6 +457,97 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_refund_requests: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          credit_refunded: boolean
+          details: string | null
+          id: string
+          project_id: string
+          reason: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          supplier_id: string
+          unlocked_lead_id: string
+          updated_at: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          credit_refunded?: boolean
+          details?: string | null
+          id?: string
+          project_id: string
+          reason: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          supplier_id: string
+          unlocked_lead_id: string
+          updated_at?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          credit_refunded?: boolean
+          details?: string | null
+          id?: string
+          project_id?: string
+          reason?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          supplier_id?: string
+          unlocked_lead_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_refund_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_refund_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_refund_requests_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_refund_requests_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_refund_requests_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_refund_requests_unlocked_lead_id_fkey"
+            columns: ["unlocked_lead_id"]
+            isOneToOne: false
+            referencedRelation: "unlocked_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
@@ -1097,6 +1188,7 @@ export type Database = {
       unlocked_leads: {
         Row: {
           created_at: string | null
+          credit_charged: boolean
           id: string
           project_id: string
           supplier_id: string
@@ -1104,6 +1196,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          credit_charged?: boolean
           id?: string
           project_id: string
           supplier_id: string
@@ -1111,6 +1204,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          credit_charged?: boolean
           id?: string
           project_id?: string
           supplier_id?: string
@@ -1356,6 +1450,18 @@ export type Database = {
         }[]
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      request_lead_refund: {
+        Args: { p_details?: string; p_project_id: string; p_reason: string }
+        Returns: string
+      }
+      review_lead_refund_request: {
+        Args: {
+          p_admin_note?: string
+          p_decision: string
+          p_request_id: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
