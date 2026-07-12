@@ -47,6 +47,7 @@ const footerColumns = [
       { label: 'Användarvillkor', href: '/villkor' },
       { label: 'Integritetspolicy', href: '/integritetspolicy' },
       { label: 'Cookiepolicy', href: '/cookies' },
+      { label: 'Prospekteringsintegritet', href: '/integritet/prospektering' },
     ],
   },
 ]
