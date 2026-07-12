@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import {
   ArrowRight, Globe, ShoppingCart, Search,
-  Smartphone, Megaphone, Palette,
+  Smartphone, Megaphone, Bot,
 } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Input } from '@/components/ui/input'
@@ -10,12 +10,12 @@ import { trackLeadStarted } from '@/lib/analytics'
 import { trackClick } from '@/hooks/usePageTracking'
 
 const categories = [
-  { icon: Globe, label: 'Webbutveckling', slug: 'webbutveckling' },
-  { icon: ShoppingCart, label: 'E-handel', slug: 'ehandel' },
-  { icon: Search, label: 'SEO', slug: 'seo' },
-  { icon: Smartphone, label: 'Apputveckling', slug: 'app-utveckling' },
-  { icon: Megaphone, label: 'Digital marknadsföring', slug: 'digital-marknadsforing' },
-  { icon: Palette, label: 'Design & UX', slug: 'grafisk-design' },
+  { icon: Globe, label: 'Webbutveckling' },
+  { icon: ShoppingCart, label: 'E-handel' },
+  { icon: Bot, label: 'AI-utveckling' },
+  { icon: Search, label: 'SEO' },
+  { icon: Megaphone, label: 'Digital marknadsföring' },
+  { icon: Smartphone, label: 'App-utveckling' },
 ]
 
 const HeroSection = () => {
@@ -23,8 +23,8 @@ const HeroSection = () => {
   const navigate = useNavigate()
   const reduce = useReducedMotion()
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
     const description = query.trim()
     trackLeadStarted('homepage_hero')
     trackClick('lead_started', 'Starta gratis – tar 2 min', {
@@ -38,7 +38,6 @@ const HeroSection = () => {
     <section className="relative bg-background border-b border-foreground/10">
       <div className="container py-14 md:py-20 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Content column */}
           <div className="lg:col-span-7 flex flex-col space-y-8">
             <motion.span
               initial={reduce ? undefined : { opacity: 0, y: 6 }}
@@ -55,8 +54,8 @@ const HeroSection = () => {
               transition={{ duration: 0.45, delay: 0.05 }}
               className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-foreground [text-wrap:balance]"
             >
-              Tre handplockade offerter.{' '}
-              <span className="text-accent">Inom 24 timmar. Gratis.</span>
+              Max tre relevanta offerter.{' '}
+              <span className="text-accent">Utan massutskick.</span>
             </motion.h1>
 
             <motion.p
@@ -65,9 +64,8 @@ const HeroSection = () => {
               transition={{ duration: 0.45, delay: 0.12 }}
               className="text-lg md:text-xl text-foreground/80 max-w-xl leading-relaxed"
             >
-              Beskriv ditt projekt så matchar Updro dig med upp till tre handplockade byråer. Du får offerter inom 24 timmar och jämför i lugn och ro. <span className="font-semibold text-foreground">Alltid gratis.</span>
+              Beskriv behovet på två minuter. Updro granskar briefen och öppnar den för matchande svenska byråer. Högst tre kan lämna offert, så att du kan jämföra ordentligt i stället för att bli nedringd. <span className="font-semibold text-foreground">Gratis för beställare.</span>
             </motion.p>
-
 
             <form onSubmit={handleSubmit} className="w-full max-w-xl">
               <div className="flex flex-col sm:flex-row gap-3">
@@ -75,8 +73,8 @@ const HeroSection = () => {
                   name="project-description"
                   aria-label="Kort beskrivning av projektet"
                   value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="T.ex. ny Shopify-butik eller hjälp med SEO"
+                  onChange={event => setQuery(event.target.value)}
+                  placeholder="T.ex. ny Shopify-butik eller automatisera kundtjänsten med AI"
                   className="flex-1 h-14 rounded-none text-base px-5 border-2 border-foreground bg-card focus-visible:ring-0 focus-visible:border-accent"
                   maxLength={500}
                 />
@@ -89,12 +87,12 @@ const HeroSection = () => {
                 </button>
               </div>
               <p className="mt-3 text-xs text-muted-foreground">
-                Ingen registrering krävs. Svar inom 24 timmar.
+                Ingen registrering krävs. Du förbinder dig inte till något.
               </p>
             </form>
 
             <div className="flex flex-wrap gap-2 pt-2">
-              {['Handplockade byråer', 'Svar inom 24h', 'Alltid gratis'].map((chip) => (
+              {['Max tre byråer', 'Briefen granskas', 'Gratis för beställare'].map(chip => (
                 <div
                   key={chip}
                   className="flex items-center gap-2 px-3 py-1.5 bg-secondary border border-foreground/15 text-xs font-medium"
@@ -106,26 +104,26 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Categories grid column */}
           <div className="lg:col-span-5">
+            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">Vanliga uppdrag</p>
             <div className="grid grid-cols-2 gap-4">
-              {categories.map((cat, i) => (
+              {categories.map((category, index) => (
                 <motion.div
-                  key={cat.slug}
+                  key={category.label}
                   initial={reduce ? undefined : { opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
-                  className={i % 2 === 1 ? 'mt-8' : ''}
+                  transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}
+                  className={index % 2 === 1 ? 'mt-8' : ''}
                 >
                   <Link
-                    to={`/publicera?kategori=${encodeURIComponent(cat.label)}`}
+                    to={`/publicera?kategori=${encodeURIComponent(category.label)}`}
                     className="group block p-6 bg-secondary border-2 border-foreground hover:bg-foreground transition-colors duration-200 h-full"
                   >
                     <div className="w-10 h-10 mb-4 flex items-center justify-center bg-background border-2 border-foreground group-hover:bg-background">
-                      <cat.icon className="w-5 h-5 text-foreground" strokeWidth={2} />
+                      <category.icon className="w-5 h-5 text-foreground" strokeWidth={2} />
                     </div>
                     <h3 className="font-display font-bold text-base leading-tight text-foreground group-hover:text-background transition-colors">
-                      {cat.label}
+                      {category.label}
                     </h3>
                   </Link>
                 </motion.div>
