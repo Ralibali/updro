@@ -62,8 +62,8 @@ export const validateOutcomeForm = (
   if (rawValue.length > 0) {
     const normalized = rawValue.replace(/\s+/g, '').replace(',', '.')
     const parsed = Number(normalized)
-    if (!Number.isFinite(parsed) || parsed < 0) {
-      return { ok: false, error: 'Ange ett giltigt affärsvärde i kronor.' }
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return { ok: false, error: 'Ange ett affärsvärde större än noll.' }
     }
     if (parsed > MAX_ACTUAL_VALUE_SEK) {
       return { ok: false, error: 'Värdet är för högt.' }
