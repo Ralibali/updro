@@ -7,18 +7,26 @@ const GA_ID = 'G-C0XMZG0KDQ'
 const ADS_ID = 'AW-10941540384'
 
 type ConsentLevel = 'all' | 'necessary'
+type Gtag = (...args: unknown[]) => void
+
+declare global {
+  interface Window {
+    dataLayer?: unknown[][]
+    gtag?: Gtag
+  }
+}
 
 let gtagScriptInjected = false
 
-const ensureDataLayer = () => {
+const ensureDataLayer = (): Gtag | null => {
   if (typeof window === 'undefined') return null
-  ;(window as any).dataLayer = (window as any).dataLayer || []
-  if (!(window as any).gtag) {
-    ;(window as any).gtag = function gtag(){
-      ;(window as any).dataLayer.push(arguments)
+  window.dataLayer = window.dataLayer || []
+  if (!window.gtag) {
+    window.gtag = (...args: unknown[]) => {
+      window.dataLayer?.push(args)
     }
   }
-  return (window as any).gtag as (...args: any[]) => void
+  return window.gtag
 }
 
 const injectGtagScript = () => {
