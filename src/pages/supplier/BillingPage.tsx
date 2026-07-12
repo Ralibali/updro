@@ -142,14 +142,56 @@ const BillingPage = () => {
     }
   }
 
-  const handleManageAction = async (action: 'switch' | 'cancel' | 'resume', target?: 'monthly' | 'yearly') => {
+  const [switchPreview, setSwitchPreview] = useState<SwitchPreview | null>(null)
+  const [switchTarget, setSwitchTarget] = useState<'monthly' | 'yearly' | null>(null)
+  const [previewLoading, setPreviewLoading] = useState(false)
+  const [confirmingSwitch, setConfirmingSwitch] = useState(false)
+
+  const openSwitchPreview = async (target: 'monthly' | 'yearly') => {
+    if (loading || previewLoading) return
+    setSwitchTarget(target)
+    setSwitchPreview(null)
+    setPreviewLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-subscription', {
+        body: { action: 'preview', target },
+      })
+      if (error) throw error
+      if (!data?.preview) throw new Error('Ingen prisförhandsvisning tillgänglig.')
+      setSwitchPreview(data.preview as SwitchPreview)
+    } catch (error: any) {
+      toast.error(error?.message || 'Kunde inte hämta prisförhandsvisning')
+      setSwitchTarget(null)
+    } finally {
+      setPreviewLoading(false)
+    }
+  }
+
+  const confirmSwitch = async () => {
+    if (!switchTarget) return
+    setConfirmingSwitch(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-subscription', {
+        body: { action: 'switch', target: switchTarget },
+      })
+      if (error) throw error
+      toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+      setSwitchTarget(null)
+      setSwitchPreview(null)
+      await checkSubscription()
+    } catch (error: any) {
+      toast.error(error?.message || 'Kunde inte uppdatera abonnemanget')
+    } finally {
+      setConfirmingSwitch(false)
+    }
+  }
+
+  const handleManageAction = async (action: 'cancel' | 'resume') => {
     if (loading) return
     if (action === 'cancel' && !window.confirm('Vill du säga upp abonnemanget? Du behåller tillgången till periodens slut.')) return
-    if (action === 'switch' && target && !window.confirm(target === 'yearly' ? 'Byt till årskort? Mellanskillnaden proportioneras på nästa faktura.' : 'Byt till månadskort? Ändringen träder i kraft direkt.')) return
-    const key = action === 'switch' ? `switch-${target}` : action
-    setLoading(key)
+    setLoading(action)
     try {
-      const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action, target } })
+      const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action } })
       if (error) throw error
       toast.success(data?.message || 'Abonnemanget är uppdaterat.')
       await checkSubscription()
@@ -159,6 +201,7 @@ const BillingPage = () => {
       setLoading(null)
     }
   }
+
 
 
   return (
