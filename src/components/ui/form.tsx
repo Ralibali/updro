@@ -126,4 +126,7 @@ const FormMessage = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<
 );
 FormMessage.displayName = "FormMessage";
 
+// Shadcn-canonical file: useFormField ships co-located with the form components so
+// the shadcn CLI can regenerate/upgrade it cleanly. Fast Refresh warning is safe here.
+// eslint-disable-next-line react-refresh/only-export-components
 export { useFormField, Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage, FormField };
