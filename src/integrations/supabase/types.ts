@@ -819,73 +819,31 @@ export type Database = {
         }
         Relationships: []
       }
-      project_attributions: {
+      project_attribution: {
         Row: {
           created_at: string
-          first_campaign: string | null
-          first_content: string | null
-          first_landing_path: string | null
-          first_medium: string | null
-          first_referrer: string | null
-          first_source: string | null
-          first_term: string | null
-          first_touch_at: string | null
-          latest_campaign: string | null
-          latest_content: string | null
-          latest_landing_path: string | null
-          latest_medium: string | null
-          latest_referrer: string | null
-          latest_source: string | null
-          latest_term: string | null
-          latest_touch_at: string | null
+          first_touch: Json | null
+          latest_touch: Json | null
           project_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
-          first_campaign?: string | null
-          first_content?: string | null
-          first_landing_path?: string | null
-          first_medium?: string | null
-          first_referrer?: string | null
-          first_source?: string | null
-          first_term?: string | null
-          first_touch_at?: string | null
-          latest_campaign?: string | null
-          latest_content?: string | null
-          latest_landing_path?: string | null
-          latest_medium?: string | null
-          latest_referrer?: string | null
-          latest_source?: string | null
-          latest_term?: string | null
-          latest_touch_at?: string | null
+          first_touch?: Json | null
+          latest_touch?: Json | null
           project_id: string
           updated_at?: string
         }
         Update: {
           created_at?: string
-          first_campaign?: string | null
-          first_content?: string | null
-          first_landing_path?: string | null
-          first_medium?: string | null
-          first_referrer?: string | null
-          first_source?: string | null
-          first_term?: string | null
-          first_touch_at?: string | null
-          latest_campaign?: string | null
-          latest_content?: string | null
-          latest_landing_path?: string | null
-          latest_medium?: string | null
-          latest_referrer?: string | null
-          latest_source?: string | null
-          latest_term?: string | null
-          latest_touch_at?: string | null
+          first_touch?: Json | null
+          latest_touch?: Json | null
           project_id?: string
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "project_attributions_project_id_fkey"
+            foreignKeyName: "project_attribution_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: true
             referencedRelation: "projects"
@@ -1535,6 +1493,11 @@ export type Database = {
           p_request_id: string
         }
         Returns: Json
+      }
+      sanitize_attribution_touch: { Args: { p: Json }; Returns: Json }
+      save_project_attribution: {
+        Args: { p_first: Json; p_latest: Json; p_project_id: string }
+        Returns: undefined
       }
     }
     Enums: {

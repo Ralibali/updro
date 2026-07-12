@@ -146,42 +146,27 @@ Deno.serve(async request => {
     // Persist attribution captured by the client (first/latest UTM + referrer).
     // Silently no-ops when the client sent no signal so organic leads work.
     try {
-      const pickTouch = (touch: unknown) => {
+      const ALLOWED = new Set(['source','medium','campaign','term','content','landing_path','referrer','timestamp'])
+      const MAX: Record<string, number> = { source: 100, medium: 100, campaign: 150, term: 150, content: 150, landing_path: 300, referrer: 500, timestamp: 40 }
+      const sanitize = (touch: unknown): Record<string, string> | null => {
         if (!touch || typeof touch !== 'object') return null
-        const t = touch as Record<string, unknown>
-        const str = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) || null : null
-        return {
-          source: str(t.source, 100),
-          medium: str(t.medium, 100),
-          campaign: str(t.campaign, 150),
-          term: str(t.term, 150),
-          content: str(t.content, 150),
-          landing_path: str(t.landing_path, 300),
-          referrer: str(t.referrer, 500),
-          timestamp: typeof t.timestamp === 'string' ? t.timestamp : null,
+        const out: Record<string, string> = {}
+        for (const [key, value] of Object.entries(touch as Record<string, unknown>)) {
+          if (!ALLOWED.has(key) || typeof value !== 'string') continue
+          const trimmed = value.trim().slice(0, MAX[key] ?? 200)
+          if (trimmed) out[key] = trimmed
         }
+        // Require at least one signal field beyond the timestamp for the row to matter.
+        const signalKeys = Object.keys(out).filter(k => k !== 'timestamp')
+        return signalKeys.length ? out : null
       }
-      const first = pickTouch((payload as Record<string, unknown>).first_touch)
-      const latest = pickTouch((payload as Record<string, unknown>).latest_touch)
+      const first = sanitize((payload as Record<string, unknown>).first_touch)
+      const latest = sanitize((payload as Record<string, unknown>).latest_touch)
       if (first || latest) {
-        const { error: attrError } = await admin.from('project_attributions').insert({
+        const { error: attrError } = await admin.from('project_attribution').insert({
           project_id: created.project_id,
-          first_source: first?.source ?? null,
-          first_medium: first?.medium ?? null,
-          first_campaign: first?.campaign ?? null,
-          first_term: first?.term ?? null,
-          first_content: first?.content ?? null,
-          first_landing_path: first?.landing_path ?? null,
-          first_referrer: first?.referrer ?? null,
-          first_touch_at: first?.timestamp ?? null,
-          latest_source: latest?.source ?? null,
-          latest_medium: latest?.medium ?? null,
-          latest_campaign: latest?.campaign ?? null,
-          latest_term: latest?.term ?? null,
-          latest_content: latest?.content ?? null,
-          latest_landing_path: latest?.landing_path ?? null,
-          latest_referrer: latest?.referrer ?? null,
-          latest_touch_at: latest?.timestamp ?? null,
+          first_touch: first,
+          latest_touch: latest,
         })
         if (attrError) console.error('Attribution insert failed', attrError)
       }

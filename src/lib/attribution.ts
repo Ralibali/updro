@@ -4,7 +4,10 @@
  * - First-touch is stored in localStorage on the very first qualifying page
  *   view and is NEVER overwritten (survives sessions).
  * - Latest-touch is updated whenever the visitor arrives with UTM parameters
- *   or from a new external referrer.
+ *   or from a new external referrer host.
+ *
+ * All helpers are SSR/test safe: they no-op when `window` / `localStorage`
+ * are unavailable and accept explicit inputs for unit testing.
  */
 
 export type Touch = {
@@ -35,14 +38,13 @@ const clean = (value: string | null | undefined, max = 200): string | null => {
 const sameOrigin = (referrer: string, origin: string): boolean => {
   if (!referrer) return true
   try {
-    const url = new URL(referrer)
-    return url.origin === origin
+    return new URL(referrer).origin === origin
   } catch {
     return true
   }
 }
 
-const referrerHost = (referrer: string | null): string | null => {
+const hostOf = (referrer: string | null): string | null => {
   if (!referrer) return null
   try {
     return new URL(referrer).host
@@ -59,10 +61,7 @@ export type BuildTouchInput = {
   now?: Date
 }
 
-/**
- * Build a Touch from the current page context. Returns null when the visit
- * has no UTM params and no external referrer (pure organic same-site nav).
- */
+/** Build a Touch from the current page context, or null for pure organic same-site. */
 export const buildTouch = ({ search, pathname, referrer, origin, now }: BuildTouchInput): Touch | null => {
   const params = new URLSearchParams(search)
   const source = clean(params.get('utm_source'))
@@ -71,9 +70,7 @@ export const buildTouch = ({ search, pathname, referrer, origin, now }: BuildTou
   const term = clean(params.get('utm_term'))
   const content = clean(params.get('utm_content'))
   const externalReferrer = referrer && !sameOrigin(referrer, origin) ? clean(referrer, 500) : null
-
-  const hasSignal = Boolean(source || medium || campaign || term || content || externalReferrer)
-  if (!hasSignal) return null
+  if (!source && !medium && !campaign && !term && !content && !externalReferrer) return null
 
   return {
     source: source ?? (externalReferrer ? 'referral' : null),
@@ -95,16 +92,39 @@ export const touchesDiffer = (a: Touch | null, b: Touch | null): boolean => {
     a.campaign !== b.campaign ||
     a.term !== b.term ||
     a.content !== b.content ||
-    referrerHost(a.referrer) !== referrerHost(b.referrer)
+    hostOf(a.referrer) !== hostOf(b.referrer)
   )
+}
+
+/** Safe JSON parse for stored touch. Returns null on bad shape. */
+export const parseStoredTouch = (raw: string | null): Touch | null => {
+  if (!raw) return null
+  try {
+    const value = JSON.parse(raw) as unknown
+    if (!value || typeof value !== 'object') return null
+    const t = value as Record<string, unknown>
+    const str = (v: unknown): string | null => (typeof v === 'string' ? v : null)
+    const timestamp = str(t.timestamp)
+    if (!timestamp) return null
+    return {
+      source: str(t.source),
+      medium: str(t.medium),
+      campaign: str(t.campaign),
+      term: str(t.term),
+      content: str(t.content),
+      landing_path: str(t.landing_path),
+      referrer: str(t.referrer),
+      timestamp,
+    }
+  } catch {
+    return null
+  }
 }
 
 const readStored = (key: string): Touch | null => {
   if (typeof localStorage === 'undefined') return null
   try {
-    const raw = localStorage.getItem(key)
-    if (!raw) return null
-    return JSON.parse(raw) as Touch
+    return parseStoredTouch(localStorage.getItem(key))
   } catch {
     return null
   }
@@ -119,30 +139,21 @@ const writeStored = (key: string, touch: Touch): void => {
   }
 }
 
-/**
- * Pure reducer used by the capture hook and tests: given the currently stored
- * touches and a fresh touch, decide what should be persisted.
- */
-export const reduceAttribution = (
-  stored: Attribution,
-  incoming: Touch | null,
-): Attribution => {
+/** Pure reducer used by capture + tests. */
+export const reduceAttribution = (stored: Attribution, incoming: Touch | null): Attribution => {
   if (!incoming) return stored
   const first = stored.first ?? incoming
   const latest = touchesDiffer(stored.latest, incoming) ? incoming : (stored.latest ?? incoming)
   return { first, latest }
 }
 
-export const captureFromLocation = (location: {
-  search: string
-  pathname: string
-}): Attribution => {
+export const captureFromLocation = (location: { search: string; pathname: string }): Attribution => {
   if (typeof window === 'undefined') return { first: null, latest: null }
 
   const touch = buildTouch({
     search: location.search,
     pathname: location.pathname,
-    referrer: document.referrer || '',
+    referrer: typeof document !== 'undefined' ? (document.referrer || '') : '',
     origin: window.location.origin,
   })
 
@@ -167,3 +178,9 @@ export const attributionPayload = (attribution: Attribution = getStoredAttributi
   first_touch: attribution.first,
   latest_touch: attribution.latest,
 })
+
+/** Idempotent init — called once from main.tsx at app boot. Safe under SSR. */
+export const initAttribution = (): Attribution => {
+  if (typeof window === 'undefined') return { first: null, latest: null }
+  return captureFromLocation({ search: window.location.search, pathname: window.location.pathname })
+}

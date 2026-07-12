@@ -10,6 +10,11 @@ import "@fontsource/dm-sans/700.css";
 import App from "./App.tsx";
 import "./index.css";
 import "./lib/publicFunctionRouting";
+import { initAttribution } from "./lib/attribution";
+
+// Capture first/latest-touch as early as possible so the very first landing
+// is recorded even before the React router mounts.
+initAttribution();
 
 const rootEl = document.getElementById("root")!;
 

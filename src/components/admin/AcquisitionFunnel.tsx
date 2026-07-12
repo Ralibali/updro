@@ -52,11 +52,11 @@ const AcquisitionFunnel = () => {
     queryKey: ['acquisition-funnel-attributions', since],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('project_attributions')
-        .select('first_source, first_medium, first_campaign, first_landing_path, project_id, projects(category)')
+        .from('project_attribution')
+        .select('project_id, first_touch, latest_touch, projects(category)')
         .gte('created_at', since)
       if (error) throw error
-      return (data || []) as unknown as AttributionRow[]
+      return (data ?? []) as unknown as AttributionRow[]
     },
   })
 
