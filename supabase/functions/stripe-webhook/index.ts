@@ -20,6 +20,9 @@ Deno.serve(async request => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
   const monthlyPriceId = Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31";
+  const yearlyPriceId = Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg";
+  const subscriptionPriceIds = new Set([monthlyPriceId, yearlyPriceId]);
+
 
   if (!stripeKey || !webhookSecret || !supabaseUrl || !serviceKey) {
     console.error("stripe-webhook missing required secrets");
