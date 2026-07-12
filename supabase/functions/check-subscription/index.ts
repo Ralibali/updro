@@ -79,8 +79,9 @@ serve(async req => {
 
     const activeSubscription = subscriptions.data.find(subscription =>
       (subscription.status === "active" || subscription.status === "trialing") &&
-      subscription.items.data.some(item => item.price.id === monthlyPriceId)
+      subscription.items.data.some(item => subscriptionPriceIds.has(item.price.id))
     );
+
 
     if (!activeSubscription) {
       if (supplier.plan === "monthly" || supplier.stripe_subscription_id) {
