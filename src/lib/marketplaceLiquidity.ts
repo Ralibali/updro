@@ -146,7 +146,7 @@ export const buildProjectQueue = (
       ageHours,
       unlocks: unlocksN,
       offers: offersN,
-      maxOffers: Number(p.max_offers ?? 0) || 0,
+      maxOffers: Number(p.max_offers ?? 0) || 3,
       matchingSuppliers: matching,
       flags,
       risk: scoreProjectRisk({ status, ageHours, unlocks: unlocksN, offers: offersN, matchingSuppliers: matching }),

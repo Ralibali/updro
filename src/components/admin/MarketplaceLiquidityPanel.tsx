@@ -186,7 +186,7 @@ const MarketplaceLiquidityPanel = () => {
                             <td className="py-2 pr-3 text-muted-foreground">{p.category}</td>
                             <td className="py-2 pr-3 text-muted-foreground">{p.ageHours} h</td>
                             <td className="py-2 pr-3">{p.unlocks}</td>
-                            <td className="py-2 pr-3">{p.offers}{p.maxOffers ? ` / ${p.maxOffers}` : ''}</td>
+                            <td className="py-2 pr-3">{p.offers} / {p.maxOffers || 3}</td>
                             <td className="py-2 pr-3">{p.matchingSuppliers}</td>
                             <td className="py-2 pr-3">
                               <div className="flex flex-wrap gap-1">
@@ -251,7 +251,7 @@ const MarketplaceLiquidityPanel = () => {
                             <td className="py-2 pr-3">{s.offers}</td>
                             <td className="py-2 pr-3 text-muted-foreground">
                               {s.plan}
-                              {s.leadCredits > 0 && ` · ${s.leadCredits} kr`}
+                              {s.leadCredits > 0 && ` · ${s.leadCredits} ${s.leadCredits === 1 ? 'kredit' : 'krediter'}`}
                               {s.trialEndsAt && ` · trial→${new Date(s.trialEndsAt).toLocaleDateString('sv-SE')}`}
                             </td>
                             <td className="py-2 pr-3 text-muted-foreground">
