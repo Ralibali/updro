@@ -148,7 +148,7 @@ const BillingPage = () => {
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {PLANS.map(plan => {
           const isActive = subscription.subscribed && plan.id === 'monthly'
           return (
