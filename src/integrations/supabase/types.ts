@@ -288,6 +288,27 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_rate_limits: {
+        Row: {
+          rate_key: string
+          request_count: number
+          updated_at: string
+          window_start: string
+        }
+        Insert: {
+          rate_key: string
+          request_count?: number
+          updated_at?: string
+          window_start?: string
+        }
+        Update: {
+          rate_key?: string
+          request_count?: number
+          updated_at?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       guest_leads: {
         Row: {
           budget_range: string
@@ -1289,6 +1310,51 @@ export type Database = {
       }
     }
     Functions: {
+      apply_stripe_purchase_event: {
+        Args: {
+          p_amount_sek?: number
+          p_event_id: string
+          p_event_type: string
+          p_purchase_type: string
+          p_subscription_id?: string
+          p_supplier_id: string
+        }
+        Returns: boolean
+      }
+      apply_stripe_subscription_state: {
+        Args: {
+          p_active: boolean
+          p_event_id: string
+          p_event_type: string
+          p_subscription_id?: string
+          p_supplier_id: string
+        }
+        Returns: boolean
+      }
+      claim_guest_projects: { Args: never; Returns: number }
+      consume_edge_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number }
+        Returns: boolean
+      }
+      create_guest_project: {
+        Args: {
+          p_budget_range: string
+          p_category: string
+          p_company_name: string
+          p_description: string
+          p_email: string
+          p_full_name: string
+          p_is_company: boolean
+          p_phone: string
+          p_source?: string
+          p_start_time: string
+          p_title: string
+        }
+        Returns: {
+          lead_id: string
+          project_id: string
+        }[]
+      }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
