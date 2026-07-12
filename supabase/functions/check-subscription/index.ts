@@ -102,11 +102,17 @@ serve(async req => {
     }).eq("id", user.id);
     if (updateError) throw updateError;
 
+    const activeItem = activeSubscription.items.data.find(i => subscriptionPriceIds.has(i.price.id));
+    const interval: "month" | "year" = activeItem?.price.id === yearlyPriceId ? "year" : "month";
+
     return json({
       subscribed: true,
       plan: "monthly",
+      interval,
+      cancel_at_period_end: activeSubscription.cancel_at_period_end,
       subscription_end: new Date(activeSubscription.current_period_end * 1000).toISOString(),
     });
+
   } catch (error) {
     console.error("[CHECK-SUB] Error:", error);
     return json({ error: "Kunde inte kontrollera abonnemanget." }, 500);
