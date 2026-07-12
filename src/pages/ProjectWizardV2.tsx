@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -13,7 +13,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/useAuth'
 import { trackClick } from '@/hooks/usePageTracking'
 import { supabase } from '@/integrations/supabase/client'
-import { trackLeadStarted, trackLeadSubmitted } from '@/lib/analytics'
+import { trackLeadStarted, trackLeadSubmitted, trackOnceInSession } from '@/lib/analytics'
+import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
 import type { BriefSuggestion } from '@/lib/briefAnalysis'
 import type { BudgetRange, Category, StartTime } from '@/types'
@@ -55,6 +56,15 @@ const ProjectWizardV2 = () => {
     email: '',
     phone: '',
   })
+
+  // Fire `lead_landing_viewed` at most once per session when the wizard opens.
+  useEffect(() => {
+    trackOnceInSession('lead_landing_viewed', () => {
+      trackClick('lead_landing_viewed', 'Publicera-formuläret öppnat', {
+        attribution: getStoredAttribution(),
+      })
+    })
+  }, [])
 
   const totalSteps = 2
   const descriptionLength = form.description.trim().length
@@ -120,6 +130,7 @@ const ProjectWizardV2 = () => {
     setLoading(true)
 
     try {
+      const attribution = getStoredAttribution()
       if (isAuthenticated && user?.id) {
         const { data: inserted, error } = await supabase.from('projects').insert({
           buyer_id: user.id,
@@ -132,10 +143,34 @@ const ProjectWizardV2 = () => {
           status: 'pending',
         }).select('id').maybeSingle()
         if (error) throw error
+        const newProjectId = String(inserted?.id || '')
+        if (newProjectId && (attribution.first || attribution.latest)) {
+          const row = {
+            project_id: newProjectId,
+            first_source: attribution.first?.source ?? null,
+            first_medium: attribution.first?.medium ?? null,
+            first_campaign: attribution.first?.campaign ?? null,
+            first_term: attribution.first?.term ?? null,
+            first_content: attribution.first?.content ?? null,
+            first_landing_path: attribution.first?.landing_path ?? null,
+            first_referrer: attribution.first?.referrer ?? null,
+            first_touch_at: attribution.first?.timestamp ?? null,
+            latest_source: attribution.latest?.source ?? null,
+            latest_medium: attribution.latest?.medium ?? null,
+            latest_campaign: attribution.latest?.campaign ?? null,
+            latest_term: attribution.latest?.term ?? null,
+            latest_content: attribution.latest?.content ?? null,
+            latest_landing_path: attribution.latest?.landing_path ?? null,
+            latest_referrer: attribution.latest?.referrer ?? null,
+            latest_touch_at: attribution.latest?.timestamp ?? null,
+          }
+          const { error: attrError } = await supabase.from('project_attributions').insert(row)
+          if (attrError && import.meta.env.DEV) console.warn('Attribution insert failed', attrError)
+        }
         trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer' })
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
         setConfirmationEmailSent(false)
-        setSubmittedProjectId(String(inserted?.id || ''))
+        setSubmittedProjectId(newProjectId)
         setStep(3)
         return
       }
@@ -157,6 +192,7 @@ const ProjectWizardV2 = () => {
           budget_range: form.budget_range,
           start_time: form.start_time,
           is_company: form.is_company,
+          ...attributionPayload(attribution),
         },
       })
       if (error || data?.error) throw new Error(data?.error || error?.message || 'Kunde inte skicka uppdraget.')

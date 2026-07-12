@@ -143,6 +143,52 @@ Deno.serve(async request => {
     const created = Array.isArray(createdRows) ? createdRows[0] : createdRows
     if (!created?.lead_id || !created?.project_id) throw new Error('Guest project was not created')
 
+    // Persist attribution captured by the client (first/latest UTM + referrer).
+    // Silently no-ops when the client sent no signal so organic leads work.
+    try {
+      const pickTouch = (touch: unknown) => {
+        if (!touch || typeof touch !== 'object') return null
+        const t = touch as Record<string, unknown>
+        const str = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) || null : null
+        return {
+          source: str(t.source, 100),
+          medium: str(t.medium, 100),
+          campaign: str(t.campaign, 150),
+          term: str(t.term, 150),
+          content: str(t.content, 150),
+          landing_path: str(t.landing_path, 300),
+          referrer: str(t.referrer, 500),
+          timestamp: typeof t.timestamp === 'string' ? t.timestamp : null,
+        }
+      }
+      const first = pickTouch((payload as Record<string, unknown>).first_touch)
+      const latest = pickTouch((payload as Record<string, unknown>).latest_touch)
+      if (first || latest) {
+        const { error: attrError } = await admin.from('project_attributions').insert({
+          project_id: created.project_id,
+          first_source: first?.source ?? null,
+          first_medium: first?.medium ?? null,
+          first_campaign: first?.campaign ?? null,
+          first_term: first?.term ?? null,
+          first_content: first?.content ?? null,
+          first_landing_path: first?.landing_path ?? null,
+          first_referrer: first?.referrer ?? null,
+          first_touch_at: first?.timestamp ?? null,
+          latest_source: latest?.source ?? null,
+          latest_medium: latest?.medium ?? null,
+          latest_campaign: latest?.campaign ?? null,
+          latest_term: latest?.term ?? null,
+          latest_content: latest?.content ?? null,
+          latest_landing_path: latest?.landing_path ?? null,
+          latest_referrer: latest?.referrer ?? null,
+          latest_touch_at: latest?.timestamp ?? null,
+        })
+        if (attrError) console.error('Attribution insert failed', attrError)
+      }
+    } catch (attrErr) {
+      console.error('Attribution capture failed', attrErr)
+    }
+
     const { data: admins, error: adminLookupError } = await admin.from('profiles').select('id').eq('role', 'admin')
     if (adminLookupError) {
       console.error('Could not read admins for lead notification', adminLookupError)

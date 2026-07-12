@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { supabase } from '@/integrations/supabase/client'
 import { BUDGET_LABELS, CATEGORY_STYLES, START_TIME_LABELS } from '@/lib/constants'
 import { getProjectBuyerContact } from '@/lib/buyerContact'
+import { trackClick } from '@/hooks/usePageTracking'
 import { timeAgo } from '@/lib/dateUtils'
 import { exportCsv } from '@/lib/exportCsv'
 import { cn } from '@/lib/utils'
@@ -51,6 +52,7 @@ const AdminProjectsV2 = () => {
   const changeStatus = async (id: string, next: 'active' | 'rejected') => {
     const { error } = await supabase.from('projects').update({ status: next }).eq('id', id)
     if (error) return toast.error('Kunde inte uppdatera uppdraget.')
+    if (next === 'active') trackClick('lead_approved', 'Godkände uppdrag', { project_id: id })
     toast.success(next === 'active' ? 'Uppdrag godkänt! ✅' : 'Uppdrag avvisat.')
     load()
   }
