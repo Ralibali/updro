@@ -23,11 +23,18 @@ const BillingPage = () => {
     status?: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid'
     trial_end?: string | null
     current_period_start?: string | null
+    credits?: {
+      lead_credits: number
+      trial_leads_used: number
+      trial_ends_at: string | null
+      history: { date: string; credits: number; amount_sek: number | null; plan: string | null }[]
+    }
   }>({
     subscribed: false,
     plan: null,
     subscription_end: null,
   })
+
 
 
   const [checkingSubscription, setCheckingSubscription] = useState(false)
