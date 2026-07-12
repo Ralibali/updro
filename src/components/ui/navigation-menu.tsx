@@ -107,6 +107,9 @@ const NavigationMenuIndicator = React.forwardRef<
 ));
 NavigationMenuIndicator.displayName = NavigationMenuPrimitive.Indicator.displayName;
 
+// Shadcn-canonical file: navigationMenuTriggerStyle ships co-located with the
+// components so the shadcn CLI can regenerate/upgrade it cleanly.
+/* eslint-disable react-refresh/only-export-components */
 export {
   navigationMenuTriggerStyle,
   NavigationMenu,
@@ -118,3 +121,4 @@ export {
   NavigationMenuIndicator,
   NavigationMenuViewport,
 };
+/* eslint-enable react-refresh/only-export-components */

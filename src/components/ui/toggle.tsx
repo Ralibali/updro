@@ -34,4 +34,7 @@ const Toggle = React.forwardRef<
 
 Toggle.displayName = TogglePrimitive.Root.displayName;
 
+// Shadcn-canonical file: variants ship co-located with the component so the
+// shadcn CLI can regenerate/upgrade it cleanly. Fast Refresh warning is safe here.
+// eslint-disable-next-line react-refresh/only-export-components
 export { Toggle, toggleVariants };

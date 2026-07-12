@@ -107,10 +107,10 @@ const MarketplaceLiquidityPanel = () => {
   const loading = projectsQuery.isLoading || suppliersQuery.isLoading || unlocksQuery.isLoading || offersQuery.isLoading
   const error = projectsQuery.error || suppliersQuery.error || unlocksQuery.error || offersQuery.error
 
-  const projects = projectsQuery.data ?? []
-  const suppliers = suppliersQuery.data ?? []
-  const unlocks = unlocksQuery.data ?? []
-  const offers = offersQuery.data ?? []
+  const projects = useMemo(() => projectsQuery.data ?? [], [projectsQuery.data])
+  const suppliers = useMemo(() => suppliersQuery.data ?? [], [suppliersQuery.data])
+  const unlocks = useMemo(() => unlocksQuery.data ?? [], [unlocksQuery.data])
+  const offers = useMemo(() => offersQuery.data ?? [], [offersQuery.data])
 
   const kpis = useMemo(() => buildKpis(projects, suppliers, unlocks, offers), [projects, suppliers, unlocks, offers])
   const projectQueue = useMemo(() => buildProjectQueue(projects, unlocks, offers, suppliers), [projects, unlocks, offers, suppliers])

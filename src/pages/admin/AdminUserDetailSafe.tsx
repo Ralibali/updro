@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Save, Shield, ShieldAlert, ShieldCheck } from 'lucide-react'
 import { toast } from 'sonner'
@@ -25,7 +25,7 @@ const AdminUserDetailSafe = () => {
   const [companyName, setCompanyName] = useState('')
   const [phone, setPhone] = useState('')
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!id) return
     setLoading(true)
     const [{ data: nextProfile, error }, { data: nextSupplier }] = await Promise.all([
@@ -42,9 +42,9 @@ const AdminUserDetailSafe = () => {
     setFullName(nextProfile.full_name || '')
     setCompanyName(nextProfile.company_name || '')
     setPhone(nextProfile.phone || '')
-  }
+  }, [id])
 
-  useEffect(() => { load() }, [id])
+  useEffect(() => { load() }, [load])
 
   const save = async () => {
     if (!id || fullName.trim().length < 2) return toast.error('Ange ett giltigt namn.')

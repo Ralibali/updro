@@ -609,6 +609,9 @@ const SidebarMenuSubButton = React.forwardRef<
 });
 SidebarMenuSubButton.displayName = "SidebarMenuSubButton";
 
+// Shadcn-canonical file: useSidebar ships co-located with the sidebar components
+// so the shadcn CLI can regenerate/upgrade it cleanly. Fast Refresh warning is safe here.
+/* eslint-disable react-refresh/only-export-components */
 export {
   Sidebar,
   SidebarContent,
@@ -635,3 +638,4 @@ export {
   SidebarTrigger,
   useSidebar,
 };
+/* eslint-enable react-refresh/only-export-components */
