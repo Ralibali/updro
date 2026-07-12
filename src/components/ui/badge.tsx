@@ -26,4 +26,7 @@ function Badge({ className, variant, ...props }: BadgeProps) {
   return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
+// Shadcn-canonical file: variants ship co-located with the component so the
+// shadcn CLI can regenerate/upgrade it cleanly. Fast Refresh warning is safe here.
+// eslint-disable-next-line react-refresh/only-export-components
 export { Badge, badgeVariants };
