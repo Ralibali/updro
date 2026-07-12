@@ -38,11 +38,16 @@ serve(async req => {
       priceId: Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31",
       mode: "subscription" as const,
     },
+    yearly: {
+      priceId: Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg",
+      mode: "subscription" as const,
+    },
     lead: {
       priceId: Deno.env.get("STRIPE_LEAD_PRICE_ID") || "price_1TOcX2HzffTezY82yzbAX5ZD",
       mode: "payment" as const,
     },
   };
+
 
   try {
     const authHeader = req.headers.get("Authorization");

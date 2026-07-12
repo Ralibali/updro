@@ -76,9 +76,10 @@ const BillingPage = () => {
 
   const handleCheckout = async (planId: string) => {
     if (loading) return
-    const product = planId === 'monthly' ? STRIPE_PRODUCTS.monthly : STRIPE_PRODUCTS.lead
+    const product = STRIPE_PRODUCTS[planId as keyof typeof STRIPE_PRODUCTS] ?? STRIPE_PRODUCTS.lead
     setLoading(planId)
     trackBeginCheckout(planId, product.price)
+
 
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
@@ -147,9 +148,9 @@ const BillingPage = () => {
         </div>
       )}
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {PLANS.map(plan => {
-          const isActive = subscription.subscribed && plan.id === 'monthly'
+          const isActive = subscription.subscribed && (plan.id === 'monthly' || plan.id === 'yearly')
           return (
             <div key={plan.id} className={`bg-card rounded-2xl border p-6 relative ${plan.highlighted ? 'border-primary shadow-md ring-2 ring-primary/20' : ''} ${isActive ? 'ring-2 ring-accent' : ''}`}>
               {plan.highlighted && !isActive && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">{plan.badge}</span>}
