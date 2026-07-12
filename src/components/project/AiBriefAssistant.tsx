@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,6 +18,10 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
   const [suggestion, setSuggestion] = useState<BriefSuggestion | null>(null)
   const [usedFallback, setUsedFallback] = useState(false)
 
+  useEffect(() => {
+    setText(initialText.slice(0, 5000))
+  }, [initialText])
+
   const analyze = async () => {
     if (text.trim().length < 10) {
       toast.error('Beskriv ditt behov med minst 10 tecken.')
@@ -34,8 +38,8 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
       } else {
         throw new Error(data?.error || 'Inget AI-svar')
       }
-    } catch (e) {
-      console.warn('AI-analys misslyckades, använder lokal fallback', e)
+    } catch (error) {
+      console.warn('AI-analys misslyckades, använder lokal fallback', error)
       setSuggestion(analyzeBriefLocally(text))
       setUsedFallback(true)
     } finally {
@@ -51,19 +55,20 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
         </div>
         <div>
           <p className="font-display font-semibold text-sm">AI-projektassistent</p>
-          <p className="text-xs text-muted-foreground">Skriv kort vad du behöver – vi föreslår resten.</p>
+          <p className="text-xs text-muted-foreground">Texten ovan följer med automatiskt. Justera den här och låt AI föreslå resten.</p>
         </div>
       </div>
 
       <Textarea
         value={text}
-        onChange={e => setText(e.target.value)}
+        onChange={event => setText(event.target.value)}
         placeholder="Ex: Vi behöver en ny webbplats med bokningssystem för vår klinik. Ungefär 80k budget, vill starta inom en månad."
         className="rounded-xl min-h-[100px] bg-background"
+        maxLength={5000}
       />
 
       <div className="flex items-center justify-between mt-3 gap-3 flex-wrap">
-        <p className="text-xs text-muted-foreground">{text.length} tecken</p>
+        <p className="text-xs text-muted-foreground">{text.length}/5000 tecken</p>
         <Button
           type="button"
           onClick={analyze}
@@ -78,7 +83,7 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
       {suggestion && (
         <div className="mt-5 rounded-xl bg-card border p-4 space-y-3">
           {usedFallback && (
-            <p className="text-[11px] text-muted-foreground">Lokal analys används (AI ej tillgänglig just nu).</p>
+            <p className="text-[11px] text-muted-foreground">Lokal analys används eftersom AI-tjänsten inte var tillgänglig.</p>
           )}
 
           <div className="flex flex-wrap gap-2">
@@ -108,10 +113,10 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
             <div>
               <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Kravlista</p>
               <ul className="text-sm space-y-1">
-                {suggestion.requirements.map((r, i) => (
-                  <li key={i} className="flex items-start gap-2">
+                {suggestion.requirements.map((requirement, index) => (
+                  <li key={index} className="flex items-start gap-2">
                     <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 mt-0.5 shrink-0" />
-                    <span>{r}</span>
+                    <span>{requirement}</span>
                   </li>
                 ))}
               </ul>
@@ -122,8 +127,8 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
             <div>
               <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">Frågor byråer brukar ställa</p>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                {suggestion.questions_for_agencies.map((q, i) => (
-                  <li key={i}>• {q}</li>
+                {suggestion.questions_for_agencies.map((question, index) => (
+                  <li key={index}>• {question}</li>
                 ))}
               </ul>
             </div>
@@ -132,7 +137,7 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
           <div className="flex gap-2 pt-2">
             <Button
               type="button"
-              onClick={() => { onAccept(suggestion); toast.success('Förslag används – du kan justera fritt nedan.') }}
+              onClick={() => { onAccept(suggestion); toast.success('Förslag används – du kan justera fritt ovan.') }}
               className="flex-1 rounded-xl"
             >
               <CheckCircle2 className="h-4 w-4" /> Använd förslag
