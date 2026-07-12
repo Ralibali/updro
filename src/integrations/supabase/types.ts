@@ -1019,6 +1019,119 @@ export type Database = {
           },
         ]
       }
+      prospecting_campaigns: {
+        Row: {
+          admin_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          industry: string | null
+          location: string
+          name: string
+          need_type: string
+          query: string
+          result_limit: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          industry?: string | null
+          location?: string
+          name: string
+          need_type?: string
+          query: string
+          result_limit?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          industry?: string | null
+          location?: string
+          name?: string
+          need_type?: string
+          query?: string
+          result_limit?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      prospecting_leads: {
+        Row: {
+          campaign_id: string
+          city: string | null
+          company_name: string
+          contact_page_url: string | null
+          contacted_at: string | null
+          created_at: string
+          description: string | null
+          domain: string
+          fit_score: number
+          id: string
+          industry: string | null
+          observed_signals: Json
+          outreach_note: string | null
+          source_url: string
+          status: string
+          updated_at: string
+          website_url: string
+        }
+        Insert: {
+          campaign_id: string
+          city?: string | null
+          company_name: string
+          contact_page_url?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          description?: string | null
+          domain: string
+          fit_score?: number
+          id?: string
+          industry?: string | null
+          observed_signals?: Json
+          outreach_note?: string | null
+          source_url: string
+          status?: string
+          updated_at?: string
+          website_url: string
+        }
+        Update: {
+          campaign_id?: string
+          city?: string | null
+          company_name?: string
+          contact_page_url?: string | null
+          contacted_at?: string | null
+          created_at?: string
+          description?: string | null
+          domain?: string
+          fit_score?: number
+          id?: string
+          industry?: string | null
+          observed_signals?: Json
+          outreach_note?: string | null
+          source_url?: string
+          status?: string
+          updated_at?: string
+          website_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospecting_leads_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "prospecting_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       referrals: {
         Row: {
           created_at: string | null

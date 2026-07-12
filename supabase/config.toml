@@ -37,3 +37,6 @@ project_id = "opgjoevvlwhsddscqmpe"
     verify_jwt = true
   [functions.send-transactional-email]
     verify_jwt = false
+  [functions.firecrawl-prospect-search]
+    verify_jwt = true
+
