@@ -54,8 +54,8 @@ const HeroSection = () => {
               transition={{ duration: 0.45, delay: 0.05 }}
               className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight text-foreground [text-wrap:balance]"
             >
-              Max tre relevanta offerter.{' '}
-              <span className="text-accent">Utan massutskick.</span>
+              Hitta rätt byrå –{' '}
+              <span className="text-accent">utan massutskick.</span>
             </motion.h1>
 
             <motion.p
@@ -64,7 +64,7 @@ const HeroSection = () => {
               transition={{ duration: 0.45, delay: 0.12 }}
               className="text-lg md:text-xl text-foreground/80 max-w-xl leading-relaxed"
             >
-              Beskriv behovet på två minuter. Updro granskar briefen och öppnar den för matchande svenska byråer. Högst tre kan lämna offert, så att du kan jämföra ordentligt i stället för att bli nedringd. <span className="font-semibold text-foreground">Gratis för beställare.</span>
+              Beskriv behovet på två minuter. Updro granskar briefen och öppnar den för matchande svenska byråer – med fokus på webb, e-handel och AI. Högst tre relevanta byråer kan lämna offert, så att du kan jämföra i lugn och ro. <span className="font-semibold text-foreground">Gratis för beställare.</span>
             </motion.p>
 
             <form onSubmit={handleSubmit} className="w-full max-w-xl">
