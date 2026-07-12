@@ -110,6 +110,25 @@ const BillingPage = () => {
     }
   }
 
+  const handleManageAction = async (action: 'switch' | 'cancel' | 'resume', target?: 'monthly' | 'yearly') => {
+    if (loading) return
+    if (action === 'cancel' && !window.confirm('Vill du säga upp abonnemanget? Du behåller tillgången till periodens slut.')) return
+    if (action === 'switch' && target && !window.confirm(target === 'yearly' ? 'Byt till årskort? Mellanskillnaden proportioneras på nästa faktura.' : 'Byt till månadskort? Ändringen träder i kraft direkt.')) return
+    const key = action === 'switch' ? `switch-${target}` : action
+    setLoading(key)
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action, target } })
+      if (error) throw error
+      toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+      await checkSubscription()
+    } catch (error: any) {
+      toast.error(error?.message || 'Kunde inte uppdatera abonnemanget')
+    } finally {
+      setLoading(null)
+    }
+  }
+
+
   return (
     <div className="max-w-4xl">
       <TrialBanner />
