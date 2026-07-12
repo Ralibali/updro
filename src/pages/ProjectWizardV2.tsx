@@ -57,6 +57,15 @@ const ProjectWizardV2 = () => {
     phone: '',
   })
 
+  // Fire `lead_landing_viewed` at most once per session when the wizard opens.
+  useEffect(() => {
+    trackOnceInSession('lead_landing_viewed', () => {
+      trackClick('lead_landing_viewed', 'Publicera-formuläret öppnat', {
+        attribution: getStoredAttribution(),
+      })
+    })
+  }, [])
+
   const totalSteps = 2
   const descriptionLength = form.description.trim().length
   const descriptionReady = descriptionLength >= 20
