@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowRight, Eye, FilePenLine, Send, Users } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Eye, FilePenLine, Send, Users } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/integrations/supabase/client'
 import { groupAttributionRows, type AttributionRow } from '@/lib/attributionFunnel'
+import { formatPrice } from '@/lib/dateUtils'
 
 const sinceThirtyDays = () => new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 const rate = (value: number, base: number) => base > 0 ? Math.round((value / base) * 1000) / 10 : 0
@@ -60,6 +61,24 @@ const AcquisitionFunnel = () => {
     },
   })
 
+  const outcomesQuery = useQuery({
+    queryKey: ['acquisition-funnel-outcomes', since],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('project_outcomes')
+        .select('outcome, actual_value_sek')
+        .gte('created_at', since)
+      if (error) throw error
+      return data ?? []
+    },
+  })
+
+  const outcomes = outcomesQuery.data ?? []
+  const reportedCount = outcomes.length
+  const hiredRows = outcomes.filter(o => o.outcome === 'hired')
+  const hiredCount = hiredRows.length
+  const hiredValue = hiredRows.reduce((sum, r) => sum + (Number(r.actual_value_sek) || 0), 0)
+
   const funnel = useMemo(() => {
     const visitors = new Set(pageViews.map(view => view.session_id)).size
     const wizardVisitors = new Set(pageViews.filter(view => view.path === '/publicera').map(view => view.session_id)).size
@@ -74,8 +93,9 @@ const AcquisitionFunnel = () => {
       { label: 'Nådde sista steget', value: detailsReached, conversion: rate(detailsReached, visitors), icon: ArrowRight },
       { label: 'Skickade in', value: submitted, conversion: rate(submitted, visitors), icon: Send },
       { label: 'Projekt i databasen', value: projectCount, conversion: rate(projectCount, visitors), icon: Send },
+      { label: 'Rapporterade anlitade', value: hiredCount, conversion: rate(hiredCount, visitors), icon: CheckCircle2 },
     ]
-  }, [pageViews, events, projectCount])
+  }, [pageViews, events, projectCount, hiredCount])
 
   const grouped = useMemo(() => groupAttributionRows(attributionQuery.data || [], projectCount), [attributionQuery.data, projectCount])
 
