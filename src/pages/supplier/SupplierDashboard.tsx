@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import TrialBanner from '@/components/TrialBanner'
 import SupplierNotificationsList from '@/components/supplier/SupplierNotificationsList'
+import ActivationChecklist from '@/components/supplier/ActivationChecklist'
 import { ArrowRight } from 'lucide-react'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
@@ -35,6 +36,10 @@ const SupplierDashboard = () => {
       <TrialBanner />
 
       <h1 className="font-display text-2xl font-bold mb-6">Välkommen {profile?.full_name?.split(' ')[0]}! 👋</h1>
+
+      <ActivationChecklist />
+
+
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

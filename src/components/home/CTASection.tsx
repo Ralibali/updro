@@ -16,10 +16,10 @@ const CTASection = () => {
           Kom igång på cirka två minuter
         </span>
         <h2 className="font-display text-4xl md:text-6xl font-bold mb-6 text-foreground leading-[0.95] tracking-tight">
-          Redo att jämföra <span className="text-accent">rätt byråer?</span>
+          Hitta rätt byrå – <span className="text-accent">utan massutskick.</span>
         </h2>
         <p className="text-foreground/80 mb-10 text-lg max-w-xl mx-auto">
-          Beskriv projektet en gång. Briefen granskas och högst tre relevanta byråer kan lämna offert. Gratis och utan förpliktelser.
+          Beskriv projektet en gång. Updro granskar briefen och högst tre relevanta svenska byråer kan lämna offert. Gratis och utan förpliktelser.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/publicera">

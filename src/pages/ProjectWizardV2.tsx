@@ -121,7 +121,7 @@ const ProjectWizardV2 = () => {
 
     try {
       if (isAuthenticated && user?.id) {
-        const { error } = await supabase.from('projects').insert({
+        const { data: inserted, error } = await supabase.from('projects').insert({
           buyer_id: user.id,
           title,
           description,
@@ -130,12 +130,13 @@ const ProjectWizardV2 = () => {
           start_time: form.start_time as string,
           is_company: form.is_company,
           status: 'pending',
-        })
+        }).select('id').maybeSingle()
         if (error) throw error
         trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer' })
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
-        toast.success('Uppdraget är inskickat för granskning! ✅')
-        navigate('/dashboard/buyer')
+        setConfirmationEmailSent(false)
+        setSubmittedProjectId(String(inserted?.id || ''))
+        setStep(3)
         return
       }
 
@@ -305,19 +306,57 @@ const ProjectWizardV2 = () => {
           )}
 
           {step === 3 && (
-            <div className="space-y-6 text-center py-12" aria-live="polite">
-              <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center"><CheckCircle2 className="h-8 w-8 text-emerald-600" /></div>
-              <h2 className="font-display text-2xl font-bold">Ditt uppdrag är mottaget!</h2>
-              <p className="text-muted-foreground max-w-md mx-auto">
-                {confirmationEmailSent
-                  ? <>En bekräftelse har skickats till <strong className="text-foreground">{form.email.trim().toLowerCase()}</strong>. Vi granskar uppdraget och öppnar det sedan för relevanta byråer.</>
-                  : <>Förfrågan är sparad. Vi granskar uppdraget och öppnar det sedan för relevanta byråer.</>}
-              </p>
-              <div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left">
-                <p className="text-sm font-semibold mb-2">Vill du följa offerterna live?</p>
-                <p className="text-xs text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress. Kopplingen sker säkert efter att e-postadressen har bekräftats.</p>
-                <Link to={registerLink}><Button className="w-full">Skapa gratis konto</Button></Link>
+            <div className="space-y-6 py-8" aria-live="polite">
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center"><CheckCircle2 className="h-8 w-8 text-emerald-600" /></div>
+                <h2 className="mt-4 font-display text-2xl font-bold">Ditt uppdrag är mottaget</h2>
+                <p className="mt-2 text-muted-foreground max-w-md mx-auto">
+                  {confirmationEmailSent
+                    ? <>En bekräftelse har skickats till <strong className="text-foreground">{form.email.trim().toLowerCase()}</strong>.</>
+                    : <>Förfrågan är sparad i ditt konto.</>}
+                </p>
               </div>
+
+              <div className="rounded-xl border bg-card p-5 max-w-md mx-auto space-y-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Referens</p>
+                    <p className="mt-1 font-mono text-sm break-all text-foreground">
+                      {submittedProjectId ? `#${submittedProjectId.slice(0, 8).toUpperCase()}` : '–'}
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                    Under granskning
+                  </span>
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Vad händer nu</p>
+                  <ol className="space-y-2 text-sm">
+                    <li className="flex gap-2"><span className="font-semibold text-primary">1.</span><span>Updro granskar briefen så att kategori, budget och kontaktuppgifter är användbara.</span></li>
+                    <li className="flex gap-2"><span className="font-semibold text-primary">2.</span><span>Uppdraget öppnas för matchande svenska byråer inom rätt kategori.</span></li>
+                    <li className="flex gap-2"><span className="font-semibold text-primary">3.</span><span>Högst tre relevanta byråer kan lämna offert. Du får notis när en offert kommer in.</span></li>
+                  </ol>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Svarstiden varierar beroende på kategori och tillgängliga byråer. Vi lovar ingen viss svarstid, men meddelar dig direkt när en offert är på plats.
+                  </p>
+                </div>
+              </div>
+
+              {isAuthenticated ? (
+                <div className="text-center">
+                  <Button onClick={() => navigate(submittedProjectId ? `/dashboard/buyer/uppdrag/${submittedProjectId}` : '/dashboard/buyer')}>
+                    Följ uppdraget i din dashboard
+                  </Button>
+                </div>
+              ) : (
+                <div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left">
+                  <p className="text-sm font-semibold mb-2">Följ offerterna på ett ställe</p>
+                  <p className="text-xs text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress. Kopplingen sker säkert efter att e-postadressen har bekräftats.</p>
+                  <Link to={registerLink}><Button className="w-full">Skapa gratis konto</Button></Link>
+                </div>
+              )}
             </div>
           )}
         </div>

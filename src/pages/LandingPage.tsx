@@ -76,7 +76,7 @@ const LandingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground"
               >
-                Gratis offertjämförelse
+                Hitta rätt byrå – utan massutskick
               </motion.p>
               <motion.h1
                 initial={{ opacity: 0, y: 14 }}
@@ -92,7 +92,7 @@ const LandingPage = () => {
                 transition={{ delay: 0.1 }}
                 className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground"
               >
-                Beskriv projektet en gång. Updro granskar briefen innan matchande svenska byråer får möjlighet att svara. Högst tre kan lämna offert, så att du kan jämföra utan att bli överöst av säljsamtal.
+                Beskriv projektet en gång. Updro granskar briefen innan matchande svenska byråer får möjlighet att svara. Högst tre relevanta byråer kan lämna offert – med fokus på webb, e-handel och AI, men alla våra kategorier finns med.
               </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
