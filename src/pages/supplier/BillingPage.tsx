@@ -145,7 +145,6 @@ const BillingPage = () => {
   const [switchPreview, setSwitchPreview] = useState<SwitchPreview | null>(null)
   const [switchTarget, setSwitchTarget] = useState<'monthly' | 'yearly' | null>(null)
   const [previewLoading, setPreviewLoading] = useState(false)
-  const [confirmingSwitch, setConfirmingSwitch] = useState(false)
   const [confirmDialog, setConfirmDialog] = useState<{
     type: 'cancel' | 'switch'
     target?: 'monthly' | 'yearly'
