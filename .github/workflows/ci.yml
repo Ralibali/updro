@@ -40,7 +40,7 @@ jobs:
         run: bun run test
 
       - name: Verify Supabase schema contract
-        run: bun run verify:schema-contract
+        run: bun run verify:schema
 
       - name: Build production app
         run: bun run build
