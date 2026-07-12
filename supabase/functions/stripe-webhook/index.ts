@@ -75,7 +75,7 @@ Deno.serve(async request => {
   };
 
   try {
-    if (event.type === "checkout.session.completed") {
+    if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
       const session = event.data.object as Stripe.Checkout.Session;
       const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id || null;
       const purchaseType = session.metadata?.purchase_type;
@@ -84,15 +84,21 @@ Deno.serve(async request => {
       if (!supplierId) throw new Error("Supplier could not be resolved for checkout session");
       if (purchaseType !== "lead" && purchaseType !== "monthly") throw new Error("Unknown purchase type");
 
-      const { error } = await admin.rpc("apply_stripe_purchase_event", {
-        p_event_id: event.id,
-        p_event_type: event.type,
-        p_supplier_id: supplierId,
-        p_purchase_type: purchaseType,
-        p_amount_sek: Math.round((session.amount_total || 0) / 100),
-        p_subscription_id: typeof session.subscription === "string" ? session.subscription : session.subscription?.id || null,
-      });
-      if (error) throw error;
+      const paymentReady = session.payment_status === "paid" || session.payment_status === "no_payment_required";
+      if (paymentReady) {
+        const { error } = await admin.rpc("apply_stripe_purchase_event", {
+          // Must match confirm-checkout so one checkout can never be credited twice.
+          p_event_id: `checkout_session:${session.id}`,
+          p_event_type: event.type,
+          p_supplier_id: supplierId,
+          p_purchase_type: purchaseType,
+          p_amount_sek: Math.round((session.amount_total || 0) / 100),
+          p_subscription_id: typeof session.subscription === "string" ? session.subscription : session.subscription?.id || null,
+        });
+        if (error) throw error;
+      } else {
+        console.log("stripe-webhook checkout awaiting payment", session.id, session.payment_status);
+      }
     }
 
     if (event.type === "customer.subscription.created" ||
