@@ -51,7 +51,7 @@ const AdminFunctionLogs = () => {
   const [hours, setHours] = useState<number>(24)
   const [selected, setSelected] = useState<string>('all')
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true)
     const since = new Date(Date.now() - hours * 3600 * 1000).toISOString()
     const { data, error } = await (supabase as any)
@@ -64,9 +64,10 @@ const AdminFunctionLogs = () => {
     setLoading(false)
     if (error) { console.error(error); return }
     setRows((data as LogRow[]) || [])
-  }
+  }, [hours])
 
-  useEffect(() => { load() /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [hours])
+  useEffect(() => { load() }, [load])
+
 
   const summaries = useMemo(() => WATCHED.map(name => {
     const list = rows.filter(row => row.function_name === name)
