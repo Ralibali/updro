@@ -437,7 +437,7 @@ const BillingPage = () => {
         })}
       </div>
 
-      <Dialog open={!!switchTarget} onOpenChange={open => { if (!open && !confirmingSwitch) { setSwitchTarget(null); setSwitchPreview(null) } }}>
+      <Dialog open={!!switchTarget} onOpenChange={open => { if (!open && !confirmingSwitch && !confirmDialog) { setSwitchTarget(null); setSwitchPreview(null) } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
@@ -490,12 +490,66 @@ const BillingPage = () => {
           })()}
 
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="outline" onClick={() => { setSwitchTarget(null); setSwitchPreview(null) }} disabled={confirmingSwitch}>
-              Avbryt
+            <Button variant="outline" onClick={() => { setSwitchTarget(null); setSwitchPreview(null) }} disabled={confirmingSwitch || !!confirmDialog}>
+              Stäng
             </Button>
-            <Button onClick={confirmSwitch} disabled={!switchPreview || confirmingSwitch}>
-              {confirmingSwitch && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              Bekräfta byte
+            <Button onClick={confirmSwitch} disabled={!switchPreview || confirmingSwitch || !!confirmDialog}>
+              Gå vidare till bekräftelse
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!confirmDialog} onOpenChange={open => { if (!open && !confirmingDialog) setConfirmDialog(null) }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {confirmDialog?.type === 'cancel' ? 'Bekräfta avbrytande' : 'Bekräfta planbyte'}
+            </DialogTitle>
+            <DialogDescription>
+              {confirmDialog?.type === 'cancel'
+                ? 'Är du säker på att du vill avbryta abonnemanget? Du behåller tillgången till periodens slut.'
+                : `Är du säker på att du vill byta till ${confirmDialog?.target === 'yearly' ? 'årskort' : 'månadskort'}?`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {confirmDialog?.type === 'switch' && confirmDialog?.preview && (() => {
+            const p = confirmDialog.preview
+            const kr = (cents: number) => `${(cents / 100).toLocaleString('sv-SE', { maximumFractionDigits: 2 })} kr`
+            const fmtDate = (iso: string | null) => iso ? new Date(iso).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '–'
+            const proration = p.proration_amount
+            const newIntervalLabel = p.new_price.interval === 'year' ? '/år' : '/månad'
+            return (
+              <div className="rounded-lg border p-3 space-y-2 text-sm mb-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Nytt pris</span>
+                  <span className="font-semibold">{kr(p.new_price.amount)} {newIntervalLabel}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Proration</span>
+                  <span className={`font-semibold ${proration < 0 ? 'text-emerald-600' : ''}`}>
+                    {proration >= 0 ? '+' : ''}{kr(proration)}
+                  </span>
+                </div>
+                <div className="border-t pt-2 flex justify-between">
+                  <span className="font-semibold">Att betala på nästa faktura</span>
+                  <span className="font-bold">{kr(p.amount_due)}</span>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Nästa dragning</span>
+                  <span className="font-medium text-foreground">{fmtDate(p.next_payment_attempt || p.period_end)}</span>
+                </div>
+              </div>
+            )
+          })()}
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setConfirmDialog(null)} disabled={confirmingDialog}>
+              Nej, gå tillbaka
+            </Button>
+            <Button onClick={executeConfirmedAction} disabled={confirmingDialog}>
+              {confirmingDialog && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Ja, {confirmDialog?.type === 'cancel' ? 'avbryt abonnemanget' : 'bekräfta byte'}
             </Button>
           </DialogFooter>
         </DialogContent>
