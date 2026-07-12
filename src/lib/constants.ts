@@ -102,24 +102,18 @@ export const MAX_OFFERS_PER_PROJECT = 3
 
 export const STRIPE_PRODUCTS = {
   monthly: {
-    product_id: 'prod_UNNHPlzFIuEL0e',
-    price_id: 'price_1TOcX1HzffTezY8204n36Q31',
     name: 'Månadskort',
     price: 1995,
     per: '/månad',
     mode: 'subscription' as const,
   },
   yearly: {
-    product_id: 'prod_UsF2pEQRoUuAou',
-    price_id: 'price_1TsUYSHzffTezY82ZFIUm1zg',
     name: 'Årskort',
     price: 19950,
     per: '/år',
     mode: 'subscription' as const,
   },
   lead: {
-    product_id: 'prod_UNNHEXppo9nyyz',
-    price_id: 'price_1TOcX2HzffTezY82yzbAX5ZD',
     name: 'Enskilt lead',
     price: 119,
     per: 'per lead',
