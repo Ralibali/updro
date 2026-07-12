@@ -60,6 +60,7 @@ Migrationerna ska appliceras i tidsordning. De senaste stabiliseringsmigrationer
 20260712143000_production_hardening.sql
 20260712180000_product_reliability.sql
 20260712190000_pending_project_notifications.sql
+20260712200000_allow_trusted_system_updates.sql
 ```
 
 ### Edge Functions som ska vara deployade
