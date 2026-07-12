@@ -147,48 +147,96 @@ const BillingPage = () => {
         {checkingSubscription && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-label="Kontrollerar abonnemang" />}
       </div>
 
-      {subscription.subscribed && (
-        <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <CreditCard className="h-5 w-5 text-primary" />
-            <h2 className="font-display font-semibold">
-              {subscription.interval === 'year' ? 'Årskort aktivt' : 'Månadskort aktivt'}
-            </h2>
+      {subscription.subscribed && (() => {
+        const status = subscription.status ?? 'active'
+        const isTrialing = status === 'trialing'
+        const isPastDue = status === 'past_due' || status === 'unpaid' || status === 'incomplete'
+        const willCancel = !!subscription.cancel_at_period_end
+        const endDate = subscription.subscription_end ? new Date(subscription.subscription_end) : null
+        const trialEnd = subscription.trial_end ? new Date(subscription.trial_end) : null
+        const fmt = (d: Date | null) => d ? d.toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '–'
+
+        const badge = willCancel
+          ? { text: 'Sägs upp vid periodens slut', cls: 'bg-amber-500/15 text-amber-700 border-amber-500/30' }
+          : isPastDue
+            ? { text: 'Betalning misslyckades', cls: 'bg-destructive/15 text-destructive border-destructive/30' }
+            : isTrialing
+              ? { text: 'Provperiod', cls: 'bg-accent/15 text-accent-foreground border-accent/30' }
+              : { text: 'Aktiv', cls: 'bg-emerald-500/15 text-emerald-700 border-emerald-500/30' }
+
+        const nextLabel = willCancel
+          ? 'Tillgången upphör'
+          : isTrialing
+            ? 'Provperioden slutar'
+            : isPastDue
+              ? 'Betalning krävs innan'
+              : 'Nästa debitering'
+        const nextDate = isTrialing && trialEnd ? trialEnd : endDate
+
+        return (
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-5 mb-8">
+            <div className="flex flex-wrap items-center gap-3 mb-3">
+              <CreditCard className="h-5 w-5 text-primary" />
+              <h2 className="font-display font-semibold">
+                {subscription.interval === 'year' ? 'Årskort' : 'Månadskort'}
+              </h2>
+              <span className={`text-xs font-medium border rounded-full px-2.5 py-0.5 ${badge.cls}`}>
+                {badge.text}
+              </span>
+            </div>
+
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
+              <div>
+                <dt className="text-muted-foreground text-xs uppercase tracking-wide">{nextLabel}</dt>
+                <dd className="font-semibold mt-0.5">{fmt(nextDate)}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground text-xs uppercase tracking-wide">Pris</dt>
+                <dd className="font-semibold mt-0.5">
+                  {subscription.interval === 'year' ? '19 950 kr /år' : '1 995 kr /månad'}
+                </dd>
+              </div>
+            </dl>
+
+            {isPastDue && (
+              <p className="text-sm bg-destructive/10 border border-destructive/20 text-destructive rounded-lg p-3 mb-3">
+                Senaste betalningen gick inte igenom. Uppdatera ditt betalkort via Kundportal så återupptas abonnemanget automatiskt.
+              </p>
+            )}
+
+            <div className="flex flex-wrap gap-2">
+              {subscription.interval === 'month' && !willCancel && !isPastDue && (
+                <Button variant="default" size="sm" onClick={() => handleManageAction('switch', 'yearly')} disabled={loading !== null}>
+                  {loading === 'switch-yearly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                  Uppgradera till årskort
+                </Button>
+              )}
+              {subscription.interval === 'year' && !willCancel && !isPastDue && (
+                <Button variant="outline" size="sm" onClick={() => handleManageAction('switch', 'monthly')} disabled={loading !== null}>
+                  {loading === 'switch-monthly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Byt till månadskort
+                </Button>
+              )}
+              {willCancel ? (
+                <Button variant="outline" size="sm" onClick={() => handleManageAction('resume')} disabled={loading !== null}>
+                  {loading === 'resume' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Återaktivera abonnemang
+                </Button>
+              ) : (
+                <Button variant="outline" size="sm" onClick={() => handleManageAction('cancel')} disabled={loading !== null}>
+                  {loading === 'cancel' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  Avbryt abonnemang
+                </Button>
+              )}
+              <Button variant="ghost" size="sm" onClick={handleManageSubscription} disabled={loading !== null}>
+                {loading === 'portal' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ExternalLink className="h-4 w-4 mr-2" />}
+                Kundportal
+              </Button>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Du har obegränsade leads. {subscription.cancel_at_period_end ? 'Abonnemanget avslutas' : 'Nästa fakturadatum:'} {subscription.subscription_end ? new Date(subscription.subscription_end).toLocaleDateString('sv-SE') : '–'}
-          </p>
-          <div className="flex flex-wrap gap-2 mt-3">
-            {subscription.interval === 'month' && !subscription.cancel_at_period_end && (
-              <Button variant="default" size="sm" onClick={() => handleManageAction('switch', 'yearly')} disabled={loading !== null}>
-                {loading === 'switch-yearly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
-                Uppgradera till årskort
-              </Button>
-            )}
-            {subscription.interval === 'year' && !subscription.cancel_at_period_end && (
-              <Button variant="outline" size="sm" onClick={() => handleManageAction('switch', 'monthly')} disabled={loading !== null}>
-                {loading === 'switch-monthly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Byt till månadskort
-              </Button>
-            )}
-            {subscription.cancel_at_period_end ? (
-              <Button variant="outline" size="sm" onClick={() => handleManageAction('resume')} disabled={loading !== null}>
-                {loading === 'resume' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Återaktivera abonnemang
-              </Button>
-            ) : (
-              <Button variant="outline" size="sm" onClick={() => handleManageAction('cancel')} disabled={loading !== null}>
-                {loading === 'cancel' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Avbryt abonnemang
-              </Button>
-            )}
-            <Button variant="ghost" size="sm" onClick={handleManageSubscription} disabled={loading !== null}>
-              {loading === 'portal' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <ExternalLink className="h-4 w-4 mr-2" />}
-              Kundportal
-            </Button>
-          </div>
-        </div>
-      )}
+        )
+      })()}
+
 
 
       {isOnTrial && !subscription.subscribed && (
