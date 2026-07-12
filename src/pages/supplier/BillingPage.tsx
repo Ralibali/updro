@@ -40,11 +40,27 @@ const BillingPage = () => {
   useEffect(() => {
     const success = searchParams.get('success') === 'true'
     const canceled = searchParams.get('canceled') === 'true'
+    const sessionId = searchParams.get('session_id')
+
+    const finalizeCheckout = async () => {
+      try {
+        if (sessionId) {
+          const { error } = await supabase.functions.invoke('confirm-checkout', {
+            body: { sessionId },
+          })
+          if (error) throw error
+        }
+        await checkSubscription()
+        await refreshProfile()
+        toast.success('Betalningen är bekräftad och ditt konto har uppdaterats.')
+      } catch (error) {
+        console.error('Checkout confirmation failed', error)
+        toast.error('Betalningen lyckades, men kontot kunde inte uppdateras direkt. Ladda om sidan om en stund.')
+      }
+    }
 
     if (success) {
-      toast.success('Betalningen lyckades! Ditt konto uppdateras inom kort.')
-      checkSubscription()
-      window.setTimeout(() => refreshProfile(), 2000)
+      finalizeCheckout()
     } else if (canceled) {
       toast.info('Betalningen avbröts.')
     }
