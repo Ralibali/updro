@@ -42,11 +42,32 @@ serve(async req => {
     const user = userData.user;
     const { data: supplier, error: supplierError } = await admin
       .from("supplier_profiles")
-      .select("stripe_customer_id, stripe_subscription_id, plan, lead_credits")
+      .select("stripe_customer_id, stripe_subscription_id, plan, lead_credits, trial_leads_used, trial_ends_at")
       .eq("id", user.id)
       .maybeSingle();
     if (supplierError) throw supplierError;
     if (!supplier) return json({ error: "Byråprofilen kunde inte hittas." }, 404);
+
+    const { data: creditEvents } = await admin
+      .from("stripe_events")
+      .select("created_at, credits_added, amount_sek, plan, event_type")
+      .eq("supplier_id", user.id)
+      .gt("credits_added", 0)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    const creditsBlock = {
+      lead_credits: supplier.lead_credits ?? 0,
+      trial_leads_used: supplier.trial_leads_used ?? 0,
+      trial_ends_at: supplier.trial_ends_at,
+      history: (creditEvents || []).map(e => ({
+        date: e.created_at,
+        credits: e.credits_added,
+        amount_sek: e.amount_sek,
+        plan: e.plan,
+      })),
+    };
+
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     let customerId = supplier.stripe_customer_id as string | null;
@@ -68,7 +89,8 @@ serve(async req => {
           lead_credits: (supplier.lead_credits || 0) > 100 ? 0 : (supplier.lead_credits || 0),
         }).eq("id", user.id);
       }
-      return json({ subscribed: false, plan: "payg", subscription_end: null });
+      return json({ subscribed: false, plan: "payg", subscription_end: null, credits: creditsBlock });
+
     }
 
     const subscriptions = await stripe.subscriptions.list({
@@ -92,7 +114,7 @@ serve(async req => {
         }).eq("id", user.id);
         if (error) throw error;
       }
-      return json({ subscribed: false, plan: "payg", subscription_end: null });
+      return json({ subscribed: false, plan: "payg", subscription_end: null, credits: creditsBlock });
     }
 
     const { error: updateError } = await admin.from("supplier_profiles").update({
@@ -114,7 +136,9 @@ serve(async req => {
       current_period_start: new Date(activeSubscription.current_period_start * 1000).toISOString(),
       trial_end: activeSubscription.trial_end ? new Date(activeSubscription.trial_end * 1000).toISOString() : null,
       subscription_end: new Date(activeSubscription.current_period_end * 1000).toISOString(),
+      credits: creditsBlock,
     });
+
 
 
   } catch (error) {

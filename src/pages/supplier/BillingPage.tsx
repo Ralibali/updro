@@ -23,11 +23,18 @@ const BillingPage = () => {
     status?: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid'
     trial_end?: string | null
     current_period_start?: string | null
+    credits?: {
+      lead_credits: number
+      trial_leads_used: number
+      trial_ends_at: string | null
+      history: { date: string; credits: number; amount_sek: number | null; plan: string | null }[]
+    }
   }>({
     subscribed: false,
     plan: null,
     subscription_end: null,
   })
+
 
 
   const [checkingSubscription, setCheckingSubscription] = useState(false)
@@ -236,6 +243,78 @@ const BillingPage = () => {
           </div>
         )
       })()}
+
+      {(() => {
+        const credits = subscription.credits
+        if (!credits) return null
+        const hasUnlimited = subscription.subscribed
+        const balance = credits.lead_credits
+        const lastPurchase = credits.history[0]
+        const fmt = (iso: string) => new Date(iso).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })
+
+        return (
+          <div className="bg-card border rounded-xl p-5 mb-8">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h2 className="font-display font-semibold">Lead-krediter</h2>
+            </div>
+
+            <div className="flex flex-wrap items-baseline gap-3 mb-4">
+              {hasUnlimited ? (
+                <>
+                  <span className="text-3xl font-bold">Obegränsat</span>
+                  <span className="text-sm text-muted-foreground">
+                    så länge ditt {subscription.interval === 'year' ? 'årskort' : 'månadskort'} är aktivt
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-3xl font-bold">{balance}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {balance === 1 ? 'lead kvar att låsa upp' : 'leads kvar att låsa upp'}
+                  </span>
+                </>
+              )}
+            </div>
+
+            {!hasUnlimited && (
+              <p className="text-sm text-muted-foreground mb-3">
+                {balance === 0
+                  ? 'Du har inga krediter kvar. Köp ett nytt lead nedan – saldot uppdateras direkt efter genomförd betalning.'
+                  : 'Krediter läggs till automatiskt direkt efter varje betalning. Ett köp = en lead-kredit.'}
+              </p>
+            )}
+
+            {credits.history.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Senaste betalningar
+                </h3>
+                <ul className="divide-y border rounded-lg">
+                  {credits.history.slice(0, 5).map((event, idx) => (
+                    <li key={idx} className="flex items-center justify-between px-3 py-2 text-sm">
+                      <span>{fmt(event.date)}</span>
+                      <span className="text-muted-foreground">
+                        {event.plan === 'monthly' || event.plan === 'yearly'
+                          ? `Abonnemang ${event.plan === 'yearly' ? 'årskort' : 'månadskort'}`
+                          : `+${event.credits} lead${event.credits === 1 ? '' : 's'}`}
+                        {event.amount_sek ? ` · ${Number(event.amount_sek).toLocaleString('sv-SE')} kr` : ''}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {lastPurchase && !hasUnlimited && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Senast uppdaterad: {fmt(lastPurchase.date)}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      })()}
+
+
 
 
 
