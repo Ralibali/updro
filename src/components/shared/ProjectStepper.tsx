@@ -44,6 +44,9 @@ function getStepIndex(step: ProjectStep) {
   return STEP_ORDER.indexOf(step)
 }
 
+// Helper co-located with the stepper component so both stay in sync when steps change.
+// Consumers of the helper are React components that also import the stepper. Fast Refresh warning is safe here.
+// eslint-disable-next-line react-refresh/only-export-components
 export function calculateCurrentStep(project: any, offers: any[]): ProjectStep {
   const hasAccepted = offers.some(o => o.status === 'accepted')
   if (hasAccepted) return 'review'
