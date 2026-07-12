@@ -9,6 +9,8 @@ project_id = "opgjoevvlwhsddscqmpe"
     verify_jwt = true
   [functions.customer-portal]
     verify_jwt = true
+  [functions.stripe-webhook]
+    verify_jwt = false
   [functions.offer-reminder-cron]
     verify_jwt = false
   [functions.sitemap]
