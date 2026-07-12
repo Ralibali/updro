@@ -1,0 +1,107 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { ...corsHeaders, "Content-Type": "application/json" },
+});
+
+serve(async req => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "Metoden stöds inte." }, 405);
+
+  const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY") || "";
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  const monthlyPriceId = Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31";
+  const yearlyPriceId = Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg";
+
+  if (!stripeKey || !supabaseUrl || !anonKey || !serviceKey) {
+    return json({ error: "Abonnemangshanteringen är inte korrekt konfigurerad." }, 500);
+  }
+
+  try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) return json({ error: "Du måste vara inloggad." }, 401);
+
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    const authClient = createClient(supabaseUrl, anonKey, { auth: { persistSession: false } });
+    const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } });
+    const { data: userData, error: userError } = await authClient.auth.getUser(token);
+    if (userError || !userData.user?.email) return json({ error: "Du måste vara inloggad." }, 401);
+
+    const user = userData.user;
+    const body = await req.json().catch(() => ({}));
+    const action = body?.action as "switch" | "cancel" | "resume";
+    const target = body?.target as "monthly" | "yearly" | undefined;
+
+    if (!action || !["switch", "cancel", "resume"].includes(action)) {
+      return json({ error: "Ogiltig åtgärd." }, 400);
+    }
+    if (action === "switch" && !["monthly", "yearly"].includes(target || "")) {
+      return json({ error: "Ogiltigt målabonnemang." }, 400);
+    }
+
+    const { data: supplier, error: supplierError } = await admin
+      .from("supplier_profiles")
+      .select("stripe_customer_id, stripe_subscription_id")
+      .eq("id", user.id)
+      .maybeSingle();
+    if (supplierError) throw supplierError;
+    if (!supplier?.stripe_customer_id) return json({ error: "Inget kundkonto hittades." }, 404);
+
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const subs = await stripe.subscriptions.list({
+      customer: supplier.stripe_customer_id,
+      status: "all",
+      limit: 20,
+    });
+    const active = subs.data.find(s =>
+      (s.status === "active" || s.status === "trialing") &&
+      s.items.data.some(i => i.price.id === monthlyPriceId || i.price.id === yearlyPriceId)
+    );
+    if (!active) return json({ error: "Inget aktivt abonnemang hittades." }, 404);
+
+    if (action === "cancel") {
+      await stripe.subscriptions.update(active.id, { cancel_at_period_end: true });
+      return json({ ok: true, message: "Abonnemanget avslutas vid periodens slut." });
+    }
+
+    if (action === "resume") {
+      await stripe.subscriptions.update(active.id, { cancel_at_period_end: false });
+      return json({ ok: true, message: "Abonnemanget är återaktiverat." });
+    }
+
+    // switch
+    const newPriceId = target === "yearly" ? yearlyPriceId : monthlyPriceId;
+    const currentItem = active.items.data.find(i => i.price.id === monthlyPriceId || i.price.id === yearlyPriceId);
+    if (!currentItem) return json({ error: "Kunde inte hitta prenumerationsraden." }, 500);
+    if (currentItem.price.id === newPriceId) {
+      return json({ ok: true, message: "Du har redan det abonnemanget." });
+    }
+
+    await stripe.subscriptions.update(active.id, {
+      items: [{ id: currentItem.id, price: newPriceId }],
+      proration_behavior: "create_prorations",
+      cancel_at_period_end: false,
+    });
+
+    return json({
+      ok: true,
+      message: target === "yearly"
+        ? "Du är nu uppgraderad till årskort. Mellanskillnaden proportioneras på nästa faktura."
+        : "Du är nu bytt till månadskort. Ändringen träder i kraft direkt.",
+    });
+  } catch (error) {
+    console.error("[MANAGE-SUB] Error:", error);
+    const message = error instanceof Error ? error.message : "Okänt fel";
+    return json({ error: `Kunde inte uppdatera abonnemanget: ${message}` }, 500);
+  }
+});
