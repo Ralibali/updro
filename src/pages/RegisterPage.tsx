@@ -104,7 +104,7 @@ const RegisterPage = () => {
           {linkedProject && (
             <div className="mb-4 rounded-xl border border-brand-blue/30 bg-brand-blue/5 p-4 text-sm">
               <p className="font-semibold text-brand-blue">Du har en offert som väntar</p>
-              <p className="text-muted-foreground mt-1">Använd samma e-postadress som du angav när du publicerade uppdraget – vi kopplar uppdraget till ditt konto automatiskt.</p>
+              <p className="text-muted-foreground mt-1">Använd samma e-postadress som du angav när du publicerade uppdraget. Uppdraget kopplas efter att du har bekräftat e-postadressen och loggat in.</p>
             </div>
           )}
 
@@ -120,8 +120,8 @@ const RegisterPage = () => {
               </div>
               <div>
                 <Label htmlFor="buyer-password">Lösenord *</Label>
-                <Input id="buyer-password" type="password" autoComplete="new-password" value={form.password} onChange={event => setForm(prev => ({ ...prev, password: event.target.value }))} className="rounded-xl mt-1" minLength={6} required />
-                <p className="mt-1 text-xs text-muted-foreground">Minst sex tecken.</p>
+                <Input id="buyer-password" type="password" autoComplete="new-password" value={form.password} onChange={event => setForm(prev => ({ ...prev, password: event.target.value }))} className="rounded-xl mt-1" minLength={8} required />
+                <p className="mt-1 text-xs text-muted-foreground">Minst åtta tecken.</p>
               </div>
 
               <div className="flex items-start gap-2 pt-2">
