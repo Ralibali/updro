@@ -23,7 +23,7 @@ const MatchedProjectsPage = () => {
   const [loading, setLoading] = useState(true)
   const [unlocking, setUnlocking] = useState(false)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (!user) return
     setLoading(true)
     try {
@@ -41,9 +41,9 @@ const MatchedProjectsPage = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
 
-  useEffect(() => { fetchData() }, [user])
+  useEffect(() => { fetchData() }, [fetchData])
 
   const handleUnlock = async (projectId: string) => {
     if (!user || !supplierProfile || unlocking) return
