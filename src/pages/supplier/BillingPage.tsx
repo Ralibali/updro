@@ -489,10 +489,10 @@ const BillingPage = () => {
           })()}
 
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="outline" onClick={() => { setSwitchTarget(null); setSwitchPreview(null) }} disabled={confirmingSwitch || !!confirmDialog}>
+            <Button variant="outline" onClick={() => { setSwitchTarget(null); setSwitchPreview(null) }} disabled={!!confirmDialog}>
               Stäng
             </Button>
-            <Button onClick={confirmSwitch} disabled={!switchPreview || confirmingSwitch || !!confirmDialog}>
+            <Button onClick={confirmSwitch} disabled={!switchPreview || !!confirmDialog}>
               Gå vidare till bekräftelse
             </Button>
           </DialogFooter>
