@@ -43,6 +43,10 @@ export const submitProjectOffer = async (input: SubmitOfferInput): Promise<strin
   })
 
   if (error) throw error
+  try {
+    const { trackClick } = await import('@/hooks/usePageTracking')
+    trackClick('offer_submitted', 'Skickade offert', { project_id: input.projectId })
+  } catch { /* analytics best effort */ }
   return data as string
 }
 
