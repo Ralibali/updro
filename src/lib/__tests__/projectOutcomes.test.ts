@@ -58,9 +58,12 @@ describe('validateOutcomeForm', () => {
     if (r.ok) expect(r.value.actualValueSek).toBe(75000.5)
   })
 
-  it('rejects negative values', () => {
-    const r = validateOutcomeForm({ ...base, outcome: 'not_proceeding', actualValueSek: '-1' }, offers)
-    expect(r.ok).toBe(false)
+  it('rejects zero and negative values', () => {
+    expect(validateOutcomeForm({ ...base, outcome: 'not_proceeding', actualValueSek: '-1' }, offers).ok).toBe(false)
+    expect(validateOutcomeForm({ ...base, outcome: 'not_proceeding', actualValueSek: '0' }, offers).ok).toBe(false)
+    const positive = validateOutcomeForm({ ...base, outcome: 'not_proceeding', actualValueSek: '1' }, offers)
+    expect(positive.ok).toBe(true)
+    if (positive.ok) expect(positive.value.actualValueSek).toBe(1)
   })
 
   it('rejects excessive values', () => {
