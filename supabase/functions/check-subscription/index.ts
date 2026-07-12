@@ -114,7 +114,7 @@ serve(async req => {
         }).eq("id", user.id);
         if (error) throw error;
       }
-      return json({ subscribed: false, plan: "payg", subscription_end: null });
+      return json({ subscribed: false, plan: "payg", subscription_end: null, credits: creditsBlock });
     }
 
     const { error: updateError } = await admin.from("supplier_profiles").update({
