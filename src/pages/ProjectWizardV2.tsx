@@ -15,6 +15,7 @@ import { trackClick } from '@/hooks/usePageTracking'
 import { supabase } from '@/integrations/supabase/client'
 import { trackLeadStarted, trackLeadSubmitted, trackOnceInSession } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
+import type { Json } from '@/integrations/supabase/types'
 import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
 import type { BriefSuggestion } from '@/lib/briefAnalysis'
 import type { BudgetRange, Category, StartTime } from '@/types'
@@ -149,8 +150,8 @@ const ProjectWizardV2 = () => {
         if (newProjectId && (attribution.first || attribution.latest)) {
           const { error: attrError } = await supabase.rpc('save_project_attribution', {
             p_project_id: newProjectId,
-            p_first: attribution.first as unknown as never,
-            p_latest: attribution.latest as unknown as never,
+            p_first: (attribution.first ?? null) as unknown as Json,
+            p_latest: (attribution.latest ?? null) as unknown as Json,
           })
           if (attrError && import.meta.env.DEV) console.warn('Attribution RPC failed', attrError)
         }
