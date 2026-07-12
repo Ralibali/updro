@@ -49,7 +49,31 @@ function slugify(input: string, suffix: string) {
   return `${slug || "byra"}-${suffix}`;
 }
 
-serve(async (req) => {
+const safeOrigin = (rawOrigin: string | null) => {
+  if (!rawOrigin) return "https://updro.se";
+  if (rawOrigin === "https://updro.se" || rawOrigin === "https://www.updro.se") return rawOrigin;
+  if (/^http:\/\/localhost:\d+$/.test(rawOrigin)) return rawOrigin;
+  if (/^https:\/\/[a-z0-9-]+\.lovable\.app$/i.test(rawOrigin)) return rawOrigin;
+  return "https://updro.se";
+};
+
+const clientIp = (request: Request) =>
+  request.headers.get("cf-connecting-ip") ||
+  request.headers.get("x-real-ip") ||
+  request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+  "unknown";
+
+async function hashIp(ip: string) {
+  try {
+    const salt = Deno.env.get("RATE_LIMIT_SALT") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "updro";
+    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${salt}:${ip}`));
+    return Array.from(new Uint8Array(digest)).slice(0, 12).map(byte => byte.toString(16).padStart(2, "0")).join("");
+  } catch {
+    return "unknown";
+  }
+}
+
+serve(async req => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Metoden stöds inte." }, 405);
 
@@ -63,7 +87,7 @@ serve(async (req) => {
   }
 
   try {
-    const body = (await req.json()) as SignUpBody;
+    const body = (await req.json().catch(() => ({}))) as SignUpBody;
     const email = cleanText(body.email, 254).toLowerCase();
     const password = typeof body.password === "string" ? body.password : "";
     const role = body.role;
@@ -73,11 +97,11 @@ serve(async (req) => {
     const phone = cleanText(body.phone, 40);
     const orgNumber = cleanText(body.org_number, 32);
     const categories = Array.isArray(body.categories)
-      ? body.categories.filter((category) => typeof category === "string" && CATEGORIES.has(category)).slice(0, 10)
+      ? body.categories.filter(category => typeof category === "string" && CATEGORIES.has(category)).slice(0, 10)
       : [];
 
     if (!/^\S+@\S+\.\S+$/.test(email)) return json({ error: "Ange en giltig e-postadress." }, 400);
-    if (password.length < 6) return json({ error: "Lösenordet måste vara minst sex tecken." }, 400);
+    if (password.length < 8) return json({ error: "Lösenordet måste vara minst åtta tecken." }, 400);
     if (role !== "buyer" && role !== "supplier") return json({ error: "Ogiltig kontotyp." }, 400);
     if (fullName.length < 2) return json({ error: "Ange ditt namn." }, 400);
     if (role === "supplier" && companyName.length < 2) return json({ error: "Ange byrånamn." }, 400);
@@ -86,8 +110,17 @@ serve(async (req) => {
     const publicClient = createClient(supabaseUrl, anonKey, { auth: { persistSession: false } });
     const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
 
-    const origin = req.headers.get("origin");
-    const emailRedirectTo = origin && /^https?:\/\//.test(origin) ? origin : "https://updro.se";
+    const ipHash = await hashIp(clientIp(req));
+    const { data: allowed, error: rateError } = await adminClient.rpc("consume_edge_rate_limit", {
+      p_key: `create-account:${ipHash}`,
+      p_limit: 6,
+      p_window_seconds: 3600,
+    });
+    if (rateError) throw rateError;
+    if (!allowed) return json({ error: "För många registreringsförsök. Försök igen senare." }, 429);
+
+    const origin = safeOrigin(req.headers.get("origin"));
+    const emailRedirectTo = `${origin}/logga-in?confirmed=true`;
 
     const { data: authData, error: authError } = await publicClient.auth.signUp({
       email,
@@ -105,7 +138,8 @@ serve(async (req) => {
     if (authError) {
       const message = authError.message.toLowerCase().includes("already")
         ? "Det finns redan ett konto med den e-postadressen. Logga in istället."
-        : authError.message;
+        : "Kunde inte skapa kontot. Kontrollera uppgifterna och försök igen.";
+      console.error("create-account auth error", authError.message);
       return json({ error: message }, 400);
     }
 
@@ -156,25 +190,8 @@ serve(async (req) => {
       }
     }
 
-    // Link any guest projects with the same email to the new buyer account.
-    if (role === "buyer") {
-      try {
-        const { data: leads } = await adminClient
-          .from("guest_leads")
-          .select("id")
-          .eq("email", email);
-        const leadIds = (leads || []).map((row: { id: string }) => row.id);
-        if (leadIds.length) {
-          await adminClient
-            .from("projects")
-            .update({ buyer_id: user.id, guest_lead_id: null })
-            .in("guest_lead_id", leadIds);
-        }
-      } catch (linkError) {
-        console.error("create-account guest link failed", linkError);
-      }
-    }
-
+    // Guest assignments are deliberately claimed after the first verified login,
+    // never during unverified registration.
     return json({
       userId: user.id,
       session: authData.session,
