@@ -33,8 +33,14 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      - name: Typecheck
+        run: bun run typecheck
+
       - name: Run tests
         run: bun run test
+
+      - name: Verify Supabase schema contract
+        run: bun run verify:schema-contract
 
       - name: Build production app
         run: bun run build
