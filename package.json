@@ -9,7 +9,7 @@
     "build": "vite build && bun scripts/prerender.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
