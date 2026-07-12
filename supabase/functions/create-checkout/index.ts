@@ -34,22 +34,6 @@ serve(async req => {
     return json({ error: "Betalningen är inte korrekt konfigurerad." }, 500);
   }
 
-  const plans = {
-    monthly: {
-      priceId: Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31",
-      mode: "subscription" as const,
-    },
-    yearly: {
-      priceId: Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg",
-      mode: "subscription" as const,
-    },
-    lead: {
-      priceId: Deno.env.get("STRIPE_LEAD_PRICE_ID") || "price_1TOcX2HzffTezY82yzbAX5ZD",
-      mode: "payment" as const,
-    },
-  };
-
-
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) return json({ error: "Du måste vara inloggad." }, 401);
@@ -62,9 +46,19 @@ serve(async req => {
 
     const user = userData.user;
     const body = await req.json().catch(() => ({}));
-    const planId = body?.planId as keyof typeof plans;
-    const selected = plans[planId];
-    if (!selected) return json({ error: "Ogiltig betalningsprodukt." }, 400);
+    const planId = body?.planId;
+    if (!isBillingPlanId(planId)) return json({ error: "Ogiltig betalningsprodukt." }, 400);
+
+    let selected;
+    try {
+      selected = getBillingPlan(planId);
+    } catch (error) {
+      if (error instanceof BillingConfigError) {
+        console.error("[CREATE-CHECKOUT] Billing config error:", error.message);
+        return json({ error: "Betalningen är inte korrekt konfigurerad." }, 500);
+      }
+      throw error;
+    }
 
     const { data: supplier, error: supplierError } = await admin
       .from("supplier_profiles")
