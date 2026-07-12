@@ -374,11 +374,16 @@ const BillingPage = () => {
             </div>
 
             {!hasUnlimited && (
-              <p className="text-sm text-muted-foreground mb-3">
-                {balance === 0
-                  ? 'Du har inga krediter kvar. Köp ett nytt lead nedan – saldot uppdateras direkt efter genomförd betalning.'
-                  : 'Krediter läggs till automatiskt direkt efter varje betalning. Ett köp = en lead-kredit.'}
-              </p>
+              <>
+                <p className="text-sm text-muted-foreground mb-2">
+                  1 kredit används när du låser upp ett uppdrag.
+                </p>
+                <p className="text-sm text-muted-foreground mb-3">
+                  {balance === 0
+                    ? 'Du har inga krediter kvar. Köp ett nytt lead nedan – saldot uppdateras direkt efter genomförd betalning.'
+                    : 'Krediter läggs till automatiskt direkt efter varje betalning. Ett köp = en lead-kredit.'}
+                </p>
+              </>
             )}
 
             {credits.history.length > 0 && (
