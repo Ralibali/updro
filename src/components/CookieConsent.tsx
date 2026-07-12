@@ -11,7 +11,7 @@ type Gtag = (...args: unknown[]) => void
 
 declare global {
   interface Window {
-    dataLayer?: unknown[][]
+    dataLayer?: unknown[]
     gtag?: Gtag
   }
 }
