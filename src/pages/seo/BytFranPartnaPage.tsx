@@ -1,40 +1,34 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, TrendingDown } from 'lucide-react'
+import { ArrowRight, CheckCircle2, Calculator, FlaskConical } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
+import { STRIPE_PRODUCTS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
 
-const CALC = {
-  leads: 20,
-  partnaPerLead: 490,
-  updroMonth: 1995,
-  updroPerLead: 119,
-  partnaMonth: 1950,
-  partnaMonthLeads: 10,
+const partna = {
+  payg: 490,
+  monthly: 1950,
+  monthlyIncluded: 10,
 }
 
 const faqs = [
   {
-    q: 'Vad är skillnaden mellan Updro och Partna för en byrå?',
-    a: `Updro tar cirka ${CALC.updroPerLead} kr per lead eller ${CALC.updroMonth.toLocaleString('sv-SE')} kr/mån för obegränsat antal leads och visar max tre byråer per uppdrag. Partna anger cirka ${CALC.partnaPerLead} kr per lead eller ${CALC.partnaMonth.toLocaleString('sv-SE')} kr/mån för ${CALC.partnaMonthLeads} leads och upp till sex byråer per förfrågan enligt publik information.`,
+    q: 'Vad är den viktigaste skillnaden för en byrå?',
+    a: 'Updro begränsar varje uppdrag till högst tre byråer och låter er se brief, budget och tidsram före upplåsning. Partna anger upp till sex offerter per förfrågan enligt sin publika information.',
   },
   {
-    q: 'Hur mycket kan jag spara genom att byta?',
-    a: `Vid ${CALC.leads} leads per månad blir Partna cirka ${(CALC.leads * CALC.partnaPerLead).toLocaleString('sv-SE')} kr. Updro månadskort kostar ${CALC.updroMonth.toLocaleString('sv-SE')} kr, vilket ger en skillnad på cirka ${(CALC.leads * CALC.partnaPerLead - CALC.updroMonth).toLocaleString('sv-SE')} kr per månad.`,
+    q: 'Är Updro alltid billigare?',
+    a: 'Styckepriset är lägre, men verklig ekonomi avgörs av leadkvalitet, volym och vunna affärer. Jämför därför kostnad per bokat möte och kund, inte bara pris per lead.',
   },
   {
-    q: 'Är det bindningstid?',
-    a: 'Nej. Månadskortet är löpande per månad. Aktuella villkor bör alltid kontrolleras direkt på respektive plattform.',
+    q: 'Hur bör vi testa Updro?',
+    a: `Använd de ${TRIAL_LEADS} kostnadsfria krediterna under ${TRIAL_DAYS} dagar. Mät svar, möten, offerter och vunna affärer innan ni väljer betalningsmodell.`,
   },
   {
-    q: 'Får jag färre eller fler leads på Updro?',
-    a: 'Updro visar max tre byråer per uppdrag för att öka konverteringen per lead. Volymen beror på kategori, region och byråns profil.',
-  },
-  {
-    q: 'Kan jag ha båda plattformarna parallellt?',
-    a: 'Ja. Många byråer testar Updro parallellt en period för att jämföra pris per konverterad kund innan de flyttar sin volym.',
+    q: 'Kan vi använda båda tjänsterna parallellt?',
+    a: 'Ja. Det är ett bra sätt att jämföra kanaler på samma mätetal utan att avbryta en befintlig leadkälla för tidigt.',
   },
 ]
 
@@ -42,14 +36,14 @@ const BytFranPartnaPage = () => {
   useEffect(() => {
     const canonical = 'https://updro.se/for-byraer/byt-fran-partna'
     setSEOMeta({
-      title: 'Byt från Partna till Updro – räkna på skillnaden',
-      description: 'Så mycket kan din byrå spara genom att gå från Partna till Updro. Räkneexempel, prisjämförelse och vanliga frågor för digitala byråer.',
+      title: 'Testa Updro som alternativ till Partna – för digitala byråer',
+      description: 'Jämför pris, konkurrens per uppdrag och produktflöde. Börja med fem kostnadsfria lead-krediter och mät faktisk kostnad per vunnen affär.',
       canonical,
     })
     setBreadcrumb([
       { name: 'Hem', url: 'https://updro.se/' },
       { name: 'För byråer', url: 'https://updro.se/for-byraer' },
-      { name: 'Byt från Partna', url: canonical },
+      { name: 'Testa alternativ till Partna', url: canonical },
     ])
     setJsonLd('byt-fran-partna-faq', {
       '@context': 'https://schema.org',
@@ -62,8 +56,9 @@ const BytFranPartnaPage = () => {
     })
   }, [])
 
-  const partnaCost = CALC.leads * CALC.partnaPerLead
-  const diff = partnaCost - CALC.updroMonth
+  const exampleLeads = 10
+  const updroPayg = exampleLeads * STRIPE_PRODUCTS.lead.price
+  const partnaPayg = exampleLeads * partna.payg
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -71,79 +66,76 @@ const BytFranPartnaPage = () => {
       <main className="flex-1">
         <section className="container py-16 md:py-24">
           <div className="max-w-4xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">För byråer</p>
-            <h1 className="mt-4 font-display text-4xl md:text-6xl font-bold tracking-tight text-foreground [text-wrap:balance]">
-              Byt från Partna till Updro
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground">För digitala byråer</p>
+            <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground md:text-6xl">
+              Testa Updro parallellt – byt först när siffrorna säger det
             </h1>
-            <p className="mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-              Räkna på skillnaden per månad. Updro visar max tre byråer per uppdrag, vilket ökar konverteringsgraden per lead – och månadskortet ger obegränsad volym.
+            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+              Updro är nylanserat och lovar inte samma volym som en etablerad aktör. Erbjudandet är i stället lägre konkurrens per uppdrag, transparent brief före upplåsning och lägre pris per valt lead. Börja kostnadsfritt och jämför faktisk kostnad per möte och kund.
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link to="/for-byraer">
-                <Button size="lg" className="rounded-xl px-7">
-                  Bli byrå på Updro <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/partna-alternativ">
-                <Button size="lg" variant="outline" className="rounded-xl px-7">
-                  Se full jämförelse
-                </Button>
-              </Link>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link to="/registrera/byra"><Button size="lg" className="rounded-xl px-7">Få {TRIAL_LEADS} gratis krediter <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
+              <Link to="/partna-alternativ"><Button size="lg" variant="outline" className="rounded-xl px-7">Se saklig jämförelse</Button></Link>
             </div>
           </div>
         </section>
 
-        <section className="container pb-4">
-          <div className="rounded-3xl border-2 border-foreground bg-secondary p-6 md:p-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Räkneexempel</p>
-            <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold tracking-tight">
-              {CALC.leads} leads i månaden
-            </h2>
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <section className="border-y bg-muted/30 py-16">
+          <div className="container">
+            <div className="max-w-3xl">
+              <Calculator className="h-6 w-6 text-primary" />
+              <h2 className="mt-4 font-display text-3xl font-bold md:text-4xl">Räkneexempel: tio leads med styckepris</h2>
+              <p className="mt-3 text-muted-foreground">Exemplet jämför pay-per-lead och säger inget om kvalitet eller hur många affärer som vinns.</p>
+            </div>
+            <div className="mt-8 grid max-w-4xl gap-4 md:grid-cols-3">
               <div className="rounded-2xl border bg-card p-6">
-                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Partna (per lead)</p>
-                <p className="mt-3 font-display text-3xl font-bold">{partnaCost.toLocaleString('sv-SE')} kr</p>
-                <p className="mt-2 text-sm text-muted-foreground">{CALC.leads} leads × {CALC.partnaPerLead} kr</p>
+                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Partna pay per lead</p>
+                <p className="mt-3 font-display text-3xl font-bold">{partnaPayg.toLocaleString('sv-SE')} kr</p>
+                <p className="mt-2 text-sm text-muted-foreground">{exampleLeads} × {partna.payg} kr enligt publik prisuppgift</p>
               </div>
               <div className="rounded-2xl border-2 border-accent bg-card p-6">
-                <p className="text-sm font-semibold uppercase tracking-widest text-accent">Updro månadskort</p>
-                <p className="mt-3 font-display text-3xl font-bold">{CALC.updroMonth.toLocaleString('sv-SE')} kr</p>
-                <p className="mt-2 text-sm text-muted-foreground">Obegränsat antal leads / månad</p>
+                <p className="text-sm font-semibold uppercase tracking-widest text-accent">Updro pay per lead</p>
+                <p className="mt-3 font-display text-3xl font-bold">{updroPayg.toLocaleString('sv-SE')} kr</p>
+                <p className="mt-2 text-sm text-muted-foreground">{exampleLeads} × {STRIPE_PRODUCTS.lead.price} kr</p>
               </div>
               <div className="rounded-2xl border bg-card p-6">
-                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                  <TrendingDown className="h-4 w-4" /> Skillnad
-                </p>
-                <p className="mt-3 font-display text-3xl font-bold text-accent">{diff.toLocaleString('sv-SE')} kr</p>
-                <p className="mt-2 text-sm text-muted-foreground">lägre kostnad per månad</p>
+                <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Prisskillnad</p>
+                <p className="mt-3 font-display text-3xl font-bold text-accent">{(partnaPayg - updroPayg).toLocaleString('sv-SE')} kr</p>
+                <p className="mt-2 text-sm text-muted-foreground">före hänsyn till kvalitet, volym och konvertering</p>
               </div>
             </div>
-            <ul className="mt-6 grid gap-2 text-sm text-muted-foreground md:grid-cols-2">
-              <li>• Updro: {CALC.updroPerLead} kr/lead eller {CALC.updroMonth.toLocaleString('sv-SE')} kr/mån obegränsat</li>
-              <li>• Partna: {CALC.partnaPerLead} kr/lead eller {CALC.partnaMonth.toLocaleString('sv-SE')} kr/mån för {CALC.partnaMonthLeads} leads</li>
-              <li>• Updro visar max tre byråer per uppdrag</li>
-              <li>• Partna anger upp till sex byråer per förfrågan</li>
-            </ul>
-            <p className="mt-6 rounded-xl border border-dashed border-muted-foreground/40 bg-background/60 p-4 text-xs text-muted-foreground">
-              <strong>Notering:</strong> Priser och villkor är hämtade från publikt tillgänglig information om Partna och Updro och kan ändras. Kontrollera alltid aktuella priser och villkor direkt hos respektive plattform innan beslut.
-            </p>
+            <div className="mt-5 max-w-4xl rounded-xl border border-dashed bg-background/70 p-4 text-xs text-muted-foreground">
+              Partna anger även {partna.monthly.toLocaleString('sv-SE')} kr/mån inklusive {partna.monthlyIncluded} förfrågningar. Updro tar {STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån för obegränsade upplåsningar under aktiv månad. Tillgänglig volym varierar och ska vägas in i beslutet.
+            </div>
           </div>
         </section>
 
         <section className="container py-16">
           <div className="grid gap-6 md:grid-cols-2">
             {[
-              ['Bättre konverteringsgrad', 'Max tre byråer per uppdrag betyder att beställaren faktiskt läser varje offert – i stället för att sålla bland sex eller fler.'],
-              ['Förutsägbar kostnad', 'Månadskortet ger fast kostnad oavsett volym, vilket gör budgeteringen enklare för byrån.'],
-              ['Fokus på digitala uppdrag', 'Updro är dedikerat digitala byråer – webb, SEO, e-handel, appar, design och marknadsföring.'],
-              ['Ingen bindningstid', 'Testa parallellt en månad, jämför pris per vunnen kund och flytta volymen när det passar.'],
+              ['Högst tre byråer', 'Färre konkurrenter per uppdrag ger varje offert mer utrymme, men garanterar inte en affär.'],
+              ['Brief före köp', 'Ni ser kategori, budget, tidsram och beskrivning innan en kredit används.'],
+              ['Kreditprövning', 'Ogiltig kontakt, falskt lead, dubblett eller tydligt fel scope kan skickas till Updro för manuell granskning.'],
+              ['Transparent start', `Börja med ${TRIAL_LEADS} krediter under ${TRIAL_DAYS} dagar utan att lämna kortuppgifter.`],
             ].map(([title, text]) => (
               <article key={title} className="rounded-2xl border bg-card p-6">
                 <CheckCircle2 className="h-5 w-5 text-primary" />
                 <h3 className="mt-4 font-display text-xl font-bold">{title}</h3>
-                <p className="mt-2 text-muted-foreground leading-relaxed">{text}</p>
+                <p className="mt-2 leading-relaxed text-muted-foreground">{text}</p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="container pb-16">
+          <div className="rounded-3xl border-2 border-foreground bg-secondary p-7 md:p-10">
+            <FlaskConical className="h-7 w-7 text-accent" />
+            <h2 className="mt-4 font-display text-3xl font-bold">Mät detta under testperioden</h2>
+            <div className="mt-6 grid gap-3 text-sm md:grid-cols-2">
+              {['Antal relevanta leads i era kategorier', 'Andel leads som går att nå', 'Bokade möten per upplåsning', 'Lämnade offerter per upplåsning', 'Vunna kunder och ordervärde', 'Total kostnad per vunnen kund'].map(item => (
+                <div key={item} className="flex gap-2"><CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span>{item}</span></div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -154,7 +146,7 @@ const BytFranPartnaPage = () => {
               {faqs.map(item => (
                 <details key={item.q} className="rounded-2xl border bg-card p-5">
                   <summary className="cursor-pointer font-semibold">{item.q}</summary>
-                  <p className="mt-3 text-muted-foreground leading-relaxed">{item.a}</p>
+                  <p className="mt-3 leading-relaxed text-muted-foreground">{item.a}</p>
                 </details>
               ))}
             </div>
@@ -162,16 +154,10 @@ const BytFranPartnaPage = () => {
         </section>
 
         <section className="container pb-20">
-          <div className="rounded-3xl bg-foreground p-8 md:p-12 text-background">
-            <h2 className="font-display text-3xl md:text-4xl font-bold">Redo att byta?</h2>
-            <p className="mt-3 max-w-2xl text-background/75">
-              Skapa byråprofil på Updro och börja få handplockade leads. Månadskortet aktiveras när du vill.
-            </p>
-            <Link to="/for-byraer" className="mt-7 inline-block">
-              <Button size="lg" variant="secondary" className="rounded-xl px-7">
-                Bli byrå på Updro <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+          <div className="rounded-3xl bg-foreground p-8 text-background md:p-12">
+            <h2 className="font-display text-3xl font-bold md:text-4xl">Låt resultatet avgöra</h2>
+            <p className="mt-3 max-w-2xl text-background/75">Registrera byrån, använd de kostnadsfria krediterna och följ samma mätetal som för era andra leadkanaler.</p>
+            <Link to="/registrera/byra" className="mt-7 inline-block"><Button size="lg" variant="secondary" className="rounded-xl px-7">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
           </div>
         </section>
       </main>
