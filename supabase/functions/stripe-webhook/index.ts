@@ -92,7 +92,7 @@ Deno.serve(async request => {
       const supplierId = await resolveSupplierId(customerId, session.metadata?.user_id || session.client_reference_id);
 
       if (!supplierId) throw new Error("Supplier could not be resolved for checkout session");
-      if (purchaseType !== "lead" && purchaseType !== "monthly" && purchaseType !== "yearly") throw new Error("Unknown purchase type");
+      if (!isBillingPlanId(purchaseType)) throw new Error("Unknown purchase type");
 
       const paymentReady = session.payment_status === "paid" || session.payment_status === "no_payment_required";
       if (paymentReady) {
