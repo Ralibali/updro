@@ -109,9 +109,13 @@ serve(async req => {
       subscribed: true,
       plan: "monthly",
       interval,
+      status: activeSubscription.status,
       cancel_at_period_end: activeSubscription.cancel_at_period_end,
+      current_period_start: new Date(activeSubscription.current_period_start * 1000).toISOString(),
+      trial_end: activeSubscription.trial_end ? new Date(activeSubscription.trial_end * 1000).toISOString() : null,
       subscription_end: new Date(activeSubscription.current_period_end * 1000).toISOString(),
     });
+
 
   } catch (error) {
     console.error("[CHECK-SUB] Error:", error);
