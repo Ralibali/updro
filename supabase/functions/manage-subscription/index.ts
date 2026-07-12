@@ -157,7 +157,7 @@ serve(async req => {
       });
     }
 
-    await stripe.subscriptions.update(active.id, {
+    const updated = await stripe.subscriptions.update(active.id, {
       items: [{ id: currentItem.id, price: newPriceId }],
       proration_behavior: "create_prorations",
       cancel_at_period_end: false,
@@ -168,6 +168,7 @@ serve(async req => {
       message: target === "yearly"
         ? "Du är nu uppgraderad till årskort. Mellanskillnaden proportioneras på nästa faktura."
         : "Du är nu bytt till månadskort. Ändringen träder i kraft direkt.",
+      subscription: snapshot(updated),
     });
   } catch (error) {
     console.error("[MANAGE-SUB] Error:", error);
