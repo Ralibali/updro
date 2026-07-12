@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Check, CreditCard, ExternalLink, Loader2, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
