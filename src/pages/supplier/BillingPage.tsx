@@ -14,11 +14,21 @@ const BillingPage = () => {
   const { isOnTrial, trialLeadsLeft, trialDaysLeft, refreshProfile } = useAuth()
   const [searchParams] = useSearchParams()
   const [loading, setLoading] = useState<string | null>(null)
-  const [subscription, setSubscription] = useState<{ subscribed: boolean; plan: string | null; subscription_end: string | null; interval?: 'month' | 'year'; cancel_at_period_end?: boolean }>({
+  const [subscription, setSubscription] = useState<{
+    subscribed: boolean
+    plan: string | null
+    subscription_end: string | null
+    interval?: 'month' | 'year'
+    cancel_at_period_end?: boolean
+    status?: 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'unpaid'
+    trial_end?: string | null
+    current_period_start?: string | null
+  }>({
     subscribed: false,
     plan: null,
     subscription_end: null,
   })
+
 
   const [checkingSubscription, setCheckingSubscription] = useState(false)
 
