@@ -11,7 +11,14 @@ export const unlockProject = async (projectId: string): Promise<UnlockResult> =>
   })
 
   if (error) throw error
-  return data as UnlockResult
+  const result = data as UnlockResult
+  if (!result.already_unlocked) {
+    try {
+      const { trackClick } = await import('@/hooks/usePageTracking')
+      trackClick('project_unlocked', 'Låst upp uppdrag', { project_id: projectId })
+    } catch { /* analytics best effort */ }
+  }
+  return result
 }
 
 export type SubmitOfferInput = {
