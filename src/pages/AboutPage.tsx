@@ -51,9 +51,9 @@ const AboutPage = () => {
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground">Om Updro</h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag och får upp till fem offerter
-              från kvalitetssäkrade byråer inom 24 timmar. Tjänsten är gratis för uppdragsgivare, drivs av Aurora Media
-              AB och har sitt säte i Linköping.
+              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag efter att briefen har granskats.
+              Högst tre relevanta byråer kan lämna offert per uppdrag. Tjänsten är gratis för uppdragsgivare, drivs av
+              Aurora Media AB och har sitt säte i Linköping.
             </p>
           </div>
         </section>
