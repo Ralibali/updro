@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,7 @@ import { setSEOMeta } from '@/lib/seoHelpers'
 const LoginPage = () => {
   const { signIn, profile } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -26,14 +27,22 @@ const LoginPage = () => {
     })
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  useEffect(() => {
+    if (searchParams.get('confirmed') === 'true') {
+      toast.success('E-postadressen är bekräftad. Logga in för att fortsätta.')
+      window.history.replaceState({}, '', '/logga-in')
+    }
+  }, [searchParams])
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (loading) return
     setLoading(true)
-    const { error } = await signIn(email, password)
+    const { error } = await signIn(email.trim().toLowerCase(), password)
     setLoading(false)
 
     if (error) {
-      toast.error('Kunde inte logga in. Kontrollera uppgifterna.')
+      toast.error('Kunde inte logga in. Kontrollera uppgifterna och att e-postadressen är bekräftad.')
     } else {
       toast.success('Inloggad!')
     }
@@ -68,9 +77,10 @@ const LoginPage = () => {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={event => setEmail(event.target.value)}
                     className="pl-10 rounded-xl"
                     placeholder="din@email.se"
+                    autoComplete="email"
                     required
                   />
                 </div>
@@ -84,9 +94,10 @@ const LoginPage = () => {
                     id="password"
                     type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={event => setPassword(event.target.value)}
                     className="pl-10 rounded-xl"
                     placeholder="••••••••"
+                    autoComplete="current-password"
                     required
                   />
                 </div>
