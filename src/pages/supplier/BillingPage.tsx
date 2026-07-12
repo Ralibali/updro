@@ -414,6 +414,70 @@ const BillingPage = () => {
           )
         })}
       </div>
+
+      <Dialog open={!!switchTarget} onOpenChange={open => { if (!open && !confirmingSwitch) { setSwitchTarget(null); setSwitchPreview(null) } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {switchTarget === 'yearly' ? 'Byt till årskort' : 'Byt till månadskort'}
+            </DialogTitle>
+            <DialogDescription>
+              Så här ser din nästa faktura ut efter bytet. Ingen dragning sker just nu.
+            </DialogDescription>
+          </DialogHeader>
+
+          {previewLoading || !switchPreview ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : (() => {
+            const p = switchPreview
+            const kr = (cents: number) => `${(cents / 100).toLocaleString('sv-SE', { maximumFractionDigits: 2 })} kr`
+            const fmtDate = (iso: string | null) => iso ? new Date(iso).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '–'
+            const proration = p.proration_amount
+            const newIntervalLabel = p.new_price.interval === 'year' ? '/år' : '/månad'
+            return (
+              <div className="space-y-3 text-sm">
+                <div className="rounded-lg border p-3 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Nytt pris</span>
+                    <span className="font-semibold">{kr(p.new_price.amount)} {newIntervalLabel}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Proration (kredit/tillägg)</span>
+                    <span className={`font-semibold ${proration < 0 ? 'text-emerald-600' : ''}`}>
+                      {proration >= 0 ? '+' : ''}{kr(proration)}
+                    </span>
+                  </div>
+                  <div className="border-t pt-2 flex justify-between">
+                    <span className="font-semibold">Att betala på nästa faktura</span>
+                    <span className="font-bold">{kr(p.amount_due)}</span>
+                  </div>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Nästa dragning</span>
+                  <span className="font-medium text-foreground">{fmtDate(p.next_payment_attempt || p.period_end)}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {proration < 0
+                    ? 'Du får en kredit för oanvänd tid från nuvarande plan. Krediten dras av på nästa faktura.'
+                    : 'Mellanskillnaden för nuvarande period läggs till på nästa faktura.'}
+                </p>
+              </div>
+            )
+          })()}
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => { setSwitchTarget(null); setSwitchPreview(null) }} disabled={confirmingSwitch}>
+              Avbryt
+            </Button>
+            <Button onClick={confirmSwitch} disabled={!switchPreview || confirmingSwitch}>
+              {confirmingSwitch && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Bekräfta byte
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
