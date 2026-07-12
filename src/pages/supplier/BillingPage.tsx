@@ -374,11 +374,16 @@ const BillingPage = () => {
             </div>
 
             {!hasUnlimited && (
-              <p className="text-sm text-muted-foreground mb-3">
-                {balance === 0
-                  ? 'Du har inga krediter kvar. Köp ett nytt lead nedan – saldot uppdateras direkt efter genomförd betalning.'
-                  : 'Krediter läggs till automatiskt direkt efter varje betalning. Ett köp = en lead-kredit.'}
-              </p>
+              <>
+                <p className="text-sm text-muted-foreground mb-2">
+                  1 kredit används när du låser upp ett uppdrag.
+                </p>
+                <p className="text-sm text-muted-foreground mb-3">
+                  {balance === 0
+                    ? 'Du har inga krediter kvar. Köp ett nytt lead nedan – saldot uppdateras direkt efter genomförd betalning.'
+                    : 'Krediter läggs till automatiskt direkt efter varje betalning. Ett köp = en lead-kredit.'}
+                </p>
+              </>
             )}
 
             {credits.history.length > 0 && (
@@ -431,7 +436,10 @@ const BillingPage = () => {
 
       <div className="grid md:grid-cols-3 gap-6">
         {PLANS.map(plan => {
-          const isActive = subscription.subscribed && (plan.id === 'monthly' || plan.id === 'yearly')
+          const isActive = subscription.subscribed && (
+            (plan.id === 'monthly' && subscription.interval === 'month') ||
+            (plan.id === 'yearly' && subscription.interval === 'year')
+          )
           return (
             <div key={plan.id} className={`bg-card rounded-2xl border p-6 relative ${plan.highlighted ? 'border-primary shadow-md ring-2 ring-primary/20' : ''} ${isActive ? 'ring-2 ring-accent' : ''}`}>
               {plan.highlighted && !isActive && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">{plan.badge}</span>}
