@@ -89,7 +89,8 @@ serve(async req => {
           lead_credits: (supplier.lead_credits || 0) > 100 ? 0 : (supplier.lead_credits || 0),
         }).eq("id", user.id);
       }
-      return json({ subscribed: false, plan: "payg", subscription_end: null });
+      return json({ subscribed: false, plan: "payg", subscription_end: null, credits: creditsBlock });
+
     }
 
     const subscriptions = await stripe.subscriptions.list({
