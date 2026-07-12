@@ -54,7 +54,7 @@ const BillingPage = () => {
 
   const [checkingSubscription, setCheckingSubscription] = useState(false)
 
-  const checkSubscription = async () => {
+  const checkSubscription = useCallback(async () => {
     setCheckingSubscription(true)
     try {
       const { data, error } = await supabase.functions.invoke('check-subscription')
@@ -68,7 +68,7 @@ const BillingPage = () => {
     } finally {
       setCheckingSubscription(false)
     }
-  }
+  }, [refreshProfile])
 
   useEffect(() => {
     const success = searchParams.get('success') === 'true'
@@ -101,11 +101,11 @@ const BillingPage = () => {
     if (success || canceled) {
       window.history.replaceState({}, '', window.location.pathname)
     }
-  }, [searchParams])
+  }, [searchParams, checkSubscription, refreshProfile])
 
   useEffect(() => {
     checkSubscription()
-  }, [])
+  }, [checkSubscription])
 
   const handleCheckout = async (planId: string) => {
     if (loading) return
