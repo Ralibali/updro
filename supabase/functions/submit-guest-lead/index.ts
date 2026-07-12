@@ -10,6 +10,7 @@ const allowedBudgets = new Set(['under_10k', '10k_50k', '50k_150k', 'over_150k',
 const allowedStarts = new Set(['asap', 'within_month', 'within_3months', 'flexible'])
 const gatewayUrl = 'https://connector-gateway.lovable.dev/resend'
 const fromEmail = 'Updro <info@auroramedia.se>'
+const siteUrl = 'https://updro.se'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -77,7 +78,7 @@ Deno.serve(async request => {
 
   try {
     const payload = await request.json()
-    if (text(payload.website, 200)) return finish(respond({ success: true }), null, { reason: 'honeypot' })
+    if (text(payload.website, 200)) return finish(respond({ success: true }), undefined, { reason: 'honeypot' })
 
     const email = text(payload.email, 254).toLowerCase()
     const fullName = text(payload.full_name, 120)
@@ -110,12 +111,23 @@ Deno.serve(async request => {
     const daily = await admin.from('guest_leads').select('id', { count: 'exact', head: true }).eq('email', email).gte('created_at', oneDayAgo)
     if ((daily.count || 0) >= 3) return finish(respond({ error: 'För många uppdrag har skickats från denna e-postadress idag.' }, 429), 'rate_limit_24h', { category })
 
-    const inserted = await admin.from('guest_leads').insert({
-      email, full_name: fullName, company_name: companyName || null, phone: phone || null,
-      title, description, category, budget_range: budgetRange, start_time: startTime,
-      is_company: Boolean(payload.is_company), source: 'publicera',
-    }).select('id').single()
-    if (inserted.error) throw inserted.error
+    const { data: createdRows, error: createError } = await admin.rpc('create_guest_project', {
+      p_email: email,
+      p_full_name: fullName,
+      p_company_name: companyName,
+      p_phone: phone,
+      p_title: title,
+      p_description: description,
+      p_category: category,
+      p_budget_range: budgetRange,
+      p_start_time: startTime,
+      p_is_company: Boolean(payload.is_company),
+      p_source: 'publicera',
+    })
+    if (createError) throw createError
+
+    const created = Array.isArray(createdRows) ? createdRows[0] : createdRows
+    if (!created?.lead_id || !created?.project_id) throw new Error('Guest project was not created')
 
     let emailSent = false
     const lovableKey = Deno.env.get('LOVABLE_API_KEY')
@@ -123,7 +135,9 @@ Deno.serve(async request => {
     if (lovableKey && resendKey) {
       const safeName = escapeHtml(fullName)
       const safeTitle = escapeHtml(title)
-      const message = `Hej ${fullName}! Vi har tagit emot ditt uppdrag “${title}”. Vi matchar det nu med relevanta byråer. Du kan skapa ett gratis konto med samma e-postadress för att följa offerterna.`
+      const registerUrl = `${siteUrl}/registrera?email=${encodeURIComponent(email)}&project=${encodeURIComponent(created.project_id)}`
+      const safeRegisterUrl = escapeHtml(registerUrl)
+      const message = `Hej ${fullName}! Vi har tagit emot ditt uppdrag “${title}”. Vi granskar det nu och matchar det med relevanta byråer. Skapa ett gratis konto med samma e-postadress för att följa offerterna: ${registerUrl}`
       const response = await fetch(`${gatewayUrl}/emails`, {
         method: 'POST',
         headers: {
@@ -136,14 +150,19 @@ Deno.serve(async request => {
           to: [email],
           subject: 'Vi har tagit emot ditt uppdrag – Updro',
           text: message,
-          html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto"><h1>Uppdraget är mottaget</h1><p>Hej ${safeName}!</p><p>Vi har tagit emot ditt uppdrag <strong>${safeTitle}</strong> och matchar det nu med relevanta byråer.</p><p>Skapa gärna ett gratis konto med samma e-postadress på updro.se för att följa offerterna.</p><p>Vänliga hälsningar<br>Updro</p></div>`,
+          html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto"><h1>Uppdraget är mottaget</h1><p>Hej ${safeName}!</p><p>Vi har tagit emot ditt uppdrag <strong>${safeTitle}</strong>. Vi granskar det nu och matchar det med relevanta byråer.</p><p><a href="${safeRegisterUrl}">Skapa ett gratis konto</a> med samma e-postadress för att följa offerterna.</p><p>Vänliga hälsningar<br>Updro</p></div>`,
         }),
       })
       emailSent = response.ok
       if (!response.ok) console.error('Confirmation email failed', await response.text())
     }
 
-    return finish(respond({ success: true, lead_id: inserted.data.id, email_sent: emailSent }, 201), null, { category, budget_range: budgetRange, email_sent: emailSent })
+    return finish(respond({
+      success: true,
+      lead_id: created.lead_id,
+      project_id: created.project_id,
+      email_sent: emailSent,
+    }, 201), undefined, { category, budget_range: budgetRange, email_sent: emailSent })
   } catch (error) {
     console.error('submit-guest-lead failed', error)
     return finish(respond({ error: 'Kunde inte skicka in uppdraget. Försök igen.' }, 500), error instanceof Error ? error.message : 'unknown_error')
