@@ -4,7 +4,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "authorization, x-client-info, apikey, content-type, x-cron-secret, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 const MAX_PER_RUN = 1;
@@ -13,8 +14,52 @@ const DELAY_MS = 10_000;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * Constant-time-ish string comparison to avoid trivial timing leaks on the
+ * shared cron secret. Not perfect for all runtimes but far better than `===`.
+ */
+export function safeEqual(a: string, b: string): boolean {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+/**
+ * Verify the incoming request carries the shared cron secret. Returns null
+ * when authorised, or a Response with the appropriate status otherwise.
+ * Never logs or echoes the secret value.
+ */
+export function verifyCronRequest(req: Request, expected: string | undefined): Response | null {
+  if (!expected) {
+    return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  const provided = req.headers.get("x-cron-secret") ?? "";
+  if (!safeEqual(provided, expected)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  return null;
+}
+
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json", Allow: "POST, OPTIONS" },
+    });
+  }
+
+  const authFail = verifyCronRequest(req, Deno.env.get("CRON_SECRET"));
+  if (authFail) return authFail;
+
 
   try {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
