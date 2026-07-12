@@ -39,13 +39,13 @@ serve(async req => {
 
     const user = userData.user;
     const body = await req.json().catch(() => ({}));
-    const action = body?.action as "switch" | "cancel" | "resume";
+    const action = body?.action as "switch" | "cancel" | "resume" | "preview";
     const target = body?.target as "monthly" | "yearly" | undefined;
 
-    if (!action || !["switch", "cancel", "resume"].includes(action)) {
+    if (!action || !["switch", "cancel", "resume", "preview"].includes(action)) {
       return json({ error: "Ogiltig åtgärd." }, 400);
     }
-    if (action === "switch" && !["monthly", "yearly"].includes(target || "")) {
+    if ((action === "switch" || action === "preview") && !["monthly", "yearly"].includes(target || "")) {
       return json({ error: "Ogiltigt målabonnemang." }, 400);
     }
 
