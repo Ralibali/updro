@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Building2, CreditCard, Gauge, Loader2, Lock, Mail, Paperclip, Phone, Sparkles, Unlock, User, X } from 'lucide-react'
 import { toast } from 'sonner'
+import LeadRefundDialog from '@/components/supplier/LeadRefundDialog'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -10,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { BUDGET_LABELS, CATEGORY_STYLES, START_TIME_LABELS } from '@/lib/constants'
+import { BUDGET_LABELS, CATEGORY_STYLES, MAX_OFFERS_PER_PROJECT, START_TIME_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
 import { numWord } from '@/lib/numberWords'
 import {
@@ -50,7 +51,7 @@ const scoreProject = (project: any) => {
     score += 15
     reasons.push('Företagskund')
   }
-  if ((project?.offer_count || 0) < 3) {
+  if ((project?.offer_count || 0) < MAX_OFFERS_PER_PROJECT) {
     score += 10
     reasons.push('Låg konkurrens')
   }
@@ -204,10 +205,10 @@ const ProjectUnlock = () => {
   const applyOfferTemplate = () => {
     if (!project) return
     const template = getOfferTemplate(project)
-    setForm(prev => ({
-      ...prev,
-      title: prev.title || template.title,
-      description: prev.description || template.description,
+    setForm(previous => ({
+      ...previous,
+      title: previous.title || template.title,
+      description: previous.description || template.description,
     }))
     toast.success('Offertmall ifylld')
   }
@@ -256,14 +257,14 @@ const ProjectUnlock = () => {
     }
   }
 
-
   if (pageLoading) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
   if (!project) return <div className="rounded-xl border p-6 text-sm text-muted-foreground">Uppdraget kunde inte hittas.</div>
 
   const leadScore = scoreProject(project)
   const creditsLeft = supplierProfile?.lead_credits || 0
   const canUnlock = hasActiveSubscription || creditsLeft > 0
-  const isClosed = (project.offer_count || 0) >= (project.max_offers || 5) || project.status !== 'active'
+  const maxOffers = project.max_offers || MAX_OFFERS_PER_PROJECT
+  const isClosed = (project.offer_count || 0) >= maxOffers || project.status !== 'active'
 
   return (
     <div className="max-w-3xl">
@@ -281,7 +282,7 @@ const ProjectUnlock = () => {
           <span>{START_TIME_LABELS[project.start_time] || 'Flexibel start'}</span>
           <span>{project.city || 'Sverige'}</span>
           <span>{timeAgo(project.created_at)}</span>
-          <span>{project.offer_count || 0} av {project.max_offers || 5} offerter</span>
+          <span>{project.offer_count || 0} av {maxOffers} offerter</span>
         </div>
         {leadScore.reasons.length > 0 && (
           <div className="mt-4 rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
@@ -307,6 +308,11 @@ const ProjectUnlock = () => {
             ) : (
               <p className="text-sm text-muted-foreground">Kontaktuppgifterna kunde inte läsas. Kontakta Updro-supporten.</p>
             )}
+            {id && (
+              <div className="mt-4 border-t pt-3">
+                <LeadRefundDialog projectId={id} />
+              </div>
+            )}
           </div>
 
           {isClosed ? (
@@ -321,15 +327,15 @@ const ProjectUnlock = () => {
                 <Button type="button" variant="outline" size="sm" onClick={applyOfferTemplate} className="gap-1.5"><Sparkles className="h-4 w-4" />Snabb offertmall</Button>
               </div>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div><Label htmlFor="offer-title">Offert-titel *</Label><Input id="offer-title" value={form.title} onChange={event => setForm(prev => ({ ...prev, title: event.target.value }))} className="rounded-xl mt-1" required /></div>
-                <div><Label htmlFor="offer-description">Beskrivning *</Label><Textarea id="offer-description" value={form.description} onChange={event => setForm(prev => ({ ...prev, description: event.target.value }))} className="rounded-xl mt-1 min-h-[120px]" required /></div>
+                <div><Label htmlFor="offer-title">Offert-titel *</Label><Input id="offer-title" value={form.title} onChange={event => setForm(previous => ({ ...previous, title: event.target.value }))} className="rounded-xl mt-1" required /></div>
+                <div><Label htmlFor="offer-description">Beskrivning *</Label><Textarea id="offer-description" value={form.description} onChange={event => setForm(previous => ({ ...previous, description: event.target.value }))} className="rounded-xl mt-1 min-h-[120px]" required /></div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><Label htmlFor="offer-price">Pris (kr) *</Label><Input id="offer-price" type="number" min="1" value={form.price} onChange={event => setForm(prev => ({ ...prev, price: event.target.value }))} className="rounded-xl mt-1" required /></div>
-                  <div><Label htmlFor="offer-weeks">Leveranstid (veckor)</Label><Input id="offer-weeks" type="number" min="1" value={form.delivery_weeks} onChange={event => setForm(prev => ({ ...prev, delivery_weeks: event.target.value }))} className="rounded-xl mt-1" /></div>
+                  <div><Label htmlFor="offer-price">Pris (kr) *</Label><Input id="offer-price" type="number" min="1" value={form.price} onChange={event => setForm(previous => ({ ...previous, price: event.target.value }))} className="rounded-xl mt-1" required /></div>
+                  <div><Label htmlFor="offer-weeks">Leveranstid (veckor)</Label><Input id="offer-weeks" type="number" min="1" value={form.delivery_weeks} onChange={event => setForm(previous => ({ ...previous, delivery_weeks: event.target.value }))} className="rounded-xl mt-1" /></div>
                 </div>
                 <div>
                   <Label>Betalningsmodell</Label>
-                  <Select value={form.payment_plan} onValueChange={value => setForm(prev => ({ ...prev, payment_plan: value }))}>
+                  <Select value={form.payment_plan} onValueChange={value => setForm(previous => ({ ...previous, payment_plan: value }))}>
                     <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent><SelectItem value="fixed">Fast pris</SelectItem><SelectItem value="hourly">Timpris</SelectItem><SelectItem value="milestone">Milstolpar</SelectItem></SelectContent>
                   </Select>
