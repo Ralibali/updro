@@ -20,9 +20,16 @@ Deno.serve(async request => {
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET") || "";
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-  const monthlyPriceId = Deno.env.get("STRIPE_MONTHLY_PRICE_ID") || "price_1TOcX1HzffTezY8204n36Q31";
-  const yearlyPriceId = Deno.env.get("STRIPE_YEARLY_PRICE_ID") || "price_1TsUYSHzffTezY82ZFIUm1zg";
-  const subscriptionPriceIds = new Set([monthlyPriceId, yearlyPriceId]);
+
+  let subscriptionPriceIds: Set<string>;
+  try {
+    subscriptionPriceIds = getSubscriptionPriceIds();
+  } catch (error) {
+    const message = error instanceof BillingConfigError ? error.message : String(error);
+    console.error("stripe-webhook billing config error:", message);
+    return json({ error: "Webhook is not configured" }, 500);
+  }
+
 
 
   if (!stripeKey || !webhookSecret || !supabaseUrl || !serviceKey) {
