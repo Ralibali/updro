@@ -271,14 +271,14 @@ const BillingPage = () => {
 
             <div className="flex flex-wrap gap-2">
               {subscription.interval === 'month' && !willCancel && !isPastDue && (
-                <Button variant="default" size="sm" onClick={() => handleManageAction('switch', 'yearly')} disabled={loading !== null}>
-                  {loading === 'switch-yearly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                <Button variant="default" size="sm" onClick={() => openSwitchPreview('yearly')} disabled={loading !== null || previewLoading}>
+                  {previewLoading && switchTarget === 'yearly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
                   Uppgradera till årskort
                 </Button>
               )}
               {subscription.interval === 'year' && !willCancel && !isPastDue && (
-                <Button variant="outline" size="sm" onClick={() => handleManageAction('switch', 'monthly')} disabled={loading !== null}>
-                  {loading === 'switch-monthly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                <Button variant="outline" size="sm" onClick={() => openSwitchPreview('monthly')} disabled={loading !== null || previewLoading}>
+                  {previewLoading && switchTarget === 'monthly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                   Byt till månadskort
                 </Button>
               )}
