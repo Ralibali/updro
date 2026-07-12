@@ -146,6 +146,12 @@ const BillingPage = () => {
   const [switchTarget, setSwitchTarget] = useState<'monthly' | 'yearly' | null>(null)
   const [previewLoading, setPreviewLoading] = useState(false)
   const [confirmingSwitch, setConfirmingSwitch] = useState(false)
+  const [confirmDialog, setConfirmDialog] = useState<{
+    type: 'cancel' | 'switch'
+    target?: 'monthly' | 'yearly'
+    preview?: SwitchPreview | null
+  } | null>(null)
+  const [confirmingDialog, setConfirmingDialog] = useState(false)
 
   const openSwitchPreview = async (target: 'monthly' | 'yearly') => {
     if (loading || previewLoading) return
@@ -168,27 +174,43 @@ const BillingPage = () => {
   }
 
   const confirmSwitch = async () => {
-    if (!switchTarget) return
-    setConfirmingSwitch(true)
+    if (!switchTarget || !switchPreview) return
+    setConfirmDialog({ type: 'switch', target: switchTarget, preview: switchPreview })
+  }
+
+  const executeConfirmedAction = async () => {
+    if (!confirmDialog) return
+    setConfirmingDialog(true)
     try {
-      const { data, error } = await supabase.functions.invoke('manage-subscription', {
-        body: { action: 'switch', target: switchTarget },
-      })
-      if (error) throw error
-      toast.success(data?.message || 'Abonnemanget är uppdaterat.')
-      setSwitchTarget(null)
-      setSwitchPreview(null)
+      if (confirmDialog.type === 'switch') {
+        if (!confirmDialog.target) return
+        const { data, error } = await supabase.functions.invoke('manage-subscription', {
+          body: { action: 'switch', target: confirmDialog.target },
+        })
+        if (error) throw error
+        toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+        setSwitchTarget(null)
+        setSwitchPreview(null)
+      } else if (confirmDialog.type === 'cancel') {
+        const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action: 'cancel' } })
+        if (error) throw error
+        toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+      }
       await checkSubscription()
+      setConfirmDialog(null)
     } catch (error: any) {
       toast.error(error?.message || 'Kunde inte uppdatera abonnemanget')
     } finally {
-      setConfirmingSwitch(false)
+      setConfirmingDialog(false)
     }
   }
 
   const handleManageAction = async (action: 'cancel' | 'resume') => {
     if (loading) return
-    if (action === 'cancel' && !window.confirm('Vill du säga upp abonnemanget? Du behåller tillgången till periodens slut.')) return
+    if (action === 'cancel') {
+      setConfirmDialog({ type: 'cancel' })
+      return
+    }
     setLoading(action)
     try {
       const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action } })
