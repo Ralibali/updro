@@ -105,6 +105,7 @@ const AdminAuditLog = lazy(() => import("./pages/admin/AdminAuditLog"));
 const AdminVisitors = lazy(() => import("./pages/admin/AdminVisitors"));
 const AdminMarketplaceHealth = lazy(() => import("./pages/admin/AdminMarketplaceHealth"));
 const AdminFunctionLogs = lazy(() => import("./pages/admin/AdminFunctionLogs"));
+const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
 
 const queryClient = new QueryClient();
 
@@ -222,6 +223,7 @@ const App = () => (
 
               {/* Admin: content planner */}
               <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
+              <Route path="/admin/prospektering" element={<ProtectedRoute role="admin"><AdminProspecting /></ProtectedRoute>} />
 
               {/* Comparison pages */}
               {COMPARISON_PAGES.map(p => (
