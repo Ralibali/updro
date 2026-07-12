@@ -112,8 +112,9 @@ Deno.serve(async request => {
       const supplierId = await resolveSupplierId(customerId, subscription.metadata?.user_id);
       if (!supplierId) throw new Error("Supplier could not be resolved for subscription");
 
-      const hasMonthlyPrice = subscription.items.data.some(item => item.price.id === monthlyPriceId);
-      const active = hasMonthlyPrice && (subscription.status === "active" || subscription.status === "trialing");
+      const hasSubscriptionPrice = subscription.items.data.some(item => subscriptionPriceIds.has(item.price.id));
+      const active = hasSubscriptionPrice && (subscription.status === "active" || subscription.status === "trialing");
+
 
       const { error } = await admin.rpc("apply_stripe_subscription_state", {
         p_event_id: event.id,
