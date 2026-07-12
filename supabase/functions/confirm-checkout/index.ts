@@ -47,9 +47,10 @@ Deno.serve(async request => {
     }
 
     const purchaseType = session.metadata?.purchase_type;
-    if (purchaseType !== "lead" && purchaseType !== "monthly") {
+    if (purchaseType !== "lead" && purchaseType !== "monthly" && purchaseType !== "yearly") {
       return json({ error: "Okänd betalningsprodukt." }, 400);
     }
+
 
     const customerId = typeof session.customer === "string" ? session.customer : session.customer?.id || null;
     if (customerId) {
