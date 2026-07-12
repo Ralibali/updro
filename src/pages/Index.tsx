@@ -89,8 +89,8 @@ const BelowFold = () => (
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
-      title: 'Updro – Jämför offerter från digitala byråer',
-      description: 'Beskriv ditt projekt och få upp till tre relevanta offerter från svenska digitala byråer. Briefen granskas och tjänsten är gratis för beställare.',
+      title: 'Updro – Hitta rätt byrå utan massutskick',
+      description: 'Beskriv projektet på två minuter. Updro granskar briefen och högst tre relevanta svenska byråer kan lämna offert – med fokus på webb, e-handel och AI. Gratis för beställare.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)
@@ -108,7 +108,7 @@ const Index = () => {
           <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
             <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
             <p className="mt-3 text-foreground/85 leading-relaxed">
-              Updro är en svensk marknadsplats där företag beskriver ett digitalt behov utan att först skapa konto. Vi granskar briefen innan den öppnas för matchande byråer, och högst tre byråer kan lämna offert. Tjänsten är gratis för beställare och täcker bland annat webbutveckling, e-handel, AI, SEO, appar och digital marknadsföring.
+              Updro är en svensk marknadsplats där företag beskriver ett digitalt behov utan att först skapa konto. Vi granskar briefen innan den öppnas för matchande byråer, och högst tre relevanta byråer kan lämna offert. Tjänsten är gratis för beställare och prioriterar webbutveckling, e-handel och AI – men täcker också SEO, appar, digital marknadsföring, UX/design, IT-support, affärsutveckling, video/foto, mjukvara och varumärke/PR.
             </p>
           </div>
         </section>
