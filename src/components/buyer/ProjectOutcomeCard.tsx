@@ -88,10 +88,11 @@ const ProjectOutcomeCard = ({ projectId, buyerId, offers }: Props) => {
       { outcome, selectedOfferId, actualValueSek, comment },
       offerIds,
     )
-    if (!result.ok) {
+    if (result.ok !== true) {
       toast.error(result.error)
       return
     }
+    const validated = result.value
     setSubmitting(true)
     const { data, error } = await supabase.rpc('report_project_outcome', {
       p_project_id: projectId,
