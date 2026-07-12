@@ -162,8 +162,8 @@ const RegisterSupplierPage = () => {
                 </div>
                 <div>
                   <Label htmlFor="supplier-password">Lösenord *</Label>
-                  <Input id="supplier-password" type="password" autoComplete="new-password" value={form.password} onChange={event => setForm(prev => ({ ...prev, password: event.target.value }))} className="rounded-xl mt-1" minLength={6} required />
-                  <p className="mt-1 text-xs text-muted-foreground">Minst sex tecken.</p>
+                  <Input id="supplier-password" type="password" autoComplete="new-password" value={form.password} onChange={event => setForm(prev => ({ ...prev, password: event.target.value }))} className="rounded-xl mt-1" minLength={8} required />
+                  <p className="mt-1 text-xs text-muted-foreground">Minst åtta tecken.</p>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
