@@ -28,12 +28,19 @@ const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
 }[character] || character))
 
+const clientIp = (request: Request) =>
+  request.headers.get('cf-connecting-ip') ||
+  request.headers.get('x-real-ip') ||
+  request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+  'unknown'
+
 async function hashIp(ip: string) {
   try {
-    const buffer = new TextEncoder().encode(ip)
+    const salt = Deno.env.get('RATE_LIMIT_SALT') || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || 'updro'
+    const buffer = new TextEncoder().encode(`${salt}:${ip}`)
     const digest = await crypto.subtle.digest('SHA-256', buffer)
-    return Array.from(new Uint8Array(digest)).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('')
-  } catch { return null }
+    return Array.from(new Uint8Array(digest)).slice(0, 12).map(byte => byte.toString(16).padStart(2, '0')).join('')
+  } catch { return 'unknown' }
 }
 
 async function logCall(entry: {
@@ -64,20 +71,19 @@ async function logCall(entry: {
 
 Deno.serve(async request => {
   if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders })
+  if (request.method !== 'POST') return respond({ error: 'Metoden stöds inte.' }, 405)
+
   const started = Date.now()
-  const rawIp = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || ''
-  const ip_hash = rawIp ? await hashIp(rawIp) : null
+  const ipHash = await hashIp(clientIp(request))
   const finish = (response: Response, error?: string, meta: Record<string, unknown> = {}) => {
     const duration_ms = Date.now() - started
     console.log(JSON.stringify({ fn: 'submit-guest-lead', status: response.status, duration_ms, error: error || null, ...meta }))
-    logCall({ status: response.status, duration_ms, error, meta, ip_hash })
+    void logCall({ status: response.status, duration_ms, error, meta, ip_hash: ipHash })
     return response
   }
 
-  if (request.method !== 'POST') return finish(respond({ error: 'Metoden stöds inte.' }, 405), 'method_not_allowed')
-
   try {
-    const payload = await request.json()
+    const payload = await request.json().catch(() => ({}))
     if (text(payload.website, 200)) return finish(respond({ success: true }), undefined, { reason: 'honeypot' })
 
     const email = text(payload.email, 254).toLowerCase()
@@ -102,6 +108,14 @@ Deno.serve(async request => {
     if (!supabaseUrl || !serviceKey) return finish(respond({ error: 'Servern är inte korrekt konfigurerad.' }, 500), 'missing_env')
 
     const admin = createClient(supabaseUrl, serviceKey, { auth: { persistSession: false } })
+    const { data: ipAllowed, error: rateError } = await admin.rpc('consume_edge_rate_limit', {
+      p_key: `submit-guest-lead:${ipHash}`,
+      p_limit: 8,
+      p_window_seconds: 86400,
+    })
+    if (rateError) throw rateError
+    if (!ipAllowed) return finish(respond({ error: 'För många uppdrag har skickats från din anslutning idag.' }, 429), 'rate_limit_ip')
+
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
 
@@ -129,32 +143,62 @@ Deno.serve(async request => {
     const created = Array.isArray(createdRows) ? createdRows[0] : createdRows
     if (!created?.lead_id || !created?.project_id) throw new Error('Guest project was not created')
 
+    const { data: admins, error: adminLookupError } = await admin.from('profiles').select('id').eq('role', 'admin')
+    if (adminLookupError) {
+      console.error('Could not read admins for lead notification', adminLookupError)
+    } else if (admins?.length) {
+      const { error: notificationError } = await admin.from('notifications').insert(admins.map(row => ({
+        user_id: row.id,
+        type: 'new_guest_project',
+        title: 'Nytt uppdrag väntar på granskning',
+        message: `${title} · ${category}`,
+        link: `/admin/uppdrag`,
+      })))
+      if (notificationError) console.error('Could not create admin lead notification', notificationError)
+    }
+
     let emailSent = false
+    let adminEmailSent = false
     const lovableKey = Deno.env.get('LOVABLE_API_KEY')
     const resendKey = Deno.env.get('RESEND_API_KEY')
     if (lovableKey && resendKey) {
-      const safeName = escapeHtml(fullName)
-      const safeTitle = escapeHtml(title)
-      const registerUrl = `${siteUrl}/registrera?email=${encodeURIComponent(email)}&project=${encodeURIComponent(created.project_id)}`
-      const safeRegisterUrl = escapeHtml(registerUrl)
-      const message = `Hej ${fullName}! Vi har tagit emot ditt uppdrag “${title}”. Vi granskar det nu och matchar det med relevanta byråer. Skapa ett gratis konto med samma e-postadress för att följa offerterna: ${registerUrl}`
-      const response = await fetch(`${gatewayUrl}/emails`, {
+      const sendEmail = (to: string, subject: string, message: string, html: string) => fetch(`${gatewayUrl}/emails`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${lovableKey}`,
           'X-Connection-Api-Key': resendKey,
         },
-        body: JSON.stringify({
-          from: fromEmail,
-          to: [email],
-          subject: 'Vi har tagit emot ditt uppdrag – Updro',
-          text: message,
-          html: `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto"><h1>Uppdraget är mottaget</h1><p>Hej ${safeName}!</p><p>Vi har tagit emot ditt uppdrag <strong>${safeTitle}</strong>. Vi granskar det nu och matchar det med relevanta byråer.</p><p><a href="${safeRegisterUrl}">Skapa ett gratis konto</a> med samma e-postadress för att följa offerterna.</p><p>Vänliga hälsningar<br>Updro</p></div>`,
-        }),
+        body: JSON.stringify({ from: fromEmail, to: [to], subject, text: message, html }),
       })
-      emailSent = response.ok
-      if (!response.ok) console.error('Confirmation email failed', await response.text())
+
+      const safeName = escapeHtml(fullName)
+      const safeTitle = escapeHtml(title)
+      const registerUrl = `${siteUrl}/registrera?email=${encodeURIComponent(email)}&project=${encodeURIComponent(created.project_id)}`
+      const safeRegisterUrl = escapeHtml(registerUrl)
+      const customerMessage = `Hej ${fullName}! Vi har tagit emot ditt uppdrag “${title}”. Vi granskar det nu och matchar det med relevanta byråer. Skapa ett gratis konto med samma e-postadress för att följa offerterna: ${registerUrl}`
+      const customerResponse = await sendEmail(
+        email,
+        'Vi har tagit emot ditt uppdrag – Updro',
+        customerMessage,
+        `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto"><h1>Uppdraget är mottaget</h1><p>Hej ${safeName}!</p><p>Vi har tagit emot ditt uppdrag <strong>${safeTitle}</strong>. Vi granskar det nu och matchar det med relevanta byråer.</p><p><a href="${safeRegisterUrl}">Skapa ett gratis konto</a> med samma e-postadress för att följa offerterna.</p><p>Vänliga hälsningar<br>Updro</p></div>`,
+      )
+      emailSent = customerResponse.ok
+      if (!customerResponse.ok) console.error('Confirmation email failed', await customerResponse.text())
+
+      const adminEmail = Deno.env.get('UPDRO_ADMIN_EMAIL') || 'info@auroramedia.se'
+      const adminProjectUrl = `${siteUrl}/admin/uppdrag`
+      const safeCompany = escapeHtml(companyName || 'Privatperson')
+      const safeEmail = escapeHtml(email)
+      const safePhone = escapeHtml(phone || 'Ej angivet')
+      const adminResponse = await sendEmail(
+        adminEmail,
+        `Nytt Updro-uppdrag: ${title}`,
+        `Nytt uppdrag väntar på granskning. ${title} · ${category} · ${email}. Öppna ${adminProjectUrl}`,
+        `<div style="font-family:Arial,sans-serif;max-width:650px;margin:auto"><h1>Nytt uppdrag väntar</h1><p><strong>${safeTitle}</strong></p><p>Kategori: ${escapeHtml(category)}<br>Beställare: ${safeName}<br>Företag: ${safeCompany}<br>E-post: ${safeEmail}<br>Telefon: ${safePhone}</p><p><a href="${adminProjectUrl}">Granska uppdraget i admin</a></p></div>`,
+      )
+      adminEmailSent = adminResponse.ok
+      if (!adminResponse.ok) console.error('Admin lead email failed', await adminResponse.text())
     }
 
     return finish(respond({
@@ -162,7 +206,7 @@ Deno.serve(async request => {
       lead_id: created.lead_id,
       project_id: created.project_id,
       email_sent: emailSent,
-    }, 201), undefined, { category, budget_range: budgetRange, email_sent: emailSent })
+    }, 201), undefined, { category, budget_range: budgetRange, email_sent: emailSent, admin_email_sent: adminEmailSent })
   } catch (error) {
     console.error('submit-guest-lead failed', error)
     return finish(respond({ error: 'Kunde inte skicka in uppdraget. Försök igen.' }, 500), error instanceof Error ? error.message : 'unknown_error')
