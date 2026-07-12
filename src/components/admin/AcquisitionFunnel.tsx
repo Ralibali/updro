@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { ArrowRight, Eye, FilePenLine, Send, Users } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/integrations/supabase/client'
+import { groupAttributionRows, type AttributionRow } from '@/lib/attributionFunnel'
 
 const sinceThirtyDays = () => new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 const rate = (value: number, base: number) => base > 0 ? Math.round((value / base) * 1000) / 10 : 0
@@ -47,6 +48,18 @@ const AcquisitionFunnel = () => {
   })
   const projectCount = projectsQuery.data || 0
 
+  const attributionQuery = useQuery({
+    queryKey: ['acquisition-funnel-attributions', since],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('project_attributions')
+        .select('first_source, first_medium, first_campaign, first_landing_path, project_id, projects(category)')
+        .gte('created_at', since)
+      if (error) throw error
+      return (data || []) as unknown as AttributionRow[]
+    },
+  })
+
   const funnel = useMemo(() => {
     const visitors = new Set(pageViews.map(view => view.session_id)).size
     const wizardVisitors = new Set(pageViews.filter(view => view.path === '/publicera').map(view => view.session_id)).size
@@ -63,6 +76,8 @@ const AcquisitionFunnel = () => {
       { label: 'Projekt i databasen', value: projectCount, conversion: rate(projectCount, visitors), icon: Send },
     ]
   }, [pageViews, events, projectCount])
+
+  const grouped = useMemo(() => groupAttributionRows(attributionQuery.data || [], projectCount), [attributionQuery.data, projectCount])
 
   const loading = viewsLoading || eventsLoading || projectsQuery.isLoading
   const visitors = funnel[0]?.value || 0
@@ -103,10 +118,65 @@ const AcquisitionFunnel = () => {
                 <p><strong>{projects} projekt från {visitors} besökare</strong> ger en total besök-till-projekt-konvertering på {rate(projects, visitors)}%.</p>
               )}
             </div>
+
+            <AttributionBreakdown grouped={grouped} totalProjects={projectCount} loading={attributionQuery.isLoading} />
           </>
         )}
       </CardContent>
     </Card>
+  )
+}
+
+type GroupedAttribution = ReturnType<typeof groupAttributionRows>
+
+const AttributionBreakdown = ({ grouped, totalProjects, loading }: {
+  grouped: GroupedAttribution
+  totalProjects: number
+  loading: boolean
+}) => {
+  if (loading) return null
+  if (totalProjects === 0) {
+    return (
+      <p className="mt-4 rounded-xl border border-dashed p-4 text-xs text-muted-foreground">
+        Attribution visas här så snart nya projekt kommer in. Utan data räknas alla besök som ”Okänd/organisk”.
+      </p>
+    )
+  }
+  const sections: Array<{ title: string; rows: Array<{ label: string; count: number }> }> = [
+    { title: 'Källa', rows: grouped.sources },
+    { title: 'Medium', rows: grouped.mediums },
+    { title: 'Kampanj', rows: grouped.campaigns },
+    { title: 'Landningssida', rows: grouped.landings },
+    { title: 'Kategori', rows: grouped.categories },
+  ]
+  const hasKnown = grouped.sources.some(row => row.label !== 'Okänd/organisk')
+
+  return (
+    <div className="mt-6 space-y-4">
+      <h4 className="font-display text-sm font-semibold">Attribution per projekt</h4>
+      {!hasKnown && (
+        <p className="rounded-xl border border-dashed p-3 text-xs text-muted-foreground">
+          Ingen kampanjdata är registrerad än – alla projekt räknas som ”Okänd/organisk” tills UTM-taggade länkar används.
+        </p>
+      )}
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+        {sections.map(section => (
+          <div key={section.title} className="rounded-xl border bg-card p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{section.title}</p>
+            <ul className="mt-2 space-y-1 text-sm">
+              {section.rows.length === 0 ? (
+                <li className="text-xs text-muted-foreground">Ingen data</li>
+              ) : section.rows.slice(0, 6).map(row => (
+                <li key={row.label} className="flex items-center justify-between gap-2">
+                  <span className="truncate" title={row.label}>{row.label}</span>
+                  <span className="font-mono text-xs text-muted-foreground">{row.count}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
