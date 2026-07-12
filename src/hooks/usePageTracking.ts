@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import { trackPageView } from '@/lib/analytics'
+import { captureFromLocation } from '@/lib/attribution'
 
 function getSessionId() {
   let id = sessionStorage.getItem('_sid')
@@ -42,6 +43,10 @@ export function usePageTracking() {
 
   useEffect(() => {
     const path = location.pathname
+    // Capture first/latest-touch attribution on every navigation. Runs even for
+    // admin/dashboard routes so that a link from an ad landing in a signed-in
+    // area still records the touch, and skips writes when no UTM/referrer signal.
+    captureFromLocation({ search: location.search, pathname: location.pathname })
     // Skip admin and dashboard routes from tracking
     if (path.startsWith('/admin') || path.startsWith('/dashboard')) return
     // Don't double-track same path
@@ -67,7 +72,8 @@ export function usePageTracking() {
     // React Router does not trigger automatic GA4 page views after navigation.
     // Query parameters are deliberately excluded to avoid leaking project briefs.
     trackPageView(path)
-  }, [location.pathname])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, location.search])
 }
 
 /** Track a click event. Call from onClick handlers on important CTAs. */
