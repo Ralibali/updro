@@ -109,6 +109,14 @@ export const STRIPE_PRODUCTS = {
     per: '/månad',
     mode: 'subscription' as const,
   },
+  yearly: {
+    product_id: 'prod_UsF2pEQRoUuAou',
+    price_id: 'price_1TsUYSHzffTezY82ZFIUm1zg',
+    name: 'Årskort',
+    price: 19950,
+    per: '/år',
+    mode: 'subscription' as const,
+  },
   lead: {
     product_id: 'prod_UNNHEXppo9nyyz',
     price_id: 'price_1TOcX2HzffTezY82yzbAX5ZD',
@@ -151,7 +159,24 @@ export const PLANS = [
     highlighted: true,
     badge: 'För högre volym',
   },
+  {
+    id: 'yearly' as const,
+    name: 'Årskort',
+    price: 19950,
+    per: '/år',
+    features: [
+      'Allt som ingår i Månadskortet',
+      'Betala för tio månader – få tolv',
+      'Låst pris i tolv månader',
+      'Prioriterad support',
+      'Ingen uppsägningstid efter perioden',
+    ],
+    cta: 'Starta årskort',
+    highlighted: false,
+    badge: 'Spara två månader',
+  },
 ]
+
 
 export const PROJECT_TEMPLATES: Record<string, { id: string; name: string; icon: string; title: string; description: string; budget_hint: string }[]> = {
   'Webbutveckling': [
