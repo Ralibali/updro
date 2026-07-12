@@ -4,11 +4,26 @@ import { Check, CreditCard, ExternalLink, Loader2, Sparkles } from 'lucide-react
 import { toast } from 'sonner'
 import TrialBanner from '@/components/TrialBanner'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { trackBeginCheckout } from '@/lib/analytics'
 import { PLANS, STRIPE_PRODUCTS, TRIAL_LEADS } from '@/lib/constants'
 import { numWord } from '@/lib/numberWords'
+
+type SwitchPreview = {
+  currency: string
+  amount_due: number
+  subtotal: number
+  total: number
+  proration_amount: number
+  next_payment_attempt: string | null
+  period_end: string | null
+  current_price: { amount: number; interval: string | null }
+  new_price: { amount: number; interval: string | null }
+  target: 'monthly' | 'yearly'
+}
+
 
 const BillingPage = () => {
   const { isOnTrial, trialLeadsLeft, trialDaysLeft, refreshProfile } = useAuth()
@@ -127,14 +142,56 @@ const BillingPage = () => {
     }
   }
 
-  const handleManageAction = async (action: 'switch' | 'cancel' | 'resume', target?: 'monthly' | 'yearly') => {
+  const [switchPreview, setSwitchPreview] = useState<SwitchPreview | null>(null)
+  const [switchTarget, setSwitchTarget] = useState<'monthly' | 'yearly' | null>(null)
+  const [previewLoading, setPreviewLoading] = useState(false)
+  const [confirmingSwitch, setConfirmingSwitch] = useState(false)
+
+  const openSwitchPreview = async (target: 'monthly' | 'yearly') => {
+    if (loading || previewLoading) return
+    setSwitchTarget(target)
+    setSwitchPreview(null)
+    setPreviewLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-subscription', {
+        body: { action: 'preview', target },
+      })
+      if (error) throw error
+      if (!data?.preview) throw new Error('Ingen prisförhandsvisning tillgänglig.')
+      setSwitchPreview(data.preview as SwitchPreview)
+    } catch (error: any) {
+      toast.error(error?.message || 'Kunde inte hämta prisförhandsvisning')
+      setSwitchTarget(null)
+    } finally {
+      setPreviewLoading(false)
+    }
+  }
+
+  const confirmSwitch = async () => {
+    if (!switchTarget) return
+    setConfirmingSwitch(true)
+    try {
+      const { data, error } = await supabase.functions.invoke('manage-subscription', {
+        body: { action: 'switch', target: switchTarget },
+      })
+      if (error) throw error
+      toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+      setSwitchTarget(null)
+      setSwitchPreview(null)
+      await checkSubscription()
+    } catch (error: any) {
+      toast.error(error?.message || 'Kunde inte uppdatera abonnemanget')
+    } finally {
+      setConfirmingSwitch(false)
+    }
+  }
+
+  const handleManageAction = async (action: 'cancel' | 'resume') => {
     if (loading) return
     if (action === 'cancel' && !window.confirm('Vill du säga upp abonnemanget? Du behåller tillgången till periodens slut.')) return
-    if (action === 'switch' && target && !window.confirm(target === 'yearly' ? 'Byt till årskort? Mellanskillnaden proportioneras på nästa faktura.' : 'Byt till månadskort? Ändringen träder i kraft direkt.')) return
-    const key = action === 'switch' ? `switch-${target}` : action
-    setLoading(key)
+    setLoading(action)
     try {
-      const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action, target } })
+      const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action } })
       if (error) throw error
       toast.success(data?.message || 'Abonnemanget är uppdaterat.')
       await checkSubscription()
@@ -144,6 +201,7 @@ const BillingPage = () => {
       setLoading(null)
     }
   }
+
 
 
   return (
@@ -213,14 +271,14 @@ const BillingPage = () => {
 
             <div className="flex flex-wrap gap-2">
               {subscription.interval === 'month' && !willCancel && !isPastDue && (
-                <Button variant="default" size="sm" onClick={() => handleManageAction('switch', 'yearly')} disabled={loading !== null}>
-                  {loading === 'switch-yearly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
+                <Button variant="default" size="sm" onClick={() => openSwitchPreview('yearly')} disabled={loading !== null || previewLoading}>
+                  {previewLoading && switchTarget === 'yearly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Sparkles className="h-4 w-4 mr-2" />}
                   Uppgradera till årskort
                 </Button>
               )}
               {subscription.interval === 'year' && !willCancel && !isPastDue && (
-                <Button variant="outline" size="sm" onClick={() => handleManageAction('switch', 'monthly')} disabled={loading !== null}>
-                  {loading === 'switch-monthly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                <Button variant="outline" size="sm" onClick={() => openSwitchPreview('monthly')} disabled={loading !== null || previewLoading}>
+                  {previewLoading && switchTarget === 'monthly' ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                   Byt till månadskort
                 </Button>
               )}
@@ -356,6 +414,70 @@ const BillingPage = () => {
           )
         })}
       </div>
+
+      <Dialog open={!!switchTarget} onOpenChange={open => { if (!open && !confirmingSwitch) { setSwitchTarget(null); setSwitchPreview(null) } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {switchTarget === 'yearly' ? 'Byt till årskort' : 'Byt till månadskort'}
+            </DialogTitle>
+            <DialogDescription>
+              Så här ser din nästa faktura ut efter bytet. Ingen dragning sker just nu.
+            </DialogDescription>
+          </DialogHeader>
+
+          {previewLoading || !switchPreview ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : (() => {
+            const p = switchPreview
+            const kr = (cents: number) => `${(cents / 100).toLocaleString('sv-SE', { maximumFractionDigits: 2 })} kr`
+            const fmtDate = (iso: string | null) => iso ? new Date(iso).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' }) : '–'
+            const proration = p.proration_amount
+            const newIntervalLabel = p.new_price.interval === 'year' ? '/år' : '/månad'
+            return (
+              <div className="space-y-3 text-sm">
+                <div className="rounded-lg border p-3 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Nytt pris</span>
+                    <span className="font-semibold">{kr(p.new_price.amount)} {newIntervalLabel}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Proration (kredit/tillägg)</span>
+                    <span className={`font-semibold ${proration < 0 ? 'text-emerald-600' : ''}`}>
+                      {proration >= 0 ? '+' : ''}{kr(proration)}
+                    </span>
+                  </div>
+                  <div className="border-t pt-2 flex justify-between">
+                    <span className="font-semibold">Att betala på nästa faktura</span>
+                    <span className="font-bold">{kr(p.amount_due)}</span>
+                  </div>
+                </div>
+                <div className="flex justify-between text-muted-foreground">
+                  <span>Nästa dragning</span>
+                  <span className="font-medium text-foreground">{fmtDate(p.next_payment_attempt || p.period_end)}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {proration < 0
+                    ? 'Du får en kredit för oanvänd tid från nuvarande plan. Krediten dras av på nästa faktura.'
+                    : 'Mellanskillnaden för nuvarande period läggs till på nästa faktura.'}
+                </p>
+              </div>
+            )
+          })()}
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => { setSwitchTarget(null); setSwitchPreview(null) }} disabled={confirmingSwitch}>
+              Avbryt
+            </Button>
+            <Button onClick={confirmSwitch} disabled={!switchPreview || confirmingSwitch}>
+              {confirmingSwitch && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+              Bekräfta byte
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

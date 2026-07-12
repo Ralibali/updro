@@ -39,13 +39,13 @@ serve(async req => {
 
     const user = userData.user;
     const body = await req.json().catch(() => ({}));
-    const action = body?.action as "switch" | "cancel" | "resume";
+    const action = body?.action as "switch" | "cancel" | "resume" | "preview";
     const target = body?.target as "monthly" | "yearly" | undefined;
 
-    if (!action || !["switch", "cancel", "resume"].includes(action)) {
+    if (!action || !["switch", "cancel", "resume", "preview"].includes(action)) {
       return json({ error: "Ogiltig åtgärd." }, 400);
     }
-    if (action === "switch" && !["monthly", "yearly"].includes(target || "")) {
+    if ((action === "switch" || action === "preview") && !["monthly", "yearly"].includes(target || "")) {
       return json({ error: "Ogiltigt målabonnemang." }, 400);
     }
 
@@ -79,12 +79,65 @@ serve(async req => {
       return json({ ok: true, message: "Abonnemanget är återaktiverat." });
     }
 
-    // switch
+    // switch / preview
     const newPriceId = target === "yearly" ? yearlyPriceId : monthlyPriceId;
     const currentItem = active.items.data.find(i => i.price.id === monthlyPriceId || i.price.id === yearlyPriceId);
     if (!currentItem) return json({ error: "Kunde inte hitta prenumerationsraden." }, 500);
     if (currentItem.price.id === newPriceId) {
       return json({ ok: true, message: "Du har redan det abonnemanget." });
+    }
+
+    if (action === "preview") {
+      const prorationDate = Math.floor(Date.now() / 1000);
+      let preview: any = null;
+      try {
+        // Newer API
+        preview = await (stripe.invoices as any).createPreview({
+          customer: supplier.stripe_customer_id,
+          subscription: active.id,
+          subscription_details: {
+            items: [{ id: currentItem.id, price: newPriceId }],
+            proration_behavior: "create_prorations",
+            proration_date: prorationDate,
+          },
+        });
+      } catch (_e) {
+        preview = await (stripe.invoices as any).retrieveUpcoming({
+          customer: supplier.stripe_customer_id,
+          subscription: active.id,
+          subscription_items: [{ id: currentItem.id, price: newPriceId }],
+          subscription_proration_behavior: "create_prorations",
+          subscription_proration_date: prorationDate,
+        });
+      }
+
+      const prorationLines = (preview.lines?.data || []).filter((l: any) => l.proration);
+      const prorationAmount = prorationLines.reduce((sum: number, l: any) => sum + (l.amount || 0), 0);
+      const newPrice = await stripe.prices.retrieve(newPriceId);
+
+      return json({
+        ok: true,
+        preview: {
+          currency: (preview.currency || "sek").toUpperCase(),
+          amount_due: preview.amount_due ?? 0,
+          subtotal: preview.subtotal ?? 0,
+          total: preview.total ?? 0,
+          proration_amount: prorationAmount,
+          next_payment_attempt: preview.next_payment_attempt
+            ? new Date(preview.next_payment_attempt * 1000).toISOString()
+            : (preview.period_end ? new Date(preview.period_end * 1000).toISOString() : null),
+          period_end: preview.period_end ? new Date(preview.period_end * 1000).toISOString() : null,
+          current_price: {
+            amount: currentItem.price.unit_amount ?? 0,
+            interval: currentItem.price.recurring?.interval ?? null,
+          },
+          new_price: {
+            amount: newPrice.unit_amount ?? 0,
+            interval: newPrice.recurring?.interval ?? null,
+          },
+          target,
+        },
+      });
     }
 
     await stripe.subscriptions.update(active.id, {
