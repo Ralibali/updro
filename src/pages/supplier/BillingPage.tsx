@@ -177,6 +177,20 @@ const BillingPage = () => {
     setConfirmDialog({ type: 'switch', target: switchTarget, preview: switchPreview })
   }
 
+  const applySubscriptionSnapshot = (snap: any) => {
+    if (!snap) return
+    setSubscription(prev => ({
+      ...prev,
+      subscribed: snap.subscribed ?? prev.subscribed,
+      status: snap.status ?? prev.status,
+      interval: snap.interval ?? prev.interval,
+      cancel_at_period_end: snap.cancel_at_period_end ?? prev.cancel_at_period_end,
+      subscription_end: snap.subscription_end ?? prev.subscription_end,
+      current_period_start: snap.current_period_start ?? prev.current_period_start,
+      trial_end: snap.trial_end ?? prev.trial_end,
+    }))
+  }
+
   const executeConfirmedAction = async () => {
     if (!confirmDialog) return
     setConfirmingDialog(true)
@@ -188,15 +202,17 @@ const BillingPage = () => {
         })
         if (error) throw error
         toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+        applySubscriptionSnapshot(data?.subscription)
         setSwitchTarget(null)
         setSwitchPreview(null)
       } else if (confirmDialog.type === 'cancel') {
         const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action: 'cancel' } })
         if (error) throw error
         toast.success(data?.message || 'Abonnemanget är uppdaterat.')
+        applySubscriptionSnapshot(data?.subscription)
       }
-      await checkSubscription()
       setConfirmDialog(null)
+      checkSubscription()
     } catch (error: any) {
       toast.error(error?.message || 'Kunde inte uppdatera abonnemanget')
     } finally {
@@ -215,7 +231,8 @@ const BillingPage = () => {
       const { data, error } = await supabase.functions.invoke('manage-subscription', { body: { action } })
       if (error) throw error
       toast.success(data?.message || 'Abonnemanget är uppdaterat.')
-      await checkSubscription()
+      applySubscriptionSnapshot(data?.subscription)
+      checkSubscription()
     } catch (error: any) {
       toast.error(error?.message || 'Kunde inte uppdatera abonnemanget')
     } finally {
