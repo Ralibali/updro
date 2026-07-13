@@ -1,3 +1,10 @@
+import {
+  trackPlausibleEvent,
+  trackPlausiblePageview,
+  type PlausibleBillingInterval,
+  type PlausiblePlan,
+} from '@/lib/plausible'
+
 type AnalyticsValue = string | number | boolean | null | undefined
 
 type AnalyticsParams = Record<string, AnalyticsValue | AnalyticsValue[] | Record<string, AnalyticsValue>[]>
@@ -34,12 +41,16 @@ export const trackPageView = (path: string) => {
     page_location: `${window.location.origin}${path}`,
     page_title: document.title,
   })
+
+  // Plausible SPA pageview (dedupes the initial load itself).
+  trackPlausiblePageview(path)
 }
 
 export const trackLeadStarted = (source: string) => {
   trackAnalyticsEvent('begin_lead', {
     lead_source: source,
   })
+  trackPlausibleEvent('Brief Started', { source })
 }
 
 /** Dedupes the given event once per browser session using sessionStorage. */
@@ -77,6 +88,8 @@ export const trackLeadSubmitted = ({
       send_to: adsLeadDestination,
     })
   }
+
+  trackPlausibleEvent('Brief Submitted', { source, category, user_type: userType })
 }
 
 export const trackSignUp = (role: 'buyer' | 'supplier') => {
@@ -84,6 +97,15 @@ export const trackSignUp = (role: 'buyer' | 'supplier') => {
     method: 'email',
     user_role: role,
   })
+  if (role === 'supplier') {
+    trackPlausibleEvent('Agency Signup Completed', { user_type: 'supplier' })
+  }
+}
+
+const PLAN_TO_INTERVAL: Record<string, PlausibleBillingInterval> = {
+  lead: 'one_time',
+  monthly: 'monthly',
+  yearly: 'yearly',
 }
 
 export const trackBeginCheckout = (planId: string, value: number) => {
@@ -91,5 +113,24 @@ export const trackBeginCheckout = (planId: string, value: number) => {
     currency: 'SEK',
     value,
     plan_id: planId,
+  })
+  trackPlausibleEvent('Subscription Checkout Started', {
+    plan: planId as PlausiblePlan,
+    billing_interval: PLAN_TO_INTERVAL[planId],
+  })
+}
+
+export const trackOfferSubmitted = (category?: string) => {
+  trackPlausibleEvent('Offer Submitted', category ? { category } : undefined)
+}
+
+export const trackLeadUnlocked = (category?: string) => {
+  trackPlausibleEvent('Lead Unlocked', category ? { category } : undefined)
+}
+
+export const trackSubscriptionPurchased = (planId: string) => {
+  trackPlausibleEvent('Subscription Purchased', {
+    plan: planId as PlausiblePlan,
+    billing_interval: PLAN_TO_INTERVAL[planId],
   })
 }
