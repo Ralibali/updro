@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { trackBeginCheckout } from '@/lib/analytics'
+import { trackBeginCheckout, trackSubscriptionPurchased } from '@/lib/analytics'
 import { PLANS, STRIPE_PRODUCTS, TRIAL_LEADS } from '@/lib/constants'
 import { numWord } from '@/lib/numberWords'
 

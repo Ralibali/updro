@@ -21,6 +21,7 @@ import {
   uploadOfferAttachment,
   validateOfferAttachment,
 } from '@/lib/marketplaceActions'
+import { trackLeadUnlocked, trackOfferSubmitted } from '@/lib/analytics'
 
 const scoreProject = (project: any) => {
   let score = 0
@@ -192,6 +193,7 @@ const ProjectUnlock = () => {
       if (result?.already_unlocked) {
         toast.info('Uppdraget var redan upplåst – inga krediter drogs.')
       } else {
+        trackLeadUnlocked(typeof project?.category === 'string' ? project.category : undefined)
         toast.success('Kontaktuppgifter upplåsta! 🔓')
       }
     } catch (error: any) {
@@ -247,6 +249,7 @@ const ProjectUnlock = () => {
         attachmentUrl: attachmentPath,
       })
 
+      trackOfferSubmitted(typeof project?.category === 'string' ? project.category : undefined)
       toast.success('Offert skickad! 🎉')
       navigate('/dashboard/supplier/offerter')
     } catch (error: any) {
