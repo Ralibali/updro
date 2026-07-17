@@ -17,6 +17,8 @@ import { trackLeadStarted, trackLeadSubmitted, trackOnceInSession } from '@/lib/
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import type { Json } from '@/integrations/supabase/types'
 import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
+import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
+import { PRICE_MATRIX } from '@/lib/priceGuideData'
 import type { BriefSuggestion } from '@/lib/briefAnalysis'
 import type { BudgetRange, Category, StartTime } from '@/types'
 
@@ -283,6 +285,8 @@ const ProjectWizardV2 = () => {
                 </Button>
               )}
 
+              {form.category && <CategoryPriceHint category={form.category} />}
+
               <ChoiceGrid label="Budget *" options={BUDGET_OPTIONS} value={form.budget_range} onSelect={value => setForm(previous => ({ ...previous, budget_range: value as BudgetRange }))} />
               <ChoiceGrid label="Önskad start *" options={START_TIME_OPTIONS} value={form.start_time} onSelect={value => setForm(previous => ({ ...previous, start_time: value as StartTime }))} twoColumns />
 
@@ -386,6 +390,33 @@ const ProjectWizardV2 = () => {
         </div>
       </main>
       <Footer />
+    </div>
+  )
+}
+
+/**
+ * Visar prisguidens standardspann för vald kategori så att beställaren
+ * kan sätta en realistisk budget – högre briefkvalitet och färre
+ * missmatchade offerter.
+ */
+const CategoryPriceHint = ({ category }: { category: string }) => {
+  const mapping = CATEGORY_PRICE_MAP[category]
+  if (!mapping) return null
+  const standard = PRICE_MATRIX[mapping.matrixKey]?.standard
+  if (!standard) return null
+
+  return (
+    <div className="rounded-xl border bg-muted/30 p-4 text-sm" aria-live="polite">
+      <p className="font-semibold text-foreground">
+        Riktvärde för {mapping.guideLabel}: <span className="font-display" style={{ fontVariantNumeric: 'tabular-nums' }}>{standard.range}</span>
+        <span className="font-normal text-muted-foreground"> · standardnivå · {standard.time}</span>
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Från Updros prisguide. Vet du inte budgeten än? Välj ”Vet ej / Diskuteras” – byråerna hjälper dig att prissätta.{' '}
+        <Link to={`/priser/${mapping.guideSlug}`} target="_blank" rel="noopener" className="font-medium text-primary hover:underline">
+          Se hela prisguiden
+        </Link>
+      </p>
     </div>
   )
 }

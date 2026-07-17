@@ -13,6 +13,7 @@ import BuyerDecisionCard from '@/components/shared/BuyerDecisionCard'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
 import ProjectOutcomeCard from '@/components/buyer/ProjectOutcomeCard'
+import AgreementPanel from '@/components/agreements/AgreementPanel'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -239,6 +240,10 @@ const ProjectDetail = () => {
                             </Link>
                           )}
                         </div>
+
+                        {offer.status === 'accepted' && id && (
+                          <AgreementPanel projectId={id} offerId={offer.id} role="buyer" />
+                        )}
 
                       </div>
                     )

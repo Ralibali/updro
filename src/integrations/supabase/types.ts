@@ -819,6 +819,51 @@ export type Database = {
         }
         Relationships: []
       }
+      project_agreements: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string
+          id: string
+          offer_id: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          created_by: string
+          id?: string
+          offer_id: string
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string
+          id?: string
+          offer_id?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_agreements_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_attribution: {
         Row: {
           created_at: string

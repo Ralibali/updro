@@ -7,6 +7,7 @@ import { timeAgo, formatPrice } from '@/lib/dateUtils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import AgreementPanel from '@/components/agreements/AgreementPanel'
 
 
 function groupByMonth(offers: any[]) {
@@ -43,6 +44,9 @@ const OfferCard = ({ o }: { o: any }) => (
         <p className="text-lg font-bold mt-1">{formatPrice(o.price)}</p>
       </div>
     </div>
+    {o.status === 'accepted' && o.project_id && (
+      <AgreementPanel projectId={o.project_id} offerId={o.id} role="supplier" />
+    )}
   </div>
 )
 

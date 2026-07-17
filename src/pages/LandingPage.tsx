@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import PriceCalculatorSection from '@/components/home/PriceCalculatorSection'
 import { useEffect } from 'react'
 import { setSEOMeta } from '@/lib/seoHelpers'
 import { trackClick } from '@/hooks/usePageTracking'
@@ -32,6 +33,16 @@ const LandingPage = () => {
       category,
     })
   }
+
+  // Förvälj rätt projekttyp i priskalkylatorn utifrån kampanjens kategori.
+  const categoryLower = category.toLowerCase()
+  const defaultTypeId =
+    categoryLower.includes('e-handel') ? 'ehandel'
+    : categoryLower.includes('seo') ? 'seo'
+    : categoryLower.includes('ads') || categoryLower.includes('annonsering') ? 'ads'
+    : categoryLower.includes('app') ? 'app'
+    : categoryLower.includes('design') || categoryLower.includes('varumärke') ? 'design'
+    : 'hemsida'
 
   const benefits = [
     {
@@ -136,6 +147,8 @@ const LandingPage = () => {
             ))}
           </div>
         </section>
+
+        <PriceCalculatorSection defaultTypeId={defaultTypeId} />
 
         <section id="sa-fungerar-det" className="border-y bg-muted/30 py-16">
           <div className="container max-w-4xl">

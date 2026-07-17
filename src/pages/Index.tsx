@@ -6,8 +6,10 @@ import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 
+const PriceCalculatorSection = lazy(() => import('@/components/home/PriceCalculatorSection'))
 const AgencyTrustSection = lazy(() => import('@/components/home/AgencyTrustSection'))
 const TwoSidedSection = lazy(() => import('@/components/home/TwoSidedSection'))
+const ComparisonSection = lazy(() => import('@/components/home/ComparisonSection'))
 const StatsSection = lazy(() => import('@/components/home/StatsSection'))
 const TestimonialsSection = lazy(() => import('@/components/home/TestimonialsSection'))
 const FAQSection = lazy(() => import('@/components/home/FAQSection'))
@@ -76,8 +78,10 @@ const websiteSchema = {
 
 const BelowFold = () => (
   <Suspense fallback={null}>
+    <PriceCalculatorSection />
     <AgencyTrustSection />
     <TwoSidedSection />
+    <ComparisonSection />
     <StatsSection />
     <TestimonialsSection />
     <NewsletterSection />
@@ -90,7 +94,7 @@ const Index = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Updro – Hitta rätt byrå utan massutskick',
-      description: 'Beskriv projektet på två minuter. Updro granskar briefen och högst tre relevanta svenska byråer kan lämna offert – med fokus på webb, e-handel och AI. Gratis för beställare.',
+      description: 'Se prisspannet innan du skickar. Beskriv projektet på två minuter – Updro granskar briefen och högst tre relevanta svenska byråer kan lämna offert. Gratis för beställare.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)
