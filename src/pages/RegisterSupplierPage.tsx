@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, Check, CreditCard, Gift, MessageCircle, Shield, Sparkles } from 'lucide-react'
+import { ArrowRight, Check, FileSignature, Gift, MessageCircle, ShieldCheck, Star, TrendingUp, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -33,7 +33,7 @@ const RegisterSupplierPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Registrera din byrå – Få fler kunder gratis | Updro',
-      description: 'Registrera din byrå på Updro och få fem gratis leads. Kvalificerade uppdrag, ingen bindningstid.',
+      description: 'Registrera din byrå på Updro: fem gratis leads, max två konkurrenter per uppdrag och leadgaranti. 119 kr per lead eller 1 995 kr/mån.',
       canonical: 'https://updro.se/registrera/byra',
       noindex: true,
     })
@@ -98,10 +98,18 @@ const RegisterSupplierPage = () => {
   }
 
   const benefits = [
-    { icon: Gift, text: `${TRIAL_LEADS} gratis lead-krediter` },
-    { icon: Shield, text: `${TRIAL_DAYS} dagars fri provperiod` },
-    { icon: MessageCircle, text: 'Inbyggd chatt med beställare' },
-    { icon: CreditCard, text: 'Inget kreditkort krävs' },
+    { icon: Gift, text: `${TRIAL_LEADS} gratis leads att börja med – inga kortuppgifter` },
+    { icon: Users, text: 'Max två konkurrenter per uppdrag, aldrig fem som hos andra' },
+    { icon: ShieldCheck, text: 'Leadgaranti: felaktiga kontaktuppgifter eller spam ersätts' },
+    { icon: Star, text: 'Verifierade omdömen bygger er offentliga byråprofil' },
+    { icon: FileSignature, text: 'Digitala samarbetsavtal direkt i plattformen' },
+    { icon: MessageCircle, text: 'Chatta med beställaren innan ni lämnar offert' },
+  ]
+
+  const steps = [
+    { number: '1', title: 'Skapa er profil', text: 'Kategorier, referenser och prisexempel – tar några minuter.' },
+    { number: '2', title: 'Välj uppdragen själva', text: 'Se granskade briefar och lås upp kontaktuppgifterna för de som passar er.' },
+    { number: '3', title: 'Lämna offert och vinn', text: 'Chatta, konkurrera med max två andra och bekräfta samarbetet digitalt.' },
   ]
 
   return (
@@ -114,26 +122,39 @@ const RegisterSupplierPage = () => {
             <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-white/5 blur-3xl translate-y-1/3 -translate-x-1/4" />
 
             <div className="relative z-10 max-w-xl">
-              <span className="text-5xl mb-6 block" aria-hidden="true">🎁</span>
-              <h1 className="font-display text-3xl lg:text-4xl font-bold mb-3">Prova Updro gratis</h1>
-              <p className="text-white/75 mb-8 text-lg">Skapa en synlig byråprofil och välj själv vilka uppdrag ni vill svara på.</p>
+              <span className="inline-block rounded-full bg-white/15 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest mb-6">För byråer</span>
+              <h1 className="font-display text-3xl lg:text-4xl font-bold mb-3">Vinn uppdrag. Betala bara för leads ni själva väljer.</h1>
+              <p className="text-white/75 mb-8 text-lg">119 kr per upplåst lead – eller 1 995 kr/mån obegränsat. Ett enda uppdrag på 50 000 kr betalar över 400 leads.</p>
 
               <div className="space-y-4 mb-10">
                 {benefits.map(benefit => (
                   <div key={benefit.text} className="flex items-center gap-3">
-                    <div className="rounded-lg bg-white/10 p-2"><benefit.icon className="h-5 w-5 text-white" /></div>
+                    <div className="rounded-lg bg-white/10 p-2 shrink-0"><benefit.icon className="h-5 w-5 text-white" /></div>
                     <span className="text-white/90">{benefit.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-5 mb-10">
+                <p className="text-xs font-semibold uppercase tracking-widest text-white/60">Så funkar det</p>
+                {steps.map(step => (
+                  <div key={step.number} className="flex items-start gap-3">
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold" style={{ color: 'hsl(245 58% 48%)' }}>{step.number}</span>
+                    <div>
+                      <p className="font-semibold">{step.title}</p>
+                      <p className="text-sm text-white/70">{step.text}</p>
+                    </div>
                   </div>
                 ))}
               </div>
 
               <div className="rounded-2xl p-6 bg-white/10 backdrop-blur-md border border-white/15">
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="h-5 w-5" />
-                  <p className="font-semibold">Nylanserad marknadsplats</p>
+                  <TrendingUp className="h-5 w-5" />
+                  <p className="font-semibold">Tidiga byråer vinner mest</p>
                 </div>
                 <p className="text-sm text-white/80 leading-relaxed">
-                  Updro bygger nu upp sitt nätverk av seriösa svenska byråer och beställare. Därför får nya byråer prova de första leadsen utan kostnad och utan kortuppgifter.
+                  De första byråerna på Updro bygger nu upp sina verifierade omdömen. Den som börjar i dag står högst när beställarvolymen växer.
                 </p>
               </div>
             </div>
@@ -142,7 +163,7 @@ const RegisterSupplierPage = () => {
           <div className="p-6 sm:p-8 lg:p-16 flex items-center">
             <div className="w-full max-w-lg mx-auto">
               <h2 className="font-display text-2xl font-bold mb-2">Skapa byråkonto</h2>
-              <p className="text-sm text-muted-foreground mb-6">Tar bara några minuter. Ni kan komplettera profilen efteråt.</p>
+              <p className="text-sm text-muted-foreground mb-6">Tar bara några minuter. Leadgarantin gäller från första dagen – ogiltiga leads ersätts alltid.</p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
@@ -209,7 +230,7 @@ const RegisterSupplierPage = () => {
                 </Button>
               </form>
 
-              <p className="text-center text-xs text-muted-foreground mt-4">🔒 Säker registrering · Inga kortuppgifter · Ingen bindningstid</p>
+              <p className="text-center text-xs text-muted-foreground mt-4">🔒 Säker registrering · Inga kortuppgifter · Leadgaranti ingår · Ingen bindningstid</p>
               <p className="text-center text-sm text-muted-foreground mt-5">Har ni redan konto? <Link to="/logga-in" className="text-primary hover:underline font-medium">Logga in</Link></p>
             </div>
           </div>
