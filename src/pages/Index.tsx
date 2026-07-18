@@ -10,6 +10,7 @@ const PriceCalculatorSection = lazy(() => import('@/components/home/PriceCalcula
 const AgencyTrustSection = lazy(() => import('@/components/home/AgencyTrustSection'))
 const TwoSidedSection = lazy(() => import('@/components/home/TwoSidedSection'))
 const ComparisonSection = lazy(() => import('@/components/home/ComparisonSection'))
+const ExampleOffersSection = lazy(() => import('@/components/home/ExampleOffersSection'))
 const StatsSection = lazy(() => import('@/components/home/StatsSection'))
 const TestimonialsSection = lazy(() => import('@/components/home/TestimonialsSection'))
 const FAQSection = lazy(() => import('@/components/home/FAQSection'))
@@ -82,6 +83,7 @@ const BelowFold = () => (
     <AgencyTrustSection />
     <TwoSidedSection />
     <ComparisonSection />
+    <ExampleOffersSection />
     <StatsSection />
     <TestimonialsSection />
     <NewsletterSection />
