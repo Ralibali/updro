@@ -1,69 +1,92 @@
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { supabase } from '@/integrations/supabase/client'
+import { isValidStats, resolveStats, type MarketplaceStats } from '@/lib/marketplaceStats'
 
-interface CountUpProps {
-  target: number
-  suffix?: string
-  prefix?: string
+const CountUp = ({ target, suffix, label }: { target: number; suffix: string; label: string }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-40px' })
+  const reduce = useReducedMotion()
+  const [value, setValue] = useState(0)
+
+  useEffect(() => {
+    if (!inView || reduce) return
+    const duration = 1400
+    const start = performance.now()
+    let frame: number
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1)
+      setValue(Math.round((1 - Math.pow(1 - p, 3)) * target))
+      if (p < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [inView, reduce, target])
+
+  return (
+    <div ref={ref}>
+      <p className="font-display text-5xl md:text-6xl font-bold tracking-tight text-foreground">
+        {value.toLocaleString('sv-SE')}{suffix}
+      </p>
+      <p className="mt-2 text-sm text-muted-foreground">{label}</p>
+    </div>
+  )
 }
 
-const CountUp = ({ target, suffix = '', prefix = '' }: CountUpProps) => {
-  const [inView, setInView] = useState(false)
-  const ref = useRef<HTMLSpanElement>(null)
-  const count = useMotionValue(0)
-  const rounded = useTransform(count, value => `${prefix}${Math.round(value)}${suffix}`)
-  const [display, setDisplay] = useState(`${prefix}0${suffix}`)
+/**
+ * Visar live-räknare från plattformen när marketplace-stats är deployerad
+ * och volymen passerat tröskeln – annars plattformens löften, som alltid
+ * är sanna. Misslyckad hämtning syns aldrig för besökaren.
+ */
+const StatsSection = () => {
+  const reduce = useReducedMotion()
+  const [liveStats, setLiveStats] = useState<MarketplaceStats | null>(null)
 
   useEffect(() => {
-    if (!inView) return
-    const controls = animate(count, target, { duration: 1.5, ease: 'easeOut' })
-    const unsubscribe = rounded.on('change', value => setDisplay(value))
+    let cancelled = false
+    supabase.functions
+      .invoke('marketplace-stats')
+      .then(({ data }) => {
+        if (!cancelled && isValidStats(data)) setLiveStats(data)
+      })
+      .catch(() => {
+        /* Funktionen är inte deployerad ännu – fallback visas. */
+      })
     return () => {
-      controls.stop()
-      unsubscribe()
+      cancelled = true
     }
-  }, [inView, target, count, rounded])
-
-  useEffect(() => {
-    const element = ref.current
-    if (!element) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setInView(true)
-    }, { threshold: 0.5 })
-    observer.observe(element)
-    return () => observer.disconnect()
   }, [])
 
-  return <span ref={ref}>{display}</span>
-}
+  const { stats, isLive } = resolveStats(liveStats)
 
-const stats = [
-  { target: 3, suffix: '', label: 'byråer kan lämna offert som mest' },
-  { target: 2, suffix: ' min', label: 'ungefärlig tid att skicka in briefen' },
-  { target: 100, suffix: '%', label: 'gratis för uppdragsgivare' },
-]
-
-const StatsSection = () => (
-  <section className="py-16 bg-surface-alt border-y border-border">
-    <div className="container">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto text-center">
-        {stats.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-          >
-            <div className="font-display text-5xl md:text-6xl text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>
-              <CountUp target={stat.target} suffix={stat.suffix} />
-            </div>
-            <div className="mt-2 text-sm text-muted-foreground">{stat.label}</div>
-          </motion.div>
-        ))}
+  return (
+    <section className="py-14 md:py-16 bg-background" aria-label="Nyckeltal">
+      <div className="container">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 max-w-4xl mx-auto text-center">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={reduce ? undefined : { opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+            >
+              <CountUp target={stat.target} suffix={stat.suffix} label={stat.label} />
+            </motion.div>
+          ))}
+        </div>
+        {isLive && (
+          <p className="mt-8 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
+            Live-siffror från plattformen
+          </p>
+        )}
       </div>
-    </div>
-  </section>
-)
+    </section>
+  )
+}
 
 export default StatsSection
