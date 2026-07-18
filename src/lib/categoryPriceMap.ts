@@ -14,6 +14,10 @@ export const CATEGORY_PRICE_MAP: Record<string, { matrixKey: keyof typeof PRICE_
   'Grafisk design/UX': { matrixKey: 'design', guideSlug: 'grafisk-design', guideLabel: 'design' },
   'UX/Webbdesign': { matrixKey: 'design', guideSlug: 'grafisk-design', guideLabel: 'design' },
   'Varumärke & PR': { matrixKey: 'design', guideSlug: 'grafisk-design', guideLabel: 'design & varumärke' },
+  'AI-utveckling': { matrixKey: 'ai', guideSlug: 'ai-utveckling', guideLabel: 'AI-utveckling' },
+  'IT-konsult': { matrixKey: 'it-konsult', guideSlug: 'it-konsult', guideLabel: 'IT-konsult' },
+  'Sociala medier': { matrixKey: 'sociala-medier', guideSlug: 'sociala-medier', guideLabel: 'sociala medier' },
+  'Mjukvaruutveckling': { matrixKey: 'mjukvara', guideSlug: 'mjukvaruutveckling', guideLabel: 'mjukvaruutveckling' },
 }
 
 export const LEVEL_LABELS: Record<LevelKey, string> = {

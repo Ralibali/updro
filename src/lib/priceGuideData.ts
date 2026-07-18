@@ -41,6 +41,26 @@ export const PRICE_MATRIX: Record<string, Record<LevelKey, PriceCell>> = {
     standard: { range: '40 000 – 80 000 kr', time: '3–5 veckor', matches: 20 },
     avancerad: { range: '80 000 – 160 000 kr', time: '5–8 veckor', matches: 12 },
   },
+  ai: {
+    enkel: { range: '75 000 – 150 000 kr', time: '3–6 veckor', matches: 12 },
+    standard: { range: '150 000 – 400 000 kr', time: '6–12 veckor', matches: 16 },
+    avancerad: { range: '400 000 – 1 200 000 kr', time: '12–24 veckor', matches: 8 },
+  },
+  'it-konsult': {
+    enkel: { range: '950 – 1 250 kr/tim', time: 'löpande', matches: 34 },
+    standard: { range: '1 250 – 1 550 kr/tim', time: 'löpande', matches: 26 },
+    avancerad: { range: '1 550 – 2 100 kr/tim', time: 'löpande', matches: 14 },
+  },
+  'sociala-medier': {
+    enkel: { range: '8 000 – 15 000 kr/mån', time: 'löpande', matches: 22 },
+    standard: { range: '15 000 – 35 000 kr/mån', time: 'löpande', matches: 18 },
+    avancerad: { range: '35 000 – 75 000 kr/mån', time: 'löpande', matches: 9 },
+  },
+  mjukvara: {
+    enkel: { range: '150 000 – 300 000 kr', time: '6–10 veckor', matches: 14 },
+    standard: { range: '300 000 – 700 000 kr', time: '10–20 veckor', matches: 17 },
+    avancerad: { range: '700 000 – 2 000 000 kr', time: '20–40 veckor', matches: 8 },
+  },
 }
 
 /** Kalkylatorns pill-val på landningssidan. `id` matchar nycklar i PRICE_MATRIX. */
@@ -51,6 +71,7 @@ export const PROJECT_TYPES = [
   { id: 'ads', label: 'Google Ads', query: 'Google Ads', guideSlug: 'google-ads' },
   { id: 'app', label: 'Apputveckling', query: 'Apputveckling', guideSlug: 'apputveckling' },
   { id: 'design', label: 'Design & varumärke', query: 'Design & varumärke', guideSlug: 'design' },
+  { id: 'ai', label: 'AI-utveckling', query: 'AI-utveckling', guideSlug: 'ai-utveckling' },
 ] as const
 
 export type LevelCopy = { level: LevelKey; label: string; includes: string }
@@ -305,6 +326,159 @@ export const PRICE_GUIDES: PriceGuide[] = [
     categoryLabel: 'Design- och varumärkesbyråer',
     wizardCategoryQuery: 'Design & varumärke',
     relatedArticleSlugs: ['webbdesign-trender-2026', 'hur-valjer-man-webbyra'],
+  },
+  {
+    slug: 'ai-utveckling',
+    matrixKey: 'ai',
+    title: 'Vad kostar AI-utveckling 2026? Priser från svenska byråer',
+    metaDescription: desc('AI-utveckling'),
+    h1: 'Vad kostar AI-utveckling 2026?',
+    serviceLabel: 'AI-lösning',
+    quickAnswer: 'En AI-lösning på standardnivå – till exempel en RAG-assistent integrerad i era system – kostar normalt 150 000–400 000 kr hos en svensk byrå.',
+    intro:
+      'Priset på AI-utveckling varierar från cirka 75 000 kr för en fokuserad proof of concept till över en miljon för skräddarsydda plattformar. Här är vad svenska byråer faktiskt tar – och vad som driver priset.',
+    levels: [
+      { level: 'enkel', label: 'Enkel', includes: 'Proof of concept, AI-chattbot på befintligt material eller enkel automation via AI-API:er' },
+      { level: 'standard', label: 'Standard', includes: 'RAG-assistent med egen data, integration mot era system, guardrails och utvärdering' },
+      { level: 'avancerad', label: 'Avancerad', includes: 'Skräddarsydd AI-plattform, finjusterade modeller, multipla integrationer, MLOps' },
+    ],
+    drivers: [
+      'Egen data vs färdiga modeller – en lösning på era dokument kräver RAG-arkitektur och dataarbete, ofta 30–50 % av budgeten.',
+      'Integrationer – varje system (CRM, affärssystem, SharePoint) som AI:n ska läsa eller skriva i lägger normalt 20 000–60 000 kr.',
+      'Kvalitetssäkring – utvärderingsramverk, testdata och guardrails så att modellen svarar rätt och säkert.',
+      'Driftskostnader – API-anrop, vektordatabas och övervakning tillkommer löpande, ofta 2 000–20 000 kr/mån.',
+      'Regelefterlevnad – GDPR, AI-förordningen och branschkrav påverkar arkitektur och dokumentation.',
+    ],
+    warnings: [
+      'Offerten lovar "AI" utan att specificera modell, data eller utvärdering. Be om en teknisk arkitekturskiss och mätpunkter.',
+      'Ingen plan för drift och kostnader per anrop – API-räkningen kan annars skena när användningen växer.',
+      'En proof of concept prissatt som produktionslösning – en demo på två veckor är inte samma sak som ett driftsatt system.',
+    ],
+    faq: [
+      { q: 'Behöver vi egen data för att komma igång?', a: 'Nej, inte för en enkel chattbot eller automation. Men värdet ökar markant när lösningen bygger på era dokument, ärenden eller produktdata – räkna då med extra tid för datakvalitet.' },
+      { q: 'Vad kostar AI-lösningen i drift efter lansering?', a: 'Räkna med 2 000–20 000 kr per månad beroende på volym: API-anrop, vektordatabas, övervakning och mindre justeringar. Be byrån räkna på er förväntade användning i offerten.' },
+      { q: 'Ska vi bygga själva eller anlita byrå?', a: 'Utan egen ML-kompetens är en byrå snabbaste vägen till ett mätbart resultat. Ett vanligt upplägg är att byrån bygger och sedan överlämnar med kunskapsöverföring till ert team.' },
+      { q: 'Hur vet vi att AI:n faktiskt levererar värde?', a: 'Definiera KPI före start: svarstid, andel lösta ärenden, timmar sparade. En seriös byrå sätter upp utvärdering mot dessa mål redan i proof of concept-fasen.' },
+      { q: 'Vem äger modellen och datan?', a: 'Ni ska äga er data och all träningsdata. Basmodellerna ägs av respektive leverantör (OpenAI, Anthropic med flera) – kräv skriftligt att ni kan exportera er data när som helst.' },
+    ],
+    categorySlug: 'analys-data',
+    categoryLabel: 'Analys- och databyråer',
+    wizardCategoryQuery: 'AI-utveckling',
+    relatedArticleSlugs: ['ai-verktyg-marknadsforing-2026', 'chatgpt-synlighet-for-foretag-2026'],
+  },
+  {
+    slug: 'it-konsult',
+    matrixKey: 'it-konsult',
+    title: 'Vad kostar en IT-konsult 2026? Timpriser i Sverige',
+    metaDescription: desc('en IT-konsult'),
+    h1: 'Vad kostar en IT-konsult 2026?',
+    serviceLabel: 'IT-konsult',
+    quickAnswer: 'En erfaren IT-konsult kostar normalt 1 250–1 550 kr i timmen hos en svensk byrå. Enklare roller ligger under, specialister och arkitekter över.',
+    intro:
+      'Timpriset för IT-konsulter spänner från cirka 950 kr för juniora roller till över 2 000 kr för specialister. Här är priserna per senioritetsnivå – och vad som avgör var ditt uppdrag landar.',
+    levels: [
+      { level: 'enkel', label: 'Enkel', includes: 'Junior konsult eller generalist – support, enklare utveckling, drift och underhåll' },
+      { level: 'standard', label: 'Standard', includes: 'Erfaren utvecklare eller konsult – självständigt arbete i era system och team' },
+      { level: 'avancerad', label: 'Avancerad', includes: 'Specialist, arkitekt eller tech lead – komplexa integrationer, säkerhet, skalning' },
+    ],
+    drivers: [
+      'Senioritet och specialisering – en molnarkitekt eller säkerhetsexpert kostar 50–80 % mer än en generalist.',
+      'Uppdragets längd – längre uppdrag ger ofta 5–15 % lägre timpris än korta insatser.',
+      'Plats – Stockholm och Göteborg ligger normalt 10–20 % över mindre orter; distansarbete kan jämna ut skillnaden.',
+      'Branschkrav – bank, finans och offentlig sektor kräver ofta säkerhetsprövade konsulter, vilket höjer priset.',
+      'Omfattning – heltid kontra deltid, och om konsulten ska leda arbetet eller bara leverera.',
+    ],
+    warnings: [
+      'Lågt timpris men "senior konsult" visar sig vara junior på plats – be alltid om CV och referenser för den faktiska personen.',
+      'Offerten saknar takpris eller estimat – utan ram växer kostnaden löpande utan stopp.',
+      'Konsulten byts ut mitt i uppdraget mot en billigare profil utan att priset justeras.',
+    ],
+    faq: [
+      { q: 'Timpris eller fast pris – vad är bäst?', a: 'Fast pris passar väl avgränsade leveranser med tydligt scope. Timpris passar löpande utveckling och förvaltning. Många väljer fast pris för första fasen och timpris för fortsatt arbete.' },
+      { q: 'Vad är ett rimligt timpris för en utvecklare 2026?', a: 'En erfaren utvecklare kostar normalt 1 250–1 550 kr i timmen hos svenska byråer. Under 1 000 kr bör du dubbelkolla senioriteten, över 1 800 kr ska det finnas tydlig specialisering.' },
+      { q: 'Hur jämför jag konsulter rättvist?', a: 'Jämför aldrig bara timpris. En senior på 1 500 kr som löser uppgiften på halva tiden är billigare än en junior på 950 kr. Be om referenscase med tid och resultat.' },
+      { q: 'Kan man förhandla timpriset?', a: 'Ja, särskilt vid längre uppdrag, deltidsupplägg eller retainer – 5–15 % är vanligt. Förhandla hellre på volym än att pressa priset dit byrån tappar incitament.' },
+    ],
+    categorySlug: 'webbutveckling',
+    categoryLabel: 'Webbutvecklingsbyråer',
+    wizardCategoryQuery: 'IT-konsult',
+    relatedArticleSlugs: ['hur-valjer-man-webbyra', 'sveriges-digitala-byraer-konjunktur-2026'],
+  },
+  {
+    slug: 'sociala-medier',
+    matrixKey: 'sociala-medier',
+    title: 'Vad kostar en byrå för sociala medier 2026? Priser i Sverige',
+    metaDescription: desc('hjälp med sociala medier'),
+    h1: 'Vad kostar en byrå för sociala medier 2026?',
+    serviceLabel: 'satsning i sociala medier',
+    quickAnswer: 'Löpande skötsel av sociala medier kostar normalt 15 000–35 000 kr i månaden för en standardnivå med strategi, innehåll och uppföljning.',
+    intro:
+      'Priset för byråhjälp med sociala medier varierar från cirka 8 000 kr i månaden för grundläggande publicering till över 75 000 kr för fullskalig always-on. Här är vad som ingår på respektive nivå.',
+    levels: [
+      { level: 'enkel', label: 'Enkel', includes: 'Fast publiceringsschema, 3–4 inlägg/månad i en kanal, enkel rapport' },
+      { level: 'standard', label: 'Standard', includes: 'Strategi, innehållsproduktion, 2–3 kanaler, community management och månadsrapport' },
+      { level: 'avancerad', label: 'Avancerad', includes: 'Always-on, kreativa koncept, video i volym, annonsoptimering och influerarsamarbeten' },
+    ],
+    drivers: [
+      'Antal kanaler och publiceringstakt – varje kanal kräver anpassat material, inte bara kopierat innehåll.',
+      'Innehållsproduktion – foto och video på plats kostar mer än grafiska mallar och stockmaterial.',
+      'Community management – att svara på kommentarer och meddelanden, särskilt utanför kontorstid.',
+      'Betald annonsering – mediebudgeten tillkommer alltid utöver byråarvodet.',
+      'Rapportering och strategimöten – frekvens och detaljnivå på uppföljningen.',
+    ],
+    warnings: [
+      'Arvodet ser lågt ut men annonsbudget och innehållsproduktion tillkommer – be om total månadskostnad.',
+      'Byrån rapporterar bara räckvidd och gillningar – be om koppling till affärsmål som leads eller försäljning.',
+      'Otydligt vem som äger kontona och materialet om samarbetet avslutas.',
+    ],
+    faq: [
+      { q: 'Vad är skillnaden på organiskt och annonserat?', a: 'Organiskt är det ni publicerar på egna kanaler utan mediekostnad. Annonserat (paid social) är betald distribution där mediebudgeten går direkt till plattformen – den ligger utöver byråarvodet.' },
+      { q: 'Hur snabbt ser man resultat?', a: 'Organiskt tar normalt 3–6 månader att bygga upp. Betald annonsering kan ge resultat inom veckor. Räkna med en uppstartsfas på minst en månad oavsett.' },
+      { q: 'Vilka kanaler ska vi satsa på?', a: 'Där era kunder finns – inte alla. B2B domineras av LinkedIn, yngre målgrupper av TikTok och Instagram, lokala tjänster ofta av Facebook. En bra byrå rekommenderar färre kanaler gjorda ordentligt.' },
+      { q: 'Kan vi sköta publiceringen internt och bara ta hjälp med strategi?', a: 'Ja, många byråer erbjuder strategi- och coachingsupplägg från cirka 8 000–15 000 kr per månad, där ert team producerar och byrån styr riktning och kvalitet.' },
+    ],
+    categorySlug: 'digital-marknadsforing',
+    categoryLabel: 'Digitala marknadsföringsbyråer',
+    wizardCategoryQuery: 'Sociala medier',
+    relatedArticleSlugs: ['vad-kostar-digital-marknadsforing', 'digital-marknadsforing-for-foretag'],
+  },
+  {
+    slug: 'mjukvaruutveckling',
+    matrixKey: 'mjukvara',
+    title: 'Vad kostar mjukvaruutveckling 2026? Priser i Sverige',
+    metaDescription: desc('mjukvaruutveckling'),
+    h1: 'Vad kostar mjukvaruutveckling 2026?',
+    serviceLabel: 'mjukvaruprojekt',
+    quickAnswer: 'Ett mjukvaruprojekt på standardnivå – ett skräddarsytt system med integrationer – kostar normalt 300 000–700 000 kr hos en svensk byrå.',
+    intro:
+      'Skräddarsydd mjukvara spänner från cirka 150 000 kr för en fokuserad MVP till flera miljoner för affärskritiska plattformar. Här är vad svenska byråer faktiskt tar – och hur du håller budgeten.',
+    levels: [
+      { level: 'enkel', label: 'Enkel', includes: 'MVP eller internt verktyg – en kärnfunktion, begränsad användargrupp, 6–10 veckor' },
+      { level: 'standard', label: 'Standard', includes: 'Skräddarsytt system med integrationer, roller och behörigheter samt driftsättning' },
+      { level: 'avancerad', label: 'Avancerad', includes: 'Affärskritisk plattform – hög tillgänglighet, många integrationer, compliance-krav' },
+    ],
+    drivers: [
+      'Antal integrationer – varje externt system (affärssystem, betalning, e-signering) är normalt 20 000–80 000 kr.',
+      'Krav på säkerhet och compliance – loggning, kryptering och behörighetsmodeller lägger på 15–30 %.',
+      'Legacy-miljö – att bygga mot äldre system utan API:er tar ofta dubbelt så lång tid.',
+      'Test och kvalitetssäkring – automatiserade tester kostar i uppstart men sänker ägandekostnaden.',
+      'Teamets storlek och senioritet – två seniorer levererar ofta snabbare än fyra juniorer till samma budget.',
+    ],
+    warnings: [
+      'Offerten täcker bygget men inte drift och underhåll – räkna normalt med 15–25 % av byggkostnaden per år.',
+      'Fast pris utan kravspecifikation – otydliga krav i fastprisprojekt leder till ändringsdebatt i stället för leverans.',
+      'Ingen dokumentation eller kunskapsöverlämning – ni blir låsta till byrån för varje framtida ändring.',
+    ],
+    faq: [
+      { q: 'MVP eller färdigt system direkt?', a: 'Börja nästan alltid med en MVP – den minsta versionen som skapar värde. Det kapar initialkostnaden med 50–70 % och låter er styra fortsättningen på verklig användning.' },
+      { q: 'Hur mycket kostar underhåll per år?', a: 'Räkna med 15–25 % av byggkostnaden årligen för drift, säkerhetsuppdateringar och mindre förbättringar. Ett system för 400 000 kr kostar alltså normalt 60 000–100 000 kr per år att äga.' },
+      { q: 'Vem äger koden?', a: 'Ni ska äga källkoden och den ska ligga i ert eget repo. Kräv det skriftligt – inklusive dokumentation och driftsinstruktioner – innan projektet startar.' },
+      { q: 'Agilt eller fast pris?', a: 'Fast pris fungerar för små, mycket väldefinierade projekt. För allt större är ett agilt upplägg med sprintar och löpande prioritering säkrare – ni betalar för framsteg, inte gissningar.' },
+    ],
+    categorySlug: 'apputveckling',
+    categoryLabel: 'Apputvecklingsbyråer',
+    wizardCategoryQuery: 'Mjukvaruutveckling',
+    relatedArticleSlugs: ['hur-lang-tid-tar-apputveckling', 'hur-valjer-man-webbyra'],
   },
 ]
 

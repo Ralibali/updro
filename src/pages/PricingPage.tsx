@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { STRIPE_PRODUCTS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
+import { PRICE_GUIDES } from '@/lib/priceGuideData'
 import { Check, Gift, ArrowRight, RotateCcw, Eye, UsersRound } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { setSEOMeta } from '@/lib/seoHelpers'
@@ -156,6 +157,23 @@ const PricingPage = () => {
               <Link to="/publicera">
                 <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6">Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" /></Button>
               </Link>
+            </div>
+
+            <div className="max-w-3xl mx-auto mt-10">
+              <h3 className="font-display text-xl font-bold mb-2">Vad bör projektet kosta?</h3>
+              <p className="text-sm text-muted-foreground mb-5">Våra prisguider visar vad svenska byråer faktiskt tar – innan du skickar din förfrågan.</p>
+              <div className="grid sm:grid-cols-2 gap-3 text-left">
+                {PRICE_GUIDES.map(guide => (
+                  <Link
+                    key={guide.slug}
+                    to={`/priser/${guide.slug}`}
+                    className="group flex items-center justify-between gap-2 bg-card rounded-xl border px-4 py-3 text-sm font-medium hover:border-accent transition-colors"
+                  >
+                    <span>{guide.h1}</span>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-accent transition-colors" />
+                  </Link>
+                ))}
+              </div>
             </div>
           </section>
         )}
