@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Sparkles, Loader2, CheckCircle2, Wand2, Users, Gauge } from 'lucide-react'
+import { Sparkles, Loader2, CheckCircle2, Wand2, Users, Gauge, WalletCards } from 'lucide-react'
 import { toast } from 'sonner'
+import { Link } from 'react-router-dom'
 import { analyzeBriefLocally, type BriefSuggestion } from '@/lib/briefAnalysis'
 import { CATEGORY_ICONS, BUDGET_LABELS, START_TIME_LABELS } from '@/lib/constants'
+import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
+import { formatPrice } from '@/lib/dateUtils'
 
 interface AiBriefAssistantProps {
   onAccept: (brief: BriefSuggestion) => void
@@ -103,6 +106,31 @@ const AiBriefAssistant = ({ onAccept, initialText = '' }: AiBriefAssistantProps)
               <Users className="h-3 w-3" /> ~{suggestion.estimated_matching_agencies} matchande byråer
             </span>
           </div>
+
+          {suggestion.price_estimate && suggestion.price_estimate.max_sek > 0 && (
+            <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-3.5">
+              <div className="flex items-start gap-2.5">
+                <WalletCards className="h-5 w-5 text-emerald-700 mt-0.5 shrink-0" aria-hidden="true" />
+                <div className="flex-1">
+                  <p className="text-[11px] uppercase tracking-wider font-semibold text-emerald-800">AI-uppskattat pris för din brief</p>
+                  <p className="mt-0.5 font-display text-lg font-bold text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                    {formatPrice(suggestion.price_estimate.min_sek)} – {formatPrice(suggestion.price_estimate.max_sek)}
+                  </p>
+                  {suggestion.price_estimate.reasoning && (
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{suggestion.price_estimate.reasoning}</p>
+                  )}
+                  {CATEGORY_PRICE_MAP[suggestion.category] && (
+                    <Link
+                      to={`/priser/${CATEGORY_PRICE_MAP[suggestion.category].guideSlug}`}
+                      className="mt-1.5 inline-block text-xs font-semibold text-primary hover:underline"
+                    >
+                      Jämför med prisguiden för {CATEGORY_PRICE_MAP[suggestion.category].guideLabel} →
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div>
             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Förslag på titel</p>

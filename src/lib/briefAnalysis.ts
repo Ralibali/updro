@@ -13,6 +13,12 @@ export interface BriefSuggestion {
   questions_for_agencies: string[]
   lead_score: number
   estimated_matching_agencies: number
+  /** AI-uppskattat prisspann i SEK, förankrat i prisguidens riktvärden. Saknas i lokal fallback. */
+  price_estimate?: {
+    min_sek: number
+    max_sek: number
+    reasoning: string
+  }
 }
 
 const CATEGORY_KEYWORDS: Array<{ cat: Category; words: string[] }> = [

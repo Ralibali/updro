@@ -108,7 +108,25 @@ serve(async req => {
             role: "system",
             content: `Du är en svensk projektanalytiker som hjälper beställare att specificera digitala uppdrag på en marknadsplats.
 Givet en fritext, returnera ett strukturerat förslag via verktyget extract_brief.
-Skriv allt på svenska. Var kortfattad och konkret.`,
+Skriv allt på svenska. Var kortfattad och konkret.
+
+För price_estimate: uppskatta vad uppdraget rimligen kostar hos en svensk byrå 2026. Förankra uppskattningen i dessa riktvärden för standardnivå per kategori, och justera upp eller ner efter beskriven omfattning:
+- Webbutveckling: 40 000–80 000 kr
+- E-handel: 80 000–160 000 kr
+- SEO: 8 000–15 000 kr/mån
+- Digital marknadsföring: 10 000–25 000 kr/mån
+- App-utveckling: 250 000–500 000 kr
+- Grafisk design/UX: 40 000–80 000 kr
+- AI-utveckling: 150 000–400 000 kr
+- IT-konsult: 1 250–1 550 kr/timme
+- Sociala medier: 15 000–35 000 kr/mån
+- Mjukvaruutveckling: 300 000–700 000 kr
+- Video & foto: 20 000–60 000 kr
+- Varumärke & PR: 50 000–120 000 kr
+- UX/Webbdesign: 60 000–140 000 kr
+- Underhåll/IT Support: 700–1 200 kr/användare/mån
+- Affärsutveckling: 60 000–150 000 kr
+Vid löpande priser (per månad/timme/användare) ska min_sek och max_sek avse samma enhet, och reasoning ska ange enheten. reasoning: max 200 tecken, svenska, förklara kort vad som påverkar priset mest för just detta uppdrag.`,
           },
           {
             role: "user",
@@ -133,8 +151,18 @@ Skriv allt på svenska. Var kortfattad och konkret.`,
                   questions_for_agencies: { type: "array", items: { type: "string" }, maxItems: 5 },
                   lead_score: { type: "integer", minimum: 0, maximum: 100 },
                   estimated_matching_agencies: { type: "integer", minimum: 0, maximum: 100 },
+                  price_estimate: {
+                    type: "object",
+                    properties: {
+                      min_sek: { type: "integer", minimum: 0 },
+                      max_sek: { type: "integer", minimum: 0 },
+                      reasoning: { type: "string", maxLength: 200 },
+                    },
+                    required: ["min_sek", "max_sek", "reasoning"],
+                    additionalProperties: false,
+                  },
                 },
-                required: ["category", "title", "description", "budget_range", "start_time", "requirements", "questions_for_agencies", "lead_score", "estimated_matching_agencies"],
+                required: ["category", "title", "description", "budget_range", "start_time", "requirements", "questions_for_agencies", "lead_score", "estimated_matching_agencies", "price_estimate"],
                 additionalProperties: false,
               },
             },
