@@ -37,7 +37,7 @@ const LandingPage = () => {
   // Förvälj rätt projekttyp i priskalkylatorn utifrån kampanjens kategori.
   const categoryLower = category.toLowerCase()
   const defaultTypeId =
-    categoryLower.includes('ai') || categoryLower.includes('ai-utveckling') ? 'ai'
+    categoryLower.startsWith('ai') ? 'ai'
     : categoryLower.includes('e-handel') ? 'ehandel'
     : categoryLower.includes('seo') ? 'seo'
     : categoryLower.includes('ads') || categoryLower.includes('annonsering') ? 'ads'

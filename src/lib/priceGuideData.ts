@@ -159,7 +159,7 @@ export const PRICE_GUIDES: PriceGuide[] = [
     ],
     categorySlug: 'webbutveckling',
     categoryLabel: 'Webbutvecklingsbyråer',
-    wizardCategoryQuery: 'Ny hemsida',
+    wizardCategoryQuery: 'Webbutveckling',
     relatedArticleSlugs: ['vad-kostar-en-hemsida-2026', 'hur-valjer-man-webbyra'],
   },
   {
@@ -273,7 +273,7 @@ export const PRICE_GUIDES: PriceGuide[] = [
     ],
     categorySlug: 'google-ads',
     categoryLabel: 'Google Ads-byråer',
-    wizardCategoryQuery: 'Google Ads',
+    wizardCategoryQuery: 'Digital marknadsföring',
     relatedArticleSlugs: ['vad-kostar-google-ads', 'google-ads-vs-seo'],
   },
   {
@@ -311,7 +311,7 @@ export const PRICE_GUIDES: PriceGuide[] = [
     ],
     categorySlug: 'apputveckling',
     categoryLabel: 'Apputvecklingsbyråer',
-    wizardCategoryQuery: 'Apputveckling',
+    wizardCategoryQuery: 'App-utveckling',
     relatedArticleSlugs: ['hur-lang-tid-tar-apputveckling', 'webbdesign-trender-2026'],
   },
   {
@@ -349,7 +349,7 @@ export const PRICE_GUIDES: PriceGuide[] = [
     ],
     categorySlug: 'grafisk-design',
     categoryLabel: 'Design- och varumärkesbyråer',
-    wizardCategoryQuery: 'Design & varumärke',
+    wizardCategoryQuery: 'Grafisk design/UX',
     relatedArticleSlugs: ['webbdesign-trender-2026', 'hur-valjer-man-webbyra'],
   },
   {
