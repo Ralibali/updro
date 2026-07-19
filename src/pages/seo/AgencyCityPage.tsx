@@ -114,7 +114,7 @@ const AgencyCityPage = () => {
           <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> Senast uppdaterad: {LAST_UPDATED}</span>
             <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Gratis offertjämförelse</span>
-            <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Upp till 5 offerter</span>
+            <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Upp till 3 offerter</span>
           </div>
         </div>
       </section>

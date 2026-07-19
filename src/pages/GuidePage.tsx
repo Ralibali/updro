@@ -198,7 +198,7 @@ const GuidePage = () => {
           <div className="mt-14 rounded-2xl border bg-muted/30 p-8 text-center">
             <h3 className="font-display text-xl font-bold mb-2">Vill du ha konkreta offerter?</h3>
             <p className="text-sm text-muted-foreground mb-5">
-              Publicera ditt uppdrag gratis och få upp till fem offerter från verifierade byråer.
+              Publicera ditt uppdrag gratis och få upp till tre offerter från verifierade byråer.
             </p>
             <Link to="/publicera">
               <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-5 text-base font-semibold">

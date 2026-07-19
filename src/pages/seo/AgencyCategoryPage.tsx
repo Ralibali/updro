@@ -7,13 +7,21 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import NotFound from '@/pages/NotFound'
 import SEOLeadCTA from '@/components/seo/SEOLeadCTA'
-import { ChevronRight, MapPin, Star, ArrowRight } from 'lucide-react'
+import { ChevronRight, MapPin, Star, ArrowRight, Clock3, FileText, TrendingUp } from 'lucide-react'
 import { trackLeadStarted } from '@/lib/analytics'
+import {
+  findCategoryStats,
+  formatResponseTime,
+  isValidCategoryStats,
+  shouldShowCategoryStats,
+  type CategoryStats,
+} from '@/lib/categoryMarketStats'
 
 const AgencyCategoryPage = () => {
   const { kategori } = useParams<{ kategori: string }>()
   const category = getCategoryBySlug(kategori || '')
   const [agencies, setAgencies] = useState<any[]>([])
+  const [marketStats, setMarketStats] = useState<CategoryStats | null>(null)
 
   useEffect(() => {
     if (category) {
@@ -24,6 +32,20 @@ const AgencyCategoryPage = () => {
       })
     }
     window.scrollTo(0, 0)
+  }, [category])
+
+  useEffect(() => {
+    if (!category) return
+    supabase.functions
+      .invoke('category-stats')
+      .then(({ data }) => {
+        if (isValidCategoryStats(data)) {
+          setMarketStats(findCategoryStats(data.categories, category.name))
+        }
+      })
+      .catch(() => {
+        /* Funktionen är inte deployerad ännu – statistikraden hålls dold. */
+      })
   }, [category])
 
   useEffect(() => {
@@ -74,13 +96,31 @@ const AgencyCategoryPage = () => {
       <section className="container py-12">
         <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">Hitta {category.name}-byrå i Sverige</h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{category.description}</p>
+        {shouldShowCategoryStats(marketStats) && marketStats && (
+          <div className="mt-6 flex flex-wrap gap-2.5" aria-label="Marknadstal för kategorin">
+            <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium">
+              <FileText className="h-4 w-4 text-accent" aria-hidden="true" />
+              {marketStats.projects} publicerade uppdrag
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium">
+              <TrendingUp className="h-4 w-4 text-accent" aria-hidden="true" />
+              {marketStats.avg_offers_per_project} offerter per uppdrag i snitt
+            </span>
+            {formatResponseTime(marketStats.median_hours_to_first_offer) && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium">
+                <Clock3 className="h-4 w-4 text-accent" aria-hidden="true" />
+                Första offerten {formatResponseTime(marketStats.median_hours_to_first_offer)}
+              </span>
+            )}
+          </div>
+        )}
       </section>
 
       {/* Top CTA */}
       <section className="container pb-8">
         <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))]">
           <h2 className="font-display text-2xl md:text-3xl font-bold">
-            Låt {category.name}-byråerna komma till dig – beskriv ditt projekt så får du upp till 5 offerter gratis
+            Låt {category.name}-byråerna komma till dig – beskriv ditt projekt så får du upp till 3 offerter gratis
           </h2>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -133,7 +173,7 @@ const AgencyCategoryPage = () => {
       <section className="container pb-16 pt-4">
         <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))]">
           <h2 className="font-display text-2xl md:text-3xl font-bold">
-            Låt {category.name}-byråerna komma till dig – beskriv ditt projekt så får du upp till 5 offerter gratis
+            Låt {category.name}-byråerna komma till dig – beskriv ditt projekt så får du upp till 3 offerter gratis
           </h2>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link

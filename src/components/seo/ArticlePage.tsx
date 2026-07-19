@@ -18,7 +18,7 @@ const ArticleCTA = () => (
       Redo att ta in offerter? Publicera ditt projekt gratis
     </h2>
     <p className="mt-3 text-background/80 max-w-2xl">
-      Beskriv projektet på 3 minuter och få upp till fem offerter från kvalitetssäkrade svenska byråer inom 24 timmar.
+      Beskriv projektet på 3 minuter och få upp till tre offerter från kvalitetssäkrade svenska byråer inom 24 timmar.
     </p>
     <div className="mt-6 flex flex-wrap gap-3">
       <Link
