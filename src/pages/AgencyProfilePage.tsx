@@ -6,10 +6,11 @@ import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CATEGORY_STYLES } from '@/lib/constants'
-import { Star, MapPin, CheckCircle, Globe, ArrowRight } from 'lucide-react'
+import { Star, MapPin, CheckCircle, Globe, ArrowRight, Building2, FolderOpen, ExternalLink, CalendarDays } from 'lucide-react'
 import { timeAgo } from '@/lib/dateUtils'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
+import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
 import { setSEOMeta, setJsonLd } from '@/lib/seoHelpers'
 
 const AgencyProfilePage = () => {
@@ -36,7 +37,7 @@ const AgencyProfilePage = () => {
   useEffect(() => {
     if (agency && profile) {
       const name = profile.company_name || profile.full_name || 'Byrå'
-      const url = `https://updro.se/byra/${slug}`
+      const url = `https://updro.se/byraer/${slug}`
       setSEOMeta({
         title: `${name} – Byråprofil | Updro`,
         description: `Se ${name}s profil på Updro. Betyg, tjänster, portfölj och kontaktuppgifter.`,
@@ -135,6 +136,30 @@ const AgencyProfilePage = () => {
             ))}
           </div>
 
+          {/* Stats strip */}
+          <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+            <div className="rounded-xl border bg-card p-3.5 text-center">
+              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Betyg</dt>
+              <dd className="mt-1 font-display text-xl font-bold">
+                {agency.review_count > 0 ? `${Number(agency.avg_rating).toFixed(1)} / 5` : '–'}
+              </dd>
+            </div>
+            <div className="rounded-xl border bg-card p-3.5 text-center">
+              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Omdömen</dt>
+              <dd className="mt-1 font-display text-xl font-bold">{agency.review_count || 0}</dd>
+            </div>
+            <div className="rounded-xl border bg-card p-3.5 text-center">
+              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Uppdrag via Updro</dt>
+              <dd className="mt-1 font-display text-xl font-bold">{agency.completed_projects || 0}</dd>
+            </div>
+            <div className="rounded-xl border bg-card p-3.5 text-center">
+              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">På Updro sedan</dt>
+              <dd className="mt-1 font-display text-xl font-bold">
+                {agency.created_at ? new Date(agency.created_at).getFullYear() : '–'}
+              </dd>
+            </div>
+          </dl>
+
           {/* Tabs */}
           <Tabs defaultValue="overview">
             <TabsList>
@@ -143,22 +168,105 @@ const AgencyProfilePage = () => {
             </TabsList>
 
             <TabsContent value="overview" className="mt-6">
-              {agency.bio && (
-                <div className="bg-card rounded-xl border p-5 mb-6">
-                  <h3 className="font-semibold mb-2">Om byrån</h3>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap">{agency.bio}</p>
+              <div className="grid gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2 space-y-6">
+                  {agency.bio && (
+                    <div className="bg-card rounded-xl border p-5">
+                      <h3 className="font-semibold mb-2">Om byrån</h3>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{agency.bio}</p>
+                    </div>
+                  )}
+                  {(agency.services || []).length > 0 && (
+                    <div className="bg-card rounded-xl border p-5">
+                      <h3 className="font-semibold mb-2">Tjänster</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {agency.services.map((s: string) => (
+                          <span key={s} className="bg-muted rounded-full px-3 py-1 text-xs">{s}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {(agency.portfolio_urls || []).length > 0 && (
+                    <div className="bg-card rounded-xl border p-5">
+                      <h3 className="font-semibold mb-3 flex items-center gap-2">
+                        <FolderOpen className="h-4 w-4 text-primary" aria-hidden="true" /> Portfölj
+                      </h3>
+                      <ul className="space-y-2">
+                        {agency.portfolio_urls.map((url: string) => (
+                          <li key={url}>
+                            <a
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group flex items-center justify-between gap-2 rounded-lg border px-3.5 py-2.5 text-sm font-medium hover:border-primary transition-colors"
+                            >
+                              <span className="truncate">{url.replace(/^https?:\/\//, '')}</span>
+                              <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
-              )}
-              {(agency.services || []).length > 0 && (
-                <div className="bg-card rounded-xl border p-5">
-                  <h3 className="font-semibold mb-2">Tjänster</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {agency.services.map((s: string) => (
-                      <span key={s} className="bg-muted rounded-full px-3 py-1 text-xs">{s}</span>
-                    ))}
+
+                <aside className="space-y-6">
+                  <div className="bg-card rounded-xl border p-5">
+                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                      <Building2 className="h-4 w-4 text-primary" aria-hidden="true" /> Företagsuppgifter
+                    </h3>
+                    <dl className="space-y-2.5 text-sm">
+                      {agency.org_number && (
+                        <div className="flex justify-between gap-3">
+                          <dt className="text-muted-foreground">Org.nr</dt>
+                          <dd className="font-medium">{agency.org_number}</dd>
+                        </div>
+                      )}
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-muted-foreground">Ort</dt>
+                        <dd className="font-medium">{profile?.city || 'Sverige'}</dd>
+                      </div>
+                      {agency.has_fskatt && (
+                        <div className="flex justify-between gap-3">
+                          <dt className="text-muted-foreground">F-skatt</dt>
+                          <dd className="font-medium text-emerald-700">Registrerad</dd>
+                        </div>
+                      )}
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-muted-foreground">På Updro sedan</dt>
+                        <dd className="font-medium inline-flex items-center gap-1">
+                          <CalendarDays className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+                          {agency.created_at ? new Date(agency.created_at).getFullYear() : '–'}
+                        </dd>
+                      </div>
+                    </dl>
                   </div>
-                </div>
-              )}
+
+                  {(agency.categories || []).some((cat: string) => CATEGORY_PRICE_MAP[cat]) && (
+                    <div className="bg-secondary/60 rounded-xl border-2 border-foreground p-5">
+                      <h3 className="font-semibold mb-1.5 text-sm">Vad kostar det?</h3>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Se marknadspriser innan du skickar din förfrågan:
+                      </p>
+                      <ul className="space-y-1.5">
+                        {(agency.categories || [])
+                          .filter((cat: string) => CATEGORY_PRICE_MAP[cat])
+                          .slice(0, 3)
+                          .map((cat: string) => (
+                            <li key={cat}>
+                              <Link
+                                to={`/priser/${CATEGORY_PRICE_MAP[cat].guideSlug}`}
+                                className="text-sm font-medium text-primary hover:underline"
+                              >
+                                Prisguide: {CATEGORY_PRICE_MAP[cat].guideLabel} →
+                              </Link>
+                            </li>
+                          ))}
+                      </ul>
+                    </div>
+                  )}
+                </aside>
+              </div>
             </TabsContent>
 
             <TabsContent value="reviews" className="mt-6">
