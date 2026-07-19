@@ -20,6 +20,10 @@ export function formatDate(dateStr: string): string {
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
 }
 
+import { formatMarketPrice } from './market'
+
 export function formatPrice(amount: number): string {
-  return amount.toLocaleString('sv-SE').replace(/\s/g, ' ') + ' kr'
+  // Delegerar till marknadsmedveten formattering. Utan VITE_MARKET är
+  // beteendet identiskt med tidigare svensk standard (sv-SE, kr).
+  return formatMarketPrice(amount).replace(/\s/g, ' ')
 }
