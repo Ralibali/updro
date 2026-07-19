@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import TrialBanner from '@/components/TrialBanner'
 import SupplierNotificationsList from '@/components/supplier/SupplierNotificationsList'
+import PushNotificationCard from '@/components/shared/PushNotificationCard'
 import ActivationChecklist from '@/components/supplier/ActivationChecklist'
 import { ArrowRight } from 'lucide-react'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
@@ -62,7 +63,8 @@ const SupplierDashboard = () => {
       </div>
 
       {/* Notiser */}
-      <div className="mb-8">
+      <div className="mb-8 space-y-4">
+        <PushNotificationCard />
         <SupplierNotificationsList />
       </div>
 

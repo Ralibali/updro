@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
 import ProjectStepper from '@/components/shared/ProjectStepper'
+import PushNotificationCard from '@/components/shared/PushNotificationCard'
 
 const BuyerDashboard = () => {
   const { profile, user } = useAuth()
@@ -54,6 +55,10 @@ const BuyerDashboard = () => {
   return (
     <div className="max-w-4xl">
       <h1 className="font-display text-2xl font-bold mb-6">Hej {profile?.full_name?.split(' ')[0]}! 👋</h1>
+
+      <div className="mb-6">
+        <PushNotificationCard />
+      </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">

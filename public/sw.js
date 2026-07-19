@@ -3,7 +3,7 @@
  * Statiska same-origin-resurser: cache-first med bakgrundsuppdatering.
  * API-anrop (t.ex. Supabase) cachas aldrig. */
 
-const VERSION = 'updro-v1'
+const VERSION = 'updro-v2'
 const STATIC_CACHE = `${VERSION}-static`
 const PAGE_CACHE = `${VERSION}-pages`
 const PRECACHE = ['/', '/manifest.webmanifest', '/favicon.png']
@@ -57,4 +57,39 @@ self.addEventListener('fetch', event => {
       }),
     )
   }
+})
+
+/* Web push: visa notisen även när sajten är stängd. */
+self.addEventListener('push', event => {
+  if (!event.data) return
+  let data = {}
+  try {
+    data = event.data.json()
+  } catch {
+    data = { title: 'Updro', body: event.data.text() }
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Updro', {
+      body: data.body || '',
+      icon: data.icon || '/icons/icon-192.png',
+      badge: '/icons/icon-192.png',
+      data: { link: data.link || '/' },
+    }),
+  )
+})
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close()
+  const link = event.notification.data?.link || '/'
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
+      for (const client of windowClients) {
+        if ('focus' in client) {
+          client.navigate(link)
+          return client.focus()
+        }
+      }
+      return clients.openWindow(link)
+    }),
+  )
 })
