@@ -14,13 +14,14 @@
  */
 
 export type PlausibleEventName =
-  | 'Brief Started'
-  | 'Brief Submitted'
+  | 'Uppdrag Started'
+  | 'Uppdrag Submitted'
   | 'Agency Signup Completed'
   | 'Offer Submitted'
   | 'Lead Unlocked'
   | 'Subscription Checkout Started'
   | 'Subscription Purchased'
+
 
 export type PlausibleUserType = 'guest' | 'buyer' | 'supplier'
 export type PlausibleBillingInterval = 'one_time' | 'monthly' | 'yearly'
