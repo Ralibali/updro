@@ -95,11 +95,11 @@ describe('trackPlausibleEvent', () => {
 
   it('drops PII-shaped values before sending', () => {
     const calls = setupPlausibleSpy()
-    trackPlausibleEvent('Brief Submitted', { category: 'SEO', source: 'buyer@x.se' })
-    expect(calls[0]).toEqual(['Brief Submitted', { props: { category: 'SEO' } }])
+    trackPlausibleEvent('Uppdrag Submitted', { category: 'SEO', source: 'buyer@x.se' })
+    expect(calls[0]).toEqual(['Uppdrag Submitted', { props: { category: 'SEO' } }])
   })
 
   it('is a no-op when plausible is not on window', () => {
-    expect(trackPlausibleEvent('Brief Started', { source: 'hero' })).toBe(false)
+    expect(trackPlausibleEvent('Uppdrag Started', { source: 'hero' })).toBe(false)
   })
 })
