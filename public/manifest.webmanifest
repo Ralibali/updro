@@ -1,0 +1,33 @@
+{
+  "name": "Updro – Hitta rätt byrå",
+  "short_name": "Updro",
+  "description": "Beskriv projektet på två minuter. Högst tre granskade svenska byråer lämnar offert. Gratis för beställare.",
+  "lang": "sv-SE",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fafafa",
+  "theme_color": "#111111",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Publicera uppdrag",
+      "short_name": "Publicera",
+      "url": "/publicera",
+      "description": "Beskriv ditt projekt och få offerter"
+    },
+    {
+      "name": "Se prisguiden",
+      "short_name": "Priser",
+      "url": "/priser/hemsida",
+      "description": "Vad kostar det? Se prisspann"
+    }
+  ]
+}

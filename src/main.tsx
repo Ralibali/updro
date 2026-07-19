@@ -23,3 +23,13 @@ const rootEl = document.getElementById("root")!;
 // Always clear the fallback and mount the real app for users.
 rootEl.replaceChildren();
 createRoot(rootEl).render(<App />);
+
+// PWA: registrera service worker för snabb uppstart och offline-stöd.
+// Bara i produktion – i dev skulle cachen störa hot-reload.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {
+      /* Offline-stöd är en bonus, aldrig ett blockerande fel. */
+    });
+  });
+}
