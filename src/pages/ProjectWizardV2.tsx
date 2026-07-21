@@ -71,7 +71,8 @@ const ProjectWizardV2 = () => {
 
   const totalSteps = 2
   const descriptionLength = form.description.trim().length
-  const descriptionReady = descriptionLength >= 20
+  const MIN_DESCRIPTION = 10
+  const descriptionReady = descriptionLength >= MIN_DESCRIPTION
   const detailsReady = Boolean(form.category && form.budget_range && form.start_time)
   const contactReady = isAuthenticated || (form.full_name.trim().length >= 2 && validEmail(form.email))
   const canSubmit = descriptionReady && detailsReady && contactReady
@@ -99,12 +100,14 @@ const ProjectWizardV2 = () => {
 
   const goToDetails = () => {
     if (!descriptionReady) {
-      toast.error(`Skriv minst ${20 - descriptionLength} tecken till.`)
+      toast.error(descriptionLength === 0
+        ? 'Skriv några ord om vad du behöver hjälp med.'
+        : `Skriv ${MIN_DESCRIPTION - descriptionLength} tecken till – vi hjälper dig fylla ut resten i nästa steg.`)
       return
     }
     trackOnceInSession('lead_started', () => trackLeadStarted('project_wizard'))
     trackOnceInSession('lead_step_completed:1', () => {
-      trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1 })
+      trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1, description_length: descriptionLength })
     })
     setStep(2)
   }
@@ -201,11 +204,20 @@ const ProjectWizardV2 = () => {
     }
   }
 
-  const step1DisabledHint = descriptionReady
-    ? ''
-    : descriptionLength === 0
-      ? 'Skriv några meningar om vad du behöver hjälp med.'
-      : `Skriv ${20 - descriptionLength} tecken till för att fortsätta.`
+  // Track abandonment so we can see exactly where users drop off.
+  useEffect(() => {
+    return () => {
+      if (step <= totalSteps) {
+        trackClick('lead_abandoned', 'Publicera-formuläret lämnat', {
+          step,
+          description_length: descriptionLength,
+          has_category: Boolean(form.category),
+          has_budget: Boolean(form.budget_range),
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
@@ -228,8 +240,9 @@ const ProjectWizardV2 = () => {
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl font-bold">Vad behöver du hjälp med?</h1>
-                <p className="mt-2 text-sm text-muted-foreground">Börja med att beskriva behovet med egna ord. Ingen registrering krävs.</p>
+                <p className="mt-2 text-sm text-muted-foreground">Skriv några ord om behovet – vi hjälper dig fylla ut resten i nästa steg. Ingen registrering krävs.</p>
               </div>
+              <AiBriefAssistant onAccept={applyAiBrief} initialText={form.description} />
               <div>
                 <Label htmlFor="project-description">Beskriv uppdraget *</Label>
                 <Textarea
@@ -239,22 +252,20 @@ const ProjectWizardV2 = () => {
                   onChange={event => setForm(previous => ({ ...previous, description: event.target.value }))}
                   placeholder="Exempel: Vi behöver en ny hemsida som presenterar våra tjänster och gör det lätt att boka möte..."
                   maxLength={5000}
-                  className="rounded-xl mt-1 min-h-[180px]"
+                  className="rounded-xl mt-1 min-h-[140px]"
                   aria-describedby="project-description-help"
-                  aria-invalid={form.description.length > 0 && form.description.trim().length < 20}
                 />
                 <DescriptionHelp length={form.description.length} />
               </div>
-              <AiBriefAssistant onAccept={applyAiBrief} initialText={form.description} />
               <div>
                 <Label htmlFor="project-title">Rubrik (valfritt)</Label>
                 <Input id="project-title" value={form.title} onChange={event => setForm(previous => ({ ...previous, title: event.target.value }))} placeholder="Skapas automatiskt om du lämnar tomt" maxLength={100} className="rounded-xl mt-1" />
               </div>
               <div>
-                <Button type="button" onClick={goToDetails} disabled={!descriptionReady} className="w-full rounded-xl py-5">
-                  Nästa <ArrowRight className="ml-2 h-4 w-4" />
+                <Button type="button" onClick={goToDetails} className="w-full rounded-xl py-5 bg-accent hover:bg-brand-mint-hover text-accent-foreground">
+                  Nästa: välj kategori & budget <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                {step1DisabledHint && <p className="text-xs text-muted-foreground mt-2 text-center" aria-live="polite">{step1DisabledHint}</p>}
+                <p className="text-xs text-muted-foreground mt-2 text-center">Steg 2 av 2 – tar under en minut.</p>
               </div>
             </div>
           )}
@@ -422,13 +433,16 @@ const CategoryPriceHint = ({ category }: { category: string }) => {
 }
 
 const DescriptionHelp = ({ length }: { length: number }) => {
-  const minimum = 80
+  const minStart = 10
+  const good = 80
   const strong = 220
   const message = length >= strong
     ? 'Bra! Detaljerade uppdrag får fler relevanta offerter.'
-    : length >= minimum
+    : length >= good
       ? 'Toppen – nu har byråer ett bra underlag.'
-      : `${length} / minst ${minimum} tecken rekommenderas för bra matchning`
+      : length >= minStart
+        ? 'Räcker för att gå vidare. Fyll gärna på – AI-assistenten kan hjälpa dig utveckla det.'
+        : `Skriv några ord (minst ${minStart} tecken) för att gå vidare.`
   const tone = length >= strong ? 'text-primary' : 'text-muted-foreground'
   return <p id="project-description-help" className={`text-xs mt-1 ${tone}`}>{message} · {length}/5000</p>
 }
