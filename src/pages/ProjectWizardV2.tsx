@@ -100,12 +100,14 @@ const ProjectWizardV2 = () => {
 
   const goToDetails = () => {
     if (!descriptionReady) {
-      toast.error(`Skriv minst ${20 - descriptionLength} tecken till.`)
+      toast.error(descriptionLength === 0
+        ? 'Skriv några ord om vad du behöver hjälp med.'
+        : `Skriv ${MIN_DESCRIPTION - descriptionLength} tecken till – vi hjälper dig fylla ut resten i nästa steg.`)
       return
     }
     trackOnceInSession('lead_started', () => trackLeadStarted('project_wizard'))
     trackOnceInSession('lead_step_completed:1', () => {
-      trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1 })
+      trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1, description_length: descriptionLength })
     })
     setStep(2)
   }
