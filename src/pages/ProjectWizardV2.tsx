@@ -204,11 +204,20 @@ const ProjectWizardV2 = () => {
     }
   }
 
-  const step1DisabledHint = descriptionReady
-    ? ''
-    : descriptionLength === 0
-      ? 'Skriv några meningar om vad du behöver hjälp med.'
-      : `Skriv ${20 - descriptionLength} tecken till för att fortsätta.`
+  // Track abandonment so we can see exactly where users drop off.
+  useEffect(() => {
+    return () => {
+      if (step <= totalSteps) {
+        trackClick('lead_abandoned', 'Publicera-formuläret lämnat', {
+          step,
+          description_length: descriptionLength,
+          has_category: Boolean(form.category),
+          has_budget: Boolean(form.budget_range),
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
