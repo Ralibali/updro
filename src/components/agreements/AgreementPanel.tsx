@@ -4,7 +4,9 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { supabase } from '@/integrations/supabase/client'
+import { supabase as supabaseTyped } from '@/integrations/supabase/client'
+// project_agreements is not yet in generated types; cast to any for now
+const supabase = supabaseTyped as unknown as any
 import { useAuth } from '@/hooks/useAuth'
 import { formatPrice } from '@/lib/dateUtils'
 import {

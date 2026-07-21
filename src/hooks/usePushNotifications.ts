@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase } from '@/integrations/supabase/client'
+import { supabase as supabaseTyped } from '@/integrations/supabase/client'
+// push_subscriptions not yet in generated types; cast to any for now
+const supabase = supabaseTyped as unknown as any
 import { useAuth } from '@/hooks/useAuth'
 import { getVapidPublicKey, isPushSupported, urlBase64ToUint8Array } from '@/lib/pushUtils'
 
@@ -50,7 +52,7 @@ export const usePushNotifications = () => {
       const registration = await navigator.serviceWorker.ready
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(getVapidPublicKey() as string),
+        applicationServerKey: urlBase64ToUint8Array(getVapidPublicKey() as string) as BufferSource,
       })
       const keys = subscription.toJSON()
       const { error } = await supabase.from('push_subscriptions').upsert(
