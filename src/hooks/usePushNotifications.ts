@@ -52,7 +52,7 @@ export const usePushNotifications = () => {
       const registration = await navigator.serviceWorker.ready
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(getVapidPublicKey() as string),
+        applicationServerKey: urlBase64ToUint8Array(getVapidPublicKey() as string) as BufferSource,
       })
       const keys = subscription.toJSON()
       const { error } = await supabase.from('push_subscriptions').upsert(
