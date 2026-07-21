@@ -433,13 +433,16 @@ const CategoryPriceHint = ({ category }: { category: string }) => {
 }
 
 const DescriptionHelp = ({ length }: { length: number }) => {
-  const minimum = 80
+  const minStart = 10
+  const good = 80
   const strong = 220
   const message = length >= strong
     ? 'Bra! Detaljerade uppdrag får fler relevanta offerter.'
-    : length >= minimum
+    : length >= good
       ? 'Toppen – nu har byråer ett bra underlag.'
-      : `${length} / minst ${minimum} tecken rekommenderas för bra matchning`
+      : length >= minStart
+        ? 'Räcker för att gå vidare. Fyll gärna på – AI-assistenten kan hjälpa dig utveckla det.'
+        : `Skriv några ord (minst ${minStart} tecken) för att gå vidare.`
   const tone = length >= strong ? 'text-primary' : 'text-muted-foreground'
   return <p id="project-description-help" className={`text-xs mt-1 ${tone}`}>{message} · {length}/5000</p>
 }
