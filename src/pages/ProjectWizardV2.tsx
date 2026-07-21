@@ -231,8 +231,9 @@ const ProjectWizardV2 = () => {
             <div className="space-y-6">
               <div>
                 <h1 className="font-display text-2xl font-bold">Vad behöver du hjälp med?</h1>
-                <p className="mt-2 text-sm text-muted-foreground">Börja med att beskriva behovet med egna ord. Ingen registrering krävs.</p>
+                <p className="mt-2 text-sm text-muted-foreground">Skriv några ord om behovet – vi hjälper dig fylla ut resten i nästa steg. Ingen registrering krävs.</p>
               </div>
+              <AiBriefAssistant onAccept={applyAiBrief} initialText={form.description} />
               <div>
                 <Label htmlFor="project-description">Beskriv uppdraget *</Label>
                 <Textarea
@@ -242,22 +243,20 @@ const ProjectWizardV2 = () => {
                   onChange={event => setForm(previous => ({ ...previous, description: event.target.value }))}
                   placeholder="Exempel: Vi behöver en ny hemsida som presenterar våra tjänster och gör det lätt att boka möte..."
                   maxLength={5000}
-                  className="rounded-xl mt-1 min-h-[180px]"
+                  className="rounded-xl mt-1 min-h-[140px]"
                   aria-describedby="project-description-help"
-                  aria-invalid={form.description.length > 0 && form.description.trim().length < 20}
                 />
                 <DescriptionHelp length={form.description.length} />
               </div>
-              <AiBriefAssistant onAccept={applyAiBrief} initialText={form.description} />
               <div>
                 <Label htmlFor="project-title">Rubrik (valfritt)</Label>
                 <Input id="project-title" value={form.title} onChange={event => setForm(previous => ({ ...previous, title: event.target.value }))} placeholder="Skapas automatiskt om du lämnar tomt" maxLength={100} className="rounded-xl mt-1" />
               </div>
               <div>
-                <Button type="button" onClick={goToDetails} disabled={!descriptionReady} className="w-full rounded-xl py-5">
-                  Nästa <ArrowRight className="ml-2 h-4 w-4" />
+                <Button type="button" onClick={goToDetails} className="w-full rounded-xl py-5 bg-accent hover:bg-brand-mint-hover text-accent-foreground">
+                  Nästa: välj kategori & budget <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                {step1DisabledHint && <p className="text-xs text-muted-foreground mt-2 text-center" aria-live="polite">{step1DisabledHint}</p>}
+                <p className="text-xs text-muted-foreground mt-2 text-center">Steg 2 av 2 – tar under en minut.</p>
               </div>
             </div>
           )}
