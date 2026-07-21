@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase } from '@/integrations/supabase/client'
+import { supabase as supabaseTyped } from '@/integrations/supabase/client'
+// push_subscriptions not yet in generated types; cast to any for now
+const supabase = supabaseTyped as unknown as any
 import { useAuth } from '@/hooks/useAuth'
 import { getVapidPublicKey, isPushSupported, urlBase64ToUint8Array } from '@/lib/pushUtils'
 
