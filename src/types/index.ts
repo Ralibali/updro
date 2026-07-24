@@ -56,6 +56,9 @@ export interface SupplierProfile {
   credit_check_at: string | null
   stripe_customer_id: string | null
   stripe_subscription_id: string | null
+  referral_code?: string | null
+  referred_by?: string | null
+  campaign_code?: string | null
   profile?: Profile
 }
 

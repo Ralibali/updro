@@ -50,7 +50,7 @@ export const trackLeadStarted = (source: string) => {
   trackAnalyticsEvent('begin_lead', {
     lead_source: source,
   })
-  trackPlausibleEvent('Uppdrag Started', { source })
+  trackPlausibleEvent('Brief Started', { source })
 }
 
 /** Dedupes the given event once per browser session using sessionStorage. */
@@ -89,7 +89,7 @@ export const trackLeadSubmitted = ({
     })
   }
 
-  trackPlausibleEvent('Uppdrag Submitted', { source, category, user_type: userType })
+  trackPlausibleEvent('Brief Submitted', { source, category, user_type: userType })
 }
 
 export const trackSignUp = (role: 'buyer' | 'supplier') => {
@@ -99,7 +99,19 @@ export const trackSignUp = (role: 'buyer' | 'supplier') => {
   })
   if (role === 'supplier') {
     trackPlausibleEvent('Agency Signup Completed', { user_type: 'supplier' })
+  } else {
+    trackPlausibleEvent('Buyer Signup Completed', { user_type: 'buyer' })
   }
+}
+
+/** Kampanjkod aktiverades vid byråregistrering (t.ex. grundarmedlemskap). */
+export const trackCampaignCodeApplied = () => {
+  trackPlausibleEvent('Campaign Code Applied', { user_type: 'supplier' })
+}
+
+/** Byrå kopierade sin värvningslänk i dashboarden. */
+export const trackReferralLinkCopied = () => {
+  trackPlausibleEvent('Referral Link Copied', { user_type: 'supplier' })
 }
 
 const PLAN_TO_INTERVAL: Record<string, PlausibleBillingInterval> = {

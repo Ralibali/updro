@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, Check, FileSignature, Gift, MessageCircle, ShieldCheck, Star, TrendingUp, Users } from 'lucide-react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { ArrowRight, Check, FileSignature, Gift, MessageCircle, ShieldCheck, Sparkles, Star, TrendingUp, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -10,13 +10,17 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { trackSignUp } from '@/lib/analytics'
-import { CATEGORIES, CATEGORY_ICONS, TRIAL_DAYS, TRIAL_LEADS } from '@/lib/constants'
+import { trackSignUp, trackCampaignCodeApplied } from '@/lib/analytics'
+import { normalizeCampaignCode, normalizeReferralCode } from '@/lib/campaign'
+import { CATEGORIES, CATEGORY_ICONS, TRIAL_LEADS } from '@/lib/constants'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
 const RegisterSupplierPage = () => {
   const { signUp } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const presetCampaignCode = normalizeCampaignCode(searchParams.get('kod'))
+  const referralCode = normalizeReferralCode(searchParams.get('ref'))
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     company_name: '',
@@ -25,6 +29,7 @@ const RegisterSupplierPage = () => {
     password: '',
     phone: '',
     org_number: '',
+    campaign_code: presetCampaignCode,
     categories: [] as string[],
     accepted: false,
     newsletter: false,
@@ -61,8 +66,9 @@ const RegisterSupplierPage = () => {
     }
 
     const email = form.email.trim().toLowerCase()
+    const campaignCode = normalizeCampaignCode(form.campaign_code)
     setLoading(true)
-    const { error } = await signUp({
+    const { error, campaign, campaignInvalid, referralApplied } = await signUp({
       email,
       password: form.password,
       role: 'supplier',
@@ -71,6 +77,8 @@ const RegisterSupplierPage = () => {
       phone: form.phone.trim() || undefined,
       categories: form.categories,
       org_number: form.org_number.trim() || undefined,
+      campaign_code: campaignCode || undefined,
+      referral_code: referralCode || undefined,
     })
 
     if (error) {
@@ -91,6 +99,20 @@ const RegisterSupplierPage = () => {
 
     trackSignUp('supplier')
     setLoading(false)
+    if (campaign) {
+      trackCampaignCodeApplied()
+      toast.success(`Kampanjkod ${campaign.code} aktiverad: ${campaign.trialDays} dagar gratis och ${campaign.leadCredits} leads!`, {
+        duration: 10000,
+      })
+    } else if (campaignInvalid) {
+      toast.error('Kampanjkoden var ogiltig eller förbrukad – du fick standardvillkoren i stället.', {
+        duration: 8000,
+      })
+    } else if (referralApplied) {
+      toast.success('Värvningsbonus aktiverad – extra leads har lagts till ditt konto!', {
+        duration: 8000,
+      })
+    }
     toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
       duration: 8000,
     })
@@ -165,6 +187,16 @@ const RegisterSupplierPage = () => {
               <h2 className="font-display text-2xl font-bold mb-2">Skapa byråkonto</h2>
               <p className="text-sm text-muted-foreground mb-6">Tar bara några minuter. Leadgarantin gäller från första dagen – ogiltiga leads ersätts alltid.</p>
 
+              {presetCampaignCode && (
+                <div className="mb-6 rounded-xl border-2 border-accent bg-accent/10 p-4 flex items-start gap-3">
+                  <Sparkles className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">Kampanjkod {presetCampaignCode} är ifylld</p>
+                    <p className="text-xs text-muted-foreground">Om koden är giltig aktiveras utökade villkor automatiskt när kontot skapas.</p>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -195,6 +227,12 @@ const RegisterSupplierPage = () => {
                     <Label htmlFor="supplier-org">Org-nummer</Label>
                     <Input id="supplier-org" maxLength={32} value={form.org_number} onChange={event => setForm(prev => ({ ...prev, org_number: event.target.value }))} placeholder="XXXXXX-XXXX" className="rounded-xl mt-1" />
                   </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="supplier-campaign">Kampanjkod (valfri)</Label>
+                  <Input id="supplier-campaign" maxLength={32} value={form.campaign_code} onChange={event => setForm(prev => ({ ...prev, campaign_code: event.target.value }))} placeholder="T.ex. GRUNDARE" className="rounded-xl mt-1 uppercase" />
+                  <p className="mt-1 text-xs text-muted-foreground">Har du fått en kod av oss? Den aktiverar utökade villkor direkt.</p>
                 </div>
 
                 <div>

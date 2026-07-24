@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client'
 import TrialBanner from '@/components/TrialBanner'
 import SupplierNotificationsList from '@/components/supplier/SupplierNotificationsList'
 import PushNotificationCard from '@/components/shared/PushNotificationCard'
+import ReferralCard from '@/components/supplier/ReferralCard'
 import ActivationChecklist from '@/components/supplier/ActivationChecklist'
 import { ArrowRight } from 'lucide-react'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
@@ -66,6 +67,7 @@ const SupplierDashboard = () => {
       <div className="mb-8 space-y-4">
         <PushNotificationCard />
         <SupplierNotificationsList />
+        <ReferralCard />
       </div>
 
       {/* Matched projects */}

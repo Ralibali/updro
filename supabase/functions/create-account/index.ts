@@ -16,6 +16,18 @@ const CATEGORIES = new Set([
 
 const TRIAL_LEADS = 5;
 const TRIAL_DAYS = 7;
+// Värvning: värvaren får 10 leads, den nya byrån 5 extra.
+const REFERRAL_BONUS_CREDITS = 10;
+const REFERRAL_NEW_SUPPLIER_BONUS = 5;
+
+type CampaignCodeRow = {
+  code: string;
+  trial_days: number;
+  lead_credits: number;
+  max_uses: number;
+  used_count: number;
+  active: boolean;
+};
 
 type SignUpBody = {
   email?: string;
@@ -27,6 +39,8 @@ type SignUpBody = {
   phone?: string;
   categories?: string[];
   org_number?: string;
+  campaign_code?: string;
+  referral_code?: string;
 };
 
 function cleanText(value: unknown, max = 160) {
@@ -48,6 +62,15 @@ function slugify(input: string, suffix: string) {
     .slice(0, 72);
   return `${slug || "byra"}-${suffix}`;
 }
+
+// Deterministisk värvningskod per användare (8 hextecken från SHA-256).
+async function referralCodeFor(userId: string) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${userId}-updro-ref`));
+  return Array.from(new Uint8Array(digest)).slice(0, 4).map(byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
+const normalizeCode = (value: unknown) =>
+  typeof value === "string" ? value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 32) : "";
 
 const safeOrigin = (rawOrigin: string | null) => {
   if (!rawOrigin) return "https://updro.se";
@@ -165,28 +188,91 @@ serve(async req => {
       return json({ error: message }, 400);
     }
 
+    // Kampanjkod valideras innan kontot skapas – ogiltig kod stoppar aldrig
+    // registreringen, den ger bara standardvillkor istället.
+    const campaignCodeInput = normalizeCode(body.campaign_code);
+    const referralCodeInput = normalizeCode(body.referral_code);
+
+    let campaign: CampaignCodeRow | null = null;
+    let campaignInvalid = false;
+    if (role === "supplier" && campaignCodeInput) {
+      const { data: campaignRow, error: campaignError } = await adminClient
+        .from("campaign_codes")
+        .select("code, trial_days, lead_credits, max_uses, used_count, active")
+        .eq("code", campaignCodeInput)
+        .eq("active", true)
+        .maybeSingle();
+      if (campaignError) {
+        console.error("create-account campaign lookup error", campaignError);
+      }
+      if (campaignRow && campaignRow.used_count < campaignRow.max_uses) {
+        campaign = campaignRow as CampaignCodeRow;
+      } else {
+        campaignInvalid = true;
+      }
+    }
+
+    let referrer: { id: string; lead_credits: number | null } | null = null;
+    if (role === "supplier" && referralCodeInput) {
+      const { data: referrerRow, error: referrerError } = await adminClient
+        .from("supplier_profiles")
+        .select("id, lead_credits")
+        .eq("referral_code", referralCodeInput)
+        .neq("id", user.id)
+        .maybeSingle();
+      if (referrerError) {
+        console.error("create-account referral lookup error", referrerError);
+      } else {
+        referrer = referrerRow;
+      }
+    }
+
+    let appliedCampaign: { code: string; trialDays: number; leadCredits: number } | null = null;
+
     if (role === "supplier") {
+      const trialDays = campaign?.trial_days ?? TRIAL_DAYS;
+      const trialLeads = (campaign?.lead_credits ?? TRIAL_LEADS) + (referrer ? REFERRAL_NEW_SUPPLIER_BONUS : 0);
       const trialEnds = new Date();
-      trialEnds.setDate(trialEnds.getDate() + TRIAL_DAYS);
+      trialEnds.setDate(trialEnds.getDate() + trialDays);
 
       const { error: supplierError } = await adminClient.from("supplier_profiles").insert({
         id: user.id,
         slug: slugify(companyName || fullName, user.id.slice(0, 6)),
         plan: "trial",
         trial_ends_at: trialEnds.toISOString(),
-        lead_credits: TRIAL_LEADS,
+        lead_credits: trialLeads,
         trial_leads_used: 0,
         categories,
         org_number: orgNumber || null,
         contact_name: fullName,
         contact_email: email,
         contact_phone: phone || null,
+        referral_code: await referralCodeFor(user.id),
+        referred_by: referrer ? referralCodeInput : null,
+        campaign_code: campaign?.code ?? null,
       });
 
       if (supplierError) {
         await adminClient.auth.admin.deleteUser(user.id);
         console.error("create-account supplier error", supplierError);
         return json({ error: "Kunde inte skapa byråprofil. Försök igen." }, 400);
+      }
+
+      if (campaign) {
+        const { error: campaignUseError } = await adminClient
+          .from("campaign_codes")
+          .update({ used_count: campaign.used_count + 1 })
+          .eq("code", campaign.code);
+        if (campaignUseError) console.error("create-account campaign use-count error", campaignUseError);
+        appliedCampaign = { code: campaign.code, trialDays: campaign.trial_days, leadCredits: campaign.lead_credits };
+      }
+
+      if (referrer) {
+        const { error: referrerBonusError } = await adminClient
+          .from("supplier_profiles")
+          .update({ lead_credits: (referrer.lead_credits ?? 0) + REFERRAL_BONUS_CREDITS })
+          .eq("id", referrer.id);
+        if (referrerBonusError) console.error("create-account referral bonus error", referrerBonusError);
       }
     }
 
@@ -196,6 +282,9 @@ serve(async req => {
       userId: user.id,
       session: authData.session,
       needsEmailConfirmation: !authData.session,
+      campaign: appliedCampaign,
+      campaignInvalid,
+      referralApplied: Boolean(referrer),
     });
   } catch (error) {
     console.error("create-account error", error);

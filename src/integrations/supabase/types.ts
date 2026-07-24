@@ -819,6 +819,51 @@ export type Database = {
         }
         Relationships: []
       }
+      project_agreements: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string
+          id: string
+          offer_id: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          created_by: string
+          id?: string
+          offer_id: string
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string
+          id?: string
+          offer_id?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_agreements_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_attribution: {
         Row: {
           created_at: string
@@ -1257,6 +1302,39 @@ export type Database = {
           },
         ]
       }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       stripe_events: {
         Row: {
           amount_sek: number | null
@@ -1309,6 +1387,7 @@ export type Database = {
         Row: {
           avg_rating: number | null
           bio: string | null
+          campaign_code: string | null
           categories: string[] | null
           completed_projects: number | null
           contact_avatar_url: string | null
@@ -1329,6 +1408,8 @@ export type Database = {
           org_number: string | null
           plan: string | null
           portfolio_urls: string[] | null
+          referral_code: string | null
+          referred_by: string | null
           review_count: number | null
           services: string[] | null
           slug: string
@@ -1341,6 +1422,7 @@ export type Database = {
         Insert: {
           avg_rating?: number | null
           bio?: string | null
+          campaign_code?: string | null
           categories?: string[] | null
           completed_projects?: number | null
           contact_avatar_url?: string | null
@@ -1361,6 +1443,8 @@ export type Database = {
           org_number?: string | null
           plan?: string | null
           portfolio_urls?: string[] | null
+          referral_code?: string | null
+          referred_by?: string | null
           review_count?: number | null
           services?: string[] | null
           slug: string
@@ -1373,6 +1457,7 @@ export type Database = {
         Update: {
           avg_rating?: number | null
           bio?: string | null
+          campaign_code?: string | null
           categories?: string[] | null
           completed_projects?: number | null
           contact_avatar_url?: string | null
@@ -1393,6 +1478,8 @@ export type Database = {
           org_number?: string | null
           plan?: string | null
           portfolio_urls?: string[] | null
+          referral_code?: string | null
+          referred_by?: string | null
           review_count?: number | null
           services?: string[] | null
           slug?: string

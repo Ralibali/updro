@@ -21,7 +21,7 @@ interface AuthContextType {
   hasActiveSubscription: boolean
   canUnlockLeads: boolean
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
-  signUp: (data: SignUpData) => Promise<{ error: Error | null }>
+  signUp: (data: SignUpData) => Promise<SignUpResult>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -36,6 +36,24 @@ interface SignUpData {
   phone?: string
   categories?: string[]
   org_number?: string
+  campaign_code?: string
+  referral_code?: string
+}
+
+export interface SignUpCampaign {
+  code: string
+  trialDays: number
+  leadCredits: number
+}
+
+interface SignUpResult {
+  error: Error | null
+  /** Satt när en giltig kampanjkod aktiverade utökade villkor. */
+  campaign?: SignUpCampaign | null
+  /** Sann när en kampanjkod skickades men var ogiltig eller förbrukad. */
+  campaignInvalid?: boolean
+  /** Sann när registreringen kopplades till en värvande byrå. */
+  referralApplied?: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -183,6 +201,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       error?: string
       userId?: string
       session?: Session | null
+      campaign?: SignUpCampaign | null
+      campaignInvalid?: boolean
+      referralApplied?: boolean
     }>('create-account', { body: data })
 
     if (error || result?.error) {
@@ -196,7 +217,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await fetchProfile(result.session.user.id)
     }
 
-    return { error: null }
+    return {
+      error: null,
+      campaign: result?.campaign ?? null,
+      campaignInvalid: result?.campaignInvalid ?? false,
+      referralApplied: result?.referralApplied ?? false,
+    }
   }
 
   const signOut = async () => {
