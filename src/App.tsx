@@ -38,6 +38,7 @@ const SitemapPage = lazy(() => import("./pages/SitemapPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const SupplierLandingPage = lazy(() => import("./pages/SupplierLandingPage"));
 const AdsLandingPage = lazy(() => import("./pages/AdsLandingPage"));
+const SwivrrAlternativPage = lazy(() => import("./pages/seo/SwivrrAlternativPage"));
 const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
 const MetodPage = lazy(() => import("./pages/MetodPage"));
 const AdminContentPlanner = lazy(() => import("./pages/admin/AdminContentPlanner"));
@@ -162,6 +163,8 @@ const App = () => (
         <Route path="/jamfor-partna" element={<Navigate to="/partna-alternativ" replace />} />
         <Route path="/alternativ-till-partna" element={<Navigate to="/partna-alternativ" replace />} />
         <Route path="/for-byraer/byt-fran-partna" element={<BytFranPartnaPage />} />
+        <Route path="/swivrr-alternativ" element={<SwivrrAlternativPage />} />
+        <Route path="/updro-vs-swivrr" element={<Navigate to="/swivrr-alternativ" replace />} />
         <Route path="/artiklar" element={<ArticlesIndex />} />
         <Route path="/artiklar/:slug" element={<ArticlePage />} />
         <Route path="/verktyg" element={<ToolsIndex />} />

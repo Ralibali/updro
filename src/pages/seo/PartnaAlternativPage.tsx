@@ -9,7 +9,10 @@ import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 const comparisonRows = [
   ['Antal offerter', 'Högst tre byråer kan lämna offert på samma uppdrag.', 'Partna anger upp till sex offerter per förfrågan i sin publika information.'],
   ['Pay per lead', '119 kr per valt lead.', 'Partna anger 490 kr per uppdragsförfrågan.'],
+  ['Kostnad per uppdrag', 'Högst 357 kr i leadavgift (tre leads × 119 kr) – konkurrensen om uppdraget är alltid begränsad.', '490 kr per förfrågan där upp till sex byråer kan tävla om samma beställare.'],
   ['Månadskort', '1 995 kr/mån för obegränsade upplåsningar under aktiv månad.', 'Partna anger 1 950 kr/mån inklusive tio uppdragsförfrågningar.'],
+  ['AI-brief och prisuppskattning', 'Inbyggt: AI hjälper beställaren skriva briefen och visar ett prisspann före publicering – förankrat i våra prisguider.', 'Finns inte i Partnas publika funktionslista.'],
+  ['Öppna prisguider', '15 kostnadsfria prisguider och priskalkylator – utan krav på konto.', 'Saknas i Partnas publika utbud.'],
   ['Provstart', 'Fem lead-krediter under sju dagar utan kortuppgifter.', 'Kontrollera aktuellt introduktionserbjudande direkt hos Partna.'],
   ['Beställare', 'Gratis, granskad brief och låsta kontaktuppgifter.', 'Gratis offertförfrågan med BankID-baserade och verifierade funktioner enligt Partna.'],
   ['Marknadsläge', 'Nylanserad tjänst där leadvolymen fortfarande byggs upp.', 'Etablerad aktör med större befintligt nätverk.'],
@@ -35,6 +38,10 @@ const faqs = [
   {
     q: 'Kan en byrå använda båda tjänsterna?',
     a: 'Ja. Det kan vara klokt att testa flera kanaler parallellt och mäta svarsfrekvens, möten, vunna affärer och faktisk kundanskaffningskostnad.',
+  },
+  {
+    q: 'Har Partna AI-brief och prisuppskattning som Updro?',
+    a: 'Nej, inte enligt deras publika funktionslista. Updros AI hjälper beställaren formulera briefen och visar ett prisspann före publicering, förankrat i våra 15 öppna prisguider. Det ger bättre underlag och mer jämförbara offerter.',
   },
 ]
 
@@ -72,7 +79,7 @@ const PartnaAlternativPage = () => {
               Updro eller Partna – vad passar bäst?
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-              Båda tjänsterna hjälper företag att hitta digitala leverantörer. Updro väljer en tydligare nisch: granskade digitala projektbriefar, högst tre byråer per uppdrag och transparent leadpris. Partna har samtidigt ett större och mer etablerat nätverk samt funktioner kring BankID och företagsverifiering.
+              Båda tjänsterna hjälper företag att hitta digitala leverantörer. Updro väljer en tydligare nisch: granskade projektbriefar med AI-stöd och prisuppskattning, högst tre byråer per uppdrag, ett leadpris som kostar en fjärdedel av Partnas och 15 öppna prisguider. Partna har samtidigt ett större och mer etablerat nätverk samt funktioner kring BankID och företagsverifiering.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/publicera"><Button size="lg" className="rounded-xl px-7">Beskriv ett projekt <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
@@ -139,6 +146,9 @@ const PartnaAlternativPage = () => {
                 </details>
               ))}
             </div>
+            <p className="mt-8 text-sm text-muted-foreground">
+              Jämför även: <Link to="/swivrr-alternativ" className="text-primary hover:underline font-medium">Updro eller Swivrr</Link> – den nya utmanaren med AI-brief och prisuppskattning.
+            </p>
           </div>
         </section>
 
