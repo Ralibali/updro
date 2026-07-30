@@ -37,6 +37,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const SitemapPage = lazy(() => import("./pages/SitemapPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const SupplierLandingPage = lazy(() => import("./pages/SupplierLandingPage"));
+const AdsLandingPage = lazy(() => import("./pages/AdsLandingPage"));
 const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
 const MetodPage = lazy(() => import("./pages/MetodPage"));
 const AdminContentPlanner = lazy(() => import("./pages/admin/AdminContentPlanner"));
@@ -107,7 +108,7 @@ const NoindexGuard = () => {
     const path = location.pathname.replace(/\/$/, '') || '/';
     const noindexPaths = new Set(getNoindexSeoRoutes().map(route => route.path));
     const privatePrefixes = ['/admin', '/dashboard'];
-    const privateExact = ['/logga-in', '/registrera', '/registrera/byra', '/aterstall-losenord', '/landing', '/landing/byra'];
+    const privateExact = ['/logga-in', '/registrera', '/registrera/byra', '/aterstall-losenord', '/landing', '/landing/byra', '/jamfor-offerter'];
     const shouldNoindex = noindexPaths.has(path) || privateExact.includes(path) || privatePrefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
     if (!shouldNoindex || typeof document === 'undefined') return;
     const applyNoindex = () => {
@@ -146,6 +147,7 @@ const App = () => (
         <Route path="/sitemap" element={<SitemapPage />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/landing/byra" element={<SupplierLandingPage />} />
+        <Route path="/jamfor-offerter" element={<AdsLandingPage />} />
         <Route path="/guider" element={<Navigate to="/artiklar" replace />} />
         <Route path="/guider/:slug" element={<RedirectToArtikel />} />
         <Route path="/kunskapsbank" element={<Navigate to="/artiklar" replace />} />
