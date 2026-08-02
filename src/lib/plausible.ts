@@ -14,8 +14,8 @@
  */
 
 export type PlausibleEventName =
-  | 'Brief Started'
-  | 'Brief Submitted'
+  | 'Uppdrag Started'
+  | 'Uppdrag Submitted'
   | 'Agency Signup Completed'
   | 'Buyer Signup Completed'
   | 'Campaign Code Applied'
