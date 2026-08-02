@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button'
 import { COOKIE_CONSENT_KEY, createConsentState, parseCookieConsent, serializeCookieConsent, type CookieConsentState } from '@/lib/cookieConsent'
 
 const GA_ID = 'G-C0XMZG0KDQ'
-const ADS_ID = 'AW-10941540384'
+// Ads-kontot kan bytas via VITE_GOOGLE_ADS_ID utan kodändring (fallback = nuvarande konto)
+const ADS_ID = (import.meta.env.VITE_GOOGLE_ADS_ID as string | undefined)?.trim() || 'AW-10941540384'
 type Gtag = (...args: unknown[]) => void
 
 declare global { interface Window { dataLayer?: unknown[]; gtag?: Gtag } }
