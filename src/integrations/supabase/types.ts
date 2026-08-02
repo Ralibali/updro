@@ -1728,6 +1728,22 @@ export type Database = {
         Args: { p_first: Json; p_latest: Json; p_project_id: string }
         Returns: undefined
       }
+      submit_project_offer: {
+        Args: {
+          p_attachment_url?: string
+          p_delivery_weeks?: number
+          p_description: string
+          p_payment_plan?: string
+          p_price: number
+          p_project_id: string
+          p_title: string
+        }
+        Returns: string
+      }
+      unlock_project_for_supplier: {
+        Args: { p_project_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

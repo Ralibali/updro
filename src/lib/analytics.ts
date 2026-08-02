@@ -50,7 +50,7 @@ export const trackLeadStarted = (source: string) => {
   trackAnalyticsEvent('begin_lead', {
     lead_source: source,
   })
-  trackPlausibleEvent('Brief Started', { source })
+  trackPlausibleEvent('Uppdrag Started', { source })
 }
 
 /** Dedupes the given event once per browser session using sessionStorage. */
@@ -89,7 +89,7 @@ export const trackLeadSubmitted = ({
     })
   }
 
-  trackPlausibleEvent('Brief Submitted', { source, category, user_type: userType })
+  trackPlausibleEvent('Uppdrag Submitted', { source, category, user_type: userType })
 }
 
 export const trackSignUp = (role: 'buyer' | 'supplier') => {
