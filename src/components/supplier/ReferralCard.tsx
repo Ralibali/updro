@@ -22,7 +22,7 @@ const ReferralCard = () => {
     let isMounted = true
     const fetchCount = async () => {
       const { count, error } = await supabase
-        .from('supplier_profiles')
+        .from('supplier_profiles' as never)
         .select('*', { count: 'exact', head: true })
         .eq('referred_by', referralCode)
       if (!error && isMounted) setReferredCount(count ?? 0)
