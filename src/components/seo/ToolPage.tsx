@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, Calculator } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
+import WebsitePriceCalculator from './WebsitePriceCalculator'
 
 const ToolPage = () => {
   const { slug } = useParams<{ slug: string }>()
@@ -48,19 +49,22 @@ const ToolPage = () => {
         </div>
       </section>
 
-      {/* Tool placeholder – interactive tools to be built */}
       <section className="container pb-12">
-        <div className="max-w-2xl mx-auto bg-card border-2 border-dashed rounded-2xl p-12 text-center">
-          <Calculator className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h2 className="font-display text-xl font-bold mb-2">Verktyget laddas snart</h2>
-          <p className="text-muted-foreground mb-6">{page.description}</p>
-          <p className="text-sm text-muted-foreground mb-6">Under tiden kan du jämföra riktiga offerter kostnadsfritt via Updro.</p>
-          <Link to="/publicera">
-            <Button size="lg" className="rounded-xl shadow-blue">
-              Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+        {page.slug === 'hemsida-pris-kalkylator' ? (
+          <WebsitePriceCalculator />
+        ) : (
+          <div className="max-w-2xl mx-auto bg-card border-2 border-dashed rounded-2xl p-12 text-center">
+            <Calculator className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <h2 className="font-display text-xl font-bold mb-2">Verktyget laddas snart</h2>
+            <p className="text-muted-foreground mb-6">{page.description}</p>
+            <p className="text-sm text-muted-foreground mb-6">Under tiden kan du jämföra riktiga offerter kostnadsfritt via Updro.</p>
+            <Link to="/publicera">
+              <Button size="lg" className="rounded-xl shadow-blue">
+                Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </section>
 
       <SEOLeadCTA categoryName="digitala tjänster" />

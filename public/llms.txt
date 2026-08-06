@@ -1,6 +1,6 @@
 # Updro
 
-> Sveriges marknadsplats för digitala uppdrag. Uppdragsgivare publicerar projekt och får upp till fem offerter från kvalitetssäkrade digitala byråer inom 24 timmar. Gratis för uppdragsgivare. Drivs av Aurora Media AB (org.nr 559272-0220) med säte i Linköping.
+> Sveriges marknadsplats för digitala uppdrag. Uppdragsgivare beskriver sitt projekt och kan få upp till tre offerter från kvalitetssäkrade digitala byråer. Gratis för uppdragsgivare; byråer betalar per upplåst lead eller via månadsabonnemang. Drivs av Aurora Media AB (org.nr 559272-0220) med säte i Linköping.
 
 ## Viktiga sidor
 - [Startsida](https://updro.se/): Beskriv projekt, jämför byråer
@@ -9,20 +9,35 @@
 - [För byråer](https://updro.se/registrera/byra): Registrera din byrå
 - [Priser](https://updro.se/priser): Prismodell för byråer
 - [Artiklar](https://updro.se/artiklar): Guider, jämförelser och nyheter (RSS: /rss.xml)
+- [Verktyg](https://updro.se/verktyg): Kostnadsfria kalkylatorer och analysverktyg
+- [Jämförelser](https://updro.se/jamfor): Byråjämförelser per tjänst
 - [Städer](https://updro.se/stader): Byråer per stad
 - [Vår metod](https://updro.se/metod): Så kvalitetssäkras byråer
 - [Redaktionell policy](https://updro.se/redaktionell-policy): Källor, AI-användning, rättelser
 - [Om oss](https://updro.se/om-oss): Grundare, organisationsnummer, kontakt
 
+## Så fungerar det
+1. Uppdragsgivaren beskriver sitt uppdrag utan att skapa konto.
+2. Uppdraget granskas innan det öppnas för byråer.
+3. Relevanta byråer låser upp kontaktuppgifterna och lämnar offert.
+4. Högst tre byråer får lämna offert på samma uppdrag.
+
 ## Tjänstekategorier
 - Webbutveckling
-- SEO & sökmotoroptimering
+- Webbdesign & UX
 - E-handel (Shopify, WooCommerce)
-- Apputveckling (iOS, Android)
-- Digital marknadsföring
-- Grafisk design & UX
+- SEO & sökmotoroptimering
 - Google Ads
-- E-postmarknadsföring
+- Digital marknadsföring
+- Sociala medier
+- Apputveckling (iOS, Android)
+- Mjukvaruutveckling
+- AI-utveckling
+- IT-konsult och IT-support
+- Grafisk design
+- Video & foto
+- Varumärke & PR
+- Affärsutveckling
 
 ## Kontakt
 info@auroramedia.se

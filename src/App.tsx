@@ -184,6 +184,14 @@ const App = () => (
         <Route path="/artiklar/:slug" element={<ArticlePage />} />
         <Route path="/verktyg" element={<ToolsIndex />} />
         <Route path="/verktyg/:slug" element={<ToolPage />} />
+        <Route path="/hemsida-pris-kalkylator" element={<Navigate to="/verktyg/hemsida-pris-kalkylator" replace />} />
+        <Route path="/vad-kostar-en-hemsida-kalkylator" element={<Navigate to="/verktyg/hemsida-pris-kalkylator" replace />} />
+        <Route path="/webbyra-stockholm" element={<Navigate to="/byraer/stockholm" replace />} />
+        <Route path="/webbyra-goteborg" element={<Navigate to="/byraer/goteborg" replace />} />
+        <Route path="/webbyra-malmo" element={<Navigate to="/byraer/malmo" replace />} />
+        <Route path="/seo-byra-stockholm" element={<Navigate to="/seo/stockholm" replace />} />
+        <Route path="/seo-byra-goteborg" element={<Navigate to="/seo/goteborg" replace />} />
+        <Route path="/seo-byra-malmo" element={<Navigate to="/seo/malmo" replace />} />
         <Route path="/stader" element={<CitiesIndex />} />
         <Route path="/stader/:city" element={<RedirectToByraerStad />} />
         <Route path="/jamfor" element={<ComparisonsIndex />} />
