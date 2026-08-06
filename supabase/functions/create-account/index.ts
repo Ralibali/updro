@@ -159,12 +159,16 @@ serve(async req => {
     });
 
     if (authError) {
-      const message = authError.message.toLowerCase().includes("already")
+      const raw = authError.message.toLowerCase();
+      const message = raw.includes("already")
         ? "Det finns redan ett konto med den e-postadressen. Logga in istället."
-        : "Kunde inte skapa kontot. Kontrollera uppgifterna och försök igen.";
+        : raw.includes("weak") || raw.includes("pwned") || raw.includes("easy to guess")
+          ? "Lösenordet är för enkelt och förekommer i kända läckor. Välj ett starkare lösenord."
+          : "Kunde inte skapa kontot. Kontrollera uppgifterna och försök igen.";
       console.error("create-account auth error", authError.message);
       return json({ error: message }, 400);
     }
+
 
     const user = authData.user;
     if (!user?.id) return json({ error: "Kunde inte skapa konto." }, 500);
