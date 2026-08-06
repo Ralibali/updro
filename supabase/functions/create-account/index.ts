@@ -129,12 +129,12 @@ serve(async req => {
       ? body.categories.filter(category => typeof category === "string" && CATEGORIES.has(category)).slice(0, 10)
       : [];
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) return userError({ error: "Ange en giltig e-postadress." }.error);
-    if (password.length < 8) return userError({ error: "Lösenordet måste vara minst åtta tecken." }.error);
-    if (role !== "buyer" && role !== "supplier") return userError({ error: "Ogiltig kontotyp." }.error);
-    if (fullName.length < 2) return userError({ error: "Ange ditt namn." }.error);
-    if (role === "supplier" && companyName.length < 2) return userError({ error: "Ange byrånamn." }.error);
-    if (role === "supplier" && categories.length === 0) return userError({ error: "Välj minst en kategori." }.error);
+    if (!/^\S+@\S+\.\S+$/.test(email)) return userError("Ange en giltig e-postadress.");
+    if (password.length < 8) return userError("Lösenordet måste vara minst åtta tecken.");
+    if (role !== "buyer" && role !== "supplier") return userError("Ogiltig kontotyp.");
+    if (fullName.length < 2) return userError("Ange ditt namn.");
+    if (role === "supplier" && companyName.length < 2) return userError("Ange byrånamn.");
+    if (role === "supplier" && categories.length === 0) return userError("Välj minst en kategori.");
 
     const publicClient = createClient(supabaseUrl, anonKey, { auth: { persistSession: false } });
     const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
@@ -146,7 +146,7 @@ serve(async req => {
       p_window_seconds: 3600,
     });
     if (rateError) throw rateError;
-    if (!allowed) return userError({ error: "För många registreringsförsök. Försök igen senare." }.error);
+    if (!allowed) return userError("För många registreringsförsök. Försök igen senare.");
 
     const origin = safeOrigin(req.headers.get("origin"));
     const emailRedirectTo = `${origin}/logga-in?confirmed=true`;
@@ -172,7 +172,7 @@ serve(async req => {
           ? "Lösenordet är för enkelt och förekommer i kända läckor. Välj ett starkare lösenord."
           : "Kunde inte skapa kontot. Kontrollera uppgifterna och försök igen.";
       console.error("create-account auth error", authError.message);
-      return userError({ error: message }.error);
+      return userError(message);
     }
 
 
@@ -195,7 +195,7 @@ serve(async req => {
         ? "Det finns redan ett konto med den e-postadressen. Logga in istället."
         : "Kunde inte skapa profil. Försök igen.";
       console.error("create-account profile error", profileError);
-      return userError({ error: message }.error);
+      return userError(message);
     }
 
     // Kampanjkod valideras innan kontot skapas – ogiltig kod stoppar aldrig
@@ -265,7 +265,7 @@ serve(async req => {
       if (supplierError) {
         await adminClient.auth.admin.deleteUser(user.id);
         console.error("create-account supplier error", supplierError);
-        return userError({ error: "Kunde inte skapa byråprofil. Försök igen." }.error);
+        return userError("Kunde inte skapa byråprofil. Försök igen.");
       }
 
       if (campaign) {
