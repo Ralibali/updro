@@ -207,8 +207,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }>('create-account', { body: data })
 
     if (error || result?.error) {
-      return { error: new Error(result?.error || error?.message || 'Något gick fel vid registrering.') }
+      // functions.invoke kastar ett generiskt fel vid non-2xx – läs ut serverns
+      // faktiska felmeddelande ur svarskroppen så användaren ser vad som är fel.
+      let message = result?.error || ''
+      const response = (error as any)?.context as Response | undefined
+      if (!message && response && typeof response.json === 'function') {
+        try {
+          const body = await response.clone().json()
+          if (body?.error) message = String(body.error)
+        } catch {
+          // ignorera – faller tillbaka på generiskt meddelande
+        }
+      }
+      return { error: new Error(message || error?.message || 'Något gick fel vid registrering.') }
     }
+
 
     if (result?.session) {
       await supabase.auth.setSession(result.session)
