@@ -68,7 +68,6 @@ const CityOrAgencyRedirect = () => {
 
 const PillarPage = lazy(() => import("./components/seo/PillarPage"));
 const SubPage = lazy(() => import("./components/seo/SubPage"));
-const CityHubPage = lazy(() => import("./components/seo/CityHubPage"));
 const CitiesIndex = lazy(() => import("./components/seo/CitiesIndex"));
 const ComparisonPage = lazy(() => import("./components/seo/ComparisonPage"));
 const ComparisonsIndex = lazy(() => import("./components/seo/ComparisonsIndex"));
