@@ -12,32 +12,41 @@ import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
 import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
 import { setSEOMeta, setJsonLd } from '@/lib/seoHelpers'
+import NotFound from '@/pages/NotFound'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
   const [agency, setAgency] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [reviews, setReviews] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!slug) return
+    if (!slug) { setLoading(false); return }
+    let cancelled = false
     const fetchAgency = async () => {
-      const { data: sp } = await supabase.from('supplier_profiles').select('*, profiles!supplier_profiles_id_fkey(*)').eq('slug', slug).single()
+      setLoading(true)
+      const { data: sp } = await supabase.from('supplier_profiles').select('*, profiles!supplier_profiles_id_fkey(*)').eq('slug', slug).maybeSingle()
+      if (cancelled) return
       if (sp) {
         setAgency(sp)
         setProfile(sp.profiles)
-        // Fetch reviews
         const { data: revs } = await supabase.from('reviews').select('*, profiles!reviews_buyer_id_fkey(full_name, company_name)').eq('supplier_id', sp.id).order('created_at', { ascending: false })
-        if (revs) setReviews(revs)
+        if (!cancelled && revs) setReviews(revs)
+      } else {
+        setAgency(null)
+        setProfile(null)
       }
+      if (!cancelled) setLoading(false)
     }
     fetchAgency()
+    return () => { cancelled = true }
   }, [slug])
 
   useEffect(() => {
     if (agency && profile) {
       const name = profile.company_name || profile.full_name || 'Byrå'
-      const url = `https://updro.se/byraer/${slug}`
+      const url = `https://updro.se/byra/${slug}`
       setSEOMeta({
         title: `${name} – Byråprofil | Updro`,
         description: `Se ${name}s profil på Updro. Betyg, tjänster, portfölj och kontaktuppgifter.`,
@@ -72,13 +81,15 @@ const AgencyProfilePage = () => {
     }
   }, [agency, profile, slug])
 
-  if (!agency) return (
+  if (loading) return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></main>
       <Footer />
     </div>
   )
+
+  if (!agency) return <NotFound />
 
   return (
     <div className="min-h-screen flex flex-col">

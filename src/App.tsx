@@ -12,6 +12,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
 import { COMPARISON_PAGES } from "./lib/seoComparisons";
 import { getNoindexSeoRoutes } from "./lib/seoStatic";
+import { CITIES } from "./lib/seoCities";
 import SupplierLayout from "@/components/SupplierLayout";
 import BuyerLayout from "@/components/BuyerLayout";
 
@@ -48,6 +49,15 @@ const RedirectToArtikel = () => {
   const params = useParams();
   const slug = params.slug || params.artikel;
   return <Navigate to={slug ? `/artiklar/${slug}` : '/artiklar'} replace />;
+};
+
+// /byraer/:stad renders the city page when the slug is a known city,
+// otherwise it is a legacy agency profile URL -> redirect to /byra/:slug
+const CityOrAgencyRedirect = () => {
+  const { stad } = useParams<{ stad: string }>();
+  const isCity = CITIES.some(c => c.slug === stad);
+  if (isCity) return <AgencyCityPage />;
+  return <Navigate to={`/byra/${stad}`} replace />;
 };
 
 const PillarPage = lazy(() => import("./components/seo/PillarPage"));
@@ -131,7 +141,7 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/publicera" element={<ProjectWizard />} />
         <Route path="/byraer" element={<BrowseAgenciesPage />} />
-        <Route path="/byraer/:slug" element={<AgencyProfilePage />} />
+        <Route path="/byra/:slug" element={<AgencyProfilePage />} />
         <Route path="/priser" element={<PricingPage />} />
         <Route path="/priser/:slug" element={<PriceGuidePage />} />
         <Route path="/om-oss" element={<AboutPage />} />
@@ -174,7 +184,7 @@ const App = () => (
         <Route path="/jamfor" element={<ComparisonsIndex />} />
         <Route path="/byraer/kategori/:kategori" element={<AgencyCategoryPage />} />
         <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
-        <Route path="/byraer/:stad" element={<AgencyCityPage />} />
+        <Route path="/byraer/:stad" element={<CityOrAgencyRedirect />} />
         <Route path="/leveranser/:tjanst" element={<ServicePage />} />
         <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
         <Route path="/admin/prospektering" element={<ProtectedRoute role="admin"><AdminProspecting /></ProtectedRoute>} />
