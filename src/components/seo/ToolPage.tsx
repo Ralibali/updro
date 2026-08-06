@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, Calculator } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
+import WebsitePriceCalculator from './WebsitePriceCalculator'
 
 const ToolPage = () => {
   const { slug } = useParams<{ slug: string }>()
