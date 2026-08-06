@@ -74,15 +74,18 @@ const AgencyCityCategoryPage = () => {
     fetch()
   }, [city, category])
 
-  // Inject FAQ schema once we have data
+  // Injicera FAQ-schema endast när FAQ:n är unik (djupinnehåll) – mallsvar ger dubblettschema
   useEffect(() => {
     if (!city || !category) return
     const deep = getCityCategoryDeep(city.slug, category.slug)
-    const faq = deep?.faq ?? buildFaq(city.name, category.name, kategori || '')
+    if (!deep?.faq?.length) {
+      document.getElementById('city-cat-faq-jsonld')?.remove()
+      return
+    }
     setJsonLd('city-cat-faq-jsonld', {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: faq.map(f => ({
+      mainEntity: deep.faq.map(f => ({
         '@type': 'Question',
         name: f.q,
         acceptedAnswer: { '@type': 'Answer', text: f.a },
