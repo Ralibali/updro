@@ -39,4 +39,11 @@ project_id = "opgjoevvlwhsddscqmpe"
     verify_jwt = false
   [functions.firecrawl-prospect-search]
     verify_jwt = true
-
+  [functions.marketplace-stats]
+    verify_jwt = false
+  [functions.category-stats]
+    verify_jwt = false
+  [functions.review-reminder-cron]
+    verify_jwt = false
+  [functions.send-push]
+    verify_jwt = false
