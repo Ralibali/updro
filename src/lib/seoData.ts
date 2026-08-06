@@ -119,6 +119,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
           { q: 'Vad kostar underhåll?', a: 'Löpande underhåll kostar vanligtvis 500–3 000 kr/månad beroende på omfattning. Detta inkluderar uppdateringar, säkerhet och backup.' },
         ],
         relatedLinks: [
+          { label: 'Hjälp med hemsida – vad ska du beställa?', href: '/hjalp-med-hemsida' },
           { label: 'Webbutveckling Stockholm', href: '/webbutveckling/stockholm' },
           { label: 'E-handel pris', href: '/ehandel/pris' },
           { label: 'SEO pris', href: '/seo/pris' },
@@ -165,6 +166,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
       },
     ],
     relatedCategories: [
+      { label: 'Hjälp med hemsida', href: '/hjalp-med-hemsida' },
       { label: 'SEO', href: '/seo' },
       { label: 'UX / Webbdesign', href: '/webbdesign' },
       { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
