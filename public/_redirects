@@ -1,17 +1,14 @@
-/partna-alternativ  /partna-alternativ.html  200
-/updro-vs-partna  /partna-alternativ.html  200
-/jamfor-partna  /partna-alternativ.html  200
-/alternativ-till-partna  /partna-alternativ.html  200
+# 301: gamla statiska kalkylator-URL:er → riktig route under /verktyg/
+/hemsida-pris-kalkylator  /verktyg/hemsida-pris-kalkylator  301
+/vad-kostar-en-hemsida-kalkylator  /verktyg/hemsida-pris-kalkylator  301
 
-/hemsida-pris-kalkylator  /hemsida-pris-kalkylator.html  200
-/vad-kostar-en-hemsida-kalkylator  /hemsida-pris-kalkylator.html  200
-
-/webbyra-stockholm  /lokal-seo/webbyra-stockholm.html  200
-/webbyra-goteborg  /lokal-seo/webbyra-goteborg.html  200
-/webbyra-malmo  /lokal-seo/webbyra-malmo.html  200
-/seo-byra-stockholm  /lokal-seo/seo-byra-stockholm.html  200
-/seo-byra-goteborg  /lokal-seo/seo-byra-goteborg.html  200
-/seo-byra-malmo  /lokal-seo/seo-byra-malmo.html  200
+# 301: gamla lokal-SEO-URL:er → befintliga stads- och tjänstesidor
+/webbyra-stockholm  /byraer/stockholm  301
+/webbyra-goteborg  /byraer/goteborg  301
+/webbyra-malmo  /byraer/malmo  301
+/seo-byra-stockholm  /seo/stockholm  301
+/seo-byra-goteborg  /seo/goteborg  301
+/seo-byra-malmo  /seo/malmo  301
 
 # React SPA fallback for client-side routes
 /*  /index.html  200
