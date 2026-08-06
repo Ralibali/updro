@@ -16,6 +16,7 @@ const SEOLandingPage = ({
   intro,
   considerations,
   priceText,
+  relatedLinks = [],
 }: {
   title: string
   metaDescription: string
@@ -26,6 +27,7 @@ const SEOLandingPage = ({
   intro: string
   considerations: string[]
   priceText: string
+  relatedLinks?: { label: string; href: string }[]
 }) => {
   useEffect(() => {
     setSEOMeta({ title, description: metaDescription, canonical })
@@ -129,6 +131,15 @@ const SEOLandingPage = ({
               </Button>
             </Link>
           </div>
+          {relatedLinks.length > 0 && (
+            <nav className="mt-12 flex flex-wrap gap-3 text-sm">
+              {relatedLinks.map(link => (
+                <Link key={link.href} to={link.href} className="rounded-full border px-4 py-2 hover:bg-muted">
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          )}
         </article>
       </main>
       <Footer />
@@ -150,6 +161,11 @@ export const HittaWebbbyraPage = () => (
       'Teknikval och vem som ansvarar för drift, säkerhet, uppdateringar och support efter lansering.',
       'Relevant erfarenhet, portfolio och hur byrån planerar projektledning och löpande avstämningar.',
       'Äganderätt till kod, design, domän, analyskonton och annat material när projektet avslutas.',
+    ]}
+    relatedLinks={[
+      { label: 'Hjälp med hemsida – vad ska du beställa?', href: '/hjalp-med-hemsida' },
+      { label: 'Vad kostar en hemsida?', href: '/webbutveckling/pris' },
+      { label: 'Webbutveckling', href: '/webbutveckling' },
     ]}
     priceText="En enklare företagssajt kan kosta från tiotusentals kronor, medan e-handel, integrationer, portaler och specialbyggda funktioner ofta kräver en betydligt större budget. En tydlig brief gör offerterna mer jämförbara."
   />
