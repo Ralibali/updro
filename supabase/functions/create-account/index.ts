@@ -54,6 +54,12 @@ function json(body: unknown, status = 200) {
   });
 }
 
+// Användarfel returneras med 200 + { error } så att supabase-js inte kastar ett
+// generiskt "non-2xx"-fel – klienten läser meddelandet direkt ur svaret.
+function userError(message: string) {
+  return json({ error: message });
+}
+
 function slugify(input: string, suffix: string) {
   const slug = input
     .toLowerCase()
@@ -123,12 +129,12 @@ serve(async req => {
       ? body.categories.filter(category => typeof category === "string" && CATEGORIES.has(category)).slice(0, 10)
       : [];
 
-    if (!/^\S+@\S+\.\S+$/.test(email)) return json({ error: "Ange en giltig e-postadress." }, 400);
-    if (password.length < 8) return json({ error: "Lösenordet måste vara minst åtta tecken." }, 400);
-    if (role !== "buyer" && role !== "supplier") return json({ error: "Ogiltig kontotyp." }, 400);
-    if (fullName.length < 2) return json({ error: "Ange ditt namn." }, 400);
-    if (role === "supplier" && companyName.length < 2) return json({ error: "Ange byrånamn." }, 400);
-    if (role === "supplier" && categories.length === 0) return json({ error: "Välj minst en kategori." }, 400);
+    if (!/^\S+@\S+\.\S+$/.test(email)) return userError({ error: "Ange en giltig e-postadress." }.error);
+    if (password.length < 8) return userError({ error: "Lösenordet måste vara minst åtta tecken." }.error);
+    if (role !== "buyer" && role !== "supplier") return userError({ error: "Ogiltig kontotyp." }.error);
+    if (fullName.length < 2) return userError({ error: "Ange ditt namn." }.error);
+    if (role === "supplier" && companyName.length < 2) return userError({ error: "Ange byrånamn." }.error);
+    if (role === "supplier" && categories.length === 0) return userError({ error: "Välj minst en kategori." }.error);
 
     const publicClient = createClient(supabaseUrl, anonKey, { auth: { persistSession: false } });
     const adminClient = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
@@ -140,7 +146,7 @@ serve(async req => {
       p_window_seconds: 3600,
     });
     if (rateError) throw rateError;
-    if (!allowed) return json({ error: "För många registreringsförsök. Försök igen senare." }, 429);
+    if (!allowed) return userError({ error: "För många registreringsförsök. Försök igen senare." }.error);
 
     const origin = safeOrigin(req.headers.get("origin"));
     const emailRedirectTo = `${origin}/logga-in?confirmed=true`;
@@ -166,7 +172,7 @@ serve(async req => {
           ? "Lösenordet är för enkelt och förekommer i kända läckor. Välj ett starkare lösenord."
           : "Kunde inte skapa kontot. Kontrollera uppgifterna och försök igen.";
       console.error("create-account auth error", authError.message);
-      return json({ error: message }, 400);
+      return userError({ error: message }.error);
     }
 
 
@@ -189,7 +195,7 @@ serve(async req => {
         ? "Det finns redan ett konto med den e-postadressen. Logga in istället."
         : "Kunde inte skapa profil. Försök igen.";
       console.error("create-account profile error", profileError);
-      return json({ error: message }, 400);
+      return userError({ error: message }.error);
     }
 
     // Kampanjkod valideras innan kontot skapas – ogiltig kod stoppar aldrig
@@ -259,7 +265,7 @@ serve(async req => {
       if (supplierError) {
         await adminClient.auth.admin.deleteUser(user.id);
         console.error("create-account supplier error", supplierError);
-        return json({ error: "Kunde inte skapa byråprofil. Försök igen." }, 400);
+        return userError({ error: "Kunde inte skapa byråprofil. Försök igen." }.error);
       }
 
       if (campaign) {
