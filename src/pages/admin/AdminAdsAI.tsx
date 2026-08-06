@@ -1,220 +1,291 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AdminLayout } from './AdminDashboard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { AlertTriangle, Bot, CheckCircle2, ExternalLink, Lightbulb, MousePointerClick, Pause, Rocket, Settings2, Sparkles, Target, TrendingUp, Wallet } from 'lucide-react'
+import { Textarea } from '@/components/ui/textarea'
+import { toast } from 'sonner'
+import { Bot, Check, Clipboard, Download, ExternalLink, Plus, Save, Sparkles, Trash2 } from 'lucide-react'
 
-type AdsMetrics = {
-  spend: number
-  clicks: number
-  impressions: number
-  leads: number
-  approvedLeads: number
+type CampaignDraft = {
+  campaignName: string
+  adGroupName: string
+  dailyBudget: string
+  maxCpc: string
+  location: string
+  languages: string
+  finalUrl: string
+  path1: string
+  path2: string
+  utmSource: string
+  utmMedium: string
+  utmCampaign: string
+  headlines: string[]
+  descriptions: string[]
+  keywords: string
+  negativeKeywords: string
+  callouts: string
+  sitelinks: Array<{ title: string; url: string; description1: string; description2: string }>
 }
 
-type Recommendation = {
-  level: 'good' | 'warning' | 'action'
-  title: string
-  detail: string
-  action: string
-}
+const STORAGE_KEY = 'updro:ads-ai:campaign-draft:v1'
 
-const numberValue = (value: string) => {
-  const parsed = Number(value.replace(',', '.'))
-  return Number.isFinite(parsed) && parsed >= 0 ? parsed : 0
+const starterDraft: CampaignDraft = {
+  campaignName: 'SE | Search | Webbyrå | Leads',
+  adGroupName: 'Webbyrå och hemsida',
+  dailyBudget: '200',
+  maxCpc: '35',
+  location: 'Sverige',
+  languages: 'Svenska, Engelska',
+  finalUrl: 'https://updro.se/jamfor-offerter',
+  path1: 'offert',
+  path2: 'webbyra',
+  utmSource: 'google',
+  utmMedium: 'cpc',
+  utmCampaign: 'search_webbyra',
+  headlines: [
+    'Få Offerter Från Rätt Webbyrå',
+    'Jämför Upp Till Tre Offerter',
+    'Behöver Ni En Ny Hemsida?',
+    'Beskriv Projektet På 2 Minuter',
+    'Gratis För Beställare',
+    'Ingen Registrering Krävs',
+    'Högst Tre Relevanta Byråer',
+    'Jämför Pris Och Upplägg',
+    'Slipp Massutskick',
+    'Hitta Rätt Webbyrå',
+  ],
+  descriptions: [
+    'Beskriv projektet en gång och få upp till tre relevanta offerter från svenska webbyråer.',
+    'Gratis för beställare och helt utan förpliktelser. Jämför pris och upplägg i lugn och ro.',
+    'Updro granskar briefen innan relevanta byråer kan lämna offert på ditt projekt.',
+    'Ny hemsida, webbshop eller SEO? Skicka in behovet på cirka två minuter.',
+  ],
+  keywords: '[offert hemsida]\n"offert hemsida"\n[hemsida offert]\n"hemsida offert"\n[hitta webbyrå]\n"hitta webbyrå"\n[jämför webbyråer]\n"jämför webbyråer"\n[webbyrå offert]\n"webbyrå offert"\n[hjälp med hemsida]\n"hjälp med hemsida"',
+  negativeKeywords: 'jobb\nlön\nutbildning\nkurs\npraktik\ngratis hemsida\nmall\ntemplate\ntutorial\nyoutube\nlogga in\nsupport',
+  callouts: 'Gratis för beställare\nHögst tre offerter\nIngen registrering\nUtan förpliktelser\nSvenska byråer\nBriefen granskas',
+  sitelinks: [
+    { title: 'Beskriv Ditt Projekt', url: 'https://updro.se/publicera', description1: 'Tar ungefär två minuter', description2: 'Ingen registrering krävs' },
+    { title: 'Se Prisguider', url: 'https://updro.se/priser', description1: 'Se vanliga prisnivåer', description2: 'Förbered din budget' },
+  ],
 }
 
 const AdminAdsAI = () => {
-  const [metrics, setMetrics] = useState<AdsMetrics>({
-    spend: 0,
-    clicks: 0,
-    impressions: 0,
-    leads: 0,
-    approvedLeads: 0,
-  })
+  const [draft, setDraft] = useState<CampaignDraft>(starterDraft)
 
-  const calculated = useMemo(() => {
-    const ctr = metrics.impressions > 0 ? (metrics.clicks / metrics.impressions) * 100 : 0
-    const cpc = metrics.clicks > 0 ? metrics.spend / metrics.clicks : 0
-    const conversionRate = metrics.clicks > 0 ? (metrics.leads / metrics.clicks) * 100 : 0
-    const cpa = metrics.leads > 0 ? metrics.spend / metrics.leads : 0
-    const approvedCpa = metrics.approvedLeads > 0 ? metrics.spend / metrics.approvedLeads : 0
-    return { ctr, cpc, conversionRate, cpa, approvedCpa }
-  }, [metrics])
-
-  const recommendations = useMemo<Recommendation[]>(() => {
-    if (metrics.clicks === 0 && metrics.spend === 0) {
-      return [{
-        level: 'action',
-        title: 'Koppla Google Ads och starta första kampanjen',
-        detail: 'Ads AI behöver kampanjdata för att kunna avgöra vilka sökord och annonser som faktiskt ger uppdrag.',
-        action: 'Följ checklistan längre ned och starta Search-kampanjen mot /jamfor-offerter.',
-      }]
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) setDraft({ ...starterDraft, ...JSON.parse(saved) })
+    } catch {
+      // Behåll startmallen om lokalt innehåll är trasigt.
     }
+  }, [])
 
-    const items: Recommendation[] = []
-    if (metrics.impressions >= 100 && calculated.ctr < 4) items.push({
-      level: 'warning', title: 'Låg klickfrekvens',
-      detail: `CTR är ${calculated.ctr.toFixed(1)} %. För köpintention bör annonserna helst ligga över cirka 4–5 %.`,
-      action: 'Testa rubriken “Få offerter från rätt webbyrå” och gör sökorden mer exakta.',
-    })
-    if (metrics.clicks >= 20 && metrics.leads === 0) items.push({
-      level: 'action', title: 'Klick utan inskick',
-      detail: `${metrics.clicks} klick har ännu inte gett något inskickat uppdrag.`,
-      action: 'Kontrollera söktermerna, pausa informationssökningar och testa hela formuläret på mobil.',
-    })
-    if (metrics.clicks >= 10 && calculated.cpc > 40) items.push({
-      level: 'warning', title: 'Hög klickkostnad',
-      detail: `Genomsnittlig CPC är ${calculated.cpc.toFixed(0)} kr.`,
-      action: 'Sänk max CPC, lägg till negativa sökord och prioritera “offert hemsida” samt “hitta webbyrå”.',
-    })
-    if (metrics.leads >= 3 && calculated.conversionRate >= 3) items.push({
-      level: 'good', title: 'Landningssidan konverterar',
-      detail: `${calculated.conversionRate.toFixed(1)} % av klicken blir uppdrag.`,
-      action: 'Behåll vinnande sökord och öka budgeten försiktigt, högst 15–20 % åt gången.',
-    })
-    if (metrics.leads >= 3 && metrics.approvedLeads / metrics.leads < 0.5) items.push({
-      level: 'warning', title: 'För låg leadkvalitet',
-      detail: 'Mindre än hälften av inskicken blir godkända uppdrag.',
-      action: 'Skärp sökorden och lägg till företag, budget och projektstart tydligare i annons och formulär.',
-    })
-    if (!items.length) items.push({
-      level: 'good', title: 'Ingen tydlig varningssignal ännu',
-      detail: 'Datamängden är fortfarande liten eller resultaten ligger inom rimliga startnivåer.',
-      action: 'Fortsätt samla data och granska söktermerna varje dag första veckan.',
-    })
-    return items
-  }, [metrics, calculated])
+  const trackingUrl = useMemo(() => {
+    try {
+      const url = new URL(draft.finalUrl)
+      if (draft.utmSource) url.searchParams.set('utm_source', draft.utmSource)
+      if (draft.utmMedium) url.searchParams.set('utm_medium', draft.utmMedium)
+      if (draft.utmCampaign) url.searchParams.set('utm_campaign', draft.utmCampaign)
+      url.searchParams.set('utm_term', '{keyword}')
+      url.searchParams.set('utm_content', '{creative}')
+      return url.toString()
+    } catch {
+      return draft.finalUrl
+    }
+  }, [draft.finalUrl, draft.utmSource, draft.utmMedium, draft.utmCampaign])
 
-  const updateMetric = (key: keyof AdsMetrics, value: string) => {
-    setMetrics(previous => ({ ...previous, [key]: numberValue(value) }))
+  const update = <K extends keyof CampaignDraft>(key: K, value: CampaignDraft[K]) => {
+    setDraft(previous => ({ ...previous, [key]: value }))
+  }
+
+  const save = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(draft))
+    toast.success('Kampanjutkastet är sparat i denna webbläsare.')
+  }
+
+  const reset = () => {
+    setDraft(starterDraft)
+    localStorage.removeItem(STORAGE_KEY)
+    toast.success('Startmallen är återställd.')
+  }
+
+  const copy = async (value: string, label: string) => {
+    await navigator.clipboard.writeText(value)
+    toast.success(`${label} kopierat.`)
+  }
+
+  const exportJson = () => {
+    const payload = { ...draft, trackingUrl, exportedAt: new Date().toISOString() }
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `${draft.campaignName.replace(/[^a-z0-9]+/gi, '-').toLowerCase() || 'google-ads-kampanj'}.json`
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const updateArray = (key: 'headlines' | 'descriptions', index: number, value: string) => {
+    update(key, draft[key].map((item, itemIndex) => itemIndex === index ? value : item))
+  }
+
+  const removeArrayItem = (key: 'headlines' | 'descriptions', index: number) => {
+    update(key, draft[key].filter((_, itemIndex) => itemIndex !== index))
+  }
+
+  const updateSitelink = (index: number, key: keyof CampaignDraft['sitelinks'][number], value: string) => {
+    update('sitelinks', draft.sitelinks.map((item, itemIndex) => itemIndex === index ? { ...item, [key]: value } : item))
   }
 
   return (
     <AdminLayout>
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="space-y-7 max-w-7xl mx-auto">
+        <header className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="secondary" className="gap-1"><Sparkles className="h-3 w-3" /> Beta</Badge>
-              <Badge variant="outline">Google Ads</Badge>
+            <div className="flex gap-2 mb-2"><Badge className="gap-1"><Sparkles className="h-3 w-3" /> Ads AI</Badge><Badge variant="outline">Kampanjbyggare</Badge></div>
+            <h1 className="font-display text-3xl font-bold">Bygg hela Google Ads-kampanjen enkelt</h1>
+            <p className="text-muted-foreground mt-2 max-w-3xl">Skriv och ändra allt själv. Utkastet sparas lokalt, valideras mot Googles teckengränser och kan kopieras direkt när du skapar annonsen.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={reset}>Återställ mall</Button>
+            <Button variant="outline" onClick={exportJson} className="gap-2"><Download className="h-4 w-4" /> Exportera</Button>
+            <Button onClick={save} className="gap-2"><Save className="h-4 w-4" /> Spara utkast</Button>
+            <Button asChild variant="secondary"><a href="https://ads.google.com/" target="_blank" rel="noreferrer">Öppna Google Ads <ExternalLink className="ml-2 h-4 w-4" /></a></Button>
+          </div>
+        </header>
+
+        <section className="grid lg:grid-cols-2 gap-5">
+          <Panel title="1. Kampanjinställningar" subtitle="Grundinställningar som du fyller i i Google Ads.">
+            <Field label="Kampanjnamn"><Input value={draft.campaignName} onChange={e => update('campaignName', e.target.value)} /></Field>
+            <Field label="Annonsgrupp"><Input value={draft.adGroupName} onChange={e => update('adGroupName', e.target.value)} /></Field>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Budget per dag (kr)"><Input inputMode="decimal" value={draft.dailyBudget} onChange={e => update('dailyBudget', e.target.value)} /></Field>
+              <Field label="Max CPC (kr)"><Input inputMode="decimal" value={draft.maxCpc} onChange={e => update('maxCpc', e.target.value)} /></Field>
+              <Field label="Plats"><Input value={draft.location} onChange={e => update('location', e.target.value)} /></Field>
+              <Field label="Språk"><Input value={draft.languages} onChange={e => update('languages', e.target.value)} /></Field>
             </div>
-            <h1 className="font-display text-3xl font-bold">Ads AI</h1>
-            <p className="text-muted-foreground mt-2 max-w-2xl">Din kontrollpanel för att vinna fler uppdrag med Google Ads. Börja med manuell analys; när API-kopplingen är klar hämtas siffrorna automatiskt.</p>
-          </div>
-          <Button asChild variant="outline" className="gap-2">
-            <a href="https://ads.google.com/" target="_blank" rel="noreferrer">Öppna Google Ads <ExternalLink className="h-4 w-4" /></a>
-          </Button>
-        </div>
+          </Panel>
 
-        <div className="rounded-2xl border bg-card p-5 flex flex-col md:flex-row md:items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0"><Settings2 className="h-6 w-6" /></div>
-          <div className="flex-1">
-            <p className="font-semibold">Google Ads API är inte anslutet ännu</p>
-            <p className="text-sm text-muted-foreground mt-1">Dashboarden fungerar nu som analysassistent. Automatisk import, pausning och budgetändringar aktiveras efter Google OAuth, developer token och ett manager/customer-ID.</p>
-          </div>
-          <Badge variant="outline" className="self-start md:self-auto">Manuellt läge</Badge>
-        </div>
+          <Panel title="2. Länk och spårning" subtitle="Plausible läser UTM-värdena och Updro sparar attributionen på uppdraget.">
+            <Field label="Slutlig webbadress"><Input value={draft.finalUrl} onChange={e => update('finalUrl', e.target.value)} /></Field>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="Visningssökväg 1"><LimitedInput value={draft.path1} max={15} onChange={value => update('path1', value)} /></Field>
+              <Field label="Visningssökväg 2"><LimitedInput value={draft.path2} max={15} onChange={value => update('path2', value)} /></Field>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <Field label="UTM source"><Input value={draft.utmSource} onChange={e => update('utmSource', e.target.value)} /></Field>
+              <Field label="UTM medium"><Input value={draft.utmMedium} onChange={e => update('utmMedium', e.target.value)} /></Field>
+              <Field label="UTM campaign"><Input value={draft.utmCampaign} onChange={e => update('utmCampaign', e.target.value)} /></Field>
+            </div>
+            <CopyBox label="Färdig spårningslänk" value={trackingUrl} onCopy={() => copy(trackingUrl, 'Spårningslänken')} />
+          </Panel>
+        </section>
 
-        <section>
-          <div className="flex items-center gap-2 mb-4"><Bot className="h-5 w-5 text-primary" /><h2 className="font-display text-xl font-semibold">Mata in senaste 30 dagarna</h2></div>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-4">
-            {([
-              ['spend', 'Kostnad', 'kr'],
-              ['impressions', 'Visningar', ''],
-              ['clicks', 'Klick', ''],
-              ['leads', 'Inskickade uppdrag', ''],
-              ['approvedLeads', 'Godkända uppdrag', ''],
-            ] as const).map(([key, label, suffix]) => (
-              <div key={key} className="rounded-xl border bg-card p-4">
-                <Label htmlFor={key}>{label}</Label>
-                <div className="flex items-center gap-2 mt-2">
-                  <Input id={key} inputMode="decimal" value={metrics[key] || ''} onChange={event => updateMetric(key, event.target.value)} placeholder="0" />
-                  {suffix && <span className="text-sm text-muted-foreground">{suffix}</span>}
-                </div>
+        <Panel title="3. Rubriker" subtitle={`Google tillåter upp till 15 rubriker, högst 30 tecken. Du har ${draft.headlines.length}.`}>
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {draft.headlines.map((headline, index) => (
+              <EditableAsset key={index} label={`Rubrik ${index + 1}`} value={headline} max={30} onChange={value => updateArray('headlines', index, value)} onRemove={() => removeArrayItem('headlines', index)} />
+            ))}
+          </div>
+          <Button variant="outline" disabled={draft.headlines.length >= 15} onClick={() => update('headlines', [...draft.headlines, ''])} className="mt-4 gap-2"><Plus className="h-4 w-4" /> Lägg till rubrik</Button>
+          <CopyAllButton value={draft.headlines.filter(Boolean).join('\n')} label="Kopiera alla rubriker" onCopy={copy} />
+        </Panel>
+
+        <Panel title="4. Beskrivningar" subtitle={`Google tillåter upp till 4 beskrivningar, högst 90 tecken. Du har ${draft.descriptions.length}.`}>
+          <div className="grid lg:grid-cols-2 gap-3">
+            {draft.descriptions.map((description, index) => (
+              <EditableAsset key={index} label={`Beskrivning ${index + 1}`} value={description} max={90} textarea onChange={value => updateArray('descriptions', index, value)} onRemove={() => removeArrayItem('descriptions', index)} />
+            ))}
+          </div>
+          <Button variant="outline" disabled={draft.descriptions.length >= 4} onClick={() => update('descriptions', [...draft.descriptions, ''])} className="mt-4 gap-2"><Plus className="h-4 w-4" /> Lägg till beskrivning</Button>
+          <CopyAllButton value={draft.descriptions.filter(Boolean).join('\n')} label="Kopiera alla beskrivningar" onCopy={copy} />
+        </Panel>
+
+        <section className="grid lg:grid-cols-2 gap-5">
+          <Panel title="5. Sökord" subtitle="Ett sökord per rad. Använd [exakt matchning] eller \"frasmatchning\".">
+            <Textarea className="min-h-[300px] font-mono text-sm" value={draft.keywords} onChange={e => update('keywords', e.target.value)} />
+            <CopyAllButton value={draft.keywords} label="Kopiera sökord" onCopy={copy} />
+          </Panel>
+          <Panel title="6. Negativa sökord" subtitle="Ord som stoppar irrelevanta klick. Ett ord eller en fras per rad.">
+            <Textarea className="min-h-[300px] font-mono text-sm" value={draft.negativeKeywords} onChange={e => update('negativeKeywords', e.target.value)} />
+            <CopyAllButton value={draft.negativeKeywords} label="Kopiera negativa sökord" onCopy={copy} />
+          </Panel>
+        </section>
+
+        <Panel title="7. Callouts" subtitle="Korta fördelar som visas tillsammans med annonsen. Ett per rad.">
+          <Textarea className="min-h-[140px]" value={draft.callouts} onChange={e => update('callouts', e.target.value)} />
+          <CopyAllButton value={draft.callouts} label="Kopiera callouts" onCopy={copy} />
+        </Panel>
+
+        <Panel title="8. Webbplatslänkar" subtitle="Lägg till extra länkar under annonsen.">
+          <div className="space-y-4">
+            {draft.sitelinks.map((sitelink, index) => (
+              <div key={index} className="rounded-xl border p-4 grid md:grid-cols-2 gap-3 relative">
+                <Field label="Rubrik"><Input value={sitelink.title} onChange={e => updateSitelink(index, 'title', e.target.value)} /></Field>
+                <Field label="URL"><Input value={sitelink.url} onChange={e => updateSitelink(index, 'url', e.target.value)} /></Field>
+                <Field label="Beskrivning 1"><Input value={sitelink.description1} onChange={e => updateSitelink(index, 'description1', e.target.value)} /></Field>
+                <Field label="Beskrivning 2"><Input value={sitelink.description2} onChange={e => updateSitelink(index, 'description2', e.target.value)} /></Field>
+                <Button size="icon" variant="ghost" className="absolute top-2 right-2" onClick={() => update('sitelinks', draft.sitelinks.filter((_, itemIndex) => itemIndex !== index))}><Trash2 className="h-4 w-4" /></Button>
               </div>
             ))}
           </div>
-        </section>
+          <Button variant="outline" className="mt-4 gap-2" onClick={() => update('sitelinks', [...draft.sitelinks, { title: '', url: '', description1: '', description2: '' }])}><Plus className="h-4 w-4" /> Lägg till webbplatslänk</Button>
+        </Panel>
 
-        <section className="grid sm:grid-cols-2 xl:grid-cols-5 gap-4">
-          <Metric icon={MousePointerClick} label="CTR" value={`${calculated.ctr.toFixed(1)} %`} />
-          <Metric icon={Wallet} label="CPC" value={`${calculated.cpc.toFixed(0)} kr`} />
-          <Metric icon={Target} label="Konvertering" value={`${calculated.conversionRate.toFixed(1)} %`} />
-          <Metric icon={TrendingUp} label="CPA uppdrag" value={`${calculated.cpa.toFixed(0)} kr`} />
-          <Metric icon={CheckCircle2} label="CPA godkänt" value={`${calculated.approvedCpa.toFixed(0)} kr`} />
-        </section>
-
-        <section>
-          <div className="flex items-center gap-2 mb-4"><Lightbulb className="h-5 w-5 text-primary" /><h2 className="font-display text-xl font-semibold">AI-rekommendationer</h2></div>
-          <div className="space-y-3">
-            {recommendations.map(item => <RecommendationCard key={item.title} item={item} />)}
+        <Panel title="9. Annonsförhandsvisning" subtitle="En förenklad bild av hur annonsen kan se ut. Google väljer själv kombinationer.">
+          <div className="rounded-xl border bg-white p-5 max-w-3xl text-sm">
+            <p className="text-emerald-800">Sponsrad · updro.se › {draft.path1 || 'offert'} › {draft.path2 || 'webbyra'}</p>
+            <p className="text-xl text-blue-800 mt-1">{draft.headlines.filter(Boolean).slice(0, 3).join(' | ') || 'Din annonsrubrik'}</p>
+            <p className="text-slate-700 mt-1">{draft.descriptions.find(Boolean) || 'Din annonsbeskrivning visas här.'}</p>
           </div>
-        </section>
+        </Panel>
 
-        <section className="grid lg:grid-cols-2 gap-6">
-          <div className="rounded-2xl border bg-card p-5">
-            <h2 className="font-display text-xl font-semibold flex items-center gap-2"><Rocket className="h-5 w-5 text-primary" /> Integrationschecklista</h2>
-            <div className="mt-5 space-y-4">
-              <Checklist done title="Plausible finns på Updro" detail="Uppdrag Started och Uppdrag Submitted skickas redan." />
-              <Checklist done title="UTM-attribution sparas" detail="Kampanj, sökord och landningssida följer med uppdraget." />
-              <Checklist title="Google Ads-konvertering" detail="Skapa Begär offert och lägg in AW-ID/label i VITE_GOOGLE_ADS_LEAD_SEND_TO." />
-              <Checklist title="Google OAuth" detail="Skapa OAuth-klient i Google Cloud och godkänn Google Ads-scope." />
-              <Checklist title="Google Ads developer token" detail="Ansök via Google Ads API Center. Krävs för att läsa och ändra kampanjer." />
-              <Checklist title="Supabase edge-funktion" detail="Nästa version hämtar kampanjdata säkert på serversidan och lagrar aldrig refresh token i webbläsaren." />
-            </div>
-          </div>
-
-          <div className="rounded-2xl border bg-card p-5">
-            <h2 className="font-display text-xl font-semibold flex items-center gap-2"><Pause className="h-5 w-5 text-primary" /> Säker autopilot</h2>
-            <p className="text-sm text-muted-foreground mt-2">När API:t kopplas in bör AI:n börja i godkännandeläge – inte ändra kontot fritt.</p>
-            <div className="mt-5 space-y-3 text-sm">
-              {[
-                'AI föreslår negativa sökord från söktermsrapporten.',
-                'AI föreslår paus först efter tillräckligt många klick.',
-                'Budgethöjningar begränsas till högst 20 % per ändring.',
-                'Du godkänner alltid ändringen innan den skickas till Google.',
-                'Alla ändringar sparas i audit-loggen med före- och eftervärde.',
-              ].map(text => <div key={text} className="flex gap-3"><CheckCircle2 className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" /><span>{text}</span></div>)}
-            </div>
-          </div>
-        </section>
+        <div className="rounded-2xl border bg-primary/5 p-5 flex gap-4">
+          <Bot className="h-6 w-6 text-primary shrink-0" />
+          <div><p className="font-semibold">Nästa nivå: riktig Google Ads-koppling</p><p className="text-sm text-muted-foreground mt-1">När OAuth, customer-ID och developer token är anslutna kan samma formulär skapa kampanjer direkt, hämta resultat och låta AI föreslå ändringar som du godkänner.</p></div>
+        </div>
       </div>
     </AdminLayout>
   )
 }
 
-const Metric = ({ icon: Icon, label, value }: { icon: typeof Target; label: string; value: string }) => (
-  <div className="rounded-xl border bg-card p-4">
-    <div className="flex items-center gap-2 text-sm text-muted-foreground"><Icon className="h-4 w-4" />{label}</div>
-    <p className="font-display text-2xl font-bold mt-2">{value}</p>
+const Panel = ({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) => (
+  <section className="rounded-2xl border bg-card p-5 md:p-6">
+    <h2 className="font-display text-xl font-semibold">{title}</h2>
+    {subtitle && <p className="text-sm text-muted-foreground mt-1 mb-5">{subtitle}</p>}
+    <div className="space-y-4">{children}</div>
+  </section>
+)
+
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => <div className="space-y-1.5"><Label>{label}</Label>{children}</div>
+
+const LimitedInput = ({ value, max, onChange }: { value: string; max: number; onChange: (value: string) => void }) => (
+  <div><Input value={value} onChange={e => onChange(e.target.value)} /><CharacterCount value={value} max={max} /></div>
+)
+
+const EditableAsset = ({ label, value, max, textarea = false, onChange, onRemove }: { label: string; value: string; max: number; textarea?: boolean; onChange: (value: string) => void; onRemove: () => void }) => (
+  <div className="rounded-xl border p-3 relative">
+    <Label className="text-xs">{label}</Label>
+    {textarea ? <Textarea className="mt-2 min-h-[90px] pr-9" value={value} onChange={e => onChange(e.target.value)} /> : <Input className="mt-2 pr-9" value={value} onChange={e => onChange(e.target.value)} />}
+    <Button size="icon" variant="ghost" className="absolute top-1 right-1 h-8 w-8" onClick={onRemove}><Trash2 className="h-4 w-4" /></Button>
+    <CharacterCount value={value} max={max} />
   </div>
 )
 
-const RecommendationCard = ({ item }: { item: Recommendation }) => {
-  const styles = item.level === 'good'
-    ? 'border-emerald-200 bg-emerald-50/60'
-    : item.level === 'warning'
-      ? 'border-amber-200 bg-amber-50/60'
-      : 'border-primary/30 bg-primary/5'
-  const Icon = item.level === 'good' ? CheckCircle2 : item.level === 'warning' ? AlertTriangle : Sparkles
-  return (
-    <div className={`rounded-xl border p-5 ${styles}`}>
-      <div className="flex gap-3">
-        <Icon className="h-5 w-5 mt-0.5 shrink-0" />
-        <div><h3 className="font-semibold">{item.title}</h3><p className="text-sm text-muted-foreground mt-1">{item.detail}</p><p className="text-sm font-medium mt-3">Gör så här: {item.action}</p></div>
-      </div>
-    </div>
-  )
+const CharacterCount = ({ value, max }: { value: string; max: number }) => {
+  const valid = value.length <= max
+  return <div className={`text-xs mt-1 flex items-center gap-1 ${valid ? 'text-muted-foreground' : 'text-destructive font-semibold'}`}>{valid && <Check className="h-3 w-3" />}{value.length}/{max} tecken</div>
 }
 
-const Checklist = ({ done = false, title, detail }: { done?: boolean; title: string; detail: string }) => (
-  <div className="flex gap-3">
-    {done ? <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" /> : <div className="h-5 w-5 rounded-full border-2 border-muted-foreground/30 shrink-0" />}
-    <div><p className="text-sm font-medium">{title}</p><p className="text-xs text-muted-foreground mt-0.5">{detail}</p></div>
-  </div>
+const CopyBox = ({ label, value, onCopy }: { label: string; value: string; onCopy: () => void }) => (
+  <div className="rounded-xl bg-muted/50 p-3"><p className="text-xs font-semibold mb-2">{label}</p><div className="flex gap-2"><Input readOnly value={value} className="font-mono text-xs" /><Button size="icon" variant="outline" onClick={onCopy}><Clipboard className="h-4 w-4" /></Button></div></div>
+)
+
+const CopyAllButton = ({ value, label, onCopy }: { value: string; label: string; onCopy: (value: string, label: string) => void }) => (
+  <Button variant="secondary" className="mt-4 gap-2" onClick={() => onCopy(value, label)}><Clipboard className="h-4 w-4" /> {label}</Button>
 )
 
 export default AdminAdsAI
