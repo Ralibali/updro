@@ -5,6 +5,7 @@ import { ARTICLES } from './seoArticles'
 import { TOOLS } from './seoTools'
 import { PRICE_GUIDES } from './priceGuideData'
 import { CITY_CATEGORY_DEEP } from './seoCityCategoryContent'
+import { CITY_DEEP } from './seoCityContent'
 
 export const SITE_URL = 'https://updro.se'
 export type SitemapSection = 'main' | 'cities' | 'articles' | 'tools' | 'comparisons'
@@ -77,8 +78,9 @@ const serviceRoutes = (): StaticSeoRoute[] => SEO_PAGES.flatMap((page: any) => [
 
 const cityRoutes = (): StaticSeoRoute[] => CITIES.flatMap((city: any) => {
   const serviceLinks = SERVICE_CATEGORIES.map((service: any) => ({ label: `${service.shortName || service.name} i ${city.name}`, href: `/byraer/${city.slug}/${service.slug}` }))
+  const cityDeep = CITY_DEEP[city.slug]
   return [
-    { path: `/byraer/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(`Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, priority: 0.8, changefreq: 'weekly' as const, lastmod: today(), links: serviceLinks },
+    { path: `/byraer/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(cityDeep?.intro || `Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, priority: 0.8, changefreq: 'weekly' as const, lastmod: today(), links: serviceLinks, faq: cityDeep?.faq?.slice(0, 5) },
     ...SERVICE_CATEGORIES.map((service: any) => {
       const deep = CITY_CATEGORY_DEEP[`${city.slug}/${service.slug}`]
       const noindex = !shouldIndexCityService(city.slug, service.slug)

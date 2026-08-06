@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, Trophy } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
+import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const ComparisonPage = () => {
   const location = useLocation()
@@ -22,6 +23,8 @@ const ComparisonPage = () => {
     }
     window.scrollTo(0, 0)
   }, [page])
+
+  if (page) mergeDeep(page, `/${page.slug}`)
 
   if (!page) return <NotFound />
 

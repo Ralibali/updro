@@ -11,6 +11,7 @@ import NotFound from '@/pages/NotFound'
 import AuthorBio from '@/components/shared/AuthorBio'
 import ShareButtons from '@/components/shared/ShareButtons'
 import { trackLeadStarted } from '@/lib/analytics'
+import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const ArticleCTA = () => (
   <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))] my-10">
@@ -113,6 +114,8 @@ const ArticlePage = () => {
       </div>
     )
   }
+  if (page) mergeDeep(page, `/artiklar/${page.slug}`)
+
   if (!page) return <NotFound />
 
   const updatedDate = page.updatedDate || page.publishedDate
