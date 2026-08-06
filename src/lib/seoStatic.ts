@@ -80,23 +80,22 @@ const cityRoutes = (): StaticSeoRoute[] => CITIES.flatMap((city: any) => {
   return [
     { path: `/byraer/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(`Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, priority: 0.8, changefreq: 'weekly' as const, lastmod: today(), links: serviceLinks },
     ...SERVICE_CATEGORIES.map((service: any) => {
+      const deep = CITY_CATEGORY_DEEP[`${city.slug}/${service.slug}`]
       const noindex = !shouldIndexCityService(city.slug, service.slug)
       const relatedServices = SERVICE_CATEGORIES.filter((item: any) => item.slug !== service.slug).slice(0, 5).map((item: any) => ({ label: `${item.name} i ${city.name}`, href: `/byraer/${city.slug}/${item.slug}` }))
       const relatedCities = CITIES.filter((item: any) => item.slug !== city.slug).slice(0, 5).map((item: any) => ({ label: `${service.name} i ${item.name}`, href: `/byraer/${item.slug}/${service.slug}` }))
       return {
         path: `/byraer/${city.slug}/${service.slug}`,
-        title: `${service.name}-byrå i ${city.name} – jämför offerter | Updro`,
-        description: trunc(`Hitta ${service.name.toLowerCase()}-byrå i ${city.name}. ${service.description} Lokal kontext: ${city.techDescription}`),
-        h1: `${service.name}-byrå i ${city.name}`,
+        title: deep?.title || `${service.name}-byrå i ${city.name} – jämför offerter | Updro`,
+        description: trunc(deep?.metaDesc || `Hitta ${service.name.toLowerCase()}-byrå i ${city.name}. ${service.description} Lokal kontext: ${city.techDescription}`),
+        h1: deep?.h1 || `${service.name}-byrå i ${city.name}`,
         priority: noindex ? 0.2 : 0.7,
         changefreq: 'monthly' as const,
         lastmod: today(),
         noindex,
         links: [...relatedServices, ...relatedCities],
-        faq: [
-          { q: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, a: 'Priset beror på omfattning, senioritet och leveransmodell. En tydlig brief gör offerterna lättare att jämföra.' },
-          { q: `Måste byrån finnas i ${city.name}?`, a: 'Nej. Lokal närvaro kan vara värdefull, men många digitala projekt levereras effektivt på distans.' },
-        ],
+        // Endast unikt FAQ-innehåll – generiska mallsvar ger dubblettschema
+        faq: deep?.faq?.slice(0, 5),
       }
     }),
   ]
