@@ -11,6 +11,7 @@ import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 import { findCityServicePage } from '@/lib/seoCities'
+import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const SubPage = () => {
   const { category, sub } = useParams<{ category: string; sub: string }>()
@@ -100,6 +101,8 @@ const SubPage = () => {
       </div>
     )
   }
+
+  if (pillar && page) mergeDeep(page, `/${pillar.categorySlug}/${page.slug}`)
 
   if (!pillar || !page) return <NotFound />
 
