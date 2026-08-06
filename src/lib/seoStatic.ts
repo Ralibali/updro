@@ -79,8 +79,7 @@ const serviceRoutes = (): StaticSeoRoute[] => SEO_PAGES.flatMap((page: any) => [
 const cityRoutes = (): StaticSeoRoute[] => CITIES.flatMap((city: any) => {
   const serviceLinks = SERVICE_CATEGORIES.map((service: any) => ({ label: `${service.shortName || service.name} i ${city.name}`, href: `/byraer/${city.slug}/${service.slug}` }))
   return [
-    { path: `/stader/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(`Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, priority: 0.7, changefreq: 'weekly' as const, lastmod: today(), links: serviceLinks },
-    { path: `/byraer/${city.slug}`, title: `Byråer i ${city.name} – webb, SEO och marknadsföring | Updro`, description: trunc(`Jämför byråer i ${city.name} inom webb, SEO, e-handel, annonsering och design. ${city.techDescription}`), h1: `Byråer i ${city.name}`, priority: 0.8, changefreq: 'weekly' as const, lastmod: today(), links: serviceLinks },
+    { path: `/byraer/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(`Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, priority: 0.8, changefreq: 'weekly' as const, lastmod: today(), links: serviceLinks },
     ...SERVICE_CATEGORIES.map((service: any) => {
       const noindex = !shouldIndexCityService(city.slug, service.slug)
       const relatedServices = SERVICE_CATEGORIES.filter((item: any) => item.slug !== service.slug).slice(0, 5).map((item: any) => ({ label: `${item.name} i ${city.name}`, href: `/byraer/${city.slug}/${item.slug}` }))

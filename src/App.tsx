@@ -51,6 +51,12 @@ const RedirectToArtikel = () => {
   return <Navigate to={slug ? `/artiklar/${slug}` : '/artiklar'} replace />;
 };
 
+// /stader/:city är konsoliderad till /byraer/:stad (dubblettinnehåll)
+const RedirectToByraerStad = () => {
+  const { city } = useParams<{ city: string }>();
+  return <Navigate to={city ? `/byraer/${city}` : '/stader'} replace />;
+};
+
 // /byraer/:stad renders the city page when the slug is a known city,
 // otherwise it is a legacy agency profile URL -> redirect to /byra/:slug
 const CityOrAgencyRedirect = () => {
@@ -62,7 +68,6 @@ const CityOrAgencyRedirect = () => {
 
 const PillarPage = lazy(() => import("./components/seo/PillarPage"));
 const SubPage = lazy(() => import("./components/seo/SubPage"));
-const CityHubPage = lazy(() => import("./components/seo/CityHubPage"));
 const CitiesIndex = lazy(() => import("./components/seo/CitiesIndex"));
 const ComparisonPage = lazy(() => import("./components/seo/ComparisonPage"));
 const ComparisonsIndex = lazy(() => import("./components/seo/ComparisonsIndex"));
@@ -180,7 +185,7 @@ const App = () => (
         <Route path="/verktyg" element={<ToolsIndex />} />
         <Route path="/verktyg/:slug" element={<ToolPage />} />
         <Route path="/stader" element={<CitiesIndex />} />
-        <Route path="/stader/:city" element={<CityHubPage />} />
+        <Route path="/stader/:city" element={<RedirectToByraerStad />} />
         <Route path="/jamfor" element={<ComparisonsIndex />} />
         <Route path="/byraer/kategori/:kategori" element={<AgencyCategoryPage />} />
         <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
