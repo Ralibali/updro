@@ -51,14 +51,11 @@ const RedirectToArtikel = () => {
   return <Navigate to={slug ? `/artiklar/${slug}` : '/artiklar'} replace />;
 };
 
-// /stader/:city är konsoliderad till /byraer/:stad (dubblettinnehåll)
 const RedirectToByraerStad = () => {
   const { city } = useParams<{ city: string }>();
   return <Navigate to={city ? `/byraer/${city}` : '/stader'} replace />;
 };
 
-// /byraer/:stad renders the city page when the slug is a known city,
-// otherwise it is a legacy agency profile URL -> redirect to /byra/:slug
 const CityOrAgencyRedirect = () => {
   const { stad } = useParams<{ stad: string }>();
   const isCity = CITIES.some(c => c.slug === stad);
@@ -114,6 +111,7 @@ const AdminVisitors = lazy(() => import("./pages/admin/AdminVisitors"));
 const AdminMarketplaceHealth = lazy(() => import("./pages/admin/AdminMarketplaceHealth"));
 const AdminFunctionLogs = lazy(() => import("./pages/admin/AdminFunctionLogs"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
+const AdminAdsAI = lazy(() => import("./pages/admin/AdminAdsAI"));
 
 const queryClient = new QueryClient();
 const PageLoader = () => <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
@@ -222,6 +220,7 @@ const App = () => (
         <Route path="/admin/besokare" element={<ProtectedRoute role="admin"><AdminVisitors /></ProtectedRoute>} />
         <Route path="/admin/marketplace-health" element={<ProtectedRoute role="admin"><AdminMarketplaceHealth /></ProtectedRoute>} />
         <Route path="/admin/edge-funktioner" element={<ProtectedRoute role="admin"><AdminFunctionLogs /></ProtectedRoute>} />
+        <Route path="/admin/ads-ai" element={<ProtectedRoute role="admin"><AdminAdsAI /></ProtectedRoute>} />
         <Route path="/:category" element={<PillarPage />} />
         <Route path="/:category/:sub" element={<SubPage />} />
         <Route path="*" element={<NotFound />} />
