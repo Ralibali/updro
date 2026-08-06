@@ -69,7 +69,27 @@ const baseRoutes = (): StaticSeoRoute[] => [
   { path: '/integritetspolicy', title: 'Integritetspolicy | Updro', description: 'Så hanterar Updro personuppgifter, cookies och dataskydd.', h1: 'Integritetspolicy', priority: 0.3, changefreq: 'yearly' },
   { path: '/villkor', title: 'Villkor | Updro', description: 'Villkor för att använda Updros marknadsplats och offerttjänst.', h1: 'Villkor', priority: 0.3, changefreq: 'yearly' },
   { path: '/cookies', title: 'Cookiepolicy | Updro', description: 'Information om hur Updro använder cookies och liknande tekniker.', h1: 'Cookiepolicy', priority: 0.3, changefreq: 'yearly' },
+  { path: '/partna-alternativ', title: 'Alternativ till Partna – jämför Updro och Partna', description: 'Jämför Updro och Partna för digitala uppdrag: antal byråer per uppdrag, pay-per-lead, månadskort, verifiering och marknadsläge.', h1: 'Updro eller Partna – vad passar bäst?', priority: 0.9, changefreq: 'weekly', lastmod: today(), links: [{ label: 'Alla jämförelser', href: '/jamfor' }, { label: 'För byråer: byt från Partna', href: '/for-byraer/byt-fran-partna' }] },
+  { path: '/swivrr-alternativ', title: 'Alternativ till Swivrr – jämför Updro och Swivrr', description: 'Jämför Updro och Swivrr för digitala uppdrag: antal offerter, byråpriser, AI-brief, prisuppskattning, prisguider och byråprofiler.', h1: 'Updro eller Swivrr – vad passar bäst?', priority: 0.8, changefreq: 'monthly', lastmod: today(), links: [{ label: 'Alla jämförelser', href: '/jamfor' }] },
+  { path: '/for-byraer/byt-fran-partna', title: 'Testa Updro som alternativ till Partna – för digitala byråer', description: 'Jämför pris, konkurrens per uppdrag och produktflöde. Börja med fem kostnadsfria lead-krediter och mät faktisk kostnad per vunnen affär.', h1: 'Testa Updro parallellt – byt först när siffrorna säger det', priority: 0.8, changefreq: 'monthly', lastmod: today(), links: [{ label: 'Saklig jämförelse Updro och Partna', href: '/partna-alternativ' }] },
+  { path: '/support', title: 'Support | Updro', description: 'Kontakta Updros support för hjälp med uppdrag, offerter, konto eller fakturering.', h1: 'Support', priority: 0.4, changefreq: 'monthly', lastmod: today() },
+  { path: '/rapportera-innehall', title: 'Rapportera innehåll | Updro', description: 'Anmäl misstänkt olagligt innehåll eller överklaga ett modereringsbeslut.', h1: 'Rapportera innehåll eller överklaga beslut', priority: 0.3, changefreq: 'yearly' },
+  { path: '/integritet/prospektering', title: 'Integritetsinformation för prospektering | Updro', description: 'GDPR-information om Updros begränsade research av offentliga företagswebbplatser.', h1: 'Integritetsinformation för företagsprospektering', priority: 0.3, changefreq: 'yearly' },
 ]
+
+const categoryRoutes = (): StaticSeoRoute[] => SERVICE_CATEGORIES.map(category => ({
+  path: `/byraer/kategori/${category.slug}`,
+  title: `${category.name}-byråer i Sverige – jämför offerter | Updro`,
+  description: trunc(`${category.description} Beskriv projektet gratis och jämför högst tre relevanta offerter.`),
+  h1: `${category.name}-byråer i Sverige`,
+  priority: 0.7,
+  changefreq: 'weekly' as const,
+  lastmod: today(),
+  links: [
+    { label: 'Alla byråer', href: '/byraer' },
+    ...SERVICE_CATEGORIES.filter(other => other.slug !== category.slug).slice(0, 6).map(other => ({ label: `${other.name}-byråer`, href: `/byraer/kategori/${other.slug}` })),
+  ],
+}))
 
 const serviceRoutes = (): StaticSeoRoute[] => SEO_PAGES.flatMap((page: any) => [
   { path: `/${page.categorySlug}`, title: page.metaTitle, description: trunc(page.metaDesc || page.intro), h1: page.h1 || page.categoryName, priority: 0.9, changefreq: 'weekly', lastmod: today(), links: (page.subPages || []).slice(0, 8).map((subPage: any) => ({ label: subPage.h1 || subPage.title, href: `/${page.categorySlug}/${subPage.slug}` })), faq: (page.faq || []).slice(0, 5) },
@@ -112,7 +132,7 @@ const contentRoutes = (): StaticSeoRoute[] => [
 
 export const getAllStaticSeoRoutes = () => {
   const map = new Map<string, StaticSeoRoute>()
-  for (const route of [...baseRoutes(), ...serviceRoutes(), ...cityRoutes(), ...contentRoutes()]) map.set(route.path, route)
+  for (const route of [...baseRoutes(), ...serviceRoutes(), ...cityRoutes(), ...categoryRoutes(), ...contentRoutes()]) map.set(route.path, route)
   return [...map.values()]
 }
 
@@ -122,8 +142,8 @@ export const getNoindexSeoRoutes = () => getAllStaticSeoRoutes().filter(route =>
 const section = (path: string): SitemapSection => {
   if (path.startsWith('/artiklar/')) return 'articles'
   if (path.startsWith('/verktyg/')) return 'tools'
-  if (path === '/jamfor' || path.includes('jamfor') || path.startsWith('/basta-') || path.includes('alternativ')) return 'comparisons'
   if (path.startsWith('/byraer/') || path.startsWith('/stader/')) return 'cities'
+  if (path === '/jamfor' || path.includes('jamfor') || path.startsWith('/basta-') || path.includes('alternativ') || path.includes('partna') || path.includes('swivrr')) return 'comparisons'
   return 'main'
 }
 
