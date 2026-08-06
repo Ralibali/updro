@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCityBySlug, SEO_AGENCY_CATEGORIES } from '@/lib/seoAgencyData'
 import { CITIES, SERVICE_CATEGORIES, getNearbyCities } from '@/lib/seoCities'
+import { getCityDeep } from '@/lib/seoCityContent'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
@@ -18,6 +19,7 @@ const AgencyCityPage = () => {
   const { stad } = useParams<{ stad: string }>()
   const city = getCityBySlug(stad || '')
   const cityData = CITIES.find(c => c.slug === stad)
+  const deep = getCityDeep(stad || '')
   const [agencies, setAgencies] = useState<any[]>([])
   const [search, setSearch] = useState('')
 
@@ -45,8 +47,19 @@ const AgencyCityPage = () => {
       dateModified: LAST_UPDATED,
       inLanguage: 'sv-SE',
     })
+    if (deep?.faq?.length) {
+      setJsonLd('city-faq-jsonld', {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: deep.faq.map(f => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      })
+    }
     window.scrollTo(0, 0)
-  }, [city])
+  }, [city, deep])
 
   useEffect(() => {
     if (!city) return
@@ -100,7 +113,7 @@ const AgencyCityPage = () => {
             Digitala byråer i {city.name} – jämför offerter 2026
           </h1>
           <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-            {cityData?.techDescription || city.description} Via Updro jämför du offerter från kvalitetssäkrade byråer i {city.name} – kostnadsfritt och utan förpliktelser.
+            {deep?.intro || `${cityData?.techDescription || city.description} Via Updro jämför du offerter från kvalitetssäkrade byråer i ${city.name} – kostnadsfritt och utan förpliktelser.`}
           </p>
 
           <div className="mt-7 flex flex-wrap gap-3">
@@ -185,6 +198,42 @@ const AgencyCityPage = () => {
           </div>
         )}
       </section>
+
+      {/* Djupinnehåll om stadens byråmarknad */}
+      {deep && (
+        <section className="container pb-16">
+          <div className="max-w-3xl space-y-10">
+            {deep.sections.map(s => (
+              <article key={s.heading}>
+                <h2 className="font-display text-2xl font-bold mb-4">{s.heading}</h2>
+                <div className="space-y-4 text-muted-foreground leading-relaxed">
+                  {s.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+              </article>
+            ))}
+            <p className="text-xs text-muted-foreground border-t pt-4">
+              Pris- och marknadsuppgifter på denna sida är uppskattningar baserade på vanligt förekommande nivåer i branschen och kan avvika från enskilda offerter.
+            </p>
+          </div>
+        </section>
+      )}
+
+      {/* FAQ */}
+      {deep?.faq?.length ? (
+        <section className="container pb-16">
+          <div className="max-w-3xl">
+            <h2 className="font-display text-2xl font-bold mb-6">Vanliga frågor om byråer i {city.name}</h2>
+            <div className="space-y-4">
+              {deep.faq.map(f => (
+                <div key={f.q} className="bg-card border rounded-xl p-5">
+                  <h3 className="font-display font-semibold mb-2">{f.q}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <SEOLeadCTA categoryName={`digitala tjänster i ${city.name}`} />
 
