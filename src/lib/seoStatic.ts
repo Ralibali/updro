@@ -4,6 +4,7 @@ import { COMPARISON_PAGES } from './seoComparisons'
 import { ARTICLES } from './seoArticles'
 import { TOOLS } from './seoTools'
 import { PRICE_GUIDES } from './priceGuideData'
+import { CITY_CATEGORY_DEEP } from './seoCityCategoryContent'
 
 export const SITE_URL = 'https://updro.se'
 export type SitemapSection = 'main' | 'cities' | 'articles' | 'tools' | 'comparisons'
@@ -29,13 +30,11 @@ const trunc = (value: string, max = 155) => clean(value).length <= max ? clean(v
 const words = (slug: string) => slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 const esc = (value = '') => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-const PRIMARY_CITIES = new Set(['stockholm', 'goteborg', 'malmo', 'uppsala', 'linkoping', 'vasteras', 'orebro', 'norrkoping', 'helsingborg', 'jonkoping', 'umea', 'lund'])
-const PRIMARY_SERVICES = new Set(['webbutveckling', 'seo', 'ehandel', 'digital-marknadsforing', 'google-ads', 'ux-ui-design'])
-
 export const shouldIndexCityService = (citySlug: string, serviceSlug: string) => {
   const city = CITIES.find(cityItem => cityItem.slug === citySlug)
   const service = SERVICE_CATEGORIES.find(serviceItem => serviceItem.slug === serviceSlug)
-  return Boolean(city && service && clean(city.techDescription).length > 80 && clean(service.description).length > 120 && (PRIMARY_CITIES.has(city.slug) || PRIMARY_SERVICES.has(service.slug)))
+  if (!city || !service) return false
+  return Boolean(CITY_CATEGORY_DEEP[`${citySlug}/${serviceSlug}`])
 }
 
 const baseRoutes = (): StaticSeoRoute[] => [
