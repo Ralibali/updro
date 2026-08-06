@@ -96,7 +96,7 @@ const Index = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Updro – Hitta rätt byrå utan massutskick',
-      description: 'Se prisspannet innan du skickar. Beskriv projektet på två minuter – Updro granskar briefen och högst tre relevanta svenska byråer kan lämna offert. Gratis för beställare.',
+      description: 'Beskriv projektet på två minuter. Updro granskar uppdraget och högst tre relevanta svenska byråer lämnar offert. Gratis för beställare.',
       canonical: 'https://updro.se/',
     })
     setJsonLd('howto-jsonld', howItWorksSchema)
