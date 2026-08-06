@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { CITIES } from '@/lib/seoCities'
+import { CITY_CATEGORY_DEEP } from '@/lib/seoCityCategoryContent'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { ArrowRight, ChevronRight, MapPin } from 'lucide-react'
@@ -52,6 +53,19 @@ const CitiesIndex = () => {
               <span className="text-xs text-primary mt-3 inline-flex items-center gap-1">
                 Se alla tjänster <ArrowRight className="h-3 w-3" />
               </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Internlänkning till prioriterade djupsidor (målsökord från konkurrentanalys) */}
+      <section className="container pb-12">
+        <h2 className="font-display text-xl font-semibold mb-4">Mest sökta byråtjänster just nu</h2>
+        <div className="flex flex-wrap gap-2 max-w-4xl">
+          {Object.entries(CITY_CATEGORY_DEEP).map(([key, content]) => (
+            <Link key={key} to={`/byraer/${key}`}
+              className="text-sm px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-colors">
+              {content.h1}
             </Link>
           ))}
         </div>

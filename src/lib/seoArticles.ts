@@ -496,6 +496,36 @@ export const ARTICLES: ArticlePage[] = [
       { label: 'SEO-guide för företag', href: '/artiklar/seo-guide-foretag' },
     ]
   },
+  {
+    slug: 'skapa-hemsida-foretag-guide',
+    metaTitle: 'Skapa hemsida för företag – komplett guide 2026 | Updro',
+    metaDesc: 'Ska du skapa en hemsida för företaget? Komplett guide 2026: kostnader, plattformsval, steg för steg-process och vanliga misstag att undvika.',
+    h1: 'Skapa hemsida för företag – komplett guide 2026',
+    category: 'Webbutveckling',
+    publishedDate: '2026-08-06',
+    intro: 'Att skapa en hemsida för företaget är en av de viktigaste investeringarna du gör – och en av de lättaste att göra fel. I den här guiden går vi igenom hela processen: vad det kostar, vilken plattform du ska välja, hur du hittar rätt byrå och vilka misstag som kostar företag mest pengar.',
+    sections: [
+      { heading: 'Steg 1: Bestäm vad hemsidan ska åstadkomma', content: 'Innan du pratar med en enda byrå: skriv ner vad hemsidan ska göra för affären. "Synas" är inte ett mål – "fem nya förfrågningar i veckan" eller "tio procent av försäljningen online" är det.\n\nDe tre vanligaste typerna av företagshemsidor:\n\n- **Visitkortssajt** (3–8 sidor): presenterar företaget, bygger förtroende, tar emot förfrågningar\n- **Säljsajt**: optimerad för konvertering med landningssidor, case och tydliga kontaktvägar\n- **Webbutik**: säljer produkter direkt med betalning, frakt och lagerkoppling\n\nVilken typ du behöver styr både budget och val av plattform.' },
+      { heading: 'Steg 2: Välj plattform', content: '| Plattform | Passar för | Prisnivå |\n|---|---|---|\n| WordPress | De flesta företag, mycket innehåll | 20 000–80 000 kr |\n| Webflow | Designkänsliga sajter utan avancerade funktioner | 25 000–90 000 kr |\n| Shopify | E-handel, enkelt till medelstort sortiment | 30 000–120 000 kr |\n| WooCommerce | E-handel med WordPress-flexibilitet | 30 000–100 000 kr |\n| Custom-byggt | Unika funktioner, systemintegrationer | 80 000–500 000+ kr |\n\n**Tumregeln:** Välj inte custom-byggt om inte en standardplattform tydligt brister. De flesta företag klarar sig utmärkt på WordPress eller Shopify – och slipper bli beroende av en enda utvecklare.' },
+      { heading: 'Steg 3: Förstå vad det kostar', content: 'Priset bestäms av tre saker: design, funktion och innehåll.\n\n- **Enkel landningssida:** 5 000–15 000 kr\n- **Företagshemsida (5–10 sidor):** 15 000–50 000 kr\n- **Hemsida med unik design och CMS:** 40 000–100 000 kr\n- **Webbutik:** 30 000–200 000 kr\n\nGlöm inte de löpande kostnaderna: hosting (200–2 000 kr/månad), domän (cirka 150 kr/år) och underhåll (500–3 000 kr/månad). En hemsida är inte ett engångsköp – den är en kanal som behöver skötas.\n\nDet billigaste alternativet är sällan billigast i slutänden. En sajt för 8 000 kr som inte genererar en enda förfrågan är dyrare än en sajt för 45 000 kr som betalar sig på tre månader.' },
+      { heading: 'Steg 4: Hitta rätt byrå eller frilansare', content: 'Du har tre alternativ, med tydliga trade-offs:\n\n**Gör det själv** (Wix, Squarespace, WordPress-mall): 0–5 000 kr men kräver din tid. Passar enbart för enklaste möjliga visitkortssajt.\n\n**Frilansare:** 500–1 000 kr/timme. Ofta bästa värdet för mindre projekt, men kvaliteten varierar enormt – be alltid om referenser.\n\n**Byrå:** 900–2 000 kr/timme men med process, projektledning och ansvar. Rätt val när sajten är affärskritisk.\n\nOavsett väg: jämför minst tre offerter. Prisspannet för samma uppdrag är ofta 100–200 procent, och utan jämförelse vet du inte var marknadspriset ligger. Via Updro beskriver du projektet en gång och får upp till tre offerter från granskade byråer – gratis.' },
+      { heading: 'Steg 5: Innehållet – där de flesta projekt fastnar', content: 'Den vanligaste orsaken till försenade webbprojekt är inte byrån – det är att kunden inte levererar texter och bilder. Börja med innehållet direkt:\n\n1. **Startsida:** vad du gör, för vem, varför du – på tio sekunder\n2. **Tjänster/produkter:** en sida per huvudområde, skriven för kundens problem\n3. **Om oss:** människorna bakom, gärna med riktiga bilder\n4. **Referenser/case:** konkreta resultat med siffror\n5. **Kontakt:** kort formulär, telefon och e-post – inte bara ett formulär\n\nProfessionell copywriting kostar 500–2 000 kr per sida och är ofta den bästa investeringen i hela projektet.' },
+      { heading: 'Vanliga misstag – och hur du undviker dem', content: '**1. Börja med design istället för mål.** En vacker sajt som inte konverterar är ett konstverk, inte ett verktyg.\n\n**2. Glömma ägarskapet.** Domän, hosting, publiceringsverktyg och allt material ska stå på dig. Skriftliggör det innan start.\n\n**3. Ingen spårning.** Installera analyseverktyg från dag ett – annars vet du aldrig om sajten fungerar.\n\n**4. Lansa och glömma.** En hemsida behöver uppdateras löpande för att ranka i Google och kännas aktuell.\n\n**5. En offert.** Jämför alltid minst tre – det är det enskilt enklaste sättet att spara pengar.' },
+    ],
+    faq: [
+      { q: 'Vad kostar det att skapa en hemsida för företaget?', a: 'En professionell företagshemsida kostar typiskt 15 000–50 000 kr beroende på omfattning och design. Enklare landningssidor börjar runt 5 000 kr, webbutiker runt 30 000 kr. Tillkommer löpande kostnader på cirka 1 000–5 000 kr i månaden för hosting och underhåll.' },
+      { q: 'Kan jag skapa en företagshemsida själv?', a: 'Ja, med verktyg som Wix eller WordPress kan du bygga en enkel sajt själv för några hundralappar i månaden. Det passar för en enkel visitkortssajt – men räkna med att lägga 20–40 timmar av egen tid, och att resultatet sällan håller samma standard som ett proffsjobb.' },
+      { q: 'Hur lång tid tar det att skapa en företagshemsida?', a: 'En enkel sajt tar tre till sex veckor, en större sajt med unik design åtta till sexton veckor. Den vanligaste flaskhalsen är innehållet – har du texter och bilder klara innan start går projektet markant snabbare.' },
+      { q: 'Vilken plattform är bäst för en företagshemsida?', a: 'WordPress är det vanligaste och mest flexibla valet för de flesta företag. Webflow passar designkänsliga sajter, Shopify är standardvalet för e-handel. Välj custom-byggt enbart om du har behov som standardplattformarna inte klarar.' },
+      { q: 'Behöver jag anlita en byrå eller räcker en frilansare?', a: 'En frilansare räcker ofta för mindre projekt och kostar hälften så mycket. En byrå är rätt val när sajten är affärskritisk och du behöver process, projektledning och någon som tar helhetsansvar. Jämför alltid minst tre offerter oavsett väg.' },
+    ],
+    relatedLinks: [
+      { label: 'Vad kostar en hemsida 2026?', href: '/artiklar/vad-kostar-en-hemsida-2026' },
+      { label: 'Hitta rätt webbyrå', href: '/hitta-webbyra' },
+      { label: 'Så väljer man webbyrå', href: '/artiklar/hur-valjer-man-webbyra' },
+      { label: 'Publicera ditt uppdrag gratis', href: '/publicera' },
+    ],
+  },
 ]
 
 /** Mark a few existing articles as the comparison type */

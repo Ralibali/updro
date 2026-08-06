@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCityBySlug, getCategoryBySlug, getPriorityCombo, SEO_AGENCY_CATEGORIES, PRIMARY_CATEGORY_SLUGS } from '@/lib/seoAgencyData'
 import { CITIES, SERVICE_CATEGORIES, getCityIntroVariant, getPriceCopy, getProjectExamples, getNearbyCities } from '@/lib/seoCities'
+import { getCityCategoryDeep } from '@/lib/seoCityCategoryContent'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
@@ -25,10 +26,11 @@ const AgencyCityCategoryPage = () => {
 
   useEffect(() => {
     if (!city || !category) return
+    const deep = getCityCategoryDeep(city.slug, category.slug)
     const url = `https://updro.se/byraer/${city.slug}/${category.slug}`
     setSEOMeta({
-      title: `${category.name}-byrå i ${city.name} – jämför offerter 2026 | Updro`,
-      description: `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Jämför offerter från kvalitetssäkrade byråer kostnadsfritt. Svar inom 24 timmar.`,
+      title: deep?.title ?? `${category.name}-byrå i ${city.name} – jämför offerter 2026 | Updro`,
+      description: deep?.metaDesc ?? `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Jämför offerter från kvalitetssäkrade byråer kostnadsfritt. Svar inom 24 timmar.`,
       canonical: url,
     })
     setBreadcrumb([
@@ -75,7 +77,8 @@ const AgencyCityCategoryPage = () => {
   // Inject FAQ schema once we have data
   useEffect(() => {
     if (!city || !category) return
-    const faq = buildFaq(city.name, category.name, kategori || '')
+    const deep = getCityCategoryDeep(city.slug, category.slug)
+    const faq = deep?.faq ?? buildFaq(city.name, category.name, kategori || '')
     setJsonLd('city-cat-faq-jsonld', {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
@@ -89,16 +92,19 @@ const AgencyCityCategoryPage = () => {
 
   if (!city || !category) return <NotFound />
 
-  // Build unique intro: prefer rich data when available, else fall back
-  const intro = cityData && serviceData
+  // Djupinnehåll för prioriterade combos (målsökord från konkurrentanalys)
+  const deep = getCityCategoryDeep(city.slug, category.slug)
+
+  // Build unique intro: deep content > rich data > fallback
+  const intro = deep?.intro ?? (cityData && serviceData
     ? getCityIntroVariant(cityData, serviceData)
-    : `${category.name}-byråer i ${city.name}. ${category.description}`
+    : `${category.name}-byråer i ${city.name}. ${category.description}`)
 
   const priceCopy = serviceData ? getPriceCopy(serviceData.slug, city.name) : null
   const projectExamples = serviceData ? getProjectExamples(serviceData.slug) : []
   const nearby = getNearbyCities(city.slug, 6)
   const otherCategories = SERVICE_CATEGORIES.filter(c => c.slug !== category.slug).slice(0, 9)
-  const faq = buildFaq(city.name, category.name, kategori || '')
+  const faq = deep?.faq ?? buildFaq(city.name, category.name, kategori || '')
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -124,7 +130,7 @@ const AgencyCityCategoryPage = () => {
             <span className="text-xs font-semibold uppercase tracking-wider">{city.name} {cityData?.region ? `· ${cityData.region}` : ''}</span>
           </div>
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">
-            {category.name}-byrå i {city.name} – jämför offerter 2026
+            {deep?.h1 ?? `${category.name}-byrå i ${city.name} – jämför offerter 2026`}
           </h1>
           <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{intro}</p>
 
@@ -152,6 +158,22 @@ const AgencyCityCategoryPage = () => {
           )}
         </div>
       </section>
+
+      {/* Djupinnehåll – unik lokal prosa för prioriterade sidor */}
+      {deep && (
+        <section className="container pb-12">
+          <div className="max-w-3xl space-y-10">
+            {deep.sections.map((s, i) => (
+              <div key={i}>
+                <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">{s.heading}</h2>
+                {s.paragraphs.map((p, j) => (
+                  <p key={j} className="text-muted-foreground leading-relaxed mt-3 first:mt-0">{p}</p>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Pris-sektion */}
       {priceCopy && (
@@ -313,7 +335,7 @@ const buildFaq = (cityName: string, categoryName: string, categorySlug: string) 
     },
     {
       q: `Hur hittar jag rätt ${categoryName.toLowerCase()}-byrå i ${cityName}?`,
-      a: `Beskriv ditt uppdrag på Updro. Vi matchar dig med upp till fem kvalitetssäkrade byråer i ${cityName} som arbetar med ${categoryName.toLowerCase()}. Du får offerter inom 24 timmar och väljer fritt – kostnadsfritt och utan förpliktelser.`,
+      a: `Beskriv ditt uppdrag på Updro. Vi matchar dig med upp till tre kvalitetssäkrade byråer i ${cityName} som arbetar med ${categoryName.toLowerCase()}. Du får offerter inom 24 timmar och väljer fritt – kostnadsfritt och utan förpliktelser.`,
     },
     {
       q: `Vad ingår i ett typiskt ${categoryName.toLowerCase()}-uppdrag?`,
