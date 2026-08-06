@@ -20,10 +20,10 @@ const ensureDataLayer = (): Gtag | null => {
 
 const injectGtagScript = () => {
   if (gtagScriptInjected || typeof document === 'undefined') return
-  if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_ID}"]`)) { gtagScriptInjected = true; return }
+  if (document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) { gtagScriptInjected = true; return }
   const script = document.createElement('script')
   script.async = true
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${ADS_ID}`
   document.head.appendChild(script)
   gtagScriptInjected = true
 }
