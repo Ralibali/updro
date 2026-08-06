@@ -18,20 +18,28 @@ const AgencyProfilePage = () => {
   const [agency, setAgency] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
   const [reviews, setReviews] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!slug) return
+    if (!slug) { setLoading(false); return }
+    let cancelled = false
     const fetchAgency = async () => {
-      const { data: sp } = await supabase.from('supplier_profiles').select('*, profiles!supplier_profiles_id_fkey(*)').eq('slug', slug).single()
+      setLoading(true)
+      const { data: sp } = await supabase.from('supplier_profiles').select('*, profiles!supplier_profiles_id_fkey(*)').eq('slug', slug).maybeSingle()
+      if (cancelled) return
       if (sp) {
         setAgency(sp)
         setProfile(sp.profiles)
-        // Fetch reviews
         const { data: revs } = await supabase.from('reviews').select('*, profiles!reviews_buyer_id_fkey(full_name, company_name)').eq('supplier_id', sp.id).order('created_at', { ascending: false })
-        if (revs) setReviews(revs)
+        if (!cancelled && revs) setReviews(revs)
+      } else {
+        setAgency(null)
+        setProfile(null)
       }
+      if (!cancelled) setLoading(false)
     }
     fetchAgency()
+    return () => { cancelled = true }
   }, [slug])
 
   useEffect(() => {

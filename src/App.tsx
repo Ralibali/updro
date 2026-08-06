@@ -12,6 +12,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
 import { COMPARISON_PAGES } from "./lib/seoComparisons";
 import { getNoindexSeoRoutes } from "./lib/seoStatic";
+import { CITIES } from "./lib/seoCities";
 import SupplierLayout from "@/components/SupplierLayout";
 import BuyerLayout from "@/components/BuyerLayout";
 
@@ -183,7 +184,7 @@ const App = () => (
         <Route path="/jamfor" element={<ComparisonsIndex />} />
         <Route path="/byraer/kategori/:kategori" element={<AgencyCategoryPage />} />
         <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
-        <Route path="/byraer/:stad" element={<AgencyCityPage />} />
+        <Route path="/byraer/:stad" element={<CityOrAgencyRedirect />} />
         <Route path="/leveranser/:tjanst" element={<ServicePage />} />
         <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
         <Route path="/admin/prospektering" element={<ProtectedRoute role="admin"><AdminProspecting /></ProtectedRoute>} />
