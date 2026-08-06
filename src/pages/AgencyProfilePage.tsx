@@ -12,6 +12,7 @@ import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
 import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
 import { setSEOMeta, setJsonLd } from '@/lib/seoHelpers'
+import NotFound from '@/pages/NotFound'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
@@ -80,13 +81,15 @@ const AgencyProfilePage = () => {
     }
   }, [agency, profile, slug])
 
-  if (!agency) return (
+  if (loading) return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></main>
       <Footer />
     </div>
   )
+
+  if (!agency) return <NotFound />
 
   return (
     <div className="min-h-screen flex flex-col">
