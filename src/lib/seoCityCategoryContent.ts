@@ -483,6 +483,366 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
       { q: 'Behöver jag en byrå i Gävle eller räcker det med distans?', a: 'Webbprojekt fungerar utmärkt på distans – det viktiga är struktur och kommunikation, inte plats. Många Gävleföretag anlitar byråer i andra städer, och Gävlebyråer har kunder i hela landet. Välj det som ger bäst kombination av pris och kompetens.' },
     ],
   },
+
+  'stockholm/webbutveckling': {
+    title: 'Webbyrå Stockholm – jämför offerter på webbutveckling Stockholm | Updro',
+    metaDesc: 'Webbyrå Stockholm: jämför offerter på webbutveckling i Stockholm från upp till tre granskade byråer. Kostnadsfritt och utan förpliktelser.',
+    h1: 'Webbyrå Stockholm – webbutveckling Stockholm',
+    intro: 'Stockholm har Sveriges djupaste utvecklarmarknad och samtidigt landets högsta timpriser. Här samsas techkonsultbolag med hundratals anställda, produktnära designstudios i Södermalms- och Hammarby-kvarteren och en lång svans av små specialistteam. Det gör att samma kravspec kan generera offerter som skiljer sig med en faktor tre – därför är jämförelsen viktigare i Stockholm än någon annanstans i landet.',
+    sections: [
+      {
+        heading: 'Prisnivå för webbutveckling i Stockholm',
+        paragraphs: [
+          'Timpriser för seniora frontend- och backendutvecklare i Stockholm ligger normalt runt 1 100–1 700 kr, och konsultbolag med förvaltningsåtagande hamnar ofta i det övre spannet. En företagswebb med egen design landar vanligtvis på 60 000–250 000 kr, medan en integrationstung plattform eller kundportal snabbt passerar en halv miljon. Det som styr priset är antalet unika mallar, mängden integrationer mot affärssystem och hur mycket innehåll som ska migreras.',
+          'Be alltid om ett takpris eller en prisbild per delleverans. Löpande räkning utan tak är vanligt i Stockholm och är den enskilt vanligaste orsaken till att budgeten spricker.',
+        ],
+      },
+      {
+        heading: 'Vilka typer av webbyråer finns i Stockholm',
+        paragraphs: [
+          'Grovt sett finns tre kategorier: större digitalbyråer och konsulthus som tar hela ansvaret men prissätter därefter, medelstora specialistbyråer på tio till trettio personer som ofta ger bäst balans mellan pris och kontinuitet, samt små team och enskilda utvecklare som är prisvärda men sårbara vid semester och sjukdom.',
+          'Fråga specifikt vilka personer som är inbokade på ditt projekt och i vilken omfattning. I Stockholm är det vanligt att seniora namn används i säljprocessen medan juniora resurser levererar.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Stockholm från övriga landet',
+        paragraphs: [
+          'Utbudet är det största i Sverige, vilket ger dig fler alternativ men också fler byråer som är fullbokade. Räkna med längre startsträcka: två till sex veckor innan ett team är ledigt är normalt under högsäsong.',
+          'Prismässigt ligger Stockholm högst i landet, ofta 20–30 procent över Göteborg och Malmö för motsvarande kompetens. Om projektet inte kräver täta fysiska möten kan du därför få mer utvecklingstid för samma budget genom att också ta in offerter från byråer utanför regionen.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en webbyrå i Stockholm?', a: 'Räkna med 1 100–1 700 kr i timmen för seniora utvecklare. En företagssajt hamnar oftast mellan 60 000 och 250 000 kr, och en plattform med inloggning och integrationer betydligt högre. Storleken på spannet beror på antal sidmallar, integrationer och hur mycket innehåll som ska flyttas – be om en nedbrytning per delleverans så blir offerterna jämförbara.' },
+      { q: 'Hur snabbt kan en Stockholmsbyrå starta?', a: 'De mest efterfrågade byråerna har ofta två till sex veckors startsträcka. Om du har en deadline bör du fråga om starttid redan i första kontakten – annars riskerar du att välja byrå och sedan vänta en månad på att arbetet faktiskt börjar.' },
+      { q: 'Är det värt att betala Stockholmspris?', a: 'Det beror på projektet. Kräver arbetet täta workshops med flera interna avdelningar är närheten värdefull. Handlar det om ren utveckling mot en färdig kravspec får du normalt samma kvalitet till lägre pris utanför regionen.' },
+      { q: 'Hur undviker jag att bli inlåst hos byrån?', a: 'Skriv in i avtalet att du äger källkod, domän och hostingkonto, och att koden ligger i ett repository du har åtkomst till. Välj också en teknik som andra utvecklare kan ta över. Utan det blir varje framtida ändring en förhandling.' },
+    ],
+  },
+
+  'stockholm/seo': {
+    title: 'SEO-byrå Stockholm – jämför offerter på SEO Stockholm | Updro',
+    metaDesc: 'SEO-byrå Stockholm: jämför offerter på SEO i Stockholm från upp till tre granskade byråer. Kostnadsfritt och utan bindningstid.',
+    h1: 'SEO-byrå Stockholm – SEO Stockholm',
+    intro: 'Stockholm är den svåraste SEO-marknaden i Sverige, helt enkelt för att nästan alla nationella aktörer sitter här och slåss om samma sökord. En SEO-byrå i Stockholm arbetar därför sällan med enkla lokala sökord utan med bredare konkurrensutsatta termer, vilket kräver längre horisont och mer innehållsarbete än i mindre städer.',
+    sections: [
+      {
+        heading: 'Prisnivå för SEO i Stockholm',
+        paragraphs: [
+          'Löpande SEO-arbete i Stockholm ligger vanligtvis på 12 000–40 000 kr i månaden för små och medelstora företag, och betydligt högre för e-handel med stora sortiment. En engångsanalys eller teknisk genomlysning kostar oftast 20 000–60 000 kr. Prisspannet styrs framför allt av hur mycket innehåll som ska produceras och om byrån även gör tekniska åtgärder i koden eller bara levererar rekommendationer.',
+          'Var noga med att skilja på strategi och produktion. Många avtal innehåller bara analys och uppföljning, medan textproduktion och utvecklingsinsatser faktureras separat – det gör att den faktiska månadskostnaden ofta blir högre än offertens grundpris.',
+        ],
+      },
+      {
+        heading: 'Vilka SEO-byråer finns i Stockholm',
+        paragraphs: [
+          'Marknaden består av fullservicebyråer som lägger SEO som en av flera kanaler, renodlade sökspecialister med tekniska team, och performance-byråer som kombinerar SEO med annonsering. Till detta kommer ett stort antal frilansare som ofta är starka på teknisk SEO men har begränsad kapacitet för innehåll.',
+          'Be om att få se rapporter från befintliga kunder, avidentifierade om det behövs. En byrå som bara visar positionslistor utan trafik och konvertering mäter fel saker.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig SEO i Stockholm från mindre orter',
+        paragraphs: [
+          'Konkurrensen gör att tidshorisonten är längre. Där ett företag i en mindre stad kan se effekt på tre månader bör du i Stockholm räkna med sex till tolv månader innan bredare sökord rör sig, särskilt inom juridik, ekonomi, bygg och rekrytering.',
+          'Å andra sidan är sökvolymerna högre, vilket gör att även små positionsförflyttningar kan ge tydlig effekt på antalet leads. Fokusera hellre på nischade sökord med köpintention än på de bredaste termerna.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en SEO-byrå i Stockholm?', a: 'De flesta löpande upplägg ligger på 12 000–40 000 kr i månaden, och en teknisk genomlysning som engångsinsats på 20 000–60 000 kr. Kontrollera om textproduktion och utvecklingstimmar ingår eller faktureras vid sidan av – det är den vanligaste orsaken till att kostnaden överstiger offerten.' },
+      { q: 'Hur lång tid tar SEO i Stockholm?', a: 'På konkurrensutsatta nationella sökord bör du räkna med sex till tolv månader innan effekten är tydlig. Nischade sökord med tydlig köpintention kan röra sig snabbare, ofta inom tre till fyra månader. En byrå som utlovar förstaplats inom några veckor bör du avfärda.' },
+      { q: 'Bindningstid eller löpande månad?', a: 'Många Stockholmsbyråer vill ha sex till tolv månaders bindning eftersom arbetet tar tid att ge utslag. Det är rimligt, men kräv då tydliga delmål och rätt att avsluta i förtid om leveransen uteblir. Undvik avtal där varken omfattning eller uppföljning är specificerad.' },
+      { q: 'Vad ska ingå i uppföljningen?', a: 'Minst organisk trafik, synlighet på prioriterade sökord, antal leads eller köp från organisk trafik samt en logg över vilka åtgärder som faktiskt genomförts under perioden. Utan åtgärdsloggen går det inte att avgöra vad du betalar för.' },
+    ],
+  },
+
+  'stockholm/digital-marknadsforing': {
+    title: 'Digital marknadsföringsbyrå Stockholm – digital marknadsföring Stockholm | Updro',
+    metaDesc: 'Digital marknadsföringsbyrå Stockholm: jämför offerter på digital marknadsföring i Stockholm från upp till tre granskade byråer.',
+    h1: 'Digital marknadsföringsbyrå Stockholm – digital marknadsföring Stockholm',
+    intro: 'I Stockholm finns landets största koncentration av performance-byråer, och de flesta arbetar mot bolag som redan har en etablerad annonsbudget. Det märks i upplägget: du möts ofta av team med separata specialister för annonsering, analys och innehåll i stället för en generalist som gör allt. För mindre företag kan det bli onödigt tungt – för bolag med spend över några hundra tusen om året är det tvärtom förutsättningen för att pengarna ska arbeta.',
+    sections: [
+      {
+        heading: 'Prisnivå för digital marknadsföring i Stockholm',
+        paragraphs: [
+          'Förvaltningsarvoden ligger typiskt på 10 000–35 000 kr i månaden utöver mediebudgeten, och en del byråer tar i stället en procentsats av annonsbudgeten, ofta i intervallet 10–15 procent. Kampanjproduktion med rörligt material prissätts separat och varierar kraftigt beroende på ambitionsnivå.',
+          'Räkna om alltid procentmodellen till kronor innan du jämför. En procentbaserad modell blir dyr när budgeten växer, medan ett fast arvode kan bli oproportionerligt högt vid liten spend.',
+        ],
+      },
+      {
+        heading: 'Vilka byråer finns i Stockholm',
+        paragraphs: [
+          'Marknaden rymmer stora mediebyråer med inköpsstyrka, renodlade performance-byråer inriktade på Google och Meta, kreativa produktionsbolag som gör materialet men inte köpet, samt hybridbyråer som täcker båda delarna. Många kombinationer fungerar, men se till att någon har ansvaret för mätningen.',
+          'Kontrollera vem som äger annonskontona. I Stockholm är det fortfarande vanligt att byrån sätter upp kontona i sitt eget Business Manager-konto, vilket gör byte av byrå onödigt smärtsamt.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Stockholmsmarknaden',
+        paragraphs: [
+          'Klickpriserna är högre än i övriga landet inom de flesta branscher, eftersom fler annonsörer konkurrerar om samma målgrupp. Det innebär att marginalen för slarvig målgruppsstyrning är mindre – samma budget räcker helt enkelt kortare.',
+          'Samtidigt finns här störst tillgång på specialistkompetens inom mätning, serverside-spårning och attribution, vilket är avgörande nu när cookiebaserad uppföljning fungerar sämre. Fråga hur byrån mäter effekt utan tredjepartscookies.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar digital marknadsföring i Stockholm?', a: 'Förvaltning kostar oftast 10 000–35 000 kr i månaden utöver mediebudgeten, alternativt 10–15 procent av annonsbudgeten. Lägg till produktion av annonsmaterial som normalt faktureras separat. Be om båda modellerna omräknade i kronor för din faktiska budget innan du väljer.' },
+      { q: 'Hur stor annonsbudget behövs för att det ska löna sig?', a: 'Om förvaltningsarvodet äter upp en stor del av totalen får du för lite kvar till exponering. Som tumregel bör mediebudgeten vara klart större än arvodet, annars är det bättre att börja med en enklare uppsättning och skala upp när kanalen bevisat sig.' },
+      { q: 'Vem ska äga annonskontona?', a: 'Du. Skapa egna konton i Google Ads och Meta Business Manager och bjud in byrån som användare. Då behåller du historik, målgrupper och konverteringsdata den dag samarbetet tar slut – det är data som är värd mycket mer än den känns när allt fungerar.' },
+      { q: 'Hur mäts resultatet när cookies blockeras?', a: 'Genom en kombination av serverside-spårning, samtyckesbaserad mätning, modellerade konverteringar och egna nyckeltal som inkommande förfrågningar och offertvärde. Fråga byrån hur de kopplar annonskostnad till faktiska affärer, inte bara till klick.' },
+    ],
+  },
+
+  'goteborg/webbutveckling': {
+    title: 'Webbyrå Göteborg – jämför offerter på webbutveckling Göteborg | Updro',
+    metaDesc: 'Webbyrå Göteborg: jämför offerter på webbutveckling i Göteborg från upp till tre granskade byråer. Gratis och utan förpliktelser.',
+    h1: 'Webbyrå Göteborg – webbutveckling Göteborg',
+    intro: 'Göteborgs webbmarknad är starkt präglad av regionens industri, fordonskluster och logistikbolag. Många byråer här är vana vid projekt där webben ska prata med affärssystem, produktdatabaser och orderflöden snarare än att bara se bra ut. Det gör Göteborg till en särskilt stark marknad för B2B-sajter och integrationstunga projekt.',
+    sections: [
+      {
+        heading: 'Prisnivå för webbutveckling i Göteborg',
+        paragraphs: [
+          'Timpriserna ligger vanligtvis på 950–1 400 kr för seniora utvecklare, alltså något under Stockholm men över mindre orter. En företagssajt hamnar oftast på 50 000–180 000 kr, medan projekt med integration mot affärssystem eller produktdata börjar högre eftersom kravarbetet i sig tar tid.',
+          'Vid integrationsprojekt är den vanligaste kostnadsdrivaren inte designen utan datakvaliteten i källsystemet. Be byrån prissätta en förstudie separat så slipper du budgetöverraskningar mitt i bygget.',
+        ],
+      },
+      {
+        heading: 'Vilka webbyråer finns i Göteborg',
+        paragraphs: [
+          'Här finns tekniktunga konsultbolag med rötter i fordons- och industrisektorn, designdrivna studios kring Lindholmen och centrala Göteborg, samt mindre byråer som bygger på WordPress och Webflow för lokala företag. Många av de större arbetar även med förvaltningsavtal, vilket passar om du saknar intern teknisk kompetens.',
+          'Fråga efter referenser från din egen bransch. En byrå som byggt handelssajter har annan erfarenhet än en som levererat kundportaler åt industribolag, även om båda kallar sig webbyrå.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Göteborg från Stockholm',
+        paragraphs: [
+          'Utbudet är mindre men prisnivån är typiskt 15–25 procent lägre för motsvarande kompetens, och tillgängligheten är ofta bättre – kortare startsträcka och mer direktkontakt med de som faktiskt utvecklar.',
+          'Kulturellt är Göteborgsmarknaden mer långsiktig: förvaltningsavtal och fleråriga samarbeten är vanligare än snabba projektköp. Det är en fördel om du vill ha en teknisk partner över tid, men det gör också att du bör granska uppsägningsvillkoren extra noga.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en webbyrå i Göteborg?', a: 'Seniora utvecklare ligger normalt på 950–1 400 kr i timmen. En företagssajt kostar oftast 50 000–180 000 kr och integrationsprojekt mer, beroende på hur många system som ska kopplas ihop och hur väl strukturerad datan är i dem.' },
+      { q: 'Behöver jag en förstudie?', a: 'Om webben ska hämta data från affärssystem, PIM eller lager: ja. En förstudie på några dagar ger ett realistiskt pris i stället för en gissning, och kostnaden dras ofta av om du sedan lägger hela projektet hos samma byrå.' },
+      { q: 'Vad skiljer Göteborgspriserna från Stockholm?', a: 'För likvärdig kompetens ligger Göteborg typiskt 15–25 procent lägre. Skillnaden beror mer på lokala lönenivåer och lägre omkostnader än på kvalitet – flera Göteborgsbyråer levererar till nationella kunder.' },
+      { q: 'Ska jag välja förvaltningsavtal eller löpande timmar?', a: 'Förvaltningsavtal ger snabbare svarstider och planerade uppdateringar, men bind inte upp fler timmar än du faktiskt använder. Har du få ändringar per år är löpande timmar billigare. Be om båda alternativen i offerten.' },
+    ],
+  },
+
+  'goteborg/digital-marknadsforing': {
+    title: 'Digital marknadsföringsbyrå Göteborg – digital marknadsföring Göteborg | Updro',
+    metaDesc: 'Digital marknadsföringsbyrå Göteborg: jämför offerter på digital marknadsföring i Göteborg från upp till tre granskade byråer.',
+    h1: 'Digital marknadsföringsbyrå Göteborg – digital marknadsföring Göteborg',
+    intro: 'Göteborg har en marknadsföringsmarknad där B2B väger tyngre än i resten av landet. Industri, logistik och teknikbolag i regionen köper sällan impulsköp – de köper långa säljprocesser med flera beslutsfattare. Byråerna här är därför ofta duktiga på leadgenerering, LinkedIn och innehåll som ska hålla i månader, snarare än på snabba kampanjer mot konsument.',
+    sections: [
+      {
+        heading: 'Prisnivå för digital marknadsföring i Göteborg',
+        paragraphs: [
+          'Löpande upplägg ligger typiskt på 8 000–25 000 kr i månaden utöver mediebudget, beroende på hur många kanaler som ingår och om innehållsproduktion räknas in. Enskilda insatser som kampanjstart eller kanalanalys hamnar ofta på 15 000–40 000 kr.',
+          'För B2B-bolag är den viktigaste kostnadsfrågan inte klickpriset utan hur många kvalificerade leads som faktiskt når säljarna. Be byrån offerera uppföljning hela vägen till affär, inte bara till formulärinskick.',
+        ],
+      },
+      {
+        heading: 'Vilka byråer finns i Göteborg',
+        paragraphs: [
+          'Regionen har fullservicebyråer med både varumärke och performance, specialistbyråer inom Google Ads och sociala medier, och ett antal B2B-inriktade byråer som arbetar tätt med kundens säljorganisation. Den sista kategorin är ovanligt välrepresenterad här jämfört med andra städer.',
+          'Fråga hur byrån samarbetar med säljavdelningen. I längre B2B-processer avgörs resultatet ofta av uppföljningen efter leadet, inte av annonsen.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Göteborg från Stockholm',
+        paragraphs: [
+          'Arvodena är generellt lägre, ofta 15–25 procent under Stockholm, och byråerna är i snitt mindre. Det innebär att du oftare får arbeta direkt med den som utför jobbet i stället för via projektledare.',
+          'Konkurrensen i annonsauktionerna är också lägre inom många regionala segment, vilket gör att en begränsad budget räcker längre för lokalt inriktade kampanjer.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en marknadsföringsbyrå i Göteborg?', a: 'Löpande arbete ligger vanligtvis på 8 000–25 000 kr i månaden utöver mediebudget, och enskilda insatser på 15 000–40 000 kr. Vad som driver priset är antalet kanaler och om byrån producerar innehållet eller bara annonserar med material du levererar.' },
+      { q: 'Fungerar digital marknadsföring för B2B-bolag?', a: 'Ja, men mätningen ser annorlunda ut. Med långa säljcykler är antalet ifyllda formulär ett svagt mått. Följ i stället upp antalet kvalificerade möten och offertvärde, och acceptera att effekten syns över kvartal snarare än veckor.' },
+      { q: 'LinkedIn eller Google Ads först?', a: 'Google fångar dem som redan söker en lösning och ger snabbast effekt när efterfrågan finns. LinkedIn används för att nå rätt roller innan de börjat söka och kräver längre uthållighet och mer innehåll. Har du begränsad budget: börja där efterfrågan redan finns.' },
+      { q: 'Hur ofta ska vi ha uppföljningsmöten?', a: 'Månadsvis är standard för löpande arbete, med en djupare genomgång per kvartal. Kräv att mötet utgår från affärsnyckeltal och en åtgärdslogg – inte från en exporterad kanalrapport utan kommentarer.' },
+    ],
+  },
+
+  'uppsala/webbutveckling': {
+    title: 'Webbyrå Uppsala – jämför offerter på webbutveckling Uppsala | Updro',
+    metaDesc: 'Webbyrå Uppsala: jämför offerter på webbutveckling i Uppsala från upp till tre granskade byråer. Kostnadsfritt att jämföra.',
+    h1: 'Webbyrå Uppsala – webbutveckling Uppsala',
+    intro: 'Uppsalas webbmarknad formas av universitetet, life science-sektorn och en offentlig sektor med hårda krav på tillgänglighet. Det syns i uppdragen: många byråer här har erfarenhet av WCAG-krav, flerspråkiga sajter och forskningsnära organisationer där innehållet ska granskas av flera personer innan publicering.',
+    sections: [
+      {
+        heading: 'Prisnivå för webbutveckling i Uppsala',
+        paragraphs: [
+          'Timpriser ligger normalt på 850–1 300 kr, något under Stockholm trots kort pendlingsavstånd. En företagssajt kostar oftast 40 000–150 000 kr, medan sajter med tillgänglighetskrav enligt lagen om digital offentlig service hamnar högre eftersom både utveckling och granskning tar mer tid.',
+          'Har du tillgänglighetskrav: be om att revisionen prissätts som en egen post. Att bygga rätt från början är billigare än att åtgärda i efterhand, men det ska synas i offerten vad som faktiskt ingår.',
+        ],
+      },
+      {
+        heading: 'Vilka webbyråer finns i Uppsala',
+        paragraphs: [
+          'Här finns mindre lokala byråer som arbetar med företag i regionen, ett par mer specialiserade aktörer med vana vid offentlig upphandling och tillgänglighet, samt Stockholmsbyråer som aktivt tar uppdrag i Uppsala eftersom resan är kort.',
+          'Det innebär att du realistiskt kan jämföra både lokala och Stockholmsbaserade offerter i samma process – något som inte gäller för de flesta andra städer i landet.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Uppsala från Stockholm',
+        paragraphs: [
+          'Prisnivån är lägre, men skillnaden är mindre än geografin antyder eftersom flera Uppsalabyråer konkurrerar om samma kunder som huvudstadsbyråerna. Räkna med en måttlig rabatt snarare än ett halverat pris.',
+          'Tillgången på specialistkompetens inom exempelvis komplexa e-handelsplattformar är däremot tunnare. För sådana projekt bör du bredda sökningen och ta in offerter även utanför Uppsala.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en webbyrå i Uppsala?', a: 'Seniora utvecklare ligger typiskt på 850–1 300 kr i timmen och en företagssajt på 40 000–150 000 kr. Krav på tillgänglighet, flerspråkighet eller integrationer höjer nivån eftersom både utveckling och test tar längre tid.' },
+      { q: 'Vad innebär tillgänglighetskraven för min sajt?', a: 'Offentliga aktörer omfattas av lagen om digital offentlig service och ska följa WCAG. Privata företag omfattas i varierande grad beroende på verksamhet, men kraven skärps generellt. Be byrån beskriva hur de testar – manuell granskning behövs utöver automatiska verktyg.' },
+      { q: 'Ska jag anlita en Uppsalabyrå eller en Stockholmsbyrå?', a: 'Närheten gör att båda är praktiskt möjliga. Uppsala ger oftast lägre pris och mer direktkontakt, Stockholm bredare specialistkompetens. Ta in offerter från båda och jämför vad du får per krona snarare än att välja på ort.' },
+      { q: 'Hur lång tid tar ett webbprojekt?', a: 'En avgränsad företagssajt tar normalt fyra till åtta veckor, en större sajt med flera språk och granskningsflöden betydligt längre. Den vanligaste förseningsorsaken är att innehållet inte är klart – börja med texterna parallellt med designen.' },
+    ],
+  },
+
+  'vasteras/digital-marknadsforing': {
+    title: 'Digital marknadsföringsbyrå Västerås – digital marknadsföring Västerås | Updro',
+    metaDesc: 'Digital marknadsföringsbyrå Västerås: jämför offerter på digital marknadsföring i Västerås från upp till tre granskade byråer.',
+    h1: 'Digital marknadsföringsbyrå Västerås – digital marknadsföring Västerås',
+    intro: 'Västerås näringsliv domineras av industri, energi och automation, med ett stort antal underleverantörer runt de större bolagen. Många av dem har byggt sin försäljning på relationer och mässor och är först nu på väg in i digitala kanaler. Det präglar byråmarknaden: uppdragen handlar oftare om att bygga upp en grundstruktur för leadgenerering än om att optimera en redan mogen kanalmix.',
+    sections: [
+      {
+        heading: 'Prisnivå för digital marknadsföring i Västerås',
+        paragraphs: [
+          'Löpande arbete ligger typiskt på 6 000–18 000 kr i månaden utöver mediebudget. Mindre uppdrag med en enda kanal kan hamna lägre, medan upplägg som inkluderar innehållsproduktion och nyhetsbrev ligger i det övre spannet.',
+          'För industribolag med få men stora affärer är det ofta mer lönsamt att lägga budgeten på ett fåtal välriktade kampanjer och bra landningssidor än att sprida den tunt över många kanaler.',
+        ],
+      },
+      {
+        heading: 'Vilka byråer finns i Västerås',
+        paragraphs: [
+          'Marknaden består i huvudsak av mindre lokala byråer och enskilda konsulter, ofta med bred kompetens snarare än djup specialisering. Ett antal Stockholmsbyråer arbetar också mot Mälardalen, vilket ger fler alternativ vid mer avancerade uppdrag.',
+          'Eftersom teamen är små bör du fråga vad som händer vid sjukdom eller semester. En ensam konsult kan vara utmärkt, men se till att du har åtkomst till alla konton själv.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Västerås från Stockholm',
+        paragraphs: [
+          'Arvodena är märkbart lägre, och konkurrensen i annonsauktionerna för regionala sökord är betydligt mildare än i huvudstaden. En blygsam budget kan därför ge god synlighet lokalt.',
+          'Nackdelen är tunnare tillgång till specialister inom exempelvis avancerad mätning och marketing automation. Behöver du det kan en kombination fungera: lokal byrå för löpande arbete och en specialist för uppsättningen.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar digital marknadsföring i Västerås?', a: 'De flesta löpande upplägg ligger på 6 000–18 000 kr i månaden utöver annonsbudgeten. Priset styrs främst av antalet kanaler och om byrån även producerar text och bild eller enbart hanterar annonseringen.' },
+      { q: 'Fungerar digitala kanaler för industriföretag?', a: 'Ja, men förvänta dig färre och tyngre leads. Ett fåtal förfrågningar i månaden kan vara ett mycket bra utfall när ordervärdet är högt. Mät därför på offertvärde och antal möten, inte på klick eller räckvidd.' },
+      { q: 'Ska vi välja en lokal byrå eller en i Stockholm?', a: 'För löpande arbete räcker en lokal byrå gott och är billigare. För en engångsinsats som kräver spetskompetens, exempelvis serverside-mätning eller ett större automationsflöde, kan det vara värt att ta in en specialist utifrån.' },
+      { q: 'Hur snabbt ser vi effekt?', a: 'Annonsering ger trafik direkt, men räkna med en till två månader innan kampanjerna är intrimmade. Innehålls- och sökarbete tar längre tid – tre till sex månader är en realistisk horisont innan effekten är tydlig i statistiken.' },
+    ],
+  },
+
+  'stockholm/ehandel': {
+    title: 'E-handelsbyrå Stockholm – jämför offerter på e-handel Stockholm | Updro',
+    metaDesc: 'E-handelsbyrå Stockholm: jämför offerter på e-handel i Stockholm från upp till tre granskade byråer. Kostnadsfritt och utan förpliktelser.',
+    h1: 'E-handelsbyrå Stockholm – e-handel Stockholm',
+    intro: 'Stockholm är navet för svensk e-handel, med de flesta större plattformspartner, betalleverantörer och logistikaktörer inom samma region. Det gör det enkelt att hitta byråer som redan byggt mot Shopify, Centra, Litium eller Woo och som kan koppla ihop butiken med affärssystem, PIM och lagerhantering – men det är också en marknad där prislappen sällan är den lägsta i landet.',
+    sections: [
+      {
+        heading: 'Prisnivå för e-handel i Stockholm',
+        paragraphs: [
+          'En butik på en standardplattform med anpassad design landar oftast på 100 000–400 000 kr, medan lösningar med integrationer mot affärssystem, komplexa prislistor eller B2B-flöden ligger klart högre. Löpande förvaltning och optimering prissätts vanligen som ett månadsåtagande i intervallet 10 000–40 000 kr.',
+          'Kostnaden styrs av antalet integrationer, sortimentets komplexitet och hur mycket produktdata som ska struktureras om. Migrering av gammal data är nästan alltid underskattad i offerter – be om att den posten specificeras.',
+        ],
+      },
+      {
+        heading: 'Vilka e-handelsbyråer finns i Stockholm',
+        paragraphs: [
+          'Här finns certifierade plattformspartner som arbetar djupt i en enda plattform, fullservicebyråer som även tar marknadsföring och konvertering, samt tekniska konsulthus specialiserade på integrationer och huvudlösa lösningar.',
+          'Plattformsvalet binder dig hårdare än byråvalet. Låt därför byrån motivera plattformen utifrån ditt sortiment och dina flöden, inte utifrån vilket partnerskap de själva har.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Stockholm från övriga landet',
+        paragraphs: [
+          'Tillgången på specialister inom betalning, logistikintegration och konverteringsoptimering är störst här, vilket är avgörande när butiken passerat de första miljonerna i omsättning.',
+          'Priserna är samtidigt högst i landet. För en mindre butik med standardbehov kan en byrå utanför regionen ge samma resultat billigare – skillnaden gör sig framför allt gällande vid komplexa integrationer.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en e-handelsbyrå i Stockholm?', a: 'En butik med anpassad design på standardplattform hamnar oftast på 100 000–400 000 kr, och löpande förvaltning på 10 000–40 000 kr i månaden. Integrationer mot affärssystem och lager är den enskilt största kostnadsdrivaren.' },
+      { q: 'Vilken plattform ska jag välja?', a: 'Shopify passar de flesta B2C-butiker med standardflöden, Centra och Litium är vanliga vid varumärkes- respektive B2B-handel, och WooCommerce fungerar för mindre sortiment. Utgå från dina integrationer och prislogik – de avgör mer än butikens utseende.' },
+      { q: 'Hur lång tid tar det att bygga en webbutik?', a: 'En standardbutik med anpassad design tar normalt sex till tolv veckor. Ska butiken kopplas mot affärssystem, PIM eller lager bör du räkna med betydligt längre tid, där mycket går åt till att strukturera produktdatan.' },
+      { q: 'Vad ingår i löpande förvaltning?', a: 'Vanligtvis uppdateringar, buggfixar, mindre förbättringar och support med avtalad svarstid. Kontrollera hur många timmar som ingår och om konverteringsarbete räknas in eller faktureras separat – det skiljer mycket mellan byråer.' },
+    ],
+  },
+
+  'goteborg/seo': {
+    title: 'SEO-byrå Göteborg – jämför offerter på SEO Göteborg | Updro',
+    metaDesc: 'SEO-byrå Göteborg: jämför offerter på SEO i Göteborg från upp till tre granskade byråer. Kostnadsfritt och utan bindningstid.',
+    h1: 'SEO-byrå Göteborg – SEO Göteborg',
+    intro: 'SEO i Göteborg handlar för många bolag om två parallella spår: lokala sökningar i Västsverige och nationella branschtermer där konkurrensen kommer från Stockholm. Regionens tyngdpunkt inom industri och handel gör att en stor del av arbetet läggs på produkt- och kategorisidor snarare än på bloggartiklar.',
+    sections: [
+      {
+        heading: 'Prisnivå för SEO i Göteborg',
+        paragraphs: [
+          'Löpande SEO ligger typiskt på 8 000–25 000 kr i månaden, och en teknisk genomlysning som engångsinsats på 15 000–45 000 kr. Innehållsproduktion tillkommer ofta per text eller som ett paket med ett bestämt antal sidor per månad.',
+          'Kontrollera vad som händer med tekniska rekommendationer. Om din webbyrå ska implementera dem tillkommer utvecklingstimmar som inte syns i SEO-offerten – räkna in dem i totalkostnaden.',
+        ],
+      },
+      {
+        heading: 'Vilka SEO-byråer finns i Göteborg',
+        paragraphs: [
+          'Regionen har renodlade sökbyråer, fullservicebyråer där SEO är en del av ett bredare uppdrag, och tekniska konsulter som framför allt arbetar med prestanda, struktur och indexering på större sajter.',
+          'För e-handel och sajter med tusentals sidor är den tekniska kompetensen avgörande. Be byrån beskriva hur de hanterar intern länkning, kategoristruktur och dubblettinnehåll – det är där de stora vinsterna finns.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Göteborg från Stockholm',
+        paragraphs: [
+          'Arvodena är lägre, ofta 15–25 procent under huvudstaden. Konkurrensen på rent lokala sökord är också mildare, vilket gör att lokala företag kan nå topplaceringar snabbare än motsvarande bolag i Stockholm.',
+          'På nationella termer är läget detsamma oavsett var byrån sitter – då avgörs resultatet av innehåll och teknik, inte av geografi.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en SEO-byrå i Göteborg?', a: 'Löpande arbete ligger vanligtvis på 8 000–25 000 kr i månaden och en teknisk analys på 15 000–45 000 kr. Kontrollera om textproduktion ingår, och om implementeringen av tekniska åtgärder ska göras av byrån eller av din webbleverantör.' },
+      { q: 'Hur snabbt kan vi ranka lokalt i Göteborg?', a: 'På lokala sökord med måttlig konkurrens kan tydliga förflyttningar synas inom två till fyra månader, förutsatt att sajten är tekniskt sund och företagsprofilen på Google är komplett. Nationella termer tar väsentligt längre tid.' },
+      { q: 'Behöver vi både SEO och Google Ads?', a: 'De löser olika saker. Annonser ger trafik omedelbart och passar för att testa vilka sökord som faktiskt leder till affär. SEO bygger trafik som inte försvinner när budgeten stängs av. Många kombinerar och använder annonsdatan för att prioritera SEO-arbetet.' },
+      { q: 'Vad ska ingå i en teknisk genomlysning?', a: 'Indexering, sidstruktur, intern länkning, laddtider, mobilanpassning, strukturerad data och dubblettinnehåll – med en prioriterad åtgärdslista som anger uppskattad effekt och arbetsinsats. Utan prioritering blir rapporten svår att omsätta.' },
+    ],
+  },
+
+  'linkoping/webbutveckling': {
+    title: 'Webbyrå Linköping – jämför offerter på webbutveckling Linköping | Updro',
+    metaDesc: 'Webbyrå Linköping: jämför offerter på webbutveckling i Linköping från upp till tre granskade byråer. Gratis och utan förpliktelser.',
+    h1: 'Webbyrå Linköping – webbutveckling Linköping',
+    intro: 'Linköping har en ovanligt teknisk byråmarknad för sin storlek, driven av universitetet, Mjärdevi-klustret och en lång tradition av mjukvaruutveckling inom flyg och säkerhet. Här finns fler utvecklingsdrivna team än designdrivna studios, vilket märks när projektet innehåller inloggning, API:er eller datahantering.',
+    sections: [
+      {
+        heading: 'Prisnivå för webbutveckling i Linköping',
+        paragraphs: [
+          'Timpriser ligger normalt på 800–1 250 kr och en företagssajt på 35 000–140 000 kr. Applikationsnära projekt med inloggning och egen datamodell prissätts oftast löpande, eftersom omfattningen sällan går att låsa i förväg.',
+          'Vill du undvika öppen löpande räkning kan du be om ett fast pris för en första avgränsad version och sedan utvärdera. Det ger dig ett fungerande underlag innan du binder upp större belopp.',
+        ],
+      },
+      {
+        heading: 'Vilka webbyråer finns i Linköping',
+        paragraphs: [
+          'Marknaden består av små och medelstora byråer, flera med bakgrund i systemutveckling snarare än i reklam, samt konsultbolag som säljer utvecklare per timme till både lokala bolag och nationella kunder.',
+          'Om du främst behöver stark design och innehåll bör du kontrollera att byrån har den kompetensen internt – annars kan resultatet bli tekniskt gediget men visuellt medelmåttigt.',
+        ],
+      },
+      {
+        heading: 'Så skiljer sig Linköping från Stockholm',
+        paragraphs: [
+          'Prisnivån ligger tydligt under huvudstaden, ofta 20–30 procent, och tillgängligheten är bättre – kortare startsträcka och närmare kontakt med utvecklarna.',
+          'Utbudet av renodlade specialister inom exempelvis konverteringsoptimering och avancerad e-handel är däremot begränsat. För sådana delmoment kan det löna sig att komplettera med en extern specialist och låta den lokala byrån ansvara för bygget.',
+        ],
+      },
+    ],
+    faq: [
+      { q: 'Vad kostar en webbyrå i Linköping?', a: 'Timpriset ligger normalt på 800–1 250 kr och en företagssajt på 35 000–140 000 kr. Projekt med inloggning, egen datamodell eller integrationer prissätts oftast löpande eftersom omfattningen är svår att låsa innan arbetet påbörjats.' },
+      { q: 'Fast pris eller löpande räkning?', a: 'Fast pris fungerar bra när kraven är tydliga, exempelvis en företagssajt med bestämt antal mallar. Är projektet utforskande blir fast pris antingen dyrt eller snålt räknat – då är löpande räkning med takpris och avstämning per delleverans en bättre modell.' },
+      { q: 'Får jag tillgång till källkoden?', a: 'Det ska stå i avtalet. Kräv eget repository, egen domän och eget hostingkonto redan från start. Det är standard hos seriösa byråer och avgörande för att du ska kunna byta leverantör utan att bygga om allt.' },
+      { q: 'Kan en Linköpingsbyrå ta ett nationellt projekt?', a: 'Ja. Flera av regionens byråer har kunder i hela landet och arbetar distribuerat till vardags. Bedöm dem på referenser och teknisk kompetens snarare än på hur nära de sitter ditt kontor.' },
+    ],
+  },
 }
 
 export const getCityCategoryDeep = (citySlug: string, categorySlug: string): CityCategoryDeepContent | undefined =>
