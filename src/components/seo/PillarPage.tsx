@@ -10,6 +10,7 @@ import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
+import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const PillarPage = () => {
   const { category } = useParams<{ category: string }>()
@@ -26,6 +27,8 @@ const PillarPage = () => {
     }
     window.scrollTo(0, 0)
   }, [page])
+
+  if (page) mergeDeep(page, `/${page.categorySlug}`)
 
   if (!page) return <NotFound />
 
