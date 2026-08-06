@@ -80,7 +80,7 @@ const BrowseAgenciesPage = () => {
                 {filtered.map(a => {
                   const profile = a.profiles
                   return (
-                    <Link key={a.id} to={`/byraer/${a.slug}`} className="block">
+                    <Link key={a.id} to={`/byra/${a.slug}`} className="block">
                       <div className="bg-card rounded-2xl border p-5 hover:shadow-md transition-all h-full">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-lg font-bold text-primary">

@@ -50,6 +50,15 @@ const RedirectToArtikel = () => {
   return <Navigate to={slug ? `/artiklar/${slug}` : '/artiklar'} replace />;
 };
 
+// /byraer/:stad renders the city page when the slug is a known city,
+// otherwise it is a legacy agency profile URL -> redirect to /byra/:slug
+const CityOrAgencyRedirect = () => {
+  const { stad } = useParams<{ stad: string }>();
+  const isCity = CITIES.some(c => c.slug === stad);
+  if (isCity) return <AgencyCityPage />;
+  return <Navigate to={`/byra/${stad}`} replace />;
+};
+
 const PillarPage = lazy(() => import("./components/seo/PillarPage"));
 const SubPage = lazy(() => import("./components/seo/SubPage"));
 const CityHubPage = lazy(() => import("./components/seo/CityHubPage"));
@@ -131,7 +140,7 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/publicera" element={<ProjectWizard />} />
         <Route path="/byraer" element={<BrowseAgenciesPage />} />
-        <Route path="/byraer/:slug" element={<AgencyProfilePage />} />
+        <Route path="/byra/:slug" element={<AgencyProfilePage />} />
         <Route path="/priser" element={<PricingPage />} />
         <Route path="/priser/:slug" element={<PriceGuidePage />} />
         <Route path="/om-oss" element={<AboutPage />} />

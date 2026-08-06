@@ -37,7 +37,7 @@ const AgencyProfilePage = () => {
   useEffect(() => {
     if (agency && profile) {
       const name = profile.company_name || profile.full_name || 'Byrå'
-      const url = `https://updro.se/byraer/${slug}`
+      const url = `https://updro.se/byra/${slug}`
       setSEOMeta({
         title: `${name} – Byråprofil | Updro`,
         description: `Se ${name}s profil på Updro. Betyg, tjänster, portfölj och kontaktuppgifter.`,

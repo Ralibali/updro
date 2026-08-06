@@ -144,7 +144,7 @@ const AgencyCategoryPage = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {agencies.map(a => (
-              <Link key={a.id} to={`/byraer/${a.slug}`} className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
+              <Link key={a.id} to={`/byra/${a.slug}`} className="bg-card rounded-xl border p-5 hover:shadow-md transition-shadow">
                 <h3 className="font-display font-semibold">{a.profiles?.company_name || a.profiles?.full_name || 'Byrå'}</h3>
                 <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                   {a.profiles?.city && <><MapPin className="h-3 w-3" /> {a.profiles.city}</>}
