@@ -42,7 +42,7 @@ const CitiesIndex = () => {
       <section className="container pb-12">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {CITIES.map(city => (
-            <Link key={city.slug} to={`/stader/${city.slug}`}
+            <Link key={city.slug} to={`/byraer/${city.slug}`}
               className="bg-card border rounded-xl p-6 hover:border-primary/30 hover:shadow-md transition-all group">
               <div className="flex items-center gap-2 mb-2">
                 <MapPin className="h-4 w-4 text-primary" />

@@ -116,7 +116,7 @@ const CityHubPage = () => {
         <h2 className="font-display text-xl font-bold mb-4">Hitta byråer i andra städer</h2>
         <div className="flex flex-wrap gap-3">
           {CITIES.filter(c => c.slug !== page.slug).map(c => (
-            <Link key={c.slug} to={`/stader/${c.slug}`}
+            <Link key={c.slug} to={`/byraer/${c.slug}`}
               className="bg-muted rounded-xl px-4 py-2 text-sm font-medium hover:bg-primary/10 hover:text-primary transition-colors">
               {c.name}
             </Link>

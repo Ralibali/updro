@@ -308,7 +308,7 @@ export const getAllSitemapEntries = (): SitemapEntry[] => {
 
   // Cities + city × category
   for (const city of CITIES) {
-    entries.push({ loc: `/stader/${city.slug}`, changefreq: 'weekly', priority: 0.7, lastmod: today })
+    
     entries.push({ loc: `/byraer/${city.slug}`, changefreq: 'weekly', priority: 0.8, lastmod: today })
     for (const cat of SERVICE_CATEGORIES) {
       entries.push({ loc: `/byraer/${city.slug}/${cat.slug}`, changefreq: 'monthly', priority: 0.7, lastmod: today })
