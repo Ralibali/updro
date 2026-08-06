@@ -132,7 +132,7 @@ const contentRoutes = (): StaticSeoRoute[] => [
 
 export const getAllStaticSeoRoutes = () => {
   const map = new Map<string, StaticSeoRoute>()
-  for (const route of [...baseRoutes(), ...serviceRoutes(), ...cityRoutes(), ...contentRoutes()]) map.set(route.path, route)
+  for (const route of [...baseRoutes(), ...serviceRoutes(), ...cityRoutes(), ...categoryRoutes(), ...contentRoutes()]) map.set(route.path, route)
   return [...map.values()]
 }
 
@@ -142,8 +142,8 @@ export const getNoindexSeoRoutes = () => getAllStaticSeoRoutes().filter(route =>
 const section = (path: string): SitemapSection => {
   if (path.startsWith('/artiklar/')) return 'articles'
   if (path.startsWith('/verktyg/')) return 'tools'
-  if (path === '/jamfor' || path.includes('jamfor') || path.startsWith('/basta-') || path.includes('alternativ')) return 'comparisons'
   if (path.startsWith('/byraer/') || path.startsWith('/stader/')) return 'cities'
+  if (path === '/jamfor' || path.includes('jamfor') || path.startsWith('/basta-') || path.includes('alternativ') || path.includes('partna') || path.includes('swivrr')) return 'comparisons'
   return 'main'
 }
 
