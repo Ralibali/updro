@@ -205,7 +205,7 @@ const AdminAdsAI = () => {
         </Panel>
 
         <section className="grid lg:grid-cols-2 gap-5">
-          <Panel title="5. Sökord" subtitle="Ett sökord per rad. Använd [exakt matchning] eller \"frasmatchning\".">
+          <Panel title="5. Sökord" subtitle={'Ett sökord per rad. Använd [exakt matchning] eller "frasmatchning".'}>
             <Textarea className="min-h-[300px] font-mono text-sm" value={draft.keywords} onChange={e => update('keywords', e.target.value)} />
             <CopyAllButton value={draft.keywords} label="Kopiera sökord" onCopy={copy} />
           </Panel>
