@@ -99,11 +99,27 @@ const baseRoutes = (): StaticSeoRoute[] => [
   { path: '/integritet/prospektering', title: 'Integritetsinformation för prospektering | Updro', description: 'GDPR-information om Updros begränsade research av offentliga företagswebbplatser.', h1: 'Integritetsinformation för företagsprospektering', priority: 0.3, changefreq: 'yearly' },
 ]
 
+const CATEGORY_AGENCY_LABEL: Record<string, string> = {
+  'webbutveckling': 'Webbutvecklingsbyråer',
+  'seo': 'SEO-byråer',
+  'ehandel': 'E-handelsbyråer',
+  'digital-marknadsforing': 'Digitala marknadsföringsbyråer',
+  'apputveckling': 'Apputvecklingsbyråer',
+  'grafisk-design': 'Designbyråer',
+  'google-ads': 'Google Ads-byråer',
+  'e-postmarknadsforing': 'Byråer för e-postmarknadsföring',
+  'analys-data': 'Analys- och databyråer',
+  'ux-ui-design': 'UX- och UI-byråer',
+}
+
+const categoryAgencyLabel = (slug: string, name: string): string =>
+  CATEGORY_AGENCY_LABEL[slug] ?? `${name}-byråer`
+
 const categoryRoutes = (): StaticSeoRoute[] => SERVICE_CATEGORIES.map(category => ({
   path: `/byraer/kategori/${category.slug}`,
-  title: `${category.name}-byråer i Sverige – jämför offerter | Updro`,
+  title: `${categoryAgencyLabel(category.slug, category.name)} i Sverige | Updro`,
   description: trunc(`${category.description} Beskriv projektet gratis och jämför högst tre relevanta offerter.`),
-  h1: `${category.name}-byråer i Sverige`,
+  h1: `${categoryAgencyLabel(category.slug, category.name)} i Sverige`,
   priority: 0.7,
   changefreq: 'weekly' as const,
   lastmod: today(),
