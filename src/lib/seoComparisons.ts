@@ -288,7 +288,7 @@ export const COMPARISON_PAGES: ComparisonPage[] = [
   },
   {
     slug: 'updro-vs-offerta',
-    metaTitle: 'Updro vs Offerta – Vilken plattform är bäst? | Jämförelse 2026',
+    metaTitle: 'Updro vs Offerta – vilken plattform är bäst? 2026',
     metaDesc: 'Jämför Updro och Offerta – två sätt att hitta rätt byrå. Vi går igenom skillnader i pris, tjänster, kvalitetssäkring och användarupplevelse.',
     h1: 'Updro vs Offerta – Vilken plattform passar dig?',
     intro: 'Funderar du på om du ska använda Updro eller Offerta för att hitta leverantör? Båda plattformarna kopplar ihop företag med leverantörer – men på helt olika sätt. Här jämför vi de viktigaste skillnaderna så att du kan göra rätt val.',
@@ -315,7 +315,7 @@ export const COMPARISON_PAGES: ComparisonPage[] = [
   },
   {
     slug: 'updro-vs-hittabyra',
-    metaTitle: 'Updro vs Hittabyrå – Vilken tjänst är bäst? | Jämförelse 2026',
+    metaTitle: 'Updro vs Hittabyrå – vilken tjänst är bäst? 2026',
     metaDesc: 'Jämför Updro och Hittabyrå för att hitta digital byrå. Skillnader i matchning, kvalitetssäkring och offerter.',
     h1: 'Updro vs Hittabyrå – Vilken tjänst ska du välja?',
     intro: 'Både Updro och Hittabyrå hjälper dig hitta digitala byråer i Sverige. Men tjänsterna fungerar på helt olika sätt. Här går vi igenom de viktigaste skillnaderna.',
