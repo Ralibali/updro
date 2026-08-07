@@ -232,7 +232,7 @@ export const ARTICLES: ArticlePage[] = [
   },
   {
     slug: 'ehandel-statistik-sverige',
-    metaTitle: 'E-handel statistik Sverige 2026 – Siffror och trender | Updro',
+    metaTitle: 'E-handelsstatistik Sverige 2026 – siffror och trender',
     metaDesc: 'Aktuell e-handelsstatistik för Sverige 2026. Omsättning, trender, beteenden och prognoser.',
     h1: 'E-handel statistik Sverige 2026',
     category: 'E-handel',
@@ -477,7 +477,7 @@ export const ARTICLES: ArticlePage[] = [
   },
   {
     slug: 'seo-for-ai-sok-2026',
-    metaTitle: 'SEO för AI-sök 2026 – synlighet i ChatGPT, Gemini och Perplexity',
+    metaTitle: 'SEO för AI-sök 2026 – synas i ChatGPT och Perplexity',
     metaDesc: 'Hur optimerar du för ChatGPT, Perplexity och Gemini 2026? Konkret strategi för AI-sök utan att slänga klassisk SEO.',
     h1: 'SEO för AI-sök 2026 – så syns du i ChatGPT, Perplexity och Gemini',
     category: 'SEO',
@@ -504,7 +504,7 @@ export const ARTICLES: ArticlePage[] = [
   },
   {
     slug: 'chatgpt-synlighet-for-foretag-2026',
-    metaTitle: 'ChatGPT-synlighet för företag 2026 – så blir du rekommenderad',
+    metaTitle: 'ChatGPT-synlighet 2026 – så blir företaget rekommenderat',
     metaDesc: 'Bli rekommenderad i ChatGPT när potentiella kunder frågar efter företag i din bransch. Konkret guide för svenska bolag 2026.',
     h1: 'ChatGPT-synlighet för företag 2026 – från noll till rekommendation',
     category: 'SEO',

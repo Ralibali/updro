@@ -2,18 +2,21 @@ import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Link } from 'react-router-dom'
-import { setSEOMeta, getAllSitemapEntries, type SitemapEntry } from '@/lib/seoHelpers'
+import { setSEOMeta } from '@/lib/seoHelpers'
+import { getIndexableSeoRoutes } from '@/lib/seoStatic'
 import { ChevronRight } from 'lucide-react'
 
+type SitemapLink = { loc: string }
+
 const SitemapPage = () => {
-  const [entries, setEntries] = useState<SitemapEntry[]>([])
+  const [entries, setEntries] = useState<SitemapLink[]>([])
 
   useEffect(() => {
     setSEOMeta({ title: 'Sitemap – Alla sidor | Updro', description: 'Komplett sitemap för Updro.se med alla tjänster, städer, artiklar, verktyg och jämförelser.', noindex: true })
-    setEntries(getAllSitemapEntries())
+    setEntries(getIndexableSeoRoutes().map(route => ({ loc: route.path })))
   }, [])
 
-  const grouped: Record<string, SitemapEntry[]> = {}
+  const grouped: Record<string, SitemapLink[]> = {}
   entries.forEach(e => {
     const parts = e.loc.split('/').filter(Boolean)
     const group = parts[0] || 'Startsida'

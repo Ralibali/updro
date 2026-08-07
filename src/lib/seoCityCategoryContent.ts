@@ -485,7 +485,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'stockholm/webbutveckling': {
-    title: 'Webbyrå Stockholm – jämför offerter på webbutveckling Stockholm | Updro',
+    title: 'Webbyrå Stockholm – jämför tre offerter | Updro',
     metaDesc: 'Webbyrå Stockholm: jämför offerter på webbutveckling i Stockholm från upp till tre granskade byråer. Kostnadsfritt och utan förpliktelser.',
     h1: 'Webbyrå Stockholm – webbutveckling Stockholm',
     intro: 'Stockholm har Sveriges djupaste utvecklarmarknad och samtidigt landets högsta timpriser. Här samsas techkonsultbolag med hundratals anställda, produktnära designstudios i Södermalms- och Hammarby-kvarteren och en lång svans av små specialistteam. Det gör att samma kravspec kan generera offerter som skiljer sig med en faktor tre – därför är jämförelsen viktigare i Stockholm än någon annanstans i landet.',
@@ -521,7 +521,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'stockholm/seo': {
-    title: 'SEO-byrå Stockholm – jämför offerter på SEO Stockholm | Updro',
+    title: 'SEO-byrå Stockholm – jämför tre offerter | Updro',
     metaDesc: 'SEO-byrå Stockholm: jämför offerter på SEO i Stockholm från upp till tre granskade byråer. Kostnadsfritt och utan bindningstid.',
     h1: 'SEO-byrå Stockholm – SEO Stockholm',
     intro: 'Stockholm är den svåraste SEO-marknaden i Sverige, helt enkelt för att nästan alla nationella aktörer sitter här och slåss om samma sökord. En SEO-byrå i Stockholm arbetar därför sällan med enkla lokala sökord utan med bredare konkurrensutsatta termer, vilket kräver längre horisont och mer innehållsarbete än i mindre städer.',
@@ -557,7 +557,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'stockholm/digital-marknadsforing': {
-    title: 'Digital marknadsföringsbyrå Stockholm – digital marknadsföring Stockholm | Updro',
+    title: 'Digital marknadsföringsbyrå Stockholm | Updro',
     metaDesc: 'Digital marknadsföringsbyrå Stockholm: jämför offerter på digital marknadsföring i Stockholm från upp till tre granskade byråer.',
     h1: 'Digital marknadsföringsbyrå Stockholm – digital marknadsföring Stockholm',
     intro: 'I Stockholm finns landets största koncentration av performance-byråer, och de flesta arbetar mot bolag som redan har en etablerad annonsbudget. Det märks i upplägget: du möts ofta av team med separata specialister för annonsering, analys och innehåll i stället för en generalist som gör allt. För mindre företag kan det bli onödigt tungt – för bolag med spend över några hundra tusen om året är det tvärtom förutsättningen för att pengarna ska arbeta.',
@@ -593,7 +593,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'goteborg/webbutveckling': {
-    title: 'Webbyrå Göteborg – jämför offerter på webbutveckling Göteborg | Updro',
+    title: 'Webbyrå Göteborg – jämför tre offerter | Updro',
     metaDesc: 'Webbyrå Göteborg: jämför offerter på webbutveckling i Göteborg från upp till tre granskade byråer. Gratis och utan förpliktelser.',
     h1: 'Webbyrå Göteborg – webbutveckling Göteborg',
     intro: 'Göteborgs webbmarknad är starkt präglad av regionens industri, fordonskluster och logistikbolag. Många byråer här är vana vid projekt där webben ska prata med affärssystem, produktdatabaser och orderflöden snarare än att bara se bra ut. Det gör Göteborg till en särskilt stark marknad för B2B-sajter och integrationstunga projekt.',
@@ -629,7 +629,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'goteborg/digital-marknadsforing': {
-    title: 'Digital marknadsföringsbyrå Göteborg – digital marknadsföring Göteborg | Updro',
+    title: 'Digital marknadsföringsbyrå Göteborg | Updro',
     metaDesc: 'Digital marknadsföringsbyrå Göteborg: jämför offerter på digital marknadsföring i Göteborg från upp till tre granskade byråer.',
     h1: 'Digital marknadsföringsbyrå Göteborg – digital marknadsföring Göteborg',
     intro: 'Göteborg har en marknadsföringsmarknad där B2B väger tyngre än i resten av landet. Industri, logistik och teknikbolag i regionen köper sällan impulsköp – de köper långa säljprocesser med flera beslutsfattare. Byråerna här är därför ofta duktiga på leadgenerering, LinkedIn och innehåll som ska hålla i månader, snarare än på snabba kampanjer mot konsument.',
@@ -665,7 +665,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'uppsala/webbutveckling': {
-    title: 'Webbyrå Uppsala – jämför offerter på webbutveckling Uppsala | Updro',
+    title: 'Webbyrå Uppsala – jämför tre offerter | Updro',
     metaDesc: 'Webbyrå Uppsala: jämför offerter på webbutveckling i Uppsala från upp till tre granskade byråer. Kostnadsfritt att jämföra.',
     h1: 'Webbyrå Uppsala – webbutveckling Uppsala',
     intro: 'Uppsalas webbmarknad formas av universitetet, life science-sektorn och en offentlig sektor med hårda krav på tillgänglighet. Det syns i uppdragen: många byråer här har erfarenhet av WCAG-krav, flerspråkiga sajter och forskningsnära organisationer där innehållet ska granskas av flera personer innan publicering.',
@@ -701,7 +701,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'vasteras/digital-marknadsforing': {
-    title: 'Digital marknadsföringsbyrå Västerås – digital marknadsföring Västerås | Updro',
+    title: 'Digital marknadsföringsbyrå Västerås | Updro',
     metaDesc: 'Digital marknadsföringsbyrå Västerås: jämför offerter på digital marknadsföring i Västerås från upp till tre granskade byråer.',
     h1: 'Digital marknadsföringsbyrå Västerås – digital marknadsföring Västerås',
     intro: 'Västerås näringsliv domineras av industri, energi och automation, med ett stort antal underleverantörer runt de större bolagen. Många av dem har byggt sin försäljning på relationer och mässor och är först nu på väg in i digitala kanaler. Det präglar byråmarknaden: uppdragen handlar oftare om att bygga upp en grundstruktur för leadgenerering än om att optimera en redan mogen kanalmix.',
@@ -737,7 +737,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'stockholm/ehandel': {
-    title: 'E-handelsbyrå Stockholm – jämför offerter på e-handel Stockholm | Updro',
+    title: 'E-handelsbyrå Stockholm – jämför tre offerter | Updro',
     metaDesc: 'E-handelsbyrå Stockholm: jämför offerter på e-handel i Stockholm från upp till tre granskade byråer. Kostnadsfritt och utan förpliktelser.',
     h1: 'E-handelsbyrå Stockholm – e-handel Stockholm',
     intro: 'Stockholm är navet för svensk e-handel, med de flesta större plattformspartner, betalleverantörer och logistikaktörer inom samma region. Det gör det enkelt att hitta byråer som redan byggt mot Shopify, Centra, Litium eller Woo och som kan koppla ihop butiken med affärssystem, PIM och lagerhantering – men det är också en marknad där prislappen sällan är den lägsta i landet.',
@@ -773,7 +773,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'goteborg/seo': {
-    title: 'SEO-byrå Göteborg – jämför offerter på SEO Göteborg | Updro',
+    title: 'SEO-byrå Göteborg – jämför tre offerter | Updro',
     metaDesc: 'SEO-byrå Göteborg: jämför offerter på SEO i Göteborg från upp till tre granskade byråer. Kostnadsfritt och utan bindningstid.',
     h1: 'SEO-byrå Göteborg – SEO Göteborg',
     intro: 'SEO i Göteborg handlar för många bolag om två parallella spår: lokala sökningar i Västsverige och nationella branschtermer där konkurrensen kommer från Stockholm. Regionens tyngdpunkt inom industri och handel gör att en stor del av arbetet läggs på produkt- och kategorisidor snarare än på bloggartiklar.',
@@ -809,7 +809,7 @@ export const CITY_CATEGORY_DEEP: Record<string, CityCategoryDeepContent> = {
   },
 
   'linkoping/webbutveckling': {
-    title: 'Webbyrå Linköping – jämför offerter på webbutveckling Linköping | Updro',
+    title: 'Webbyrå Linköping – jämför tre offerter | Updro',
     metaDesc: 'Webbyrå Linköping: jämför offerter på webbutveckling i Linköping från upp till tre granskade byråer. Gratis och utan förpliktelser.',
     h1: 'Webbyrå Linköping – webbutveckling Linköping',
     intro: 'Linköping har en ovanligt teknisk byråmarknad för sin storlek, driven av universitetet, Mjärdevi-klustret och en lång tradition av mjukvaruutveckling inom flyg och säkerhet. Här finns fler utvecklingsdrivna team än designdrivna studios, vilket märks när projektet innehåller inloggning, API:er eller datahantering.',
