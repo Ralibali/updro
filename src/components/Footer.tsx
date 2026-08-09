@@ -8,7 +8,7 @@ const footerColumns = [
   {
     title: 'För kunder',
     links: [
-      { label: 'Starta förfrågan', href: '/publicera' },
+      { label: 'Publicera uppdrag', href: '/publicera' },
       { label: 'Hemsida pris-kalkylator', href: '/hemsida-pris-kalkylator' },
       { label: 'Hitta webbyrå', href: '/hitta-webbyra' },
       { label: 'Hitta SEO-byrå', href: '/hitta-seo-byra' },

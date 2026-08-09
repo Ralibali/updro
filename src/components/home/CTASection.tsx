@@ -16,7 +16,7 @@ const CTASection = () => {
           Kom igång på cirka två minuter
         </span>
         <h2 className="font-display text-4xl md:text-6xl font-bold mb-6 text-foreground leading-[0.95] tracking-tight">
-          Hitta rätt byrå – <span className="text-accent">utan massutskick.</span>
+          Redo att jämföra offerter? <span className="text-accent">Börja med briefen.</span>
         </h2>
         <p className="text-foreground/80 mb-10 text-lg max-w-xl mx-auto">
           Beskriv projektet en gång. Updro granskar briefen och högst tre relevanta svenska byråer kan lämna offert. Gratis och utan förpliktelser.
@@ -24,13 +24,13 @@ const CTASection = () => {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link to="/publicera">
             <button className="h-14 px-8 bg-accent text-accent-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all inline-flex items-center justify-center gap-2">
-              Beskriv ditt projekt
+              Beskriv ditt uppdrag gratis
               <ArrowRight className="h-4 w-4" />
             </button>
           </Link>
           <Link to="/registrera/byra">
             <button className="h-14 px-8 bg-background text-foreground text-base font-bold font-display uppercase tracking-wide border-2 border-foreground hover:bg-foreground hover:text-background transition-colors inline-flex items-center justify-center gap-2">
-              Registrera din byrå
+              Skapa byråkonto och ta emot leads
             </button>
           </Link>
         </div>
