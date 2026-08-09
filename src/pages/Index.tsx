@@ -5,6 +5,7 @@ import HeroSection from '@/components/home/HeroSection'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
+import { HOME_TITLE, HOME_DESCRIPTION, HOME_CANONICAL, HOME_FAQ } from '@/lib/homeSeo'
 
 const PriceCalculatorSection = lazy(() => import('@/components/home/PriceCalculatorSection'))
 const AgencyTrustSection = lazy(() => import('@/components/home/AgencyTrustSection'))
@@ -95,14 +96,23 @@ const BelowFold = () => (
 const Index = () => {
   useEffect(() => {
     setSEOMeta({
-      title: 'Updro – Hitta rätt byrå utan massutskick',
-      description: 'Beskriv projektet på två minuter. Updro granskar uppdraget och högst tre relevanta svenska byråer lämnar offert. Gratis för beställare.',
-      canonical: 'https://updro.se/',
+      title: HOME_TITLE,
+      description: HOME_DESCRIPTION,
+      canonical: HOME_CANONICAL,
     })
     setJsonLd('howto-jsonld', howItWorksSchema)
     setJsonLd('organization-jsonld', organizationSchema)
     setJsonLd('website-jsonld', websiteSchema)
-    setBreadcrumb([{ name: 'Hem', url: 'https://updro.se/' }])
+    setJsonLd('faq-jsonld', {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: HOME_FAQ.map(faq => ({
+        '@type': 'Question',
+        name: faq.q,
+        acceptedAnswer: { '@type': 'Answer', text: faq.a },
+      })),
+    })
+    setBreadcrumb([{ name: 'Hem', url: HOME_CANONICAL }])
   }, [])
 
   return (
