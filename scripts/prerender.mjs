@@ -30,32 +30,28 @@ try {
 
 const routes = getAllStaticSeoRoutes()
 let written = 0
-let skipped = 0
+const errors = []
+
+const count = (html, regex) => (html.match(regex) || []).length
 
 for (const route of routes) {
   const rel = route.path === '/' ? '' : route.path.replace(/^\/+|\/+$/g, '')
   const outDir = rel ? path.join(DIST, rel) : DIST
   const outFile = path.join(outDir, 'index.html')
 
-  // Never overwrite the root index.html (SPA entry). The root route is
-  // still served correctly because Vite's index.html is the template.
-  if (route.path === '/') {
-    // Root: rewrite in place so crawlers hitting `/` see the real title/H1/meta.
-    const html = renderStaticHtml(template, route)
-    await fs.writeFile(outFile, html, 'utf8')
-    written++
-    continue
-  }
-
   const html = renderStaticHtml(template, route)
 
-  // Sanity checks — refuse to write broken output.
-  const okTitle = html.includes(`<title>`) && html.includes(route.title.slice(0, 30))
-  const okH1 = html.includes(`<h1>`) && html.includes(route.h1.slice(0, 20))
-  const okCanonical = html.includes(`rel="canonical"`) && html.includes(route.path === '/' ? 'https://updro.se/' : `https://updro.se${route.path}`)
-  if (!okTitle || !okH1 || !okCanonical) {
-    console.warn(`⚠️  prerender: skipping ${route.path} (title=${okTitle} h1=${okH1} canonical=${okCanonical})`)
-    skipped++
+  // Hårda kontroller – exakt en av varje unik head-tagg och en H1.
+  const checks = {
+    title: count(html, /<title>/gi),
+    description: count(html, /<meta\s+name="description"/gi),
+    canonical: count(html, /<link\s+rel="canonical"/gi),
+    robots: count(html, /<meta\s+name="robots"/gi),
+    h1: count(html, /<h1[\s>]/gi),
+  }
+  const bad = Object.entries(checks).filter(([, value]) => value !== 1)
+  if (bad.length) {
+    errors.push(`${route.path}: ${bad.map(([key, value]) => `${key}=${value}`).join(', ')}`)
     continue
   }
 
@@ -64,4 +60,10 @@ for (const route of routes) {
   written++
 }
 
-console.log(`✅ prerender: wrote ${written} static HTML files to dist/ (${skipped} skipped, ${routes.length} total routes)`)
+if (errors.length) {
+  console.error(`❌ prerender: ${errors.length} routes med dubbletter/saknade taggar:`)
+  for (const error of errors) console.error(`   - ${error}`)
+  process.exit(1)
+}
+
+console.log(`✅ prerender: wrote ${written} static HTML files to dist/ (${routes.length} total routes)`)
