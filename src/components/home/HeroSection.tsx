@@ -10,12 +10,12 @@ import { trackLeadStarted } from '@/lib/analytics'
 import { trackClick } from '@/hooks/usePageTracking'
 
 const categories = [
-  { icon: Globe, label: 'Webbutveckling' },
-  { icon: ShoppingCart, label: 'E-handel' },
-  { icon: Bot, label: 'AI-utveckling' },
-  { icon: Search, label: 'SEO' },
-  { icon: Megaphone, label: 'Digital marknadsföring' },
-  { icon: Smartphone, label: 'App-utveckling' },
+  { icon: Globe, label: 'Webbutveckling', slug: 'webbutveckling' },
+  { icon: ShoppingCart, label: 'E-handel', slug: 'ehandel' },
+  { icon: Bot, label: 'AI-utveckling', slug: 'ai-utveckling' },
+  { icon: Search, label: 'SEO', slug: 'seo' },
+  { icon: Megaphone, label: 'Digital marknadsföring', slug: 'digital-marknadsforing' },
+  { icon: Smartphone, label: 'App-utveckling', slug: 'apputveckling' },
 ]
 
 const HeroSection = () => {
@@ -116,15 +116,15 @@ const HeroSection = () => {
                   className={index % 2 === 1 ? 'mt-8' : ''}
                 >
                   <Link
-                    to={`/publicera?kategori=${encodeURIComponent(category.label)}`}
+                    to={`/publicera/${category.slug}`}
                     className="group block p-6 bg-secondary border-2 border-foreground hover:bg-foreground transition-colors duration-200 h-full"
                   >
                     <div className="w-10 h-10 mb-4 flex items-center justify-center bg-background border-2 border-foreground group-hover:bg-background">
                       <category.icon className="w-5 h-5 text-foreground" strokeWidth={2} />
                     </div>
-                    <h3 className="font-display font-bold text-base leading-tight text-foreground group-hover:text-background transition-colors">
+                    <span className="block font-display font-bold text-base leading-tight text-foreground group-hover:text-background transition-colors">
                       {category.label}
-                    </h3>
+                    </span>
                   </Link>
                 </motion.div>
               ))}
