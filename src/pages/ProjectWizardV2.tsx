@@ -71,6 +71,19 @@ const ProjectWizardV2 = () => {
     })
   }, [])
 
+  // Kategorivarianter av /publicera är samma formulär – canonical till /publicera
+  // och noindex så att inga dubbletter indexeras.
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Publicera uppdrag – få offerter från digitala byråer | Updro',
+      description: 'Beskriv ditt digitala projekt gratis. Briefen granskas och högst tre relevanta byråer kan lämna offert.',
+      canonical: 'https://updro.se/publicera',
+      noindex: Boolean(categorySlug),
+    })
+  }, [categorySlug])
+
+
+
   const totalSteps = 2
   const descriptionLength = form.description.trim().length
   const MIN_DESCRIPTION = 10
