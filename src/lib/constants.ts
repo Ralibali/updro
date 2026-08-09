@@ -11,6 +11,26 @@ export const NEW_CATEGORIES = new Set([
   'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling',
 ])
 
+/**
+ * Slug → kategorinamn. Används av /publicera/:kategori så att interna länkar
+ * kan vara statiska sökvägar i stället för dynamiska query-parametrar.
+ */
+export const CATEGORY_BY_SLUG: Record<string, string> = {
+  'webbutveckling': 'Webbutveckling',
+  'ehandel': 'E-handel',
+  'e-handel': 'E-handel',
+  'seo': 'SEO',
+  'digital-marknadsforing': 'Digital marknadsföring',
+  'google-ads': 'Digital marknadsföring',
+  'e-postmarknadsforing': 'Digital marknadsföring',
+  'analys-data': 'Digital marknadsföring',
+  'apputveckling': 'App-utveckling',
+  'app-utveckling': 'App-utveckling',
+  'grafisk-design': 'Grafisk design/UX',
+  'ux-ui-design': 'Grafisk design/UX',
+  'ai-utveckling': 'AI-utveckling',
+}
+
 export const CATEGORY_ICONS: Record<string, string> = {
   'Webbutveckling': '🌐',
   'E-handel': '🛒',

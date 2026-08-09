@@ -144,6 +144,7 @@ const App = () => (
       <Suspense fallback={<PageLoader />}><div id="main-content"><Routes>
         <Route path="/" element={<Index />} />
         <Route path="/publicera" element={<ProjectWizard />} />
+        <Route path="/publicera/:kategori" element={<ProjectWizard />} />
         <Route path="/byraer" element={<BrowseAgenciesPage />} />
         <Route path="/byra/:slug" element={<AgencyProfilePage />} />
         <Route path="/priser" element={<PricingPage />} />

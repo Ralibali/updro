@@ -6,14 +6,14 @@ import {
 } from 'lucide-react'
 
 const categories = [
-  { icon: Globe, label: 'Webbutveckling', desc: 'Hemsidor, sajter, landningssidor', slug: 'webbutveckling' },
-  { icon: ShoppingCart, label: 'E-handel', desc: 'Shopify, WooCommerce, Magento', slug: 'ehandel' },
-  { icon: Search, label: 'SEO & sökmotoroptimering', desc: 'Organisk synlighet på Google', slug: 'seo' },
-  { icon: Megaphone, label: 'Digital marknadsföring', desc: 'Meta Ads, Google Ads, sociala medier', slug: 'digital-marknadsforing' },
-  { icon: Smartphone, label: 'Apputveckling', desc: 'iOS, Android, React Native', slug: 'app-utveckling' },
-  { icon: Palette, label: 'Design & UX', desc: 'Grafisk profil, UI/UX, varumärke', slug: 'grafisk-design' },
-  { icon: Mail, label: 'E-postmarknadsföring', desc: 'Nyhetsbrev, automation, CRM', slug: 'e-postmarknadsforing' },
-  { icon: BarChart2, label: 'Analys & data', desc: 'Google Analytics, dashboards, BI', slug: 'analys-data' },
+  { icon: Globe, label: 'Webbutveckling', desc: 'Hemsidor, sajter, landningssidor', slug: 'webbutveckling', href: '/webbutveckling' },
+  { icon: ShoppingCart, label: 'E-handel', desc: 'Shopify, WooCommerce, Magento', slug: 'ehandel', href: '/ehandel' },
+  { icon: Search, label: 'SEO & sökmotoroptimering', desc: 'Organisk synlighet på Google', slug: 'seo', href: '/seo' },
+  { icon: Megaphone, label: 'Digital marknadsföring', desc: 'Meta Ads, Google Ads, sociala medier', slug: 'digital-marknadsforing', href: '/digital-marknadsforing' },
+  { icon: Smartphone, label: 'Apputveckling', desc: 'iOS, Android, React Native', slug: 'app-utveckling', href: '/app-utveckling' },
+  { icon: Palette, label: 'Design & UX', desc: 'Grafisk profil, UI/UX, varumärke', slug: 'grafisk-design', href: '/grafisk-design' },
+  { icon: Mail, label: 'E-postmarknadsföring', desc: 'Nyhetsbrev, automation, CRM', slug: 'e-postmarknadsforing', href: '/byraer/kategori/e-postmarknadsforing' },
+  { icon: BarChart2, label: 'Analys & data', desc: 'Google Analytics, dashboards, BI', slug: 'analys-data', href: '/byraer/kategori/analys-data' },
 ]
 
 const CategoriesSection = () => {
@@ -45,7 +45,7 @@ const CategoriesSection = () => {
               transition={{ duration: 0.35, delay: i * 0.04 }}
             >
               <Link
-                to={`/publicera?kategori=${encodeURIComponent(cat.label)}`}
+                to={cat.href}
                 className="group flex h-full flex-col gap-4 bg-secondary border-2 border-foreground p-6 hover:bg-foreground hover:text-background transition-colors duration-200"
               >
                 <div className="w-11 h-11 flex items-center justify-center bg-background border-2 border-foreground">

@@ -6,6 +6,7 @@ import { TOOLS } from './seoTools'
 import { PRICE_GUIDES } from './priceGuideData'
 import { CITY_CATEGORY_DEEP } from './seoCityCategoryContent'
 import { CITY_DEEP } from './seoCityContent'
+import { HOME_TITLE, HOME_DESCRIPTION, HOME_H1, HOME_FAQ } from './homeSeo'
 
 export const SITE_URL = 'https://updro.se'
 export type SitemapSection = 'main' | 'cities' | 'articles' | 'tools' | 'comparisons'
@@ -41,9 +42,9 @@ export const shouldIndexCityService = (citySlug: string, serviceSlug: string) =>
 const baseRoutes = (): StaticSeoRoute[] => [
   {
     path: '/',
-    title: 'Updro – Jämför offerter från digitala byråer i Sverige',
-    description: 'Beskriv ditt projekt och få upp till tre relevanta offerter från svenska digitala byråer. Briefen granskas och tjänsten är gratis för beställare.',
-    h1: 'Max tre relevanta offerter från digitala byråer',
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    h1: HOME_H1,
     priority: 1,
     changefreq: 'daily',
     lastmod: today(),
@@ -51,7 +52,12 @@ const baseRoutes = (): StaticSeoRoute[] => [
       { label: 'Beskriv ditt projekt', href: '/publicera' },
       { label: 'Hitta byråer', href: '/byraer' },
       { label: 'Artiklar och guider', href: '/artiklar' },
+      { label: 'Webbutveckling', href: '/webbutveckling' },
+      { label: 'E-handel', href: '/ehandel' },
+      { label: 'SEO', href: '/seo' },
+      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
     ],
+    faq: HOME_FAQ,
   },
   { path: '/publicera', title: 'Publicera uppdrag – få offerter från digitala byråer | Updro', description: 'Beskriv ditt digitala projekt gratis. Briefen granskas och högst tre relevanta byråer kan lämna offert.', h1: 'Beskriv ditt uppdrag och jämför offerter', priority: 0.9, changefreq: 'weekly', lastmod: today() },
   { path: '/byraer', title: 'Hitta digitala byråer i Sverige | Updro', description: 'Jämför webbyråer, SEO-byråer, e-handelsbyråer och digitala specialister i Sverige.', h1: 'Hitta rätt digital byrå', priority: 0.9, changefreq: 'weekly', lastmod: today() },
@@ -201,11 +207,13 @@ const body = (route: StaticSeoRoute) => `<main id="static-seo-content" data-stat
 
 export const renderStaticHtml = (template: string, route: StaticSeoRoute) => {
   let html = template
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(route.title)}</title>`)
-    .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${esc(route.description)}" />`)
-    .replace(/<meta name="robots" content="[^"]*"\s*\/>/, `<meta name="robots" content="${route.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}" />`)
-    .replace(/<link rel="canonical" href="[^"]*"\s*\/>/, `<link rel="canonical" href="${abs(route.path)}" />`)
-  html = html.replace(/<meta property="og:[^>]+>\n?/g, '').replace(/<meta name="twitter:[^>]+>\n?/g, '').replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, '')
+    .replace(/[ \t]*<title>[\s\S]*?<\/title>\s*\n?/gi, '')
+    .replace(/[ \t]*<meta\s+name="description"[^>]*>\s*\n?/gi, '')
+    .replace(/[ \t]*<meta\s+name="robots"[^>]*>\s*\n?/gi, '')
+    .replace(/[ \t]*<link\s+rel="canonical"[^>]*>\s*\n?/gi, '')
+    .replace(/[ \t]*<meta\s+property="og:[^>]*>\s*\n?/gi, '')
+    .replace(/[ \t]*<meta\s+name="twitter:[^>]*>\s*\n?/gi, '')
+    .replace(/[ \t]*<script type="application\/ld\+json">[\s\S]*?<\/script>\s*\n?/gi, '')
   html = html.replace('</head>', `    ${head(route)}\n  </head>`)
   return html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${body(route)}</div>`)
 }

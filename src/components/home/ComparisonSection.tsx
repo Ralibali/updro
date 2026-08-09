@@ -144,7 +144,7 @@ const ComparisonSection = () => {
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
           Vill du gräva djupare? Läs vår ärliga genomgång:{' '}
-          <Link to="/alternativ-till-partna" className="font-semibold text-foreground underline underline-offset-4 hover:text-accent">
+          <Link to="/partna-alternativ" className="font-semibold text-foreground underline underline-offset-4 hover:text-accent">
             Updro som alternativ till Partna
           </Link>
         </p>

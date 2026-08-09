@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
@@ -16,7 +16,8 @@ import { supabase } from '@/integrations/supabase/client'
 import { trackLeadStarted, trackLeadSubmitted, trackOnceInSession } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import type { Json } from '@/integrations/supabase/types'
-import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
+import { setSEOMeta } from '@/lib/seoHelpers'
+import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_BY_SLUG, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
 import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
 import { PRICE_MATRIX } from '@/lib/priceGuideData'
 import type { BriefSuggestion } from '@/lib/briefAnalysis'
@@ -35,8 +36,10 @@ const ProjectWizardV2 = () => {
   const { user, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { kategori: categorySlug } = useParams<{ kategori: string }>()
   const initialDescription = searchParams.get('beskrivning')?.trim().slice(0, 5000) || ''
-  const initialCategoryParam = searchParams.get('kategori')?.trim() || ''
+  const slugCategory = categorySlug ? CATEGORY_BY_SLUG[categorySlug.toLowerCase()] || '' : ''
+  const initialCategoryParam = slugCategory || searchParams.get('kategori')?.trim() || ''
   const initialCategory = (CATEGORIES as readonly string[]).includes(initialCategoryParam)
     ? initialCategoryParam as Category
     : ''
@@ -68,6 +71,19 @@ const ProjectWizardV2 = () => {
       })
     })
   }, [])
+
+  // Kategorivarianter av /publicera är samma formulär – canonical till /publicera
+  // och noindex så att inga dubbletter indexeras.
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Publicera uppdrag – få offerter från digitala byråer | Updro',
+      description: 'Beskriv ditt digitala projekt gratis. Briefen granskas och högst tre relevanta byråer kan lämna offert.',
+      canonical: 'https://updro.se/publicera',
+      noindex: Boolean(categorySlug),
+    })
+  }, [categorySlug])
+
+
 
   const totalSteps = 2
   const descriptionLength = form.description.trim().length

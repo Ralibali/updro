@@ -151,7 +151,9 @@ export const setSEOMeta = (meta: SEOMeta) => {
     description = defaults.description
   }
 
-  // Title
+  // Title – ta bort ev. dubbletter av <title> först
+  const titles = document.head.querySelectorAll('title')
+  for (let i = 1; i < titles.length; i++) titles[i].remove()
   if (document.title !== title) document.title = title
 
   // Description
@@ -201,6 +203,8 @@ function setOrCreateLink(rel: string, href: string) {
 }
 
 function setOrCreateMeta(name: string, content: string) {
+  const all = document.querySelectorAll(`meta[name="${name}"]`)
+  for (let i = 1; i < all.length; i++) all[i].remove()
   let el = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null
   if (el) {
     el.content = content
@@ -213,6 +217,8 @@ function setOrCreateMeta(name: string, content: string) {
 }
 
 function setOrCreateMetaProperty(property: string, content: string) {
+  const all = document.querySelectorAll(`meta[property="${property}"]`)
+  for (let i = 1; i < all.length; i++) all[i].remove()
   let el = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement | null
   if (el) {
     el.setAttribute('content', content)

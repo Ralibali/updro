@@ -63,7 +63,7 @@ const OfferCard = ({ offer, index, reduce }: { offer: ExampleOffer; index: numbe
     )}
     <header className="flex items-start justify-between gap-3">
       <div>
-        <h3 className="font-display font-bold text-lg text-foreground">{offer.agency}</h3>
+        <p className="font-display font-bold text-lg text-foreground">{offer.agency}</p>
         <p className="text-xs text-muted-foreground">{offer.city} · verifierad byrå</p>
       </div>
       <span className="inline-flex items-center gap-1 border border-foreground/20 bg-secondary px-2 py-1 text-xs font-semibold">
