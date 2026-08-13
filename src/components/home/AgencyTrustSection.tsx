@@ -75,8 +75,8 @@ const AgencyTrustSection = () => {
               Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
-          <Link to="/registrera/byra">
-            <Button variant="outline" className="rounded-xl">Registrera din byrå</Button>
+          <Link to="/for-byraer">
+            <Button variant="outline" className="rounded-xl">För digitala byråer</Button>
           </Link>
         </motion.div>
       </div>
