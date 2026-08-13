@@ -163,6 +163,7 @@ const App = () => (
         <Route path="/sitemap" element={<SitemapPage />} />
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/landing/byra" element={<SupplierLandingPage />} />
+        <Route path="/for-byraer" element={<SupplierLandingPage />} />
         <Route path="/jamfor-offerter" element={<AdsLandingPage />} />
         <Route path="/guider" element={<Navigate to="/artiklar" replace />} />
         <Route path="/guider/:slug" element={<RedirectToArtikel />} />
