@@ -48,14 +48,12 @@ const TwoSidedSection = () => {
                 </li>
               ))}
             </ul>
-            <Link to="/publicera">
-              <motion.div whileHover={{ scale: 1.02 }} className="inline-block">
-                <Button className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl px-6 font-semibold">
-                  Starta din förfrågan
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </motion.div>
-            </Link>
+            <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl px-6 font-semibold">
+              <Link to="/publicera">
+                Starta din förfrågan
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </motion.div>
 
           <motion.div
@@ -75,12 +73,12 @@ const TwoSidedSection = () => {
                 </li>
               ))}
             </ul>
-            <Link to="/for-byraer">
-              <Button variant="ghost" className="px-0 text-foreground hover:bg-transparent hover:text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2">
+            <Button asChild variant="ghost" className="px-0 text-foreground hover:bg-transparent hover:text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2">
+              <Link to="/for-byraer">
                 Läs mer för byråer
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </motion.div>
         </div>
       </div>
