@@ -18,6 +18,9 @@ const DIST = path.join(ROOT, 'dist')
 const { getAllStaticSeoRoutes, renderStaticHtml } = await import(
   path.join(ROOT, 'src/lib/seoStatic.ts')
 )
+const { PARTNA_FACTS, PARTNA_FAQS } = await import(
+  path.join(ROOT, 'src/lib/partnaComparison.ts')
+)
 
 const templatePath = path.join(DIST, 'index.html')
 let template
@@ -28,7 +31,18 @@ try {
   process.exit(1)
 }
 
-const routes = getAllStaticSeoRoutes()
+const partnaSeoOverride = route => {
+  if (route.path !== '/partna-alternativ') return route
+  return {
+    ...route,
+    title: 'Partna pris 2026 & alternativ – Updro vs Partna',
+    description: `Jämför Partna och Updro: ${PARTNA_FACTS.payAsYouGo} kr per Partna-förfrågan, ${Math.round(PARTNA_FACTS.successFeeRate * 100)} % slagavgift vid vunnen affär, upp till ${PARTNA_FACTS.maxOffers} offerter – mot Updros 119 kr per valt lead och max tre byråer.`,
+    h1: 'Partna pris och alternativ – Updro vs Partna',
+    faq: PARTNA_FAQS.map(item => ({ q: item.q, a: item.a })),
+  }
+}
+
+const routes = getAllStaticSeoRoutes().map(partnaSeoOverride)
 let written = 0
 const errors = []
 
