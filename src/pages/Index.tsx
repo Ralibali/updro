@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/home/HeroSection'
+import TrustStripSection from '@/components/home/TrustStripSection'
+import MobileStickyCTA from '@/components/home/MobileStickyCTA'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
@@ -116,10 +118,11 @@ const Index = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <HeroSection />
+        <TrustStripSection />
         <section className="container py-8 md:py-12">
           <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
             <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
@@ -133,6 +136,7 @@ const Index = () => {
         <BelowFold />
       </main>
       <Footer />
+      <MobileStickyCTA />
     </div>
   )
 }
