@@ -76,6 +76,7 @@ const ExampleOffersSection = () => {
   const reduce = useReducedMotion()
   const [lens, setLens] = useState<DecisionLens>('balanced')
   const recommended = useMemo(() => pickRecommended(lens), [lens])
+  const activeLens = LENSES.find(item => item.id === lens)?.label ?? 'Bäst helhet'
 
   return (
     <section className="py-16 md:py-20 bg-secondary border-b-2 border-foreground" aria-labelledby="exempelofferter-rubrik">
@@ -111,6 +112,9 @@ const ExampleOffersSection = () => {
             )
           })}
         </div>
+        <p className="sr-only" aria-live="polite">
+          Prioritering {activeLens}. {recommended.title}, {recommended.profile}, matchar valet bäst i det illustrerade exemplet.
+        </p>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3 max-w-5xl mx-auto">
           {EXAMPLE_OFFERS.map((offer, index) => {
