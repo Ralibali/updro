@@ -19,10 +19,10 @@ const footerColumns = [
   {
     title: 'För byråer',
     links: [
+      { label: 'Så fungerar Updro för byråer', href: '/for-byraer' },
       { label: 'Registrera din byrå', href: '/registrera/byra' },
       { label: 'Byrå-dashboard', href: '/dashboard/supplier' },
       { label: 'Priser', href: '/priser' },
-      { label: 'Få leads från Updro', href: '/landing/byra' },
     ],
   },
   {
@@ -135,7 +135,6 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* City row */}
         <div className="border-t border-background/10 mt-12 pt-8">
           <p className="text-sm text-background/60 flex flex-wrap items-center gap-x-2 gap-y-2">
             <span className="text-background/50">Byråer i:</span>
@@ -154,7 +153,6 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Popular combos */}
         <div className="border-t border-background/10 mt-8 pt-8">
           <h4 className="font-display text-sm mb-3 text-background/80">Populära sökningar</h4>
           <p className="text-sm text-background/60 flex flex-wrap items-center gap-x-2 gap-y-2">
