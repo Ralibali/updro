@@ -5,7 +5,7 @@ import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { STRIPE_PRODUCTS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
 import { PRICE_GUIDES } from '@/lib/priceGuideData'
-import { Check, Gift, ArrowRight, RotateCcw, Eye, UsersRound } from 'lucide-react'
+import { Check, Gift, ArrowRight, RotateCcw, Eye, UsersRound, HandCoins } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
@@ -19,7 +19,7 @@ const supplierPlans = [
     features: [
       'Se projektbrief, budget och tidsram före köp',
       'Lås bara upp leads ni själva väljer',
-      'Skicka offert och kommunicera i plattformen',
+      '0 % provision på projektvärdet när ni vinner',
       'Begär kreditprövning vid ogiltig kontakt',
       'Ingen bindningstid',
     ],
@@ -34,8 +34,8 @@ const supplierPlans = [
     description: 'För byråer som vill kunna låsa upp alla relevanta uppdrag som finns i deras kategorier.',
     features: [
       'Obegränsade upplåsningar under aktiv månad',
+      '0 % provision på projektvärdet när ni vinner',
       'Samma brief, offert och chattfunktioner',
-      'Hantera och avsluta abonnemanget via Stripe',
       'Högst tre byråer kan lämna offert per uppdrag',
       'Ingen uppsägningstid',
     ],
@@ -50,7 +50,7 @@ const PricingPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Priser – Updro | Pay per lead eller månadskort',
-      description: `Updro kostar ${STRIPE_PRODUCTS.lead.price} kr per valt lead eller ${STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån för obegränsade upplåsningar. ${TRIAL_LEADS} kostnadsfria lead-krediter vid start.`,
+      description: `Updro kostar ${STRIPE_PRODUCTS.lead.price} kr per valt lead eller ${STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån. ${TRIAL_LEADS} gratis lead-krediter och 0 % provision på vunna projekt.`,
       canonical: 'https://updro.se/priser',
     })
   }, [])
@@ -63,7 +63,7 @@ const PricingPage = () => {
           <div className="container">
             <span className="inline-block bg-accent/10 text-accent rounded-full px-4 py-1.5 text-sm font-semibold mb-4">Tydligt från början</span>
             <h1 className="font-display text-4xl md:text-5xl font-bold">Transparent prissättning</h1>
-            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">Välj bara uppdrag som passar. Inga dolda avgifter och ingen bindningstid.</p>
+            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">Välj bara uppdrag som passar. Inga dolda avgifter, ingen bindningstid och 0 % provision på projektvärdet när ni vinner.</p>
 
             <div className="flex justify-center mt-8">
               <div className="inline-flex bg-muted rounded-xl p-1">
@@ -115,11 +115,12 @@ const PricingPage = () => {
             </section>
 
             <section className="container mb-16">
-              <div className="max-w-4xl mx-auto rounded-2xl border bg-muted/30 p-6 md:p-8">
+              <div className="max-w-5xl mx-auto rounded-2xl border bg-muted/30 p-6 md:p-8">
                 <h2 className="font-display text-2xl font-bold text-center mb-8">Det som gäller oavsett betalningsmodell</h2>
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="text-center"><Eye className="h-6 w-6 mx-auto text-primary" /><h3 className="font-semibold mt-3">Brief före upplåsning</h3><p className="text-sm text-muted-foreground mt-1">Bedöm relevansen innan en kredit används.</p></div>
                   <div className="text-center"><UsersRound className="h-6 w-6 mx-auto text-primary" /><h3 className="font-semibold mt-3">Max tre byråer</h3><p className="text-sm text-muted-foreground mt-1">Begränsad konkurrens på varje uppdrag.</p></div>
+                  <div className="text-center"><HandCoins className="h-6 w-6 mx-auto text-primary" /><h3 className="font-semibold mt-3">0 % projektprovision</h3><p className="text-sm text-muted-foreground mt-1">Updro tar ingen procent av er offert när ni vinner.</p></div>
                   <div className="text-center"><RotateCcw className="h-6 w-6 mx-auto text-primary" /><h3 className="font-semibold mt-3">Kreditprövning</h3><p className="text-sm text-muted-foreground mt-1">Rapportera ogiltig kontakt, falskt lead eller tydligt fel scope.</p></div>
                 </div>
               </div>
@@ -129,12 +130,12 @@ const PricingPage = () => {
               <h2 className="font-display text-2xl font-bold text-center mb-8">Vanliga frågor</h2>
               <Accordion type="single" collapsible className="space-y-2">
                 {[
+                  ['Tar Updro provision när vi vinner ett projekt?', 'Nej. Updro tar ingen procent av offert- eller projektvärdet när beställaren väljer er. Ni betalar enligt vald lead- eller abonnemangsmodell.'],
                   ['Vad innebär månadskortet?', `Månadskortet kostar ${STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån och ger obegränsade lead-upplåsningar medan abonnemanget är aktivt. Antalet tillgängliga uppdrag varierar över tid och mellan kategorier.`],
                   ['Hur fungerar pay per lead?', `Ni betalar ${STRIPE_PRODUCTS.lead.price} kr för varje lead ni själva väljer att låsa upp. Brief, kategori, budget och tidsram visas innan beslutet.`],
                   ['Vad händer om kontaktuppgifterna är fel?', 'Ni kan skicka in en begäran om kreditprövning vid ogiltig kontakt, falsk förfrågan, dubblett eller tydligt felaktigt scope. Updro granskar ärendet innan krediten återförs.'],
                   ['Hur fungerar de kostnadsfria krediterna?', `Ett nytt byråkonto får ${TRIAL_LEADS} lead-krediter som kan användas under den ${TRIAL_DAYS} dagar långa provperioden.`],
                   ['Kan abonnemanget avslutas?', 'Ja. Månadskortet kan hanteras och avslutas via Stripe Billing Portal och har ingen uppsägningstid.'],
-                  ['Vilka betalningsmetoder accepteras?', 'Kortbetalningar hanteras säkert genom Stripe.'],
                 ].map(([question, answer]) => (
                   <AccordionItem key={question} value={question} className="bg-card rounded-xl border px-4">
                     <AccordionTrigger className="text-sm font-medium">{question}</AccordionTrigger>
