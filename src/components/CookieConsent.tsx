@@ -96,11 +96,8 @@ const CookieConsent = () => {
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           <Button variant="outline" size="sm" className="rounded-xl w-full" onClick={() => persist(false, false)}>Neka alla</Button>
-          {showDetails ? (
-            <Button variant="outline" size="sm" className="rounded-xl w-full hidden sm:inline-flex" onClick={() => persist(analytics, marketing)}>Spara val</Button>
-          ) : (
-            <Button variant="outline" size="sm" className="rounded-xl w-full hidden sm:inline-flex" onClick={() => persist(analytics, marketing)}>Spara val</Button>
-          )}
+          <Button variant="outline" size="sm" className="rounded-xl w-full hidden sm:inline-flex" onClick={() => persist(analytics, marketing)}>Spara val</Button>
+
           <Button variant="outline" size="sm" className="rounded-xl w-full" onClick={() => persist(true, true)}>Acceptera alla</Button>
           {showDetails ? (
             <Button variant="outline" size="sm" className="rounded-xl w-full col-span-2 sm:hidden" onClick={() => persist(analytics, marketing)}>Spara val</Button>
