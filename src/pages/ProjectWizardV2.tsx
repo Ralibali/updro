@@ -254,7 +254,7 @@ const ProjectWizardV2 = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 py-8 px-4">
+      <main className="flex-1 py-8 px-4 pb-56 sm:pb-8">
         <div className="max-w-2xl mx-auto">
           {step <= totalSteps && (
             <>
