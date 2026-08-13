@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -221,26 +221,40 @@ const ProjectWizardV2 = () => {
   }
 
   // Track abandonment so we can see exactly where users drop off.
+  // Kept in a ref so cleanup reads the *latest* state, inte första renderingens.
+  const abandonRef = useRef({ step, descriptionLength, form, path: typeof window !== 'undefined' ? window.location.pathname : '' })
+  abandonRef.current = {
+    step,
+    descriptionLength,
+    form,
+    path: typeof window !== 'undefined' ? window.location.pathname : abandonRef.current.path,
+  }
+
   useEffect(() => {
     return () => {
-      if (step <= totalSteps) {
+      const snapshot = abandonRef.current
+      if (snapshot.step <= totalSteps) {
         trackClick('lead_abandoned', 'Publicera-formuläret lämnat', {
-          step,
-          description_length: descriptionLength,
-          has_category: Boolean(form.category),
-          has_budget: Boolean(form.budget_range),
+          step: snapshot.step,
+          description_length: snapshot.descriptionLength,
+          has_category: Boolean(snapshot.form.category),
+          has_budget: Boolean(snapshot.form.budget_range),
+          has_start_time: Boolean(snapshot.form.start_time),
+          has_contact: Boolean(snapshot.form.email.trim() || snapshot.form.full_name.trim()),
+          page: snapshot.path,
         })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 py-8 px-4">
+      <main className="flex-1 py-8 px-4 pb-56 sm:pb-8">
         <div className="max-w-2xl mx-auto">
           {step <= totalSteps && (
             <>
