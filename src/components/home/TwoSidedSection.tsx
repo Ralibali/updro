@@ -14,7 +14,7 @@ const supplierBullets = [
   'Max tre byråer per uppdrag',
   'Välj själv vilka leads ni låser upp',
   'Fem kostnadsfria lead-krediter vid start',
-  'Begär kreditprövning vid ogiltig kontakt',
+  '0 % provision på projektet när ni vinner',
 ]
 
 const TwoSidedSection = () => {
@@ -66,7 +66,7 @@ const TwoSidedSection = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <h3 className="font-display text-3xl mb-3 text-foreground">För digitala byråer</h3>
-            <p className="text-sm text-muted-foreground mb-6">Färre konkurrenter per uppdrag och full kontroll över vilka leads ni väljer att lägga tid på.</p>
+            <p className="text-sm text-muted-foreground mb-6">Färre konkurrenter per uppdrag, full kontroll över vilka leads ni väljer och ingen procentuell avgift på projektet när ni vinner.</p>
             <ul className="space-y-3 mb-8">
               {supplierBullets.map(bullet => (
                 <li key={bullet} className="flex items-center gap-3 text-sm text-foreground">
@@ -75,9 +75,9 @@ const TwoSidedSection = () => {
                 </li>
               ))}
             </ul>
-            <Link to="/registrera/byra">
+            <Link to="/for-byraer">
               <Button variant="ghost" className="px-0 text-foreground hover:bg-transparent hover:text-foreground font-semibold underline underline-offset-4 decoration-1 hover:decoration-2">
-                Skapa byråkonto
+                Läs mer för byråer
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
