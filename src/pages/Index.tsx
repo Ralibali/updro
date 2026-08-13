@@ -9,16 +9,14 @@ import HowItWorksSection from '@/components/home/HowItWorksSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { HOME_TITLE, HOME_DESCRIPTION, HOME_CANONICAL, HOME_FAQ } from '@/lib/homeSeo'
 
+const ExampleOffersSection = lazy(() => import('@/components/home/ExampleOffersSection'))
 const PriceCalculatorSection = lazy(() => import('@/components/home/PriceCalculatorSection'))
 const AgencyTrustSection = lazy(() => import('@/components/home/AgencyTrustSection'))
 const TwoSidedSection = lazy(() => import('@/components/home/TwoSidedSection'))
 const ComparisonSection = lazy(() => import('@/components/home/ComparisonSection'))
-const ExampleOffersSection = lazy(() => import('@/components/home/ExampleOffersSection'))
 const StatsSection = lazy(() => import('@/components/home/StatsSection'))
-const TestimonialsSection = lazy(() => import('@/components/home/TestimonialsSection'))
 const FAQSection = lazy(() => import('@/components/home/FAQSection'))
 const CTASection = lazy(() => import('@/components/home/CTASection'))
-const NewsletterSection = lazy(() => import('@/components/home/NewsletterSection'))
 
 const howItWorksSchema = {
   '@context': 'https://schema.org',
@@ -82,14 +80,12 @@ const websiteSchema = {
 
 const BelowFold = () => (
   <Suspense fallback={null}>
+    <ExampleOffersSection />
     <PriceCalculatorSection />
+    <ComparisonSection />
     <AgencyTrustSection />
     <TwoSidedSection />
-    <ComparisonSection />
-    <ExampleOffersSection />
     <StatsSection />
-    <TestimonialsSection />
-    <NewsletterSection />
     <FAQSection />
     <CTASection />
   </Suspense>
@@ -123,12 +119,22 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <TrustStripSection />
-        <section className="container py-8 md:py-12">
-          <div className="max-w-3xl bg-muted/40 border rounded-2xl p-6 md:p-8">
-            <h2 className="font-display text-xl md:text-2xl font-semibold text-foreground">Vad är Updro?</h2>
-            <p className="mt-3 text-foreground/85 leading-relaxed">
-              Updro är en svensk marknadsplats där företag beskriver ett digitalt behov utan att först skapa konto. Vi granskar briefen innan den öppnas för matchande byråer, och högst tre relevanta byråer kan lämna offert. Tjänsten är gratis för beställare och prioriterar webbutveckling, e-handel och AI – men täcker också SEO, appar, digital marknadsföring, UX/design, IT-support, affärsutveckling, video/foto, mjukvara och varumärke/PR.
-            </p>
+        <section className="container py-10 md:py-14">
+          <div className="grid gap-6 border-y-2 border-foreground py-8 md:grid-cols-[0.85fr_1.15fr] md:items-start md:gap-12 md:py-10">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Varför Updro?</p>
+              <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-foreground md:text-4xl">
+                Varför inte bara googla fram en byrå?
+              </h2>
+            </div>
+            <div>
+              <p className="text-base leading-relaxed text-foreground/85 md:text-lg">
+                Det kan du. Men då behöver du själv hitta kandidater, förklara samma projekt flera gånger och försöka göra helt olika offerter jämförbara. Med Updro beskriver du behovet en gång, briefen granskas och högst tre relevanta byråer får möjlighet att lämna offert.
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                Resultatet är inte fler svar – utan ett tydligare beslutsunderlag med pris, tidsplan och omfattning samlat på ett ställe.
+              </p>
+            </div>
           </div>
         </section>
         <CategoriesSection />
