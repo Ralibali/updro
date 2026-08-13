@@ -1,0 +1,2 @@
+delete from public.projects where guest_lead_id in (select id from public.guest_leads where email = 'qa+wizardtest@auroramedia.se');
+delete from public.guest_leads where email = 'qa+wizardtest@auroramedia.se';
