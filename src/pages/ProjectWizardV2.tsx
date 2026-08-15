@@ -206,8 +206,8 @@ const ProjectWizardV2 = () => {
   const step1DisabledHint = descriptionReady
     ? ''
     : descriptionLength === 0
-      ? 'Skriv några meningar om vad du behöver hjälp med.'
-      : `Skriv ${20 - descriptionLength} tecken till för att fortsätta.`
+      ? 'Skriv några ord om vad du behöver hjälp med.'
+      : `Skriv ${10 - descriptionLength} tecken till för att fortsätta.`
 
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
