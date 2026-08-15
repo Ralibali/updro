@@ -73,7 +73,7 @@ const ProjectWizardV2 = () => {
 
   const totalSteps = 2
   const descriptionLength = form.description.trim().length
-  const descriptionReady = descriptionLength >= 20
+  const descriptionReady = descriptionLength >= 10
   const detailsReady = Boolean(form.category && form.budget_range && form.start_time)
   const contactReady = isAuthenticated || (form.full_name.trim().length >= 2 && validEmail(form.email))
   const canSubmit = descriptionReady && detailsReady && contactReady
