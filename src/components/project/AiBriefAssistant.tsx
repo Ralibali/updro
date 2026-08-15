@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Sparkles, Loader2, CheckCircle2, Wand2, Users, Gauge, WalletCards } from 'lucide-react'
+import { Sparkles, Loader2, CheckCircle2, Wand2, Users, Gauge } from 'lucide-react'
 import { toast } from 'sonner'
-import { Link } from 'react-router-dom'
 import { analyzeBriefLocally, type BriefSuggestion } from '@/lib/briefAnalysis'
 import { CATEGORY_ICONS, BUDGET_LABELS, START_TIME_LABELS } from '@/lib/constants'
-import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
-import { formatPrice } from '@/lib/dateUtils'
 
 interface AiBriefAssistantProps {
   onAccept: (brief: BriefSuggestion) => void
