@@ -396,8 +396,8 @@ const ProjectWizardV2 = () => {
 
 
 const DescriptionHelp = ({ length }: { length: number }) => {
-  const minimum = 80
-  const strong = 220
+  const minimum = 10
+  const strong = 40
   const message = length >= strong
     ? 'Bra! Detaljerade uppdrag får fler relevanta offerter.'
     : length >= minimum
