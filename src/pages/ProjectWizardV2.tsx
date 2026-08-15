@@ -101,7 +101,7 @@ const ProjectWizardV2 = () => {
 
   const goToDetails = () => {
     if (!descriptionReady) {
-      toast.error(`Skriv minst ${20 - descriptionLength} tecken till.`)
+      toast.error(`Skriv minst ${10 - descriptionLength} tecken till.`)
       return
     }
     trackOnceInSession('lead_started', () => trackLeadStarted('project_wizard'))
