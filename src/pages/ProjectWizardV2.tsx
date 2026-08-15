@@ -73,7 +73,7 @@ const ProjectWizardV2 = () => {
 
   const totalSteps = 2
   const descriptionLength = form.description.trim().length
-  const descriptionReady = descriptionLength >= 20
+  const descriptionReady = descriptionLength >= 10
   const detailsReady = Boolean(form.category && form.budget_range && form.start_time)
   const contactReady = isAuthenticated || (form.full_name.trim().length >= 2 && validEmail(form.email))
   const canSubmit = descriptionReady && detailsReady && contactReady
@@ -101,7 +101,7 @@ const ProjectWizardV2 = () => {
 
   const goToDetails = () => {
     if (!descriptionReady) {
-      toast.error(`Skriv minst ${20 - descriptionLength} tecken till.`)
+      toast.error(`Skriv minst ${10 - descriptionLength} tecken till.`)
       return
     }
     trackOnceInSession('lead_started', () => trackLeadStarted('project_wizard'))
@@ -206,8 +206,8 @@ const ProjectWizardV2 = () => {
   const step1DisabledHint = descriptionReady
     ? ''
     : descriptionLength === 0
-      ? 'Skriv några meningar om vad du behöver hjälp med.'
-      : `Skriv ${20 - descriptionLength} tecken till för att fortsätta.`
+      ? 'Skriv några ord om vad du behöver hjälp med.'
+      : `Skriv ${10 - descriptionLength} tecken till för att fortsätta.`
 
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
@@ -396,8 +396,8 @@ const ProjectWizardV2 = () => {
 
 
 const DescriptionHelp = ({ length }: { length: number }) => {
-  const minimum = 80
-  const strong = 220
+  const minimum = 10
+  const strong = 40
   const message = length >= strong
     ? 'Bra! Detaljerade uppdrag får fler relevanta offerter.'
     : length >= minimum
