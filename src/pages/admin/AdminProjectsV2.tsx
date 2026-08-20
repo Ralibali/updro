@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { supabase } from '@/integrations/supabase/client'
 import { BUDGET_LABELS, CATEGORY_STYLES, START_TIME_LABELS } from '@/lib/constants'
 import { getProjectBuyerContact } from '@/lib/buyerContact'
+import { deleteAdminProject, loadAdminUppdrag, type AdminGuestLead } from '@/lib/adminUppdrag'
 import { trackClick } from '@/hooks/usePageTracking'
 import { timeAgo } from '@/lib/dateUtils'
 import { exportCsv } from '@/lib/exportCsv'
@@ -24,6 +25,7 @@ const statusClass = (status: string) => {
 
 const AdminProjectsV2 = () => {
   const [projects, setProjects] = useState<any[]>([])
+  const [orphans, setOrphans] = useState<AdminGuestLead[]>([])
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('all')
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -33,18 +35,20 @@ const AdminProjectsV2 = () => {
 
   const load = async () => {
     setLoading(true)
-    const { data, error } = await (supabase as any)
-      .from('projects')
-      .select('*, profiles!projects_buyer_id_fkey(full_name, company_name, email, phone, city), guest_leads!projects_guest_lead_id_fkey(full_name, company_name, email, phone)')
-      .order('created_at', { ascending: false })
-      .limit(500)
-    setLoading(false)
-    if (error) {
+    try {
+      const result = await loadAdminUppdrag(supabase as any)
+      setProjects(result.projects)
+      setOrphans(result.orphanGuestLeads)
+      if (result.orphanError) {
+        console.error(result.orphanError)
+        toast.error('Kunde inte hämta gästleads utan uppdrag.')
+      }
+    } catch (error) {
       console.error(error)
       toast.error('Kunde inte hämta uppdragen.')
-      return
+    } finally {
+      setLoading(false)
     }
-    setProjects(data || [])
   }
 
   useEffect(() => { load() }, [])
@@ -60,9 +64,18 @@ const AdminProjectsV2 = () => {
   const remove = async () => {
     if (!deleteTarget) return
     setDeleting(true)
-    const { error } = await supabase.from('projects').delete().eq('id', deleteTarget.id)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setDeleting(false)
+      return toast.error('Kunde inte identifiera admin för audit-loggen.')
+    }
+    try {
+      await deleteAdminProject(supabase as any, user.id, deleteTarget)
+    } catch (error: any) {
+      setDeleting(false)
+      return toast.error('Kunde inte ta bort: ' + (error?.message || 'okänt fel'))
+    }
     setDeleting(false)
-    if (error) return toast.error('Kunde inte ta bort: ' + error.message)
     setDeleteTarget(null)
     toast.success('Uppdraget har tagits bort.')
     load()
@@ -74,6 +87,11 @@ const AdminProjectsV2 = () => {
     const haystack = [project.title, project.category, buyer?.full_name, buyer?.company_name, buyer?.email]
       .filter(Boolean).join(' ').toLowerCase()
     return (!needle || haystack.includes(needle)) && (status === 'all' || project.status === status)
+  })
+  const filteredOrphans = orphans.filter(lead => {
+    const haystack = [lead.title, lead.category, lead.full_name, lead.company_name, lead.email]
+      .filter(Boolean).join(' ').toLowerCase()
+    return !needle || haystack.includes(needle)
   })
   const pending = projects.filter(project => project.status === 'pending').length
 
@@ -99,6 +117,7 @@ const AdminProjectsV2 = () => {
         <div className="flex items-center gap-3">
           <h1 className="font-display text-2xl font-bold">Uppdrag</h1>
           {pending > 0 && <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-1 rounded-full">{pending} väntar</span>}
+          {orphans.length > 0 && <span className="bg-orange-100 text-orange-800 text-xs font-semibold px-2.5 py-1 rounded-full">{orphans.length} gästleads utan uppdrag</span>}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {statuses.map(item => <Button key={item} size="sm" variant={status === item ? 'default' : 'outline'} onClick={() => setStatus(item)}>{item === 'all' ? 'Alla' : item}</Button>)}
@@ -106,6 +125,36 @@ const AdminProjectsV2 = () => {
           <Button size="sm" variant="outline" onClick={download}><Download className="h-4 w-4 mr-1" />CSV</Button>
         </div>
       </div>
+
+      {filteredOrphans.length > 0 && (
+        <div className="bg-card rounded-xl border overflow-x-auto mb-6">
+          <div className="px-4 py-3 border-b bg-orange-50/70">
+            <h2 className="font-semibold text-sm">Gästleads utan uppdrag</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Dessa rader finns kvar i guest_leads men saknar projekt, så de syns inte i listan nedan.</p>
+          </div>
+          <table className="w-full min-w-[720px] text-sm">
+            <thead><tr className="border-b bg-muted/50"><th className="text-left p-3">Titel</th><th className="text-left p-3">Kategori</th><th className="text-left p-3">Beställare</th><th className="text-left p-3">Källa</th><th className="text-left p-3">Skapad</th></tr></thead>
+            <tbody>
+              {filteredOrphans.map(lead => (
+                <tr key={lead.id} className="border-b bg-orange-50/30">
+                  <td className="p-3 font-medium max-w-56 truncate">{lead.title}</td>
+                  <td className="p-3"><span className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', CATEGORY_STYLES[lead.category] || '')}>{lead.category}</span></td>
+                  <td className="p-3">
+                    <div>{lead.company_name || lead.full_name || '–'}</div>
+                    <span className="text-[10px] text-primary">Gästlead utan uppdrag</span>
+                    <div className="flex gap-3 mt-1 text-xs text-muted-foreground">
+                      {lead.email && <a className="hover:underline text-primary" href={`mailto:${lead.email}`}>{lead.email}</a>}
+                      {lead.phone && <a className="hover:underline text-primary" href={`tel:${lead.phone}`}>{lead.phone}</a>}
+                    </div>
+                  </td>
+                  <td className="p-3 text-muted-foreground">{lead.source || '–'}</td>
+                  <td className="p-3 text-muted-foreground">{lead.created_at ? timeAgo(lead.created_at) : '–'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div className="bg-card rounded-xl border overflow-x-auto">
         <table className="w-full min-w-[920px] text-sm">
