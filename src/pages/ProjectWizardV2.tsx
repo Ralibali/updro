@@ -4,7 +4,6 @@ import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkle
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import AiBriefAssistant from '@/components/project/AiBriefAssistant'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,7 +18,6 @@ import { sanitizePrefill } from '@/lib/prefill'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
 import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
-import type { BriefSuggestion } from '@/lib/briefAnalysis'
 import type { BudgetRange, Category, StartTime } from '@/types'
 
 const inferTitle = (description: string) => {
@@ -81,8 +79,6 @@ const ProjectWizardV2 = () => {
     if (!detailsReady || !form.category) return
     trackUppdragDetailsCompleted({ category: form.category, budgetRange: form.budget_range || undefined })
   }, [detailsReady, form.category, form.budget_range])
-
-  const applyAiBrief = (brief: BriefSuggestion) => setForm(previous => ({ ...previous, ...brief }))
 
   const improveDescription = async () => {
     if (!form.category || form.description.trim().length < 10 || aiLoading) return
@@ -251,7 +247,6 @@ const ProjectWizardV2 = () => {
                 />
                 <DescriptionHelp length={form.description.length} />
               </div>
-              <AiBriefAssistant onAccept={applyAiBrief} initialText={form.description} />
               <div>
                 <Label htmlFor="project-title">Rubrik (valfritt)</Label>
                 <Input id="project-title" value={form.title} onChange={event => setForm(previous => ({ ...previous, title: event.target.value }))} placeholder="Skapas automatiskt om du lämnar tomt" maxLength={100} className="rounded-xl mt-1" />

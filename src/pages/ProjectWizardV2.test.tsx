@@ -29,7 +29,6 @@ vi.mock('@/hooks/useAuth', () => ({
 
 vi.mock('@/components/Navbar', () => ({ default: () => <nav>Nav</nav> }))
 vi.mock('@/components/Footer', () => ({ default: () => <footer>Footer</footer> }))
-vi.mock('@/components/project/AiBriefAssistant', () => ({ default: () => null }))
 vi.mock('@/hooks/usePageTracking', () => ({ trackClick: () => {} }))
 vi.mock('@/lib/analytics', () => ({
   trackLeadStarted: () => {},
@@ -68,6 +67,15 @@ describe('ProjectWizardV2 step 1 helper/placeholder', () => {
     )
     expect(screen.getByText(PROJECT_DESCRIPTION_EXAMPLE, { exact: false })).toBeInTheDocument()
     expect(screen.queryByText(/minst 10 tecken/i)).not.toBeInTheDocument()
+  })
+
+  it('visar inte AI-assistenten – bara beskrivningsfält och Nästa', () => {
+    renderWizard('/publicera')
+
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Nästa/ })).toBeInTheDocument()
+    expect(screen.queryByText('AI-projektassistent')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Få AI-förslag/ })).not.toBeInTheDocument()
   })
 })
 
