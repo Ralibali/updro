@@ -10,6 +10,7 @@ import { BUDGET_LABELS, CATEGORY_STYLES, START_TIME_LABELS } from '@/lib/constan
 import { getProjectBuyerContact } from '@/lib/buyerContact'
 import { deleteAdminProject, loadAdminUppdrag, type AdminGuestLead } from '@/lib/adminUppdrag'
 import { trackClick } from '@/hooks/usePageTracking'
+import { trackUppdragQualified } from '@/lib/analytics'
 import { timeAgo } from '@/lib/dateUtils'
 import { exportCsv } from '@/lib/exportCsv'
 import { cn } from '@/lib/utils'
@@ -54,9 +55,17 @@ const AdminProjectsV2 = () => {
   useEffect(() => { load() }, [])
 
   const changeStatus = async (id: string, next: 'active' | 'rejected') => {
+    const project = projects.find(item => item.id === id)
     const { error } = await supabase.from('projects').update({ status: next }).eq('id', id)
     if (error) return toast.error('Kunde inte uppdatera uppdraget.')
-    if (next === 'active') trackClick('lead_approved', 'Godkände uppdrag', { project_id: id })
+    if (next === 'active') {
+      trackClick('lead_approved', 'Godkände uppdrag', { project_id: id })
+      trackUppdragQualified({
+        category: typeof project?.category === 'string' ? project.category : undefined,
+        city: typeof project?.city === 'string' ? project.city : undefined,
+        budgetRange: typeof project?.budget_range === 'string' ? project.budget_range : undefined,
+      })
+    }
     toast.success(next === 'active' ? 'Uppdrag godkänt! ✅' : 'Uppdrag avvisat.')
     load()
   }

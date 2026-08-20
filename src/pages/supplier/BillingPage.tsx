@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { trackBeginCheckout, trackSubscriptionPurchased } from '@/lib/analytics'
+import { trackBeginCheckout, trackPurchaseCompleted } from '@/lib/analytics'
 import { PLANS, STRIPE_PRODUCTS, TRIAL_LEADS } from '@/lib/constants'
 import { numWord } from '@/lib/numberWords'
 
@@ -88,7 +88,7 @@ const BillingPage = () => {
         }
         await checkSubscription()
         await refreshProfile()
-        if (purchaseType) trackSubscriptionPurchased(purchaseType)
+        if (purchaseType) trackPurchaseCompleted(purchaseType)
         toast.success('Betalningen är bekräftad och ditt konto har uppdaterats.')
       } catch (error) {
         console.error('Checkout confirmation failed', error)

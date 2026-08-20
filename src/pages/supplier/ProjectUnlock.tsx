@@ -21,7 +21,7 @@ import {
   uploadOfferAttachment,
   validateOfferAttachment,
 } from '@/lib/marketplaceActions'
-import { trackLeadUnlocked, trackOfferSubmitted } from '@/lib/analytics'
+import { trackFirstOfferReceived, trackLeadUnlocked, trackLeadUnlockStarted, trackLeadViewed, trackOfferSubmitted } from '@/lib/analytics'
 
 const scoreProject = (project: any) => {
   let score = 0
@@ -142,6 +142,12 @@ const ProjectUnlock = () => {
         setProject(nextProject)
         const unlocked = Boolean(unlockedLead)
         setIsUnlocked(unlocked)
+        if (nextProject?.id) {
+          trackLeadViewed(String(nextProject.id), {
+            category: typeof nextProject.category === 'string' ? nextProject.category : undefined,
+            city: typeof nextProject.city === 'string' ? nextProject.city : undefined,
+          })
+        }
         if (unlocked) await loadContact(nextProject)
       } catch (error) {
         console.error(error)
@@ -193,7 +199,10 @@ const ProjectUnlock = () => {
       if (result?.already_unlocked) {
         toast.info('Uppdraget var redan upplåst – inga krediter drogs.')
       } else {
-        trackLeadUnlocked(typeof project?.category === 'string' ? project.category : undefined)
+        trackLeadUnlocked(
+          typeof project?.category === 'string' ? project.category : undefined,
+          typeof project?.city === 'string' ? project.city : undefined,
+        )
         toast.success('Kontaktuppgifter upplåsta! 🔓')
       }
     } catch (error: any) {
@@ -218,6 +227,7 @@ const ProjectUnlock = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     if (!user || !id || !project || submitting) return
+    const wasFirstOffer = (project.offer_count || 0) === 0
 
     const price = Number(form.price)
     if (!Number.isFinite(price) || price <= 0) {
@@ -249,7 +259,10 @@ const ProjectUnlock = () => {
         attachmentUrl: attachmentPath,
       })
 
-      trackOfferSubmitted(typeof project?.category === 'string' ? project.category : undefined)
+      const category = typeof project?.category === 'string' ? project.category : undefined
+      const city = typeof project?.city === 'string' ? project.city : undefined
+      trackOfferSubmitted(category, city)
+      if (wasFirstOffer) trackFirstOfferReceived(category, city)
       toast.success('Offert skickad! 🎉')
       navigate('/dashboard/supplier/offerter')
     } catch (error: any) {
@@ -377,7 +390,13 @@ const ProjectUnlock = () => {
           <h2 className="font-display text-lg font-semibold mb-2">Lås upp kontaktuppgifter</h2>
           <p className="text-sm text-muted-foreground mb-4">Se beställarens kontaktuppgifter och skicka offert.</p>
           {canUnlock ? (
-            <Button onClick={() => setConfirmOpen(true)} className="bg-primary hover:bg-primary/90">🔓 Lås upp ({hasActiveSubscription ? 'obegränsat' : `${numWord(creditsLeft)} krediter kvar`})</Button>
+            <Button onClick={() => {
+              setConfirmOpen(true)
+              trackLeadUnlockStarted({
+                category: typeof project?.category === 'string' ? project.category : undefined,
+                city: typeof project?.city === 'string' ? project.city : undefined,
+              })
+            }} className="bg-primary hover:bg-primary/90">🔓 Lås upp ({hasActiveSubscription ? 'obegränsat' : `${numWord(creditsLeft)} krediter kvar`})</Button>
           ) : (
             <div className="space-y-3">
               <p className="rounded-xl bg-muted/60 px-4 py-3 text-sm text-muted-foreground">Du har inga krediter kvar.</p>

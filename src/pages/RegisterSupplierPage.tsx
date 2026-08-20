@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { trackSignUp, trackCampaignCodeApplied } from '@/lib/analytics'
+import { trackAgencySignupStarted, trackSignUp, trackCampaignCodeApplied } from '@/lib/analytics'
 import { normalizeCampaignCode, normalizeReferralCode } from '@/lib/campaign'
 import { CATEGORIES, CATEGORY_ICONS, TRIAL_LEADS } from '@/lib/constants'
 import { setSEOMeta } from '@/lib/seoHelpers'
@@ -42,6 +42,7 @@ const RegisterSupplierPage = () => {
       canonical: 'https://updro.se/registrera/byra',
       noindex: true,
     })
+    trackAgencySignupStarted()
   }, [])
 
   const toggleCategory = (category: string) => {

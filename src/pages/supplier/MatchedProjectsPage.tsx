@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { BUDGET_LABELS, CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
+import { trackLeadUnlocked, trackLeadUnlockStarted } from '@/lib/analytics'
 import { unlockProject } from '@/lib/marketplaceActions'
 import { numWord } from '@/lib/numberWords'
 import { matchLabel, scoreProjectMatch } from '@/lib/projectMatching'
@@ -58,6 +59,13 @@ const MatchedProjectsPage = () => {
       const result = await unlockProject(projectId)
       setUnlocked(previous => new Set([...previous, projectId]))
       await refreshProfile()
+      if (!result.already_unlocked) {
+        const unlocked = projects.find(project => project.id === projectId) || confirmProject
+        trackLeadUnlocked(
+          typeof unlocked?.category === 'string' ? unlocked.category : undefined,
+          typeof unlocked?.city === 'string' ? unlocked.city : undefined,
+        )
+      }
       toast.success(result.already_unlocked ? 'Uppdraget är redan upplåst.' : 'Uppdrag upplåst! 🔓')
       setConfirmProject(null)
     } catch (error: any) {
@@ -135,7 +143,14 @@ const MatchedProjectsPage = () => {
                   ) : isClosed ? (
                     <span className="inline-block mt-3 text-xs font-semibold text-muted-foreground bg-muted px-3 py-1.5 rounded-full">Uppdraget tar inte emot fler offerter</span>
                   ) : (
-                    <Button size="sm" className="mt-3" variant="outline" onClick={() => canUnlock ? setConfirmProject(project) : toast.error('Inga lead-krediter kvar.')}>
+                    <Button size="sm" className="mt-3" variant="outline" onClick={() => {
+                      if (!canUnlock) return toast.error('Inga lead-krediter kvar.')
+                      setConfirmProject(project)
+                      trackLeadUnlockStarted({
+                        category: typeof project.category === 'string' ? project.category : undefined,
+                        city: typeof project.city === 'string' ? project.city : undefined,
+                      })
+                    }}>
                       🔓 Lås upp ({hasActiveSubscription ? 'månadskort' : `${numWord(creditsLeft)} krediter kvar`})
                     </Button>
                   )}

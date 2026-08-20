@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/useAuth'
 import { trackClick } from '@/hooks/usePageTracking'
 import { supabase } from '@/integrations/supabase/client'
-import { trackLeadStarted, trackLeadSubmitted, trackOnceInSession } from '@/lib/analytics'
+import { trackCategorySelected, trackLeadStarted, trackLeadSubmitted, trackOnceInSession, trackUppdragDetailsCompleted } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { sanitizePrefill } from '@/lib/prefill'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
@@ -76,6 +76,11 @@ const ProjectWizardV2 = () => {
   const detailsReady = Boolean(form.category && form.budget_range && form.start_time)
   const contactReady = isAuthenticated || (form.full_name.trim().length >= 2 && validEmail(form.email))
   const canSubmit = descriptionReady && detailsReady && contactReady
+
+  useEffect(() => {
+    if (!detailsReady || !form.category) return
+    trackUppdragDetailsCompleted({ category: form.category, budgetRange: form.budget_range || undefined })
+  }, [detailsReady, form.category, form.budget_range])
 
   const applyAiBrief = (brief: BriefSuggestion) => setForm(previous => ({ ...previous, ...brief }))
 
@@ -158,7 +163,7 @@ const ProjectWizardV2 = () => {
           })
           if (attrError && import.meta.env.DEV) console.warn('Attribution RPC failed', attrError)
         }
-        trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer' })
+        trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer', budgetRange: form.budget_range || undefined })
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
         setConfirmationEmailSent(false)
         setSubmittedProjectId(newProjectId)
@@ -191,7 +196,7 @@ const ProjectWizardV2 = () => {
       localStorage.setItem(SUBMISSION_KEY, String(Date.now()))
       setConfirmationEmailSent(Boolean(data?.email_sent))
       setSubmittedProjectId(String(data?.project_id || ''))
-      trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'guest' })
+      trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'guest', budgetRange: form.budget_range || undefined })
       trackClick('lead_submitted', 'Skicka uppdrag gratis', { category: form.category, user_type: 'guest' })
       setStep(3)
     } catch (error: any) {
@@ -271,7 +276,7 @@ const ProjectWizardV2 = () => {
                 <Label>Kategori *</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
                   {CATEGORIES.map(category => (
-                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => setForm(previous => ({ ...previous, category }))} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
+                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
                       <span className="text-2xl" aria-hidden="true">{CATEGORY_ICONS[category]}</span>
                       <span className="text-xs text-center">{category}</span>
                       {form.category === category && <Check className="h-3 w-3" />}
