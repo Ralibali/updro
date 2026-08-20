@@ -114,7 +114,28 @@
     <script async src="https://plausible.io/js/pa-fu8KtsEjEy6OTr1ou_gqo.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      function isSensitivePlausiblePath(path) {
+        return path === '/admin' || path.indexOf('/admin/') === 0 || path === '/dashboard' || path.indexOf('/dashboard/') === 0;
+      }
+      function transformPlausibleRequest(payload) {
+        if (!payload) return payload;
+        var url;
+        try { url = new URL(payload.u || location.href); } catch (e) { return payload; }
+        if (payload.n === 'pageview' && isSensitivePlausiblePath(url.pathname)) return null;
+        var kept = new URLSearchParams();
+        ['ref','source','utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function (key) {
+          var value = url.searchParams.get(key);
+          if (value) kept.set(key, value);
+        });
+        var qs = kept.toString();
+        payload.u = url.origin + url.pathname + (qs ? '?' + qs : '');
+        return payload;
+      }
+      plausible.init({
+        autoCapturePageviews: false,
+        formSubmissions: false,
+        transformRequest: transformPlausibleRequest
+      })
     </script>
   </head>
 

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
 import { toast } from 'sonner'
+import { trackAgencySelected } from '@/lib/analytics'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import ProjectStepper from '@/components/shared/ProjectStepper'
 import BuyerDecisionCard from '@/components/shared/BuyerDecisionCard'
@@ -48,6 +49,10 @@ const ProjectDetail = () => {
     if (!error) {
       await supabase.from('offers').update({ status: 'declined' }).eq('project_id', id).neq('id', offerId)
       await supabase.from('projects').update({ status: 'closed' }).eq('id', id)
+      trackAgencySelected(
+        typeof project?.category === 'string' ? project.category : undefined,
+        typeof project?.city === 'string' ? project.city : undefined,
+      )
       toast.success('Offert accepterad! 🎉')
       setOffers(prev => prev.map(o => o.id === offerId ? { ...o, status: 'accepted' } : { ...o, status: 'declined' }))
       setProject((prev: any) => prev ? { ...prev, status: 'closed' } : prev)

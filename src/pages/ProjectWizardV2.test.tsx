@@ -35,6 +35,8 @@ vi.mock('@/lib/analytics', () => ({
   trackLeadStarted: () => {},
   trackLeadSubmitted: () => {},
   trackOnceInSession: (_key: string, fn: () => void) => fn(),
+  trackCategorySelected: () => {},
+  trackUppdragDetailsCompleted: () => {},
 }))
 
 import ProjectWizardV2 from './ProjectWizardV2'
