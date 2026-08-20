@@ -4,6 +4,7 @@
   "installCommand": "bun install --frozen-lockfile",
   "buildCommand": "bun run build",
   "outputDirectory": "dist",
+  "cleanUrls": true,
   "redirects": [
     {
       "source": "/hemsida-pris-kalkylator",
@@ -49,7 +50,7 @@
   "rewrites": [
     {
       "source": "/((?!assets/)(?!.*\\.).*)",
-      "destination": "/index.html"
+      "destination": "/index"
     }
   ],
   "headers": [

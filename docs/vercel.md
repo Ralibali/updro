@@ -17,6 +17,7 @@ Projektet är Vite + React och använder Bun 1.2.0 enligt `packageManager`.
 - Build: `bun run build`
 - Output: `dist`
 - Builden skapar även statisk SEO-HTML och sitemap-filer via `scripts/prerender.mjs` och Vite SEO-pluginen.
+- Prerender skriver både `dist/<path>/index.html` och `dist/<path>.html`. `vercel.json` använder `cleanUrls` så Vercel hittar den route-specifika filen innan SPA-fallbacken (`/index`) körs. `/sitemap.xml` och `/robots.txt` har filändelse och fångas inte av den fallbacken.
 
 ## Miljö
 
@@ -30,7 +31,7 @@ Server-side secrets för Stripe, Resend och Supabase Edge Functions ligger forts
 2. `/publicera` och `/publicera/webbutveckling` laddar direkt på URL, inte bara via intern navigation.
 3. `/publicera` step 1 har en skrivyta och senaste 312→6-fixen finns med.
 4. `/logga-in`, `/registrera/byra`, `/dashboard/*` och `/admin/*` fungerar som SPA-routes och privata routes är noindex.
-5. Minst tre prerenderade publika SEO-routes ger korrekt route-specifik HTML/title/canonical, inte generisk SPA-HTML.
+5. Minst tre prerenderade publika SEO-routes ger korrekt route-specifik HTML/title/canonical, inte generisk SPA-HTML. Verifiera `/`, `/publicera` och `/webbutveckling`. `/publicera/webbutveckling` är en SPA-prefill och prerenderas inte — samma homepage-skal som på Lovable prod är förväntat.
 6. `/sitemap.xml`, `/sitemap-index.xml`, sektions-sitemaps och `/robots.txt` returnerar rätt filer och Content-Type.
 7. Befintliga 301-redirects i `public/_redirects` ger permanenta redirects även på Vercel.
 8. Supabase auth och publik brief-submit fungerar mot befintlig backend.
@@ -38,7 +39,7 @@ Server-side secrets för Stripe, Resend och Supabase Edge Functions ligger forts
 10. Ingen Stripe-livebetalning görs som test. Verifiera endast säkra checkout/callback-flöden enligt befintlig testpolicy.
 11. Mobil och desktop saknar P0/P1-fel och browser console är ren i kärnflöden.
 
-Om prerenderade routes fångas av SPA-fallbacken ska rewrite-konfigurationen korrigeras före merge; SEO får inte offras för migrationen.
+Om prerenderade routes fångas av SPA-fallbacken ska rewrite-konfigurationen korrigeras före merge; SEO får inte offras för migrationen. SPA-fallbacken ska bara gälla routes som saknar prerenderad HTML, t.ex. `/logga-in`, `/dashboard/*` och `/publicera/:kategori`.
 
 ## Production cutover
 

@@ -2,7 +2,9 @@
 /**
  * Post-build prerender: uses the existing renderStaticHtml() in
  * src/lib/seoStatic.ts to emit a static HTML file per SEO route into
- * dist/<path>/index.html. Runs after `vite build`.
+ * dist/<path>/index.html and dist/<path>.html. The sibling .html file
+ * lets Vercel cleanUrls serve the route before the SPA fallback.
+ * Runs after `vite build`.
  *
  * Requires bun (already the project's packageManager) so we can import
  * the TypeScript module directly without an extra build step.
@@ -71,6 +73,14 @@ for (const route of routes) {
 
   await fs.mkdir(outDir, { recursive: true })
   await fs.writeFile(outFile, html, 'utf8')
+  // Sibling .html so Vercel cleanUrls/filesystem can serve this route
+  // before the SPA fallback rewrite. Directory index.html still covers
+  // trailing-slash requests.
+  if (rel) {
+    const sibling = path.join(DIST, `${rel}.html`)
+    await fs.mkdir(path.dirname(sibling), { recursive: true })
+    await fs.writeFile(sibling, html, 'utf8')
+  }
   written++
 }
 
