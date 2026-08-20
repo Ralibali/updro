@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { trackLeadStarted, trackLeadSubmitted, trackOnceInSession } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { sanitizePrefill } from '@/lib/prefill'
+import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
 import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
 import type { BriefSuggestion } from '@/lib/briefAnalysis'
@@ -33,14 +34,12 @@ const SUBMISSION_KEY = 'updro:last_guest_lead_submission'
 const ProjectWizardV2 = () => {
   const { user, isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const { kategori: pathKategori } = useParams<{ kategori: string }>()
   const [searchParams] = useSearchParams()
   // Sanitera förifyllnadstexten – annonslänkar kan innehålla olösta platshållare ({keyword} m.m.)
   const prefill = sanitizePrefill(searchParams.get('beskrivning'))
   const initialDescription = prefill.text.slice(0, 5000)
-  const initialCategoryParam = searchParams.get('kategori')?.trim() || ''
-  const initialCategory = (CATEGORIES as readonly string[]).includes(initialCategoryParam)
-    ? initialCategoryParam as Category
-    : ''
+  const initialCategory = resolveWizardCategory(pathKategori, searchParams.get('kategori'))
 
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -239,7 +238,7 @@ const ProjectWizardV2 = () => {
                   autoFocus
                   value={form.description}
                   onChange={event => setForm(previous => ({ ...previous, description: event.target.value }))}
-                  placeholder="Exempel: Vi behöver en ny hemsida som presenterar våra tjänster och gör det lätt att boka möte..."
+                  placeholder={PROJECT_DESCRIPTION_EXAMPLE}
                   maxLength={5000}
                   className="rounded-xl mt-1 min-h-[180px]"
                   aria-describedby="project-description-help"
@@ -396,14 +395,8 @@ const ProjectWizardV2 = () => {
 
 
 const DescriptionHelp = ({ length }: { length: number }) => {
-  const minimum = 10
-  const strong = 40
-  const message = length >= strong
-    ? 'Bra! Detaljerade uppdrag får fler relevanta offerter.'
-    : length >= minimum
-      ? 'Toppen – nu har byråer ett bra underlag.'
-      : `${length} / minst ${minimum} tecken rekommenderas för bra matchning`
-  const tone = length >= strong ? 'text-primary' : 'text-muted-foreground'
+  const message = descriptionHelpMessage(length)
+  const tone = length >= 40 ? 'text-primary' : 'text-muted-foreground'
   return <p id="project-description-help" className={`text-xs mt-1 ${tone}`}>{message} · {length}/5000</p>
 }
 
