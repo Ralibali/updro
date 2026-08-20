@@ -1,0 +1,1 @@
+delete from auth.users where email = 'testbyra.updro+aug20b@gmail.com';
