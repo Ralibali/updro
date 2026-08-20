@@ -222,6 +222,36 @@ export type Database = {
           },
         ]
       }
+      campaign_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          lead_credits: number
+          max_uses: number
+          trial_days: number
+          used_count: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          lead_credits?: number
+          max_uses?: number
+          trial_days?: number
+          used_count?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          lead_credits?: number
+          max_uses?: number
+          trial_days?: number
+          used_count?: number
+        }
+        Relationships: []
+      }
       click_events: {
         Row: {
           created_at: string
@@ -1309,6 +1339,7 @@ export type Database = {
         Row: {
           avg_rating: number | null
           bio: string | null
+          campaign_code: string | null
           categories: string[] | null
           completed_projects: number | null
           contact_avatar_url: string | null
@@ -1329,6 +1360,8 @@ export type Database = {
           org_number: string | null
           plan: string | null
           portfolio_urls: string[] | null
+          referral_code: string | null
+          referred_by: string | null
           review_count: number | null
           services: string[] | null
           slug: string
@@ -1341,6 +1374,7 @@ export type Database = {
         Insert: {
           avg_rating?: number | null
           bio?: string | null
+          campaign_code?: string | null
           categories?: string[] | null
           completed_projects?: number | null
           contact_avatar_url?: string | null
@@ -1361,6 +1395,8 @@ export type Database = {
           org_number?: string | null
           plan?: string | null
           portfolio_urls?: string[] | null
+          referral_code?: string | null
+          referred_by?: string | null
           review_count?: number | null
           services?: string[] | null
           slug: string
@@ -1373,6 +1409,7 @@ export type Database = {
         Update: {
           avg_rating?: number | null
           bio?: string | null
+          campaign_code?: string | null
           categories?: string[] | null
           completed_projects?: number | null
           contact_avatar_url?: string | null
@@ -1393,6 +1430,8 @@ export type Database = {
           org_number?: string | null
           plan?: string | null
           portfolio_urls?: string[] | null
+          referral_code?: string | null
+          referred_by?: string | null
           review_count?: number | null
           services?: string[] | null
           slug?: string
