@@ -30,6 +30,12 @@ vi.mock('@/hooks/useAuth', () => ({
 vi.mock('@/components/Navbar', () => ({ default: () => <nav>Nav</nav> }))
 vi.mock('@/components/Footer', () => ({ default: () => <footer>Footer</footer> }))
 vi.mock('@/components/project/AiBriefAssistant', () => ({ default: () => null }))
+vi.mock('@/hooks/usePageTracking', () => ({ trackClick: () => {} }))
+vi.mock('@/lib/analytics', () => ({
+  trackLeadStarted: () => {},
+  trackLeadSubmitted: () => {},
+  trackOnceInSession: (_key: string, fn: () => void) => fn(),
+}))
 
 import ProjectWizardV2 from './ProjectWizardV2'
 
