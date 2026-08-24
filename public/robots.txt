@@ -52,6 +52,23 @@ Disallow: /aterstall-losenord
 Disallow: /landing
 Disallow: /landing/
 
+# xAI Grok crawlers – search retrieval, training and DeepSearch.
+User-agent: GrokBot
+User-agent: xAI-Grok
+User-agent: xAI-Bot
+User-agent: Grok-DeepSearch
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /logga-in
+Disallow: /registrera
+Disallow: /registrera/
+Disallow: /aterstall-losenord
+Disallow: /landing
+Disallow: /landing/
+
 # Perplexity search crawler.
 User-agent: PerplexityBot
 Allow: /
