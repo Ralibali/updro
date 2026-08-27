@@ -50,8 +50,8 @@ const ProjectWizardV2 = () => {
     // Hoppa över auto-titeln när förifyllnaden kom från en olöst platshållare
     title: prefill.hadPlaceholder ? '' : inferTitle(initialDescription),
     description: initialDescription,
-    budget_range: '' as BudgetRange | '',
-    start_time: '' as StartTime | '',
+    budget_range: 'unknown' as BudgetRange,
+    start_time: 'flexible' as StartTime,
     is_company: true,
     company_name: '',
     full_name: '',

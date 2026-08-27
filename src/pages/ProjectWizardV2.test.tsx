@@ -105,3 +105,28 @@ describe('ProjectWizardV2 category prefill', () => {
     expect(screen.getByRole('button', { name: /^SEO$/ })).toHaveAttribute('aria-pressed', 'true')
   })
 })
+
+describe('ProjectWizardV2 step 2 budget/start defaults', () => {
+  it('förväljer Vet ej / Diskuteras och Flexibelt, men inte kategori', () => {
+    renderWizard('/publicera')
+    goToStep2()
+
+    expect(screen.getByRole('button', { name: /Vet ej \/ Diskuteras/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Flexibelt/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByText(/Fyll i kategori, namn, giltig e-post för att skicka/)).toBeInTheDocument()
+  })
+
+  it('låter köparen byta budget och start', () => {
+    renderWizard('/publicera')
+    goToStep2()
+
+    fireEvent.click(screen.getByRole('button', { name: /Under 10 000 kr/ }))
+    fireEvent.click(screen.getByRole('button', { name: /Snarast möjligt/ }))
+
+    expect(screen.getByRole('button', { name: /Under 10 000 kr/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Vet ej \/ Diskuteras/ })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByRole('button', { name: /Snarast möjligt/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Flexibelt/ })).toHaveAttribute('aria-pressed', 'false')
+  })
+})
