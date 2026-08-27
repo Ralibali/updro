@@ -114,7 +114,7 @@ describe('ProjectWizardV2 step 2 budget/start defaults', () => {
     expect(screen.getByRole('button', { name: /Vet ej \/ Diskuteras/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: /Flexibelt/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.getByText(/Fyll i kategori för att skicka/)).toBeInTheDocument()
+    expect(screen.getByText(/Fyll i kategori, namn, giltig e-post för att skicka/)).toBeInTheDocument()
   })
 
   it('låter köparen byta budget och start', () => {
