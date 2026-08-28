@@ -104,6 +104,10 @@ const ProjectWizardV2 = () => {
       toast.error(`Skriv minst ${10 - descriptionLength} tecken till.`)
       return
     }
+    if (!form.category) {
+      toast.error('Välj en kategori.')
+      return
+    }
     trackOnceInSession('lead_started', () => trackLeadStarted('project_wizard'))
     trackOnceInSession('lead_step_completed:1', () => {
       trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1 })
@@ -203,11 +207,13 @@ const ProjectWizardV2 = () => {
     }
   }
 
-  const step1DisabledHint = descriptionReady
-    ? ''
-    : descriptionLength === 0
+  const step1DisabledHint = !descriptionReady
+    ? descriptionLength === 0
       ? 'Skriv några ord om vad du behöver hjälp med.'
       : `Skriv ${10 - descriptionLength} tecken till för att fortsätta.`
+    : form.category
+      ? ''
+      : 'Välj en kategori för att fortsätta.'
 
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
@@ -252,7 +258,19 @@ const ProjectWizardV2 = () => {
                 <Input id="project-title" value={form.title} onChange={event => setForm(previous => ({ ...previous, title: event.target.value }))} placeholder="Skapas automatiskt om du lämnar tomt" maxLength={100} className="rounded-xl mt-1" />
               </div>
               <div>
-                <Button type="button" onClick={goToDetails} disabled={!descriptionReady} className="w-full rounded-xl py-5">
+                <Label>Kategori *</Label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
+                  {CATEGORIES.map(category => (
+                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
+                      <span className="text-2xl" aria-hidden="true">{CATEGORY_ICONS[category]}</span>
+                      <span className="text-xs text-center">{category}</span>
+                      {form.category === category && <Check className="h-3 w-3" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <Button type="button" onClick={goToDetails} disabled={!descriptionReady || !form.category} className="w-full rounded-xl py-5">
                   Nästa <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 {step1DisabledHint && <p className="text-xs text-muted-foreground mt-2 text-center" aria-live="polite">{step1DisabledHint}</p>}
@@ -264,20 +282,7 @@ const ProjectWizardV2 = () => {
             <div className="space-y-6">
               <div>
                 <h2 className="font-display text-2xl font-bold">Sista detaljerna</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{isAuthenticated ? 'Välj kategori, budget och start så skickar vi uppdraget för granskning.' : 'Välj kategori, budget och start – och vart byråerna når dig.'}</p>
-              </div>
-
-              <div>
-                <Label>Kategori *</Label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                  {CATEGORIES.map(category => (
-                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
-                      <span className="text-2xl" aria-hidden="true">{CATEGORY_ICONS[category]}</span>
-                      <span className="text-xs text-center">{category}</span>
-                      {form.category === category && <Check className="h-3 w-3" />}
-                    </button>
-                  ))}
-                </div>
+                <p className="mt-2 text-sm text-muted-foreground">{isAuthenticated ? 'Bekräfta budget och start så skickar vi uppdraget för granskning.' : 'Bekräfta budget och start – och vart byråerna når dig.'}</p>
               </div>
 
               {form.category && (

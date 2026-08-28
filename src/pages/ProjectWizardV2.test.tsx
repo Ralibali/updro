@@ -50,10 +50,18 @@ const renderWizard = (path: string) =>
     </MemoryRouter>,
   )
 
-const goToStep2 = () => {
+const fillDescription = () => {
   fireEvent.change(screen.getByLabelText(/Beskriv uppdraget/), {
     target: { value: 'Ny hemsida med bokning.' },
   })
+}
+
+const goToStep2 = () => {
+  fillDescription()
+  const category = screen.getByRole('button', { name: /Webbutveckling/ })
+  if (category.getAttribute('aria-pressed') !== 'true') {
+    fireEvent.click(category)
+  }
   fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
 }
 
@@ -69,27 +77,48 @@ describe('ProjectWizardV2 step 1 helper/placeholder', () => {
     expect(screen.queryByText(/minst 10 tecken/i)).not.toBeInTheDocument()
   })
 
-  it('visar inte AI-assistenten – bara beskrivningsfält och Nästa', () => {
+  it('visar inte AI-assistenten – bara beskrivningsfält, kategori och Nästa', () => {
     renderWizard('/publicera')
 
     expect(screen.getByLabelText(/Beskriv uppdraget/)).toBeInTheDocument()
+    expect(screen.getByText('Kategori *')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Nästa/ })).toBeInTheDocument()
     expect(screen.queryByText('AI-projektassistent')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Få AI-förslag/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Förbättra beskrivningen med AI/ })).not.toBeInTheDocument()
+  })
+})
+
+describe('ProjectWizardV2 step 1 category', () => {
+  it('håller Nästa inaktiverad utan kategori, även med tillräcklig beskrivning', () => {
+    renderWizard('/publicera')
+    fillDescription()
+
+    expect(screen.getByRole('button', { name: /Nästa/ })).toBeDisabled()
+    expect(screen.getByText('Välj en kategori för att fortsätta.')).toBeInTheDocument()
+  })
+
+  it('låter köparen välja kategori på steg 1 och då aktivera Nästa', () => {
+    renderWizard('/publicera')
+    fillDescription()
+    fireEvent.click(screen.getByRole('button', { name: /Webbutveckling/ }))
+
+    expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Nästa/ })).toBeEnabled()
   })
 })
 
 describe('ProjectWizardV2 category prefill', () => {
   it('förväljer Webbutveckling från /publicera/webbutveckling', () => {
     renderWizard('/publicera/webbutveckling')
-    goToStep2()
+    fillDescription()
 
     expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Nästa/ })).toBeEnabled()
   })
 
   it('förväljer kategori från ?kategori= som tidigare', () => {
     renderWizard('/publicera?kategori=SEO')
-    goToStep2()
 
     expect(screen.getByRole('button', { name: /^SEO$/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'false')
@@ -99,22 +128,21 @@ describe('ProjectWizardV2 category prefill', () => {
     renderWizard('/publicera/webbutveckling?kategori=SEO&beskrivning=Vi%20beh%C3%B6ver%20hj%C3%A4lp%20med%20s%C3%B6k')
 
     expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('Vi behöver hjälp med sök')
-
-    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
-
     expect(screen.getByRole('button', { name: /^SEO$/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: /Nästa/ })).toBeEnabled()
   })
 })
 
 describe('ProjectWizardV2 step 2 budget/start defaults', () => {
-  it('förväljer Vet ej / Diskuteras och Flexibelt, men inte kategori', () => {
+  it('förväljer Vet ej / Diskuteras och Flexibelt, utan kategorirutnät', () => {
     renderWizard('/publicera')
     goToStep2()
 
     expect(screen.getByRole('button', { name: /Vet ej \/ Diskuteras/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: /Flexibelt/ })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'false')
-    expect(screen.getByText(/Fyll i kategori, namn, giltig e-post för att skicka/)).toBeInTheDocument()
+    expect(screen.queryByText('Kategori *')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Webbutveckling/ })).not.toBeInTheDocument()
+    expect(screen.getByText(/Fyll i namn, giltig e-post för att skicka/)).toBeInTheDocument()
   })
 
   it('låter köparen byta budget och start', () => {
