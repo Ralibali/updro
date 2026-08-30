@@ -13,7 +13,7 @@ const comparisonRows = [
   ['AI-brief', 'Inbyggd AI hjälper beställaren formulera briefen.', 'Swivrr erbjuder en liknande AI-funktion.'],
   ['Prisuppskattning', 'Ja – förankrad i 15 öppna prisguider som alla kan läsa utan konto.', 'Ja – Swivrr visar ett prisspann i publiceringsflödet.'],
   ['Öppna prisguider', '15 kostnadsfria prisguider plus priskalkylator – utan krav på konto.', 'Prisdata finns inbäddat i guidetexter; ingen öppen prisguide eller kalkylator utanför flödet.'],
-  ['Publika byråprofiler', 'Ja – med verifierade omdömen som även bygger byråns varumärke i sökmotorer.', 'Vi hittar inga publika byråprofiler med omdömen på Swivrrs publika webbplats.'],
+  ['Publika byråprofiler', 'Ja – publika profiler där byrån kan bygga sitt varumärke i sökmotorer.', 'Vi hittar inga publika byråprofiler med omdömen på Swivrrs publika webbplats.'],
   ['Digitala avtal', 'Inbyggda – parterna bekräftar omfattning, pris och leverans i plattformen.', 'Kontrollera aktuellt funktionsutbud direkt hos Swivrr.'],
   ['Beställare', 'Gratis, granskad brief och låsta kontaktuppgifter.', 'Gratis med verifierade leverantörer enligt Swivrr.'],
   ['Marknadsläge', 'Nylanserad tjänst där leadvolymen fortfarande byggs upp.', 'Ny aktör med ett växande innehållsbibliotek.'],
@@ -22,7 +22,7 @@ const comparisonRows = [
 const faqs = [
   {
     q: 'Är Updro ett alternativ till Swivrr?',
-    a: 'Ja. Båda tjänsterna matchar företag med byråer för digitala projekt, och båda har AI-stödd brief med prisuppskattning. Updro skiljer sig med högst tre offerter, ett publicerat byråpris, öppna prisguider och publika byråprofiler med verifierade omdömen.',
+    a: 'Ja. Båda tjänsterna matchar företag med byråer för digitala projekt, och båda har AI-stödd brief med prisuppskattning. Updro skiljer sig med högst tre offerter, ett publicerat byråpris, öppna prisguider och publika byråprofiler.',
   },
   {
     q: 'Har inte Swivrr unik prisuppskattning?',
@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     q: 'Vilken tjänst ska jag välja som beställare?',
-    a: 'Båda är gratis att använda, så det kostar inget att testa. På Updro får du högst tre genomarbetade offerter och kan läsa byråernas verifierade omdömen på deras publika profiler innan du bestämmer dig.',
+    a: 'Båda är gratis att använda, så det kostar inget att testa. På Updro får du högst tre genomarbetade offerter och kan läsa om byråerna på deras publika profiler innan du bestämmer dig.',
   },
   {
     q: 'Kan en byrå använda båda tjänsterna?',
@@ -76,7 +76,7 @@ const SwivrrAlternativPage = () => {
               Updro eller Swivrr – vad passar bäst?
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-              Både Updro och Swivrr hjälper företag att hitta digitala byråer – och båda satsar på AI-stödda briefar med prisuppskattning. Updro skiljer sig med högst tre byråer per uppdrag, ett publicerat och förutsägbart byråpris, öppna prisguider och publika byråprofiler med verifierade omdömen.
+              Både Updro och Swivrr hjälper företag att hitta digitala byråer – och båda satsar på AI-stödda briefar med prisuppskattning. Updro skiljer sig med högst tre byråer per uppdrag, ett publicerat och förutsägbart byråpris, öppna prisguider och publika byråprofiler.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/publicera"><Button size="lg" className="rounded-xl px-7">Beskriv ett projekt <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
@@ -115,7 +115,7 @@ const SwivrrAlternativPage = () => {
             {[
               ['Färre konkurrenter per lead', 'Högst tre byråer kan lämna offert på samma uppdrag – Swivrr anger tre till fem. Varje offert får större utrymme hos beställaren.'],
               ['Publicerat pris, inga överraskningar', 'Byråer vet exakt vad ett lead kostar innan de låser upp det. Provisionsmodeller kan variera med projektets värde.'],
-              ['Profiler som arbetar för byrån', 'Verifierade omdömen samlas på publika byråprofiler som rankar i sökmotorer – en tillgång även utanför plattformen.'],
+              ['Profiler som arbetar för byrån', 'Byråernas publika profiler kan ranka i sökmotorer och stärka varumärket – en tillgång även utanför plattformen.'],
               ['Ta hänsyn till marknadsläget', 'Båda tjänsterna är unga och uppdragsvolymen varierar. Testa parallellt och mät vad som faktiskt blir affärer.'],
             ].map(([title, text]) => (
               <article key={title} className="rounded-2xl border bg-card p-6">

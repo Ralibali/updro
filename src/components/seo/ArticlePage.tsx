@@ -19,7 +19,7 @@ const ArticleCTA = () => (
       Redo att ta in offerter? Publicera ditt projekt gratis
     </h2>
     <p className="mt-3 text-background/80 max-w-2xl">
-      Beskriv projektet på 3 minuter och få upp till tre offerter från kvalitetssäkrade svenska byråer inom 24 timmar.
+      Beskriv projektet på 3 minuter och få upp till tre offerter från kvalitetssäkrade svenska byråer – oftast inom 24 timmar.
     </p>
     <div className="mt-6 flex flex-wrap gap-3">
       <Link
@@ -224,7 +224,7 @@ const ArticlePage = () => {
               {new Date(nextReviewDate).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
             <p className="text-xs pt-2 border-t border-border/60 mt-2">
-              Denna artikel är skriven baserat på marknadsdata, offerter via Updro och egen erfarenhet av den svenska
+              Denna artikel är skriven baserat på oberoende marknadsdata och egen erfarenhet av den svenska
               byråmarknaden. Hittar du ett fel?{' '}
               <a href="mailto:info@auroramedia.se" className="text-primary underline">
                 Mejla oss

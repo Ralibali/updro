@@ -42,7 +42,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
       },
       {
         heading: 'Vad kostar webbutveckling?',
-        content: 'Priset för webbutveckling varierar beroende på projektets komplexitet:\n\n- **Enkel företagssida** (5–10 sidor): 15 000 – 50 000 kr\n- **Avancerad hemsida** med CMS: 30 000 – 100 000 kr\n- **Webbapplikation**: 50 000 – 300 000+ kr\n- **E-handelsplattform**: 40 000 – 200 000+ kr\n\nPriset påverkas av design, funktionalitet, integrationer och val av CMS. Genom att jämföra offerter via Updro kan du spara upp till 40% jämfört med att kontakta byråer direkt.'
+        content: 'Priset för webbutveckling varierar beroende på projektets komplexitet:\n\n- **Enkel företagssida** (5–10 sidor): 15 000 – 50 000 kr\n- **Avancerad hemsida** med CMS: 30 000 – 100 000 kr\n- **Webbapplikation**: 50 000 – 300 000+ kr\n- **E-handelsplattform**: 40 000 – 200 000+ kr\n\nPriset påverkas av design, funktionalitet, integrationer och val av CMS. Genom att jämföra upp till tre offerter via Updro ser du var marknadspriset ligger innan du väljer byrå.'
       },
       {
         heading: 'Populära tekniker och CMS',
@@ -111,7 +111,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
         sections: [
           { heading: 'Prisnivåer för webbutveckling', content: 'Här är en realistisk prisbild för webbutveckling i Sverige 2026:\n\n| Typ av projekt | Prisintervall |\n|---|---|\n| Enkel landningssida | 5 000 – 15 000 kr |\n| Företagshemsida (5–10 sidor) | 15 000 – 50 000 kr |\n| Avancerad hemsida med CMS | 30 000 – 100 000 kr |\n| E-handelsplattform | 40 000 – 200 000 kr |\n| Webbapplikation | 80 000 – 500 000+ kr |\n| Redesign av befintlig sajt | 15 000 – 80 000 kr |' },
           { heading: 'Vad påverkar priset?', content: 'Flera faktorer påverkar kostnaden:\n\n- **Design** – Unik design kostar mer än färdiga mallar\n- **Funktionalitet** – Fler funktioner = högre pris\n- **CMS-val** – WordPress är billigare, custom är dyrare\n- **Integrationer** – Betalningar, CRM, API:er\n- **Innehåll** – Copywriting, bilder, video\n- **SEO** – Sökmotoroptimering\n- **Byråns storlek** – Större byråer har ofta högre priser' },
-          { heading: 'Så sparar du pengar', content: 'Tips för att hålla nere kostnaderna:\n\n1. **Jämför offerter** – Använd Updro för att jämföra minst 3 offerter\n2. **Prioritera** – Börja med MVP och bygg ut\n3. **Förbered innehåll** – Leverera texter och bilder i tid\n4. **Var tydlig** – En bra kravspecifikation minskar missförstånd\n5. **Välj rätt CMS** – Undvik överkonstruerade lösningar' },
+          { heading: 'Så sparar du pengar', content: 'Tips för att hålla nere kostnaderna:\n\n1. **Jämför offerter** – Använd Updro för att jämföra upp till tre offerter\n2. **Prioritera** – Börja med MVP och bygg ut\n3. **Förbered innehåll** – Leverera texter och bilder i tid\n4. **Var tydlig** – En bra kravspecifikation minskar missförstånd\n5. **Välj rätt CMS** – Undvik överkonstruerade lösningar' },
         ],
         faq: [
           { q: 'Varför varierar priserna så mycket?', a: 'Prisskillnaderna beror på byråns storlek, erfarenhet, projektets komplexitet och geografisk plats. En freelancer kan ta 500 kr/timme medan en stor byrå kan ta 1 500 kr/timme.' },
@@ -228,7 +228,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
         sections: [
           { heading: 'E-handelsbyråer i Stockholm', content: 'Stockholm har ett brett utbud av e-handelsspecialister – från Shopify-experter till enterprise-konsulter. Priserna är högre än rikssnittet men kvaliteten är konsekvent hög.' },
         ],
-        faq: [{ q: 'Hur väljer jag e-handelsbyrå i Stockholm?', a: 'Jämför minst 3 offerter via Updro, granska portfolios och be om kundrekommendationer.' }],
+        faq: [{ q: 'Hur väljer jag e-handelsbyrå i Stockholm?', a: 'Jämför upp till tre offerter via Updro, granska portfolios och be om kundrekommendationer.' }],
         relatedLinks: [{ label: 'Webbutveckling Stockholm', href: '/webbutveckling/stockholm' }, { label: 'SEO Stockholm', href: '/seo/stockholm' }]
       },
       {
@@ -289,7 +289,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
       {
         slug: 'byra', title: 'Marknadsföringsbyrå – Hitta rätt byrå | Updro', h1: 'Hitta rätt marknadsföringsbyrå', metaDesc: 'Guide till att hitta rätt marknadsföringsbyrå. Jämför offerter och hitta din perfekta matchning.',
         intro: 'Att välja rätt marknadsföringsbyrå är avgörande för dina resultat. Här guidar vi dig genom processen.',
-        sections: [{ heading: 'Så väljer du byrå', content: '1. Definiera dina mål och budget\n2. Jämför minst 3 offerter via Updro\n3. Granska portfolios och case studies\n4. Be om kundrekommendationer\n5. Säkerställ att de rapporterar resultat transparent' }],
+        sections: [{ heading: 'Så väljer du byrå', content: '1. Definiera dina mål och budget\n2. Jämför upp till tre offerter via Updro\n3. Granska portfolios och case studies\n4. Be om kundrekommendationer\n5. Säkerställ att de rapporterar resultat transparent' }],
         faq: [{ q: 'Ska jag välja en nischad eller fullservice-byrå?', a: 'Om du har specifika behov (t.ex. bara SEO) passar en nischad byrå bäst. Om du behöver en heltäckande strategi kan en fullservice-byrå vara bättre.' }],
         relatedLinks: [{ label: 'SEO', href: '/seo' }, { label: 'Sociala medier', href: '/sociala-medier' }]
       },

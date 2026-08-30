@@ -10,7 +10,7 @@ const SEOLeadCTA = ({ categoryName }: { categoryName: string }) => (
           Jämför offerter för {categoryName.toLowerCase()} – kostnadsfritt
         </h2>
         <p className="mt-3 text-muted-foreground text-lg">
-          Beskriv ditt projekt och få offerter från kvalitetssäkrade byråer inom 24 timmar. Helt gratis och utan förpliktelser.
+          Beskriv ditt projekt och få offerter från kvalitetssäkrade byråer – oftast inom 24 timmar. Helt gratis och utan förpliktelser.
         </p>
         <Link to="/publicera">
           <Button size="lg" className="mt-6 rounded-xl shadow-blue text-base px-8">
@@ -19,8 +19,8 @@ const SEOLeadCTA = ({ categoryName }: { categoryName: string }) => (
         </Link>
         <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5"><Shield className="h-4 w-4 text-primary" /> Kvalitetssäkrade byråer</span>
-          <span className="flex items-center gap-1.5"><Star className="h-4 w-4 text-brand-amber" /> Verifierade omdömen</span>
-          <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-accent" /> Svar inom 24h</span>
+          <span className="flex items-center gap-1.5"><Star className="h-4 w-4 text-brand-amber" /> Högst tre byråer per uppdrag</span>
+          <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-accent" /> Svar oftast inom 24h</span>
         </div>
       </div>
     </div>

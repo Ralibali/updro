@@ -203,10 +203,10 @@ export const findCityServicePage = (serviceSlug: string, citySlug: string): Lega
     intro: getCityIntroVariant(city, service),
     sections: [
       { heading: `${service.name} i ${city.name}`, content: `${city.name} (${city.population} invånare) har ett brett utbud av byråer som arbetar med ${service.name.toLowerCase()}. ${city.description}` },
-      { heading: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, content: `Räkna med ${getPriceCopy(service.slug, city.name)} för ${service.name.toLowerCase()} i ${city.name}. Det bästa sättet att hitta rätt pris är att jämföra minst tre offerter via Updro.` },
+      { heading: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, content: `Räkna med ${getPriceCopy(service.slug, city.name)} för ${service.name.toLowerCase()} i ${city.name}. Det bästa sättet att hitta rätt pris är att jämföra upp till tre offerter via Updro.` },
     ],
     faq: [
-      { q: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, a: `${getPriceCopy(service.slug, city.name)}. Jämför minst tre offerter via Updro för att hitta rätt pris.` },
+      { q: `Vad kostar ${service.name.toLowerCase()} i ${city.name}?`, a: `${getPriceCopy(service.slug, city.name)}. Jämför upp till tre offerter via Updro för att hitta rätt pris.` },
     ],
     relatedLinks: [
       { label: `${service.name}`, href: `/${service.slug}` },

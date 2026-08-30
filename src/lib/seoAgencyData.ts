@@ -152,7 +152,7 @@ export const SEO_KNOWLEDGE_ARTICLES: SEOArticle[] = [
     metaTitle: 'Kostnad ny hemsida 2026 – Prisguide | Updro',
     metaDesc: 'Vad kostar en ny hemsida? Vi går igenom priser för olika typer av webbplatser och vad som påverkar kostnaden.',
     publishedAt: '2026-03-01',
-    content: '<!-- Fyll i innehåll här -->\n\nPriset för en ny hemsida varierar enormt beroende på dina behov.\n\n## Prisöversikt\n\n| Typ | Pris |\n|---|---|\n| Enkel hemsida | 15 000–40 000 kr |\n| Företagssida med CMS | 30 000–100 000 kr |\n| E-handel | 50 000–200 000+ kr |\n| Webbapplikation | 80 000–500 000+ kr |\n\n## Vad påverkar priset?\n\n---\n\n*Jämför offerter gratis via Updro och spara upp till 40%.*',
+    content: '<!-- Fyll i innehåll här -->\n\nPriset för en ny hemsida varierar enormt beroende på dina behov.\n\n## Prisöversikt\n\n| Typ | Pris |\n|---|---|\n| Enkel hemsida | 15 000–40 000 kr |\n| Företagssida med CMS | 30 000–100 000 kr |\n| E-handel | 50 000–200 000+ kr |\n| Webbapplikation | 80 000–500 000+ kr |\n\n## Vad påverkar priset?\n\n---\n\n*Jämför gratis upp till tre offerter via Updro innan du bestämmer dig.*',
   },
 ]
 
