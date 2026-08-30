@@ -38,7 +38,7 @@ const RegisterSupplierPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Registrera din byrå – Få fler kunder gratis | Updro',
-      description: 'Registrera din byrå på Updro: fem gratis leads, max två konkurrenter per uppdrag och leadgaranti. 119 kr per lead eller 1 995 kr/mån.',
+      description: 'Registrera din byrå på Updro: fem gratis leads, högst tre byråer per uppdrag och leadgaranti. 119 kr per lead eller 1 995 kr/mån.',
       canonical: 'https://updro.se/registrera/byra',
       noindex: true,
     })
@@ -124,7 +124,7 @@ const RegisterSupplierPage = () => {
     { icon: Gift, text: `${TRIAL_LEADS} gratis leads att börja med – inga kortuppgifter` },
     { icon: Users, text: 'Max två konkurrenter per uppdrag, aldrig fem som hos andra' },
     { icon: ShieldCheck, text: 'Leadgaranti: felaktiga kontaktuppgifter eller spam ersätts' },
-    { icon: Star, text: 'Verifierade omdömen bygger er offentliga byråprofil' },
+    { icon: Star, text: 'Omdömen från genomförda uppdrag bygger er offentliga byråprofil' },
     { icon: FileSignature, text: 'Digitala samarbetsavtal direkt i plattformen' },
     { icon: MessageCircle, text: 'Chatta med beställaren innan ni lämnar offert' },
   ]
@@ -177,7 +177,7 @@ const RegisterSupplierPage = () => {
                   <p className="font-semibold">Tidiga byråer vinner mest</p>
                 </div>
                 <p className="text-sm text-white/80 leading-relaxed">
-                  De första byråerna på Updro bygger nu upp sina verifierade omdömen. Den som börjar i dag står högst när beställarvolymen växer.
+                  De första byråerna på Updro bygger nu upp sina profiler och sin historik. Den som börjar i dag står högst när beställarvolymen växer.
                 </p>
               </div>
             </div>

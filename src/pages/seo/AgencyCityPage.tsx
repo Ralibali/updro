@@ -28,7 +28,7 @@ const AgencyCityPage = () => {
     const url = `https://updro.se/byraer/${city.slug}`
     setSEOMeta({
       title: `Digitala byråer i ${city.name} – jämför offerter 2026 | Updro`,
-      description: `Hitta digitala byråer i ${city.name}. Webbutveckling, SEO, e-handel, Google Ads, design – jämför offerter kostnadsfritt. Svar inom 24 timmar.`,
+      description: `Hitta digitala byråer i ${city.name}. Webbutveckling, SEO, e-handel, Google Ads, design – jämför offerter kostnadsfritt. Byråerna återkommer oftast inom 24 timmar.`,
       canonical: url,
     })
     setBreadcrumb([

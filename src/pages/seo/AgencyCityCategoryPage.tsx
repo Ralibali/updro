@@ -30,7 +30,7 @@ const AgencyCityCategoryPage = () => {
     const url = `https://updro.se/byraer/${city.slug}/${category.slug}`
     setSEOMeta({
       title: deep?.title ?? `${category.name}-byrå i ${city.name} – jämför offerter 2026 | Updro`,
-      description: deep?.metaDesc ?? `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Jämför offerter från kvalitetssäkrade byråer kostnadsfritt. Svar inom 24 timmar.`,
+      description: deep?.metaDesc ?? `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Jämför offerter från kvalitetssäkrade byråer kostnadsfritt. Svar oftast inom 24 timmar.`,
       canonical: url,
     })
     setBreadcrumb([
@@ -151,7 +151,7 @@ const AgencyCityCategoryPage = () => {
           <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> Senast uppdaterad: {LAST_UPDATED}</span>
             <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Helt gratis</span>
-            <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Svar inom 24 h</span>
+            <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Svar oftast inom 24 h</span>
           </div>
 
           {priority && (
@@ -325,8 +325,8 @@ const buildFaq = (cityName: string, categoryName: string, categorySlug: string) 
     {
       q: `Vad kostar en ${categoryName.toLowerCase()}-byrå i ${cityName}?`,
       a: priceCopy
-        ? `Räkna med ${priceCopy} för ${categoryName.toLowerCase()} i ${cityName}. Priset beror på projektets omfattning och byråns storlek. Jämför minst tre offerter via Updro för att hitta rätt nivå.`
-        : `Priset beror på projektets omfattning. Jämför minst tre offerter via Updro för att hitta rätt nivå.`,
+        ? `Räkna med ${priceCopy} för ${categoryName.toLowerCase()} i ${cityName}. Priset beror på projektets omfattning och byråns storlek. Jämför upp till tre offerter via Updro för att hitta rätt nivå.`
+        : `Priset beror på projektets omfattning. Jämför upp till tre offerter via Updro för att hitta rätt nivå.`,
     },
     {
       q: `Hur lång tid tar ett ${categoryName.toLowerCase()}-projekt i ${cityName}?`,
@@ -338,7 +338,7 @@ const buildFaq = (cityName: string, categoryName: string, categorySlug: string) 
     },
     {
       q: `Hur hittar jag rätt ${categoryName.toLowerCase()}-byrå i ${cityName}?`,
-      a: `Beskriv ditt uppdrag på Updro. Vi matchar dig med upp till tre kvalitetssäkrade byråer i ${cityName} som arbetar med ${categoryName.toLowerCase()}. Du får offerter inom 24 timmar och väljer fritt – kostnadsfritt och utan förpliktelser.`,
+      a: `Beskriv ditt uppdrag på Updro. Vi matchar dig med upp till tre kvalitetssäkrade byråer i ${cityName} som arbetar med ${categoryName.toLowerCase()}. Du får offerterna oftast inom 24 timmar och väljer fritt – kostnadsfritt och utan förpliktelser.`,
     },
     {
       q: `Vad ingår i ett typiskt ${categoryName.toLowerCase()}-uppdrag?`,
