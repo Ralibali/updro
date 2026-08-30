@@ -12,6 +12,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
 import { COMPARISON_PAGES } from "./lib/seoComparisons";
 import { getNoindexSeoRoutes } from "./lib/seoStatic";
+import { LEGACY_REDIRECTS, resolveLegacyRedirect } from "./lib/seoRedirects";
 import { CITIES } from "./lib/seoCities";
 import SupplierLayout from "@/components/SupplierLayout";
 import BuyerLayout from "@/components/BuyerLayout";
@@ -45,15 +46,11 @@ const MetodPage = lazy(() => import("./pages/MetodPage"));
 const AdminContentPlanner = lazy(() => import("./pages/admin/AdminContentPlanner"));
 const PriceGuidePage = lazy(() => import("./pages/PriceGuidePage"));
 
-const RedirectToArtikel = () => {
-  const params = useParams();
-  const slug = params.slug || params.artikel;
-  return <Navigate to={slug ? `/artiklar/${slug}` : '/artiklar'} replace />;
-};
-
-const RedirectToByraerStad = () => {
-  const { city } = useParams<{ city: string }>();
-  return <Navigate to={city ? `/byraer/${city}` : '/stader'} replace />;
+// Generic client-side redirect for legacy aliases. The mapping itself lives in
+// src/lib/seoRedirects.ts (single source of truth, mirrored in public/_redirects).
+const LegacyAliasRedirect = () => {
+  const location = useLocation();
+  return <Navigate to={resolveLegacyRedirect(location.pathname) ?? '/'} replace />;
 };
 
 const CityOrAgencyRedirect = () => {
@@ -162,13 +159,13 @@ const App = () => (
         <Route path="/aterstall-losenord" element={<PlaceholderPage title="Återställ lösenord" />} />
         <Route path="/sitemap" element={<SitemapPage />} />
         <Route path="/landing" element={<LandingPage />} />
-        <Route path="/landing/byra" element={<SupplierLandingPage />} />
+        {/* /landing/byra redirecteras till /for-byraer via LEGACY_REDIRECTS nedan */}
         <Route path="/for-byraer" element={<SupplierLandingPage />} />
         <Route path="/jamfor-offerter" element={<AdsLandingPage />} />
-        <Route path="/guider" element={<Navigate to="/artiklar" replace />} />
-        <Route path="/guider/:slug" element={<RedirectToArtikel />} />
-        <Route path="/kunskapsbank" element={<Navigate to="/artiklar" replace />} />
-        <Route path="/kunskapsbank/:artikel" element={<RedirectToArtikel />} />
+        {/* Legacy-alias redirects – källa till sanning: src/lib/seoRedirects.ts */}
+        {LEGACY_REDIRECTS.map(redirect => <Route key={redirect.from} path={redirect.from} element={<Navigate to={redirect.to} replace />} />)}
+        <Route path="/guider/:slug" element={<LegacyAliasRedirect />} />
+        <Route path="/kunskapsbank/:artikel" element={<LegacyAliasRedirect />} />
         <Route path="/redaktionell-policy" element={<EditorialPolicyPage />} />
         <Route path="/metod" element={<MetodPage />} />
         <Route path="/hitta-webbyra" element={<HittaWebbbyraPage />} />
@@ -176,26 +173,14 @@ const App = () => (
         <Route path="/hitta-digital-byra" element={<HittaDigitalByraPage />} />
         <Route path="/hjalp-med-hemsida" element={<HjalpMedHemsidaPage />} />
         <Route path="/partna-alternativ" element={<PartnaAlternativPage />} />
-        <Route path="/updro-vs-partna" element={<Navigate to="/partna-alternativ" replace />} />
-        <Route path="/jamfor-partna" element={<Navigate to="/partna-alternativ" replace />} />
-        <Route path="/alternativ-till-partna" element={<Navigate to="/partna-alternativ" replace />} />
         <Route path="/for-byraer/byt-fran-partna" element={<BytFranPartnaPage />} />
         <Route path="/swivrr-alternativ" element={<SwivrrAlternativPage />} />
-        <Route path="/updro-vs-swivrr" element={<Navigate to="/swivrr-alternativ" replace />} />
         <Route path="/artiklar" element={<ArticlesIndex />} />
         <Route path="/artiklar/:slug" element={<ArticlePage />} />
         <Route path="/verktyg" element={<ToolsIndex />} />
         <Route path="/verktyg/:slug" element={<ToolPage />} />
-        <Route path="/hemsida-pris-kalkylator" element={<Navigate to="/verktyg/hemsida-pris-kalkylator" replace />} />
-        <Route path="/vad-kostar-en-hemsida-kalkylator" element={<Navigate to="/verktyg/hemsida-pris-kalkylator" replace />} />
-        <Route path="/webbyra-stockholm" element={<Navigate to="/byraer/stockholm" replace />} />
-        <Route path="/webbyra-goteborg" element={<Navigate to="/byraer/goteborg" replace />} />
-        <Route path="/webbyra-malmo" element={<Navigate to="/byraer/malmo" replace />} />
-        <Route path="/seo-byra-stockholm" element={<Navigate to="/seo/stockholm" replace />} />
-        <Route path="/seo-byra-goteborg" element={<Navigate to="/seo/goteborg" replace />} />
-        <Route path="/seo-byra-malmo" element={<Navigate to="/seo/malmo" replace />} />
         <Route path="/stader" element={<CitiesIndex />} />
-        <Route path="/stader/:city" element={<RedirectToByraerStad />} />
+        <Route path="/stader/:city" element={<LegacyAliasRedirect />} />
         <Route path="/jamfor" element={<ComparisonsIndex />} />
         <Route path="/byraer/kategori/:kategori" element={<AgencyCategoryPage />} />
         <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
