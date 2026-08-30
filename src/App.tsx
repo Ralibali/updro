@@ -45,6 +45,8 @@ const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
 const MetodPage = lazy(() => import("./pages/MetodPage"));
 const AdminContentPlanner = lazy(() => import("./pages/admin/AdminContentPlanner"));
 const PriceGuidePage = lazy(() => import("./pages/PriceGuidePage"));
+const MallarIndex = lazy(() => import("./pages/templates/MallarIndex"));
+const TemplatePage = lazy(() => import("./pages/templates/TemplatePage"));
 
 // Generic client-side redirect for legacy aliases. The mapping itself lives in
 // src/lib/seoRedirects.ts (single source of truth, mirrored in public/_redirects).
@@ -142,6 +144,8 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/publicera" element={<ProjectWizard />} />
         <Route path="/publicera/:kategori" element={<ProjectWizard />} />
+        <Route path="/mallar" element={<MallarIndex />} />
+        <Route path="/mallar/:slug" element={<TemplatePage />} />
         <Route path="/byraer" element={<BrowseAgenciesPage />} />
         <Route path="/byra/:slug" element={<AgencyProfilePage />} />
         <Route path="/priser" element={<PricingPage />} />
