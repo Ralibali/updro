@@ -1,3 +1,30 @@
+# =====================================================================
+# Legacy-alias redirects – källa till sanning: src/lib/seoRedirects.ts
+# (LEGACY_REDIRECTS + LEGACY_PREFIX_REDIRECTS). Håll denna fil i synk med
+# den modulen; src/lib/seoRedirects.test.ts verifierar synken.
+#
+# OBS: Nuvarande hosting exekverar INTE denna fil (verifierat live
+# 2026-08-29: samtliga 301-regler svarar 200 utan Location-header).
+# Tills hosting byts till en plattform som stödjer regelfilen
+# (Netlify/Cloudflare Pages/edge worker) sköts alla redirects client-side
+# via React Router i src/App.tsx.
+# =====================================================================
+
+# 301: dubblett-landningssida
+/landing/byra  /for-byraer  301
+
+# 301: gamla innehålls-namnrymder
+/guider  /artiklar  301
+/guider/*  /artiklar/:splat  301
+/kunskapsbank  /artiklar  301
+/kunskapsbank/*  /artiklar/:splat  301
+
+# 301: gamla jämförelse-URL:er (Partna/Swivrr)
+/updro-vs-partna  /partna-alternativ  301
+/jamfor-partna  /partna-alternativ  301
+/alternativ-till-partna  /partna-alternativ  301
+/updro-vs-swivrr  /swivrr-alternativ  301
+
 # 301: gamla statiska kalkylator-URL:er → riktig route under /verktyg/
 /hemsida-pris-kalkylator  /verktyg/hemsida-pris-kalkylator  301
 /vad-kostar-en-hemsida-kalkylator  /verktyg/hemsida-pris-kalkylator  301
@@ -9,6 +36,9 @@
 /seo-byra-stockholm  /seo/stockholm  301
 /seo-byra-goteborg  /seo/goteborg  301
 /seo-byra-malmo  /seo/malmo  301
+
+# 301: gammal stads-prefix (själva /stader är en giltig sida och redirectas inte)
+/stader/:city  /byraer/:city  301
 
 # React SPA fallback for client-side routes
 /*  /index.html  200
