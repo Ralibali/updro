@@ -14,6 +14,7 @@ import { trackClick } from '@/hooks/usePageTracking'
 import { supabase } from '@/integrations/supabase/client'
 import { trackCategorySelected, trackLeadStarted, trackLeadSubmitted, trackOnceInSession, trackUppdragDetailsCompleted } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
+import { consumeBriefHandoff } from '@/lib/briefHandoff'
 import { sanitizePrefill } from '@/lib/prefill'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
@@ -34,8 +35,10 @@ const ProjectWizardV2 = () => {
   const navigate = useNavigate()
   const { kategori: pathKategori } = useParams<{ kategori: string }>()
   const [searchParams] = useSearchParams()
-  // Sanitera förifyllnadstexten – annonslänkar kan innehålla olösta platshållare ({keyword} m.m.)
-  const prefill = sanitizePrefill(searchParams.get('beskrivning'))
+  const [briefHandoff] = useState(() => consumeBriefHandoff())
+  // Session-handoff wins for Brief Builder traffic. Legacy ?beskrivning= links
+  // remain supported, but new mallar flows never need to expose brief text in the URL.
+  const prefill = sanitizePrefill(briefHandoff?.description ?? searchParams.get('beskrivning'))
   const initialDescription = prefill.text.slice(0, 5000)
   const initialCategory = resolveWizardCategory(pathKategori, searchParams.get('kategori'))
 
@@ -397,7 +400,6 @@ const ProjectWizardV2 = () => {
     </div>
   )
 }
-
 
 const DescriptionHelp = ({ length }: { length: number }) => {
   const message = descriptionHelpMessage(length)
