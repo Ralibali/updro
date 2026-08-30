@@ -37,6 +37,9 @@ const Navbar = () => {
             <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Hitta byrå
             </Link>
+            <Link to="/mallar" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Mallar
+            </Link>
 
             <div
               className="relative"
@@ -134,6 +137,9 @@ const Navbar = () => {
           <nav className="flex flex-col p-4 gap-2 pb-[calc(2rem+env(safe-area-inset-bottom))]" aria-label="Mobilnavigation">
             <Link to="/byraer" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               Hitta byrå
+            </Link>
+            <Link to="/mallar" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
+              Mallar & briefverktyg
             </Link>
             <Link to="/registrera/byra" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               För byråer
