@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import path from 'node:path'
 import { ARTICLES } from '@/lib/seoArticles'
 import { COMPARISON_PAGES } from '@/lib/seoComparisons'
 import { MAX_OFFERS_PER_PROJECT, STRIPE_PRODUCTS } from '@/lib/constants'
@@ -49,8 +49,8 @@ const COPY_FILES = [
   'src/lib/seoAgencyData.ts',
 ]
 
-const repoRoot = fileURLToPath(new URL('../../..', import.meta.url))
-const readSrc = (rel: string) => readFileSync(`${repoRoot}/${rel}`, 'utf-8')
+const repoRoot = process.cwd()
+const readSrc = (rel: string) => readFileSync(path.join(repoRoot, rel), 'utf-8')
 
 const serialize = (value: unknown): string => JSON.stringify(value)
 
