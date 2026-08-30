@@ -1,4 +1,4 @@
-import { SEO_PAGES } from './seoData'
+import { SEO_PAGES, getCategoryNavLinks } from './seoData'
 import { CITIES, SERVICE_CATEGORIES } from './seoCities'
 import { COMPARISON_PAGES } from './seoComparisons'
 import { ARTICLES } from './seoArticles'
@@ -7,6 +7,10 @@ import { PRICE_GUIDES } from './priceGuideData'
 import { CITY_CATEGORY_DEEP } from './seoCityCategoryContent'
 import { CITY_DEEP } from './seoCityContent'
 import { HOME_TITLE, HOME_DESCRIPTION, HOME_H1, HOME_FAQ } from './homeSeo'
+import { FOOTER_CITY_LINKS, FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from './footerLinks'
+
+export { FOOTER_CITY_LINKS, FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from './footerLinks'
+export type { FooterColumn, FooterLink } from './footerLinks'
 
 export const SITE_URL = 'https://updro.se'
 export type SitemapSection = 'main' | 'cities' | 'articles' | 'tools' | 'comparisons'
@@ -221,11 +225,52 @@ export const generateSectionSitemapXml = (sitemapSection: SitemapSection) => {
 }
 export const generateSitemapIndexXml = () => `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${SITEMAP_SECTIONS.filter(sitemapSection => getIndexableSeoRoutes().some(route => section(route.path) === sitemapSection)).map(sitemapSection => `  <sitemap><loc>${SITE_URL}/sitemap-${sitemapSection}.xml</loc><lastmod>${today()}</lastmod></sitemap>`).join('\n')}\n</sitemapindex>`
 
-const jsonLd = (route: StaticSeoRoute) => JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Updro', legalName: 'Aurora Media AB', url: SITE_URL }, { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: 'Updro', publisher: { '@id': `${SITE_URL}/#organization` }, inLanguage: 'sv-SE' }, { '@type': 'WebPage', '@id': `${abs(route.path)}#webpage`, url: abs(route.path), name: route.title, headline: route.h1, description: route.description, inLanguage: 'sv-SE' }, ...(route.faq?.length ? [{ '@type': 'FAQPage', mainEntity: route.faq.map(faq => ({ '@type': 'Question', name: faq.q, acceptedAnswer: { '@type': 'Answer', text: faq.a } })) }] : [])] }).replace(/</g, '\\u003c')
+export interface Breadcrumb {
+  name: string
+  path: string
+}
+
+let routeH1ByPath: Map<string, string> | null = null
+const lookupH1 = (path: string): string | undefined => {
+  routeH1ByPath ??= new Map(getAllStaticSeoRoutes().map(route => [route.path, route.h1]))
+  return routeH1ByPath.get(path)
+}
+
+// Brödsmulor för undersidor: Hem > … > aktuell sida. Startsidan har inga.
+export const getBreadcrumbs = (route: StaticSeoRoute): Breadcrumb[] => {
+  if (route.path === '/') return []
+  const segments = route.path.split('/').filter(Boolean)
+  const crumbs: Breadcrumb[] = [{ name: 'Hem', path: '/' }]
+  segments.forEach((segment, index) => {
+    const path = `/${segments.slice(0, index + 1).join('/')}`
+    const isLast = index === segments.length - 1
+    const name = isLast ? route.h1 : lookupH1(path) ?? words(segment)
+    crumbs.push({ name, path })
+  })
+  return crumbs
+}
+
+const jsonLd = (route: StaticSeoRoute) => {
+  const breadcrumbs = getBreadcrumbs(route)
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Updro', legalName: 'Aurora Media AB', url: SITE_URL }, { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: 'Updro', publisher: { '@id': `${SITE_URL}/#organization` }, inLanguage: 'sv-SE' }, { '@type': 'WebPage', '@id': `${abs(route.path)}#webpage`, url: abs(route.path), name: route.title, headline: route.h1, description: route.description, inLanguage: 'sv-SE' }, ...(breadcrumbs.length ? [{ '@type': 'BreadcrumbList', '@id': `${abs(route.path)}#breadcrumb`, itemListElement: breadcrumbs.map((crumb, index) => ({ '@type': 'ListItem', position: index + 1, name: crumb.name, item: abs(crumb.path) })) }] : []), ...(route.faq?.length ? [{ '@type': 'FAQPage', mainEntity: route.faq.map(faq => ({ '@type': 'Question', name: faq.q, acceptedAnswer: { '@type': 'Answer', text: faq.a } })) }] : [])] }).replace(/</g, '\\u003c')
+}
 
 const head = (route: StaticSeoRoute) => [`<title>${esc(route.title)}</title>`, `<meta name="description" content="${esc(route.description)}" />`, `<meta name="robots" content="${route.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}" />`, `<link rel="canonical" href="${abs(route.path)}" />`, `<meta property="og:type" content="website" />`, `<meta property="og:url" content="${abs(route.path)}" />`, `<meta property="og:title" content="${esc(route.title)}" />`, `<meta property="og:description" content="${esc(route.description)}" />`, `<meta property="og:image" content="${SITE_URL}/og/og-default.png" />`, `<meta name="twitter:card" content="summary_large_image" />`, `<meta name="twitter:title" content="${esc(route.title)}" />`, `<meta name="twitter:description" content="${esc(route.description)}" />`, `<script type="application/ld+json">${jsonLd(route)}</script>`].join('\n    ')
 
-const body = (route: StaticSeoRoute) => `<main id="static-seo-content" data-static-route="${esc(route.path)}"><nav><a href="/">Hem</a></nav><h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p>${route.links?.length ? `<section><h2>Relaterade sidor</h2><ul>${route.links.map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></section>` : ''}${route.faq?.length ? `<section><h2>Vanliga frågor</h2>${route.faq.map(faq => `<article><h3>${esc(faq.q)}</h3><p>${esc(faq.a)}</p></article>`).join('')}</section>` : ''}</main>`
+// Crawlbar header som speglar Navbar.tsx: logotyp, huvudlänkar, samtliga
+// tjänstekategorier (samma data som nav-dropdownen) och CTA:n.
+const staticHeader = () => `<header><nav aria-label="Huvudnavigation"><a href="/">Updro</a><a href="/byraer">Hitta byrå</a><a href="/registrera/byra">För byråer</a><a href="/om-oss">Om Updro</a><a href="/publicera">Beskriv ditt projekt</a></nav><nav aria-label="Kategorier"><ul>${getCategoryNavLinks().map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></nav></header>`
+
+const staticBreadcrumbs = (route: StaticSeoRoute) => {
+  const crumbs = getBreadcrumbs(route)
+  if (!crumbs.length) return ''
+  return `<nav aria-label="Brödsmulor"><ol>${crumbs.map((crumb, index) => index === crumbs.length - 1 ? `<li aria-current="page">${esc(crumb.name)}</li>` : `<li><a href="${esc(crumb.path)}">${esc(crumb.name)}</a></li>`).join('')}</ol></nav>`
+}
+
+// Crawlbar footer som speglar Footer.tsx – samma länkdata (FOOTER_*).
+const staticFooter = () => `<footer><p>Jämför digitala byråer och offerter utan massutskick.</p>${FOOTER_COLUMNS.map(column => `<nav aria-label="${esc(column.title)}"><h2>${esc(column.title)}</h2><ul>${column.links.map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></nav>`).join('')}<nav aria-label="Byråer per stad"><span>Byråer i</span>${FOOTER_CITY_LINKS.map(city => `<a href="${esc(city.href)}">${esc(city.label)}</a>`).join('')}<a href="/stader">Alla städer</a></nav><nav aria-label="Juridik">${FOOTER_LEGAL_LINKS.map(link => `<a href="${esc(link.href)}">${esc(link.label)}</a>`).join('')}</nav><p>© ${new Date().getFullYear()} Updro – Aurora Media AB, org.nr 559272-0220</p></footer>`
+
+const body = (route: StaticSeoRoute) => `${staticHeader()}<main id="static-seo-content" data-static-route="${esc(route.path)}">${staticBreadcrumbs(route)}<h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p>${route.links?.length ? `<section><h2>Relaterade sidor</h2><ul>${route.links.map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></section>` : ''}${route.faq?.length ? `<section><h2>Vanliga frågor</h2>${route.faq.map(faq => `<article><h3>${esc(faq.q)}</h3><p>${esc(faq.a)}</p></article>`).join('')}</section>` : ''}</main>${staticFooter()}`
 
 export const renderStaticHtml = (template: string, route: StaticSeoRoute) => {
   let html = template
@@ -236,6 +281,9 @@ export const renderStaticHtml = (template: string, route: StaticSeoRoute) => {
     .replace(/[ \t]*<meta\s+property="og:[^>]*>\s*\n?/gi, '')
     .replace(/[ \t]*<meta\s+name="twitter:[^>]*>\s*\n?/gi, '')
     .replace(/[ \t]*<script type="application\/ld\+json">[\s\S]*?<\/script>\s*\n?/gi, '')
+  if (!html.includes('</head>')) throw new Error(`renderStaticHtml: mallen saknar </head> – kan inte skriva head-metadata för ${route.path}`)
   html = html.replace('</head>', `    ${head(route)}\n  </head>`)
-  return html.replace(/<div id="root">[\s\S]*?<\/div>/, `<div id="root">${body(route)}</div>`)
+  const rootPattern = /<div id="root">[\s\S]*?<\/div>/
+  if (!rootPattern.test(html)) throw new Error(`renderStaticHtml: kunde inte ersätta <div id="root"> för ${route.path} – mallen saknar rot-elementet. Bygget avbryts i stället för att skapa en tom sida.`)
+  return html.replace(rootPattern, `<div id="root">${body(route)}</div>`)
 }

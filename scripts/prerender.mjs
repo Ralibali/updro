@@ -47,6 +47,32 @@ let written = 0
 const errors = []
 
 const count = (html, regex) => (html.match(regex) || []).length
+const MIN_INTERNAL_LINKS = 10
+
+// Hårda kontroller per sida – exakt en av varje unik head-tagg/H1/header/footer
+// samt tillräckligt många interna länkar för en crawlbar site-struktur.
+const verifyPage = (routePath, html) => {
+  const checks = {
+    title: count(html, /<title>/gi),
+    description: count(html, /<meta\s+name="description"/gi),
+    canonical: count(html, /<link\s+rel="canonical"/gi),
+    robots: count(html, /<meta\s+name="robots"/gi),
+    h1: count(html, /<h1[\s>]/gi),
+    header: count(html, /<header[\s>]/gi),
+    footer: count(html, /<footer[\s>]/gi),
+  }
+  const bad = Object.entries(checks).filter(([, value]) => value !== 1)
+  if (bad.length) {
+    errors.push(`${routePath}: ${bad.map(([key, value]) => `${key}=${value}`).join(', ')}`)
+    return false
+  }
+  const internalLinks = count(html, /<a\s[^>]*href="\/(?!\/)/gi)
+  if (internalLinks < MIN_INTERNAL_LINKS) {
+    errors.push(`${routePath}: endast ${internalLinks} interna länkar (minst ${MIN_INTERNAL_LINKS} krävs)`)
+    return false
+  }
+  return true
+}
 
 for (const route of routes) {
   const rel = route.path === '/' ? '' : route.path.replace(/^\/+|\/+$/g, '')
@@ -54,30 +80,46 @@ for (const route of routes) {
   const outFile = path.join(outDir, 'index.html')
 
   const html = renderStaticHtml(template, route)
-
-  // Hårda kontroller – exakt en av varje unik head-tagg och en H1.
-  const checks = {
-    title: count(html, /<title>/gi),
-    description: count(html, /<meta\s+name="description"/gi),
-    canonical: count(html, /<link\s+rel="canonical"/gi),
-    robots: count(html, /<meta\s+name="robots"/gi),
-    h1: count(html, /<h1[\s>]/gi),
-  }
-  const bad = Object.entries(checks).filter(([, value]) => value !== 1)
-  if (bad.length) {
-    errors.push(`${route.path}: ${bad.map(([key, value]) => `${key}=${value}`).join(', ')}`)
-    continue
-  }
+  if (!verifyPage(route.path, html)) continue
 
   await fs.mkdir(outDir, { recursive: true })
   await fs.writeFile(outFile, html, 'utf8')
   written++
 }
 
+// dist/404.html: noindex + svensk 404-text, samma nav/footer som övriga sidor.
+// Värdar som serverar 404.html för okända vägar får då korrekt innehåll.
+const notFoundRoute = {
+  path: '/404',
+  title: 'Sidan hittades inte (404) | Updro',
+  description: 'Sidan du letar efter finns inte eller har flyttats. Hitta digitala byråer, guider och verktyg på Updro.',
+  h1: 'Sidan hittades inte',
+  priority: 0.1,
+  changefreq: 'yearly',
+  noindex: true,
+  links: [
+    { label: 'Till startsidan', href: '/' },
+    { label: 'Hitta digitala byråer', href: '/byraer' },
+    { label: 'Beskriv ditt projekt', href: '/publicera' },
+    { label: 'Artiklar och guider', href: '/artiklar' },
+    { label: 'Gratis verktyg', href: '/verktyg' },
+    { label: 'Priser', href: '/priser' },
+  ],
+}
+const notFoundHtml = renderStaticHtml(template, notFoundRoute)
+if (verifyPage('/404', notFoundHtml)) {
+  if (!notFoundHtml.includes('noindex')) {
+    errors.push('/404: saknar noindex')
+  } else {
+    await fs.writeFile(path.join(DIST, '404.html'), notFoundHtml, 'utf8')
+    written++
+  }
+}
+
 if (errors.length) {
-  console.error(`❌ prerender: ${errors.length} routes med dubbletter/saknade taggar:`)
+  console.error(`❌ prerender: ${errors.length} sidor med dubbletter/saknade taggar eller för få interna länkar:`)
   for (const error of errors) console.error(`   - ${error}`)
   process.exit(1)
 }
 
-console.log(`✅ prerender: wrote ${written} static HTML files to dist/ (${routes.length} total routes)`)
+console.log(`✅ prerender: wrote ${written} static HTML files to dist/ (${routes.length} routes + 404.html)`)
