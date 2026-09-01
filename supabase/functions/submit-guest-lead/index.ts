@@ -97,7 +97,6 @@ Deno.serve(async request => {
     const startTime = text(payload.start_time, 40)
 
     if (!validEmail(email)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
-    if (fullName.length < 2) return finish(respond({ error: 'Ange ditt namn.' }, 400), 'missing_name')
     if (title.length < 3 || description.length < 20) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
     if (!allowedCategories.has(category) || !allowedBudgets.has(budgetRange) || !allowedStarts.has(startTime)) {
       return finish(respond({ error: 'Kontrollera kategori, budget och önskad start.' }, 400), 'invalid_enums')
@@ -204,15 +203,17 @@ Deno.serve(async request => {
       })
 
       const safeName = escapeHtml(fullName)
+      const greeting = fullName ? `Hej ${fullName}` : 'Hej'
+      const safeGreeting = fullName ? `Hej ${safeName}` : 'Hej'
       const safeTitle = escapeHtml(title)
       const registerUrl = `${siteUrl}/registrera?email=${encodeURIComponent(email)}&project=${encodeURIComponent(created.project_id)}`
       const safeRegisterUrl = escapeHtml(registerUrl)
-      const customerMessage = `Hej ${fullName}! Vi har tagit emot ditt uppdrag “${title}”. Vi granskar det nu och matchar det med relevanta byråer. Skapa ett gratis konto med samma e-postadress för att följa offerterna: ${registerUrl}`
+      const customerMessage = `${greeting}! Vi har tagit emot ditt uppdrag “${title}”. Vi granskar det nu och matchar det med relevanta byråer. Skapa ett gratis konto med samma e-postadress för att följa offerterna: ${registerUrl}`
       const customerResponse = await sendEmail(
         email,
         'Vi har tagit emot ditt uppdrag – Updro',
         customerMessage,
-        `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto"><h1>Uppdraget är mottaget</h1><p>Hej ${safeName}!</p><p>Vi har tagit emot ditt uppdrag <strong>${safeTitle}</strong>. Vi granskar det nu och matchar det med relevanta byråer.</p><p><a href="${safeRegisterUrl}">Skapa ett gratis konto</a> med samma e-postadress för att följa offerterna.</p><p>Vänliga hälsningar<br>Updro</p></div>`,
+        `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto"><h1>Uppdraget är mottaget</h1><p>${safeGreeting}!</p><p>Vi har tagit emot ditt uppdrag <strong>${safeTitle}</strong>. Vi granskar det nu och matchar det med relevanta byråer.</p><p><a href="${safeRegisterUrl}">Skapa ett gratis konto</a> med samma e-postadress för att följa offerterna.</p><p>Vänliga hälsningar<br>Updro</p></div>`,
       )
       emailSent = customerResponse.ok
       if (!customerResponse.ok) console.error('Confirmation email failed', await customerResponse.text())
@@ -226,7 +227,7 @@ Deno.serve(async request => {
         adminEmail,
         `Nytt Updro-uppdrag: ${title}`,
         `Nytt uppdrag väntar på granskning. ${title} · ${category} · ${email}. Öppna ${adminProjectUrl}`,
-        `<div style="font-family:Arial,sans-serif;max-width:650px;margin:auto"><h1>Nytt uppdrag väntar</h1><p><strong>${safeTitle}</strong></p><p>Kategori: ${escapeHtml(category)}<br>Beställare: ${safeName}<br>Företag: ${safeCompany}<br>E-post: ${safeEmail}<br>Telefon: ${safePhone}</p><p><a href="${adminProjectUrl}">Granska uppdraget i admin</a></p></div>`,
+        `<div style="font-family:Arial,sans-serif;max-width:650px;margin:auto"><h1>Nytt uppdrag väntar</h1><p><strong>${safeTitle}</strong></p><p>Kategori: ${escapeHtml(category)}<br>Beställare: ${safeName || 'Ej angivet'}<br>Företag: ${safeCompany}<br>E-post: ${safeEmail}<br>Telefon: ${safePhone}</p><p><a href="${adminProjectUrl}">Granska uppdraget i admin</a></p></div>`,
       )
       adminEmailSent = adminResponse.ok
       if (!adminResponse.ok) console.error('Admin lead email failed', await adminResponse.text())

@@ -1,7 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { PROJECT_DESCRIPTION_EXAMPLE } from '@/lib/wizardPrefill'
+
+const { trackLeadSubmitted, invokeMock } = vi.hoisted(() => ({
+  trackLeadSubmitted: vi.fn(),
+  invokeMock: vi.fn(),
+}))
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({
@@ -32,10 +37,20 @@ vi.mock('@/components/Footer', () => ({ default: () => <footer>Footer</footer> }
 vi.mock('@/hooks/usePageTracking', () => ({ trackClick: () => {} }))
 vi.mock('@/lib/analytics', () => ({
   trackLeadStarted: () => {},
-  trackLeadSubmitted: () => {},
+  trackLeadSubmitted,
   trackOnceInSession: (_key: string, fn: () => void) => fn(),
   trackCategorySelected: () => {},
   trackUppdragDetailsCompleted: () => {},
+}))
+
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
+    functions: { invoke: invokeMock },
+    from: () => ({
+      insert: () => ({ select: () => ({ maybeSingle: async () => ({ data: null, error: null }) }) }),
+    }),
+    rpc: async () => ({ error: null }),
+  },
 }))
 
 import ProjectWizardV2 from './ProjectWizardV2'
@@ -142,7 +157,7 @@ describe('ProjectWizardV2 step 2 budget/start defaults', () => {
     expect(screen.getByRole('button', { name: /Flexibelt/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.queryByText('Kategori *')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /Webbutveckling/ })).not.toBeInTheDocument()
-    expect(screen.getByText(/Fyll i namn, giltig e-post för att skicka/)).toBeInTheDocument()
+    expect(screen.getByText(/Fyll i giltig e-post för att skicka/)).toBeInTheDocument()
   })
 
   it('låter köparen byta budget och start', () => {
@@ -156,5 +171,78 @@ describe('ProjectWizardV2 step 2 budget/start defaults', () => {
     expect(screen.getByRole('button', { name: /Vet ej \/ Diskuteras/ })).toHaveAttribute('aria-pressed', 'false')
     expect(screen.getByRole('button', { name: /Snarast möjligt/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: /Flexibelt/ })).toHaveAttribute('aria-pressed', 'false')
+  })
+})
+
+describe('ProjectWizardV2 step 2 submit gate', () => {
+  beforeEach(() => {
+    trackLeadSubmitted.mockReset()
+    invokeMock.mockReset()
+    localStorage.clear()
+  })
+
+  const submitButton = () => screen.getByRole('button', { name: /Skicka uppdrag gratis/ })
+
+  it('håller namnfältet synligt men valfritt', () => {
+    renderWizard('/publicera')
+    goToStep2()
+
+    const nameField = screen.getByLabelText(/Namn/)
+    expect(nameField).toBeInTheDocument()
+    expect(nameField).toHaveValue('')
+    expect(screen.getByText('Namn (valfritt)')).toBeInTheDocument()
+    expect(screen.queryByText('Namn *')).not.toBeInTheDocument()
+  })
+
+  it('håller Skicka inaktiverad utan giltig e-post, även med tomt namn', () => {
+    renderWizard('/publicera')
+    goToStep2()
+
+    expect(screen.getByLabelText(/Namn/)).toHaveValue('')
+    expect(submitButton()).toBeDisabled()
+    expect(screen.getByText(/Fyll i giltig e-post för att skicka/)).toBeInTheDocument()
+
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'inte-en-epost' } })
+    expect(submitButton()).toBeDisabled()
+    expect(screen.getByText(/Fyll i giltig e-post för att skicka/)).toBeInTheDocument()
+  })
+
+  it('aktiverar Skicka med enbart giltig e-post när namn är tomt', () => {
+    renderWizard('/publicera')
+    goToStep2()
+
+    fireEvent.change(screen.getByLabelText(/Namn/), { target: { value: '' } })
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
+
+    expect(screen.getByLabelText(/Namn/)).toHaveValue('')
+    expect(submitButton()).toBeEnabled()
+    expect(screen.queryByText(/Fyll i giltig e-post för att skicka/)).not.toBeInTheDocument()
+  })
+
+  it('anropar trackLeadSubmitted efter lyckat gästskick utan namn', async () => {
+    invokeMock.mockResolvedValueOnce({
+      data: { success: true, project_id: 'proj-1', email_sent: true },
+      error: null,
+    })
+    renderWizard('/publicera')
+    goToStep2()
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
+    fireEvent.click(submitButton())
+
+    await waitFor(() => {
+      expect(invokeMock).toHaveBeenCalledWith('submit-guest-lead', expect.objectContaining({
+        body: expect.objectContaining({
+          email: 'anna@example.com',
+          full_name: '',
+        }),
+      }))
+      expect(trackLeadSubmitted).toHaveBeenCalledWith({
+        source: 'publicera',
+        category: 'Webbutveckling',
+        userType: 'guest',
+        budgetRange: 'unknown',
+      })
+    })
+    expect(screen.getByText('Ditt uppdrag är mottaget')).toBeInTheDocument()
   })
 })
