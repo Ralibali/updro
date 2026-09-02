@@ -27,6 +27,8 @@ export interface StaticSeoRoute {
   noindex?: boolean
   links?: { label: string; href: string }[]
   faq?: { q: string; a: string }[]
+  /** Hero convert CTA in the static main (H1 area). Header/footer stay generic. */
+  cta?: { label: string; href: string }
 }
 
 const today = () => new Date().toISOString().split('T')[0]
@@ -164,7 +166,7 @@ const categoryRoutes = (): StaticSeoRoute[] => SERVICE_CATEGORIES.map(category =
 }))
 
 const serviceRoutes = (): StaticSeoRoute[] => SEO_PAGES.flatMap((page: any) => [
-  { path: `/${page.categorySlug}`, title: page.metaTitle, description: trunc(page.metaDesc || page.intro), h1: page.h1 || page.categoryName, priority: 0.9, changefreq: 'weekly', lastmod: today(), links: (page.subPages || []).slice(0, 8).map((subPage: any) => ({ label: subPage.h1 || subPage.title, href: `/${page.categorySlug}/${subPage.slug}` })), faq: (page.faq || []).slice(0, 5) },
+  { path: `/${page.categorySlug}`, title: page.metaTitle, description: trunc(page.metaDesc || page.intro), h1: page.h1 || page.categoryName, priority: 0.9, changefreq: 'weekly', lastmod: today(), cta: { label: 'Jämför offerter gratis', href: `/publicera/${page.categorySlug}` }, links: (page.subPages || []).slice(0, 8).map((subPage: any) => ({ label: subPage.h1 || subPage.title, href: `/${page.categorySlug}/${subPage.slug}` })), faq: (page.faq || []).slice(0, 5) },
   ...(page.subPages || []).map((subPage: any) => ({ path: `/${page.categorySlug}/${subPage.slug}`, title: subPage.title || `${page.categoryName} ${words(subPage.slug)} | Updro`, description: trunc(subPage.metaDesc || subPage.intro), h1: subPage.h1 || `${page.categoryName} ${words(subPage.slug)}`, priority: 0.7, changefreq: 'monthly' as const, lastmod: today(), links: [{ label: page.categoryName, href: `/${page.categorySlug}` }, ...((subPage.relatedLinks || []).slice(0, 6))], faq: (subPage.faq || []).slice(0, 5) })),
 ])
 
@@ -271,7 +273,9 @@ const staticBreadcrumbs = (route: StaticSeoRoute) => {
 // Crawlbar footer som speglar Footer.tsx – samma länkdata (FOOTER_*).
 const staticFooter = () => `<footer><p>Jämför digitala byråer och offerter utan massutskick.</p>${FOOTER_COLUMNS.map(column => `<nav aria-label="${esc(column.title)}"><h2>${esc(column.title)}</h2><ul>${column.links.map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></nav>`).join('')}<nav aria-label="Byråer per stad"><span>Byråer i</span>${FOOTER_CITY_LINKS.map(city => `<a href="${esc(city.href)}">${esc(city.label)}</a>`).join('')}<a href="/stader">Alla städer</a></nav><nav aria-label="Juridik">${FOOTER_LEGAL_LINKS.map(link => `<a href="${esc(link.href)}">${esc(link.label)}</a>`).join('')}</nav><p>© ${new Date().getFullYear()} Updro – Aurora Media AB, org.nr 559272-0220</p></footer>`
 
-const body = (route: StaticSeoRoute) => `${staticHeader()}<main id="static-seo-content" data-static-route="${esc(route.path)}">${staticBreadcrumbs(route)}<h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p>${route.links?.length ? `<section><h2>Relaterade sidor</h2><ul>${route.links.map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></section>` : ''}${route.faq?.length ? `<section><h2>Vanliga frågor</h2>${route.faq.map(faq => `<article><h3>${esc(faq.q)}</h3><p>${esc(faq.a)}</p></article>`).join('')}</section>` : ''}</main>${staticFooter()}`
+const convertCta = (route: StaticSeoRoute) => route.cta ? `<p><a href="${esc(route.cta.href)}">${esc(route.cta.label)}</a></p>` : ''
+
+const body = (route: StaticSeoRoute) => `${staticHeader()}<main id="static-seo-content" data-static-route="${esc(route.path)}">${staticBreadcrumbs(route)}<h1>${esc(route.h1)}</h1><p>${esc(route.description)}</p>${convertCta(route)}${route.links?.length ? `<section><h2>Relaterade sidor</h2><ul>${route.links.map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></section>` : ''}${route.faq?.length ? `<section><h2>Vanliga frågor</h2>${route.faq.map(faq => `<article><h3>${esc(faq.q)}</h3><p>${esc(faq.a)}</p></article>`).join('')}</section>` : ''}</main>${staticFooter()}`
 
 export const renderStaticHtml = (template: string, route: StaticSeoRoute) => {
   let html = template

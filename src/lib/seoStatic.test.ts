@@ -139,6 +139,15 @@ describe('renderStaticHtml crawlbar body', () => {
       expect(internalLinks(render(candidate)), candidate).toBeGreaterThanOrEqual(10)
     }
   })
+
+  it('ger /webbutveckling hero-CTA till /publicera/webbutveckling i first-byte HTML', () => {
+    const html = render('/webbutveckling')
+    const main = html.match(/<main[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? ''
+    expect(html).toContain('data-static-route="/webbutveckling"')
+    expect(main).toContain('<h1>')
+    expect(main).toContain('<a href="/publicera/webbutveckling">Jämför offerter gratis</a>')
+    expect(html).toMatch(/<header[\s\S]*href="\/publicera">Beskriv ditt projekt<\/a>/)
+  })
 })
 
 describe('brödsmulor och BreadcrumbList', () => {
@@ -185,11 +194,13 @@ describe('renderStaticHtml robusthet', () => {
       changefreq: 'monthly',
       links: [{ label: 'Länk & <em>', href: '/byraer' }],
       faq: [{ q: 'Fråga & <i>?', a: 'Svar & <u>' }],
+      cta: { label: 'CTA & <em>', href: '/publicera/webbutveckling' },
     }
     const html = renderStaticHtml(TEMPLATE, nasty)
     expect(html).toContain('<title>A &amp; B &lt;script&gt; &quot;citat&quot;</title>')
     expect(html).toContain('<h1>Rubrik &amp; &lt;b&gt;</h1>')
     expect(html).toContain('Länk &amp; &lt;em&gt;')
+    expect(html).toContain('<a href="/publicera/webbutveckling">CTA &amp; &lt;em&gt;</a>')
     expect(html).not.toContain('<b></h1>')
   })
 
