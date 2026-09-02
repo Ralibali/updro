@@ -72,7 +72,7 @@ const ProjectWizardV2 = () => {
   const descriptionLength = form.description.trim().length
   const descriptionReady = descriptionLength >= 10
   const detailsReady = Boolean(form.category && form.budget_range && form.start_time)
-  const contactReady = isAuthenticated || (form.full_name.trim().length >= 2 && validEmail(form.email))
+  const contactReady = isAuthenticated || validEmail(form.email)
   const canSubmit = descriptionReady && detailsReady && contactReady
 
   useEffect(() => {
@@ -121,7 +121,6 @@ const ProjectWizardV2 = () => {
     if (!form.budget_range) missing.push('budget')
     if (!form.start_time) missing.push('önskad start')
     if (!isAuthenticated) {
-      if (form.full_name.trim().length < 2) missing.push('namn')
       if (!validEmail(form.email)) missing.push('giltig e-post')
     }
     return missing.length ? `Fyll i ${missing.join(', ')} för att skicka.` : ''
@@ -312,7 +311,7 @@ const ProjectWizardV2 = () => {
                     <h3 className="font-display text-lg font-semibold mb-1">Hur når byråerna dig?</h3>
                     <p className="text-xs text-muted-foreground mb-4">Inget lösenord eller konto krävs.</p>
                     <div className="space-y-4">
-                      <Field label="Namn *" id="full-name" value={form.full_name} onChange={value => setForm(previous => ({ ...previous, full_name: value }))} autoComplete="name" />
+                      <Field label="Namn (valfritt)" id="full-name" value={form.full_name} onChange={value => setForm(previous => ({ ...previous, full_name: value }))} autoComplete="name" />
                       <Field label="E-post *" id="email" type="email" value={form.email} onChange={value => setForm(previous => ({ ...previous, email: value }))} autoComplete="email" />
                       <Field label="Telefon (valfritt)" id="phone" type="tel" value={form.phone} onChange={value => setForm(previous => ({ ...previous, phone: value }))} autoComplete="tel" />
                     </div>
