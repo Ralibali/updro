@@ -65,6 +65,7 @@ const baseRoutes = (): StaticSeoRoute[] => [
     faq: HOME_FAQ,
   },
   { path: '/publicera', title: 'Publicera uppdrag – få offerter från digitala byråer | Updro', description: 'Beskriv ditt digitala projekt gratis. Briefen granskas och högst tre relevanta byråer kan lämna offert.', h1: 'Beskriv ditt uppdrag och jämför offerter', priority: 0.9, changefreq: 'weekly', lastmod: today() },
+  { path: '/publicera/webbutveckling', title: 'Publicera webbutvecklingsuppdrag – jämför webbyråer | Updro', description: 'Beskriv webbutvecklingsuppdraget gratis. Briefen granskas och högst tre relevanta webbyråer kan lämna offert.', h1: 'Publicera ett webbuppdrag och jämför byråer', priority: 0.9, changefreq: 'weekly', lastmod: today() },
   { path: '/byraer', title: 'Hitta digitala byråer i Sverige | Updro', description: 'Jämför webbyråer, SEO-byråer, e-handelsbyråer och digitala specialister i Sverige.', h1: 'Hitta rätt digital byrå', priority: 0.9, changefreq: 'weekly', lastmod: today() },
   { path: '/priser', title: 'Priser för byråer – pay per lead eller månadskort | Updro', description: 'Se Updros transparenta priser för byråer och prisnivåer för digitala tjänster innan du jämför offerter.', h1: 'Priser för byråer och digitala tjänster', priority: 0.8, changefreq: 'weekly', lastmod: today() },
   {

@@ -9,6 +9,7 @@ import {
   type StaticSeoRoute,
 } from './seoStatic'
 import { FOOTER_CITY_LINKS, FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from './footerLinks'
+import { HOME_H1, HOME_TITLE } from './homeSeo'
 
 const TEMPLATE = `<!doctype html>
 <html lang="sv">
@@ -68,6 +69,28 @@ describe('renderStaticHtml head-metadata', () => {
   it('skriver absolut canonical', () => {
     expect(render('/')).toContain(`<link rel="canonical" href="${SITE_URL}/" />`)
     expect(render('/seo')).toContain(`<link rel="canonical" href="${SITE_URL}/seo" />`)
+  })
+
+  it('ger /publicera/webbutveckling unik prerender skild från hem och /publicera', () => {
+    const path = '/publicera/webbutveckling'
+    const html = render(path)
+    const publicera = route('/publicera')
+    const category = route(path)
+
+    expect(category.title).not.toBe(HOME_TITLE)
+    expect(category.title).not.toBe(publicera.title)
+    expect(category.h1).not.toBe(HOME_H1)
+    expect(category.h1).not.toBe(publicera.h1)
+    expect(category.h1).not.toContain('Jämför rätt byrå')
+
+    expect(html).toContain(`<link rel="canonical" href="${SITE_URL}${path}" />`)
+    expect(html).toContain(`<meta property="og:url" content="${SITE_URL}${path}" />`)
+    expect(html).toContain(`<title>${category.title}</title>`)
+    expect(html).toContain(`<h1>${category.h1}</h1>`)
+    expect(html).toContain(`data-static-route="${path}"`)
+    expect(html).not.toContain(`data-static-route="/"`)
+    expect(html).not.toContain(`<link rel="canonical" href="${SITE_URL}/" />`)
+    expect(html).not.toContain(`<h1>${HOME_H1}</h1>`)
   })
 
   it('sätter noindex på noindex-routes och index på indexbara', () => {
