@@ -52,7 +52,7 @@ const PillarPage = () => {
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">{page.h1}</h1>
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{page.intro}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/publicera">
+            <Link to={`/publicera/${page.categorySlug}`}>
               <Button size="lg" className="rounded-xl shadow-blue">
                 Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
