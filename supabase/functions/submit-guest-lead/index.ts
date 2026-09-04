@@ -95,6 +95,8 @@ Deno.serve(async request => {
     const category = text(payload.category, 80)
     const budgetRange = text(payload.budget_range, 40)
     const startTime = text(payload.start_time, 40)
+    const title = rawTitle.length >= 3 ? rawTitle : (description.slice(0, 60).trim() || 'Nytt uppdrag')
+
 
     if (!validEmail(email)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
     if (description.length < 10) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
