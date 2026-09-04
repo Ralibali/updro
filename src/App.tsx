@@ -108,6 +108,7 @@ const AdminVisitors = lazy(() => import("./pages/admin/AdminVisitors"));
 const AdminMarketplaceHealth = lazy(() => import("./pages/admin/AdminMarketplaceHealth"));
 const AdminFunctionLogs = lazy(() => import("./pages/admin/AdminFunctionLogs"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
+const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter"));
 const AdminAdsAI = lazy(() => import("./pages/admin/AdminAdsAI"));
 
 const queryClient = new QueryClient();
@@ -188,6 +189,7 @@ const App = () => (
         <Route path="/leveranser/:tjanst" element={<ServicePage />} />
         <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
         <Route path="/admin/prospektering" element={<ProtectedRoute role="admin"><AdminProspecting /></ProtectedRoute>} />
+        <Route path="/admin/nyhetsbrev" element={<ProtectedRoute role="admin"><AdminNewsletter /></ProtectedRoute>} />
         {COMPARISON_PAGES.map(p => <Route key={p.slug} path={`/${p.slug}`} element={<ComparisonPage />} />)}
         <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerLayout /></ProtectedRoute>}><Route index element={<BuyerDashboard />} /><Route path="uppdrag" element={<BuyerProjects />} /><Route path="uppdrag/:id" element={<ProjectDetail />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /></Route>
         <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierLayout /></ProtectedRoute>}><Route index element={<SupplierDashboard />} /><Route path="uppdrag" element={<BrowseProjects />} /><Route path="uppdrag/:id" element={<ProjectUnlock />} /><Route path="offerter" element={<SupplierOffers />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /><Route path="fakturering" element={<BillingPage />} /><Route path="bjud-in" element={<ReferralPage />} /></Route>
