@@ -90,14 +90,16 @@ Deno.serve(async request => {
     const fullName = text(payload.full_name, 120)
     const companyName = text(payload.company_name, 160)
     const phone = text(payload.phone, 40)
-    const title = text(payload.title, 100)
+    const rawTitle = text(payload.title, 100)
     const description = text(payload.description, 5000)
     const category = text(payload.category, 80)
     const budgetRange = text(payload.budget_range, 40)
     const startTime = text(payload.start_time, 40)
+    const title = rawTitle.length >= 3 ? rawTitle : (description.slice(0, 60).trim() || 'Nytt uppdrag')
+
 
     if (!validEmail(email)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
-    if (title.length < 3 || description.length < 20) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
+    if (description.length < 10) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
     if (!allowedCategories.has(category) || !allowedBudgets.has(budgetRange) || !allowedStarts.has(startTime)) {
       return finish(respond({ error: 'Kontrollera kategori, budget och önskad start.' }, 400), 'invalid_enums')
     }
