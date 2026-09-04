@@ -6,6 +6,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Progress } from '@/components/ui/progress'
 import { Textarea } from '@/components/ui/textarea'
@@ -57,6 +58,7 @@ const ProjectWizardV2 = () => {
     full_name: '',
     email: '',
     phone: '',
+    newsletter_opt_in: false,
   })
 
   // Fire `lead_landing_viewed` at most once per session when the wizard opens.
@@ -162,6 +164,12 @@ const ProjectWizardV2 = () => {
           })
           if (attrError && import.meta.env.DEV) console.warn('Attribution RPC failed', attrError)
         }
+        if (form.newsletter_opt_in && user.email) {
+          const { error: newsletterError } = await supabase
+            .from('newsletter_subscribers')
+            .insert({ email: user.email.toLowerCase(), source: 'publicera' })
+          if (newsletterError && newsletterError.code !== '23505' && import.meta.env.DEV) console.warn('Newsletter opt-in failed', newsletterError)
+        }
         trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer', budgetRange: form.budget_range || undefined })
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
         setConfirmationEmailSent(false)
@@ -187,6 +195,7 @@ const ProjectWizardV2 = () => {
           budget_range: form.budget_range,
           start_time: form.start_time,
           is_company: form.is_company,
+          newsletter_opt_in: form.newsletter_opt_in,
           ...attributionPayload(attribution),
         },
       })
@@ -323,6 +332,19 @@ const ProjectWizardV2 = () => {
                   <p className="rounded-xl border bg-muted/30 p-4 text-xs text-muted-foreground">Genom att skicka uppdraget godkänner du att Updro kontaktar dig om förfrågan och delar uppdragsuppgifterna med relevanta byråer. Läs vår <Link to="/integritetspolicy" className="text-primary hover:underline">integritetspolicy</Link>.</p>
                 </>
               )}
+
+              <label htmlFor="newsletter-opt-in" className="flex items-start gap-3 rounded-xl border bg-muted/20 p-4 cursor-pointer">
+                <Checkbox
+                  id="newsletter-opt-in"
+                  checked={form.newsletter_opt_in}
+                  onCheckedChange={checked => setForm(previous => ({ ...previous, newsletter_opt_in: checked === true }))}
+                  className="mt-0.5"
+                />
+                <span className="text-sm">
+                  <span className="font-medium block">Ja tack, skicka nyheter och tips från Updro</span>
+                  <span className="text-xs text-muted-foreground">Guider om byråval, digitala trender och nyheter – max ett par mejl i månaden. Du kan avregistrera dig när du vill.</span>
+                </span>
+              </label>
 
               <div className="space-y-2">
                 <div className="flex gap-3">

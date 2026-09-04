@@ -144,6 +144,15 @@ Deno.serve(async request => {
     const created = Array.isArray(createdRows) ? createdRows[0] : createdRows
     if (!created?.lead_id || !created?.project_id) throw new Error('Guest project was not created')
 
+    // Frivillig nyhetsbrevsprenumeration (kryssruta i formuläret).
+    if (payload.newsletter_opt_in === true) {
+      const { error: newsletterError } = await admin
+        .from('newsletter_subscribers')
+        .upsert({ email, full_name: fullName || null, source: 'publicera', unsubscribed_at: null }, { onConflict: 'email' })
+      if (newsletterError) console.error('Newsletter opt-in failed', newsletterError)
+    }
+
+
     // Persist attribution captured by the client (first/latest UTM + referrer).
     // Silently no-ops when the client sent no signal so organic leads work.
     try {
