@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCityBySlug, getCategoryBySlug, getPriorityCombo, SEO_AGENCY_CATEGORIES, PRIMARY_CATEGORY_SLUGS } from '@/lib/seoAgencyData'
 import { CITIES, SERVICE_CATEGORIES, getCityIntroVariant, getPriceCopy, getProjectExamples, getNearbyCities } from '@/lib/seoCities'
 import { getCityCategoryDeep } from '@/lib/seoCityCategoryContent'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
-import { supabase } from '@/integrations/supabase/client'
+import { useAgencyDirectory } from '@/hooks/useAgencyDirectory'
+import DirectoryStatus from '@/components/shared/DirectoryStatus'
+import { seoLeadPath } from '@/lib/seoLeadPath'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import NotFound from '@/pages/NotFound'
@@ -12,7 +14,7 @@ import SEOLeadCTA from '@/components/seo/SEOLeadCTA'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, MapPin, Star, Check, Calendar, Building2 } from 'lucide-react'
 
-const LAST_UPDATED = '2026-04-15'
+const LAST_UPDATED = '2026-09-06'
 
 const AgencyCityCategoryPage = () => {
   const { stad, kategori } = useParams<{ stad: string; kategori: string }>()
@@ -22,7 +24,7 @@ const AgencyCityCategoryPage = () => {
   const cityData = CITIES.find(c => c.slug === stad)
   const serviceData = SERVICE_CATEGORIES.find(s => s.slug === kategori)
   const priority = city && category ? getPriorityCombo(city.slug, category.slug) : undefined
-  const [agencies, setAgencies] = useState<any[]>([])
+  const { agencies, loading, error, retry } = useAgencyDirectory({ city: city?.name, category: category?.dbCategory })
 
   useEffect(() => {
     if (!city || !category) return
@@ -30,8 +32,9 @@ const AgencyCityCategoryPage = () => {
     const url = `https://updro.se/byraer/${city.slug}/${category.slug}`
     setSEOMeta({
       title: deep?.title ?? `${category.name}-byrå i ${city.name} – jämför offerter 2026 | Updro`,
-      description: deep?.metaDesc ?? `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Jämför offerter från kvalitetssäkrade byråer kostnadsfritt. Svar oftast inom 24 timmar.`,
+      description: deep?.metaDesc ?? `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Beskriv behovet gratis och jämför relevanta offerter. Högst tre byråer kan lämna offert.`,
       canonical: url,
+      noindex: !deep,
     })
     setBreadcrumb([
       { name: 'Hem', url: 'https://updro.se/' },
@@ -54,25 +57,7 @@ const AgencyCityCategoryPage = () => {
     window.scrollTo(0, 0)
   }, [city, category])
 
-  useEffect(() => {
-    if (!city || !category) return
-    const fetch = async () => {
-      let query = supabase
-        .from('supplier_profiles')
-        .select('*, profiles!supplier_profiles_id_fkey(full_name, company_name, city, avatar_url)')
-        .order('avg_rating', { ascending: false })
-        .limit(50)
-      if (category.dbCategory) query = query.contains('categories', [category.dbCategory])
-      const { data } = await query
-      if (data) {
-        setAgencies(data.filter(a => {
-          const c = (a.profiles?.city || '').toLowerCase()
-          return c.includes(city.name.toLowerCase())
-        }))
-      }
-    }
-    fetch()
-  }, [city, category])
+
 
   // Injicera FAQ-schema endast när FAQ:n är unik (djupinnehåll) – mallsvar ger dubblettschema
   useEffect(() => {
@@ -138,7 +123,7 @@ const AgencyCityCategoryPage = () => {
           <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{intro}</p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/publicera">
+            <Link to={seoLeadPath(category.slug)}>
               <Button size="lg" className="rounded-xl shadow-blue">
                 Jämför offerter i {city.name} <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -151,7 +136,7 @@ const AgencyCityCategoryPage = () => {
           <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5"><Calendar className="h-3 w-3" /> Senast uppdaterad: {LAST_UPDATED}</span>
             <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Helt gratis</span>
-            <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Svar oftast inom 24 h</span>
+            <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Högst tre offerter</span>
           </div>
 
           {priority && (
@@ -186,10 +171,10 @@ const AgencyCityCategoryPage = () => {
             <p className="mt-3 text-muted-foreground">
               Räkna med <strong className="text-foreground">{priceCopy}</strong> för {category.name.toLowerCase()} i {city.name}.
               Priset varierar med byråns storlek, projektets komplexitet och hur mycket strategiskt arbete som ingår.
-              Storstadsbyråer ligger ofta tio till femton procent över rikssnittet, men levererar samtidigt djupare specialistkompetens.
+              Prisnivåerna är planeringsunderlag, inte verifierad lokal prisstatistik. Be byråerna specificera vad som ingår.
             </p>
             <p className="mt-3 text-sm text-muted-foreground">
-              Det enda sättet att veta exakt vad <em>ditt</em> projekt kostar är att jämföra minst tre offerter.
+              Be om specificerade offerter för att bedöma kostnaden för <em>ditt</em> projekt.
               Det gör du gratis via Updro.
             </p>
           </div>
@@ -231,22 +216,22 @@ const AgencyCityCategoryPage = () => {
       </section>
 
       {/* CTA */}
-      <SEOLeadCTA categoryName={`${category.name.toLowerCase()} i ${city.name}`} />
+      <SEOLeadCTA category={category.slug} categoryName={`${category.name.toLowerCase()} i ${city.name}`} />
 
       {/* Byrå-listning */}
       <section className="container py-12">
         <h2 className="font-display text-xl font-semibold mb-6">
-          {agencies.length > 0
+          {loading || error ? `Byråprofiler inom ${category.name.toLowerCase()} i ${city.name}` : agencies.length > 0
             ? `${agencies.length} byråer inom ${category.name.toLowerCase()} i ${city.name}`
-            : `Vi söker byråer inom ${category.name.toLowerCase()} i ${city.name}`}
+            : `Byråprofiler inom ${category.name.toLowerCase()} i ${city.name}`}
         </h2>
-        {agencies.length === 0 ? (
+        {loading || error ? <DirectoryStatus loading={loading} error={error} retry={retry} /> : agencies.length === 0 ? (
           <div className="bg-surface-alt border rounded-xl p-8 text-center max-w-2xl">
             <p className="text-muted-foreground">
-              Just nu har vi inga registrerade byråer inom {category.name.toLowerCase()} i {city.name}.
-              Publicera ditt uppdrag så matchar vi dig med rätt byrå – ofta även från närliggande städer som levererar på distans.
+              Just nu visas inga verifierade byråprofiler inom {category.name.toLowerCase()} i {city.name}.
+              Beskriv gärna om distanssamarbete fungerar, så kan relevanta byråer även från andra orter övervägas.
             </p>
-            <Link to="/publicera" className="inline-block mt-4">
+            <Link to={seoLeadPath(category.slug)} className="inline-block mt-4">
               <Button className="rounded-xl">Publicera uppdrag <ArrowRight className="ml-2 h-4 w-4" /></Button>
             </Link>
           </div>
@@ -257,9 +242,9 @@ const AgencyCityCategoryPage = () => {
                 <h3 className="font-display font-semibold">{a.profiles?.company_name || a.profiles?.full_name || 'Byrå'}</h3>
                 <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                   <MapPin className="h-3 w-3" /> {a.profiles?.city || city.name}
-                  {a.avg_rating > 0 && <><Star className="h-3 w-3 ml-2 text-amber-500" /> {a.avg_rating}</>}
+                  {(a.avg_rating || 0) > 0 && <><Star className="h-3 w-3 ml-2 text-amber-500" /> {a.avg_rating}</>}
                 </div>
-                {a.categories?.length > 0 && (
+                {a.categories && a.categories.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3">
                     {a.categories.slice(0, 3).map((c: string) => (
                       <span key={c} className="text-[10px] px-2 py-0.5 rounded-full bg-muted">{c}</span>
@@ -338,7 +323,7 @@ const buildFaq = (cityName: string, categoryName: string, categorySlug: string) 
     },
     {
       q: `Hur hittar jag rätt ${categoryName.toLowerCase()}-byrå i ${cityName}?`,
-      a: `Beskriv ditt uppdrag på Updro. Vi matchar dig med upp till tre kvalitetssäkrade byråer i ${cityName} som arbetar med ${categoryName.toLowerCase()}. Du får offerterna oftast inom 24 timmar och väljer fritt – kostnadsfritt och utan förpliktelser.`,
+      a: `Beskriv ditt uppdrag på Updro. Vi matchar dig med upp till tre relevanta byråer i ${cityName} som arbetar med ${categoryName.toLowerCase()}. Svarstiden beror på uppdraget och byråernas tillgänglighet. Du väljer själv om du vill gå vidare.`,
     },
     {
       q: `Vad ingår i ett typiskt ${categoryName.toLowerCase()}-uppdrag?`,

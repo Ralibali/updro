@@ -2,38 +2,29 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { supabase } from '@/integrations/supabase/client'
+import { useAgencyDirectory } from '@/hooks/useAgencyDirectory'
+import DirectoryStatus from '@/components/shared/DirectoryStatus'
+import { seoLeadPath } from '@/lib/seoLeadPath'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { CATEGORIES, CATEGORY_STYLES } from '@/lib/constants'
-import { Search, MapPin, CheckCircle } from 'lucide-react'
+import { Search, MapPin, CheckCircle, ArrowRight, FileCheck, Users } from 'lucide-react'
 import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
 import { setSEOMeta } from '@/lib/seoHelpers'
 
 const BrowseAgenciesPage = () => {
-  const [agencies, setAgencies] = useState<any[]>([])
+  const { agencies, loading, error, retry } = useAgencyDirectory()
   const [filterCat, setFilterCat] = useState('all')
   const [searchCity, setSearchCity] = useState('')
 
   useEffect(() => {
     setSEOMeta({
       title: 'Hitta byråer i Sverige – Jämför och välj rätt byrå | Updro',
-      description: 'Sök bland kvalificerade digitala byråer i Sverige. Filtrera på kategori och stad. Jämför betyg och kompetenser.',
+      description: 'Hitta digitala byråer efter tjänst och stad. Granska profiler och verifieringsuppgifter, eller beskriv projektet gratis för att jämföra högst tre offerter.',
       canonical: 'https://updro.se/byraer',
     })
-  }, [])
-
-  useEffect(() => {
-    const fetchAgencies = async () => {
-      const { data } = await supabase
-        .from('supplier_profiles')
-        .select('*, profiles!supplier_profiles_id_fkey(full_name, company_name, city, avatar_url)')
-        .order('avg_rating', { ascending: false })
-        .limit(50)
-      if (data) setAgencies(data)
-    }
-    fetchAgencies()
   }, [])
 
   const filtered = agencies.filter(a => {
@@ -49,14 +40,36 @@ const BrowseAgenciesPage = () => {
       <main className="flex-1">
         <section className="py-12">
           <div className="container">
-            <h1 className="font-display text-3xl md:text-4xl font-bold mb-2">Hitta byråer</h1>
-            <p className="text-muted-foreground mb-8">Sök bland kvalificerade byråer i Sverige</p>
+            <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] items-start mb-10">
+              <div>
+                <p className="text-sm font-semibold text-primary mb-3">DITT NÄSTA BYRÅSAMARBETE</p>
+                <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight max-w-xl">Hitta byrån som passar ditt projekt.</h1>
+                <p className="text-muted-foreground mt-5 text-lg max-w-xl">Jämför kompetens och arbetsprover i byråprofilerna. Eller beskriv ditt projekt en gång och jämför upp till tre offerter, helt gratis.</p>
+                <Link to={seoLeadPath(filterCat === 'all' ? undefined : filterCat)} className="inline-block mt-6">
+                  <Button size="lg" className="rounded-xl">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                </Link>
+                <p className="text-sm text-muted-foreground mt-3">Inget konto krävs för att börja · Ingen köpplikt</p>
+              </div>
+              <aside className="hidden lg:block rounded-2xl border bg-card p-6 md:p-8">
+                <h2 className="font-display text-xl font-semibold">Ett tydligare underlag att välja från</h2>
+                <div className="mt-5 space-y-5 text-sm">
+                  <p className="flex gap-3"><FileCheck className="h-5 w-5 shrink-0 text-primary" /><span><strong className="block text-foreground">Samma brief till byråerna</strong><span className="text-muted-foreground">Beskriv mål, omfattning och budget så att svaren går att jämföra.</span></span></p>
+                  <p className="flex gap-3"><Users className="h-5 w-5 shrink-0 text-primary" /><span><strong className="block text-foreground">Högst tre offerter</strong><span className="text-muted-foreground">Updro granskar uppdraget. Relevanta byråer väljer om de vill svara.</span></span></p>
+                  <p className="flex gap-3"><CheckCircle className="h-5 w-5 shrink-0 text-primary" /><span><strong className="block text-foreground">Kontrollera varje profil</strong><span className="text-muted-foreground">Verifieringsstatus visas per byrå. Läs arbetsprover och be om referenser.</span></span></p>
+                </div>
+              </aside>
+            </div>
+            <div className="border-t pt-8 mb-6">
+              <h2 className="font-display text-2xl font-semibold">Utforska byråprofiler</h2>
+              <p className="text-sm text-muted-foreground mt-2">Här visas företagsprofiler som markerats verifierade på Updro. Ordningen är ingen redaktionell rekommendation; jämför erfarenhet, arbetsprover och omdömen.</p>
+            </div>
 
             {/* Filters */}
             <div className="flex flex-wrap gap-3 mb-8">
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
+                  aria-label="Filtrera byråer efter stad"
                   placeholder="Sök stad..."
                   value={searchCity}
                   onChange={e => setSearchCity(e.target.value)}
@@ -64,7 +77,7 @@ const BrowseAgenciesPage = () => {
                 />
               </div>
               <Select value={filterCat} onValueChange={setFilterCat}>
-                <SelectTrigger className="w-48 rounded-xl"><SelectValue placeholder="Alla kategorier" /></SelectTrigger>
+                <SelectTrigger aria-label="Filtrera byråer efter kategori" className="w-48 rounded-xl"><SelectValue placeholder="Alla kategorier" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Alla kategorier</SelectItem>
                   {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -73,8 +86,12 @@ const BrowseAgenciesPage = () => {
             </div>
 
             {/* Grid */}
-            {filtered.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">Inga byråer matchar din sökning.</div>
+            {loading || error ? <DirectoryStatus loading={loading} error={error} retry={retry} /> : filtered.length === 0 ? (
+              <div className="rounded-2xl border bg-muted/30 p-8">
+                <h3 className="font-semibold">Ingen profil matchar de valda filtren</h3>
+                <p className="mt-2 text-muted-foreground">Prova en annan tjänst eller stad. Många digitala projekt kan genomföras på distans.</p>
+                <Button variant="outline" className="mt-4" onClick={() => { setFilterCat('all'); setSearchCity('') }}>Visa alla byråer</Button>
+              </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map(a => {
@@ -89,7 +106,7 @@ const BrowseAgenciesPage = () => {
                           <div>
                             <div className="flex items-center gap-1">
                               <h3 className="font-semibold">{profile?.company_name || profile?.full_name}</h3>
-                              {a.is_verified && <CheckCircle className="h-4 w-4 text-primary" />}
+                              {a.is_verified && <CheckCircle aria-label="Verifierad byrå" className="h-4 w-4 text-primary" />}
                             </div>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                               <MapPin className="h-3 w-3" /> {profile?.city || 'Sverige'}
@@ -108,10 +125,10 @@ const BrowseAgenciesPage = () => {
                         <RatingDisplay avgRating={a.avg_rating || 0} reviewCount={a.review_count || 0} />
 
                         <VerificationChecklist
-                          isVerified={a.is_verified}
-                          hasFskatt={a.has_fskatt}
-                          creditCheckPassed={a.credit_check_passed}
-                          completedProjects={a.completed_projects}
+                          isVerified={a.is_verified ?? false}
+                          hasFskatt={a.has_fskatt ?? false}
+                          creditCheckPassed={a.credit_check_passed ?? false}
+                          completedProjects={a.completed_projects ?? 0}
                         />
                       </div>
                     </Link>

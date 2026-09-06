@@ -4,7 +4,8 @@ import { getCityBySlug, SEO_AGENCY_CATEGORIES } from '@/lib/seoAgencyData'
 import { CITIES, SERVICE_CATEGORIES, getNearbyCities } from '@/lib/seoCities'
 import { getCityDeep } from '@/lib/seoCityContent'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
-import { supabase } from '@/integrations/supabase/client'
+import { useAgencyDirectory } from '@/hooks/useAgencyDirectory'
+import DirectoryStatus from '@/components/shared/DirectoryStatus'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import NotFound from '@/pages/NotFound'
@@ -13,14 +14,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ArrowRight, ChevronRight, MapPin, Search, Star, Calendar, Check } from 'lucide-react'
 
-const LAST_UPDATED = '2026-04-15'
+const LAST_UPDATED = '2026-09-06'
 
 const AgencyCityPage = () => {
   const { stad } = useParams<{ stad: string }>()
   const city = getCityBySlug(stad || '')
   const cityData = CITIES.find(c => c.slug === stad)
   const deep = getCityDeep(stad || '')
-  const [agencies, setAgencies] = useState<any[]>([])
+  const { agencies, loading, error, retry } = useAgencyDirectory({ city: city?.name})
   const [search, setSearch] = useState('')
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const AgencyCityPage = () => {
     const url = `https://updro.se/byraer/${city.slug}`
     setSEOMeta({
       title: `Digitala byråer i ${city.name} – jämför offerter 2026 | Updro`,
-      description: `Hitta digitala byråer i ${city.name}. Webbutveckling, SEO, e-handel, Google Ads, design – jämför offerter kostnadsfritt. Byråerna återkommer oftast inom 24 timmar.`,
+      description: `Hitta digitala byråer i ${city.name}. Webbutveckling, SEO, e-handel, Google Ads, design – jämför offerter kostnadsfritt. Högst tre byråer kan lämna offert.`,
       canonical: url,
     })
     setBreadcrumb([
@@ -61,23 +62,7 @@ const AgencyCityPage = () => {
     window.scrollTo(0, 0)
   }, [city, deep])
 
-  useEffect(() => {
-    if (!city) return
-    const fetch = async () => {
-      const { data } = await supabase
-        .from('supplier_profiles')
-        .select('*, profiles!supplier_profiles_id_fkey(full_name, company_name, city, avatar_url)')
-        .order('avg_rating', { ascending: false })
-        .limit(50)
-      if (data) {
-        setAgencies(data.filter(a => {
-          const c = (a.profiles?.city || '').toLowerCase()
-          return c.includes(city.name.toLowerCase())
-        }))
-      }
-    }
-    fetch()
-  }, [city])
+
 
   if (!city) return <NotFound />
 
@@ -156,21 +141,21 @@ const AgencyCityPage = () => {
       <section className="container pb-8">
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder={`Sök byrå i ${city.name}...`} value={search} onChange={e => setSearch(e.target.value)} className="pl-10 rounded-xl" />
+          <Input aria-label={`Sök byrånamn i ${city.name}`} placeholder={`Sök byrå i ${city.name}...`} value={search} onChange={e => setSearch(e.target.value)} className="pl-10 rounded-xl" />
         </div>
       </section>
 
       {/* Agency list */}
       <section className="container pb-16">
         <h2 className="font-display text-xl font-semibold mb-6">
-          {filtered.length > 0
+          {loading || error ? `Byråprofiler i ${city.name}` : filtered.length > 0
             ? `${filtered.length} byråer i ${city.name}`
-            : `Vi söker byråer i ${city.name}`}
+            : `Byråprofiler i ${city.name}`}
         </h2>
-        {filtered.length === 0 ? (
+        {loading || error ? <DirectoryStatus loading={loading} error={error} retry={retry} /> : filtered.length === 0 ? (
           <div className="bg-surface-alt border rounded-xl p-8 max-w-2xl">
             <p className="text-muted-foreground">
-              Just nu har vi inga registrerade byråer i {city.name}.
+              {search ? 'Ingen byråprofil matchar din sökning.' : `Just nu visas inga verifierade byråprofiler med ${city.name} som ort.`}
               Publicera ditt uppdrag så matchar vi dig med rätt byrå – ofta även byråer från {nearby[0]?.name || 'närliggande städer'} som levererar på distans.
             </p>
             <Link to="/publicera" className="inline-block mt-4">
@@ -184,9 +169,9 @@ const AgencyCityPage = () => {
                 <h3 className="font-display font-semibold">{a.profiles?.company_name || a.profiles?.full_name || 'Byrå'}</h3>
                 <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                   <MapPin className="h-3 w-3" /> {a.profiles?.city || city.name}
-                  {a.avg_rating > 0 && <><Star className="h-3 w-3 ml-2 text-amber-500" /> {a.avg_rating}</>}
+                  {(a.avg_rating || 0) > 0 && <><Star className="h-3 w-3 ml-2 text-amber-500" /> {a.avg_rating}</>}
                 </div>
-                {a.categories?.length > 0 && (
+                {a.categories && a.categories.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3">
                     {a.categories.slice(0, 3).map((c: string) => (
                       <span key={c} className="text-[10px] px-2 py-0.5 rounded-full bg-muted">{c}</span>

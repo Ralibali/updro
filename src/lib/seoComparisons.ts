@@ -1,5 +1,8 @@
 export interface ComparisonPage {
   slug: string
+  category?: string
+  reviewedAt?: string
+  sources?: { label: string; href: string }[]
   metaTitle: string
   metaDesc: string
   h1: string
@@ -10,31 +13,79 @@ export interface ComparisonPage {
 }
 
 export const COMPARISON_PAGES: ComparisonPage[] = [
-  {
-    slug: 'basta-seo-byran',
-    metaTitle: 'Bästa SEO-byrån 2026 – Topp 10 i Sverige | Updro',
-    metaDesc: 'Vi jämför de bästa SEO-byråerna i Sverige 2026. Priser, tjänster och recensioner – hitta rätt SEO-partner.',
-    h1: 'Bästa SEO-byrån 2026 – Topp 10 i Sverige',
-    intro: 'Att hitta rätt SEO-byrå kan vara avgörande för ditt företags digitala tillväxt. Vi har utvärderat och jämfört de bästa SEO-byråerna i Sverige baserat på resultat, kundrecensioner och specialistkunskap.',
-    sections: [
-      { heading: 'Hur vi valt ut de bästa SEO-byråerna', content: 'Vår ranking baseras på:\n\n- **Dokumenterade resultat** – Bevisbar trafikökning och ranking-förbättringar\n- **Kundrecensioner** – Omdömen och referenser från tidigare kunder\n- **Specialistkompetens** – Teknisk SEO, content och länkbyggande\n- **Transparens** – Tydlig rapportering och kommunikation\n- **Prisvärdighet** – Bra förhållande mellan pris och kvalitet' },
-      { heading: 'Vad kostar en SEO-byrå?', content: 'Priserna varierar kraftigt beroende på byråns storlek och tjänsteomfattning:\n\n| Paket | Pris/månad |\n|---|---|\n| Grundpaket | 5 000 – 12 000 kr |\n| Standardpaket | 10 000 – 25 000 kr |\n| Premiumpaket | 20 000 – 50 000 kr |\n| Enterprise | 40 000 – 100 000+ kr |\n\nDet billigaste alternativet är sällan det bästa. En byrå som tar 5 000 kr/månad kan sällan leverera de resultat som en byrå med kapacitet och erfarenhet ger.' },
-      { heading: 'Så väljer du rätt SEO-byrå', content: '1. **Definiera dina mål** – Vad vill du uppnå? Mer trafik? Fler leads? Bättre ranking?\n2. **Jämför flera offerter** – Använd Updro för att få upp till tre jämförbara offerter\n3. **Granska case studies** – Be om dokumenterade resultat från tidigare kunder\n4. **Fråga om rapportering** – Hur ofta rapporterar de? Vilka KPI:er följer de?\n5. **Kontrollera avtalsvillkor** – Undvik långa bindningstider\n6. **Be om referenser** – Ring och prata med befintliga kunder' },
-      { heading: 'Vanliga misstag vid val av SEO-byrå', content: '- Välja den billigaste byrån\n- Inte fråga om rapportering och transparens\n- Binda sig för långa avtal utan uppföljning\n- Förvänta sig resultat inom veckor istället för månader\n- Inte kontrollera att byrån använder etiska (white-hat) metoder' },
-    ],
-    faq: [
-      { q: 'Hur lång tid tar det att se SEO-resultat?', a: 'Vanligtvis 3–6 månader för märkbara förbättringar och 6–12 månader för signifikant trafikökning. SEO är en långsiktig investering.' },
-      { q: 'Kan jag göra SEO själv?', a: 'Grundläggande SEO kan du göra själv, men för konkurrenskraftiga sökord behövs specialistkompetens inom teknisk SEO, content och länkbyggande.' },
-      { q: 'SEO eller Google Ads?', a: 'SEO ger långsiktig, kostnadsfri trafik. Google Ads ger omedelbar men betald trafik. Bäst resultat med en kombination.' },
-      { q: 'Vad är en rimlig SEO-budget?', a: 'Minst 8 000–15 000 kr/månad för att se resultat. Under 5 000 kr/månad är sällan tillräckligt för att konkurrera.' },
-    ],
-    relatedLinks: [
-      { label: 'SEO', href: '/seo' },
-      { label: 'SEO pris', href: '/seo/pris' },
-      { label: 'SEO Stockholm', href: '/seo/stockholm' },
-      { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
-    ]
-  },
+{
+  "slug": "basta-seo-byran",
+  "category": "SEO",
+  "reviewedAt": "2026-09-06",
+  "metaTitle": "Bästa SEO-byrån för ditt företag – jämför rätt saker | Updro",
+  "metaDesc": "Välj SEO-byrå utifrån relevanta case, arbetsplan och affärsmål. Använd vår checklista och jämför upp till tre offerter gratis via Updro.",
+  "h1": "Vilken SEO-byrå är bäst för ditt företag?",
+  "intro": "Rätt SEO-byrå ska kunna förklara vad som behöver göras på din webbplats, vem som gör arbetet och hur ni följer upp affärsnyttan. Här får du ett underlag för att jämföra kandidater. Updro publicerar ingen verifierad topplista över Sveriges SEO-byråer.",
+  "sections": [
+    {
+      "heading": "Börja med problemet du vill lösa",
+      "content": "Vill du få fler offertförfrågningar, sälja fler produkter eller bli hittad på en viss ort? Skriv ned ett affärsmål och hur du mäter det i dag. Ge alla byråer samma underlag: webbplats, målgrupp, viktigaste tjänster och vad som redan har prövats. Då blir deras förslag lättare att bedöma.\n\nEn webbplats som knappt indexeras behöver en annan första insats än en butik som redan får relevant trafik men få köp. Be byrån skilja på tekniska hinder, innehållsarbete och förbättringar av kundflödet."
+    },
+    {
+      "heading": "Sex frågor som gör offerterna jämförbara",
+      "content": "| Fråga | Det du vill få beskrivet |\n|---|---|\n| Vad gör ni först? | En prioriterad genomgång av just din webbplats och varför åtgärderna behövs. |\n| Vad ingår varje månad? | Konkreta leveranser, ansvarig person och vad som kostar extra. |\n| Vem genomför ändringarna? | Om utveckling och textproduktion ingår eller måste köpas separat. |\n| Hur mäter vi effekten? | Relevanta organiska besök, förfrågningar eller köp, med utgångsläge och uppföljning. |\n| Vilka resultat kan ni styrka? | Case med period, förutsättningar och möjlighet att kontakta en referens. |\n| Vad händer om vi avslutar? | Uppsägning, ägande av material och fortsatt åtkomst till konton och rapporter. |"
+    },
+    {
+      "heading": "Bedöm ett case utan att fastna vid procenttal",
+      "content": "Be om utgångsvärdet bakom en redovisad ökning. En stor procentuell förändring kan utgå från mycket liten trafik. Fråga också om resultatet gäller varumärkessökningar, andra sökord eller faktisk försäljning.\n\nJämför hur lik kundens situation är din egen: affärsmodell, konkurrens, webbplatsens storlek och tillgängliga resurser. Ett bra case är ett underlag för samtal, ingen garanti för ditt resultat."
+    },
+    {
+      "heading": "Jämför total arbetskostnad, inte bara månadspriset",
+      "content": "Be varje byrå skilja på analys, genomförande, innehåll och rapportering. Kontrollera eventuella startavgifter, verktygskostnader och arbete som ditt eget team förväntas göra. En offert med lägre månadspris kan omfatta färre leveranser.\n\nAnvänd Updros prisguide som ett första planeringsunderlag. Begär sedan ett specificerat förslag för ditt behov och bedöm budgeten mot den affärsnytta du vill uppnå. Det finns ingen månadsbudget som automatiskt garanterar ett visst resultat."
+    },
+    {
+      "heading": "Varningssignaler att reda ut före avtal",
+      "content": "- Garantier om förstaplatsen på Google.\n- Otydliga svar om vilka ändringar som ska göras och varför.\n- Löften om köpta länkar eller stora mängder innehåll utan kvalitetsbedömning.\n- Konton och rapporter som du inte får tillgång till.\n- Resultatrapportering som saknar koppling till ditt affärsmål.\n\nGoogle rekommenderar att kontrollera referenser och vara skeptisk till garanterade placeringar. Be om en förklaring när ett arbetssätt eller ett resultatlöfte är oklart."
+    },
+    {
+      "heading": "Så använder du Updro för nästa steg",
+      "content": "Beskriv ditt behov och välj SEO som kategori. Updro granskar briefen innan relevanta byråer kan lämna offert. Högst tre byråer kan svara på samma uppdrag. Det är gratis för beställare och du väljer själv om du vill gå vidare.\n\nUpdro finansieras av byråernas leadköp eller abonnemang. Guiden är ett beslutsstöd från marknadsplatsen, inte en oberoende certifiering eller en ranking av enskilda byråer. Kontrollera alltid referenser, kompetens och villkor för den byrå du överväger."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Vilken SEO-byrå är bäst?",
+      "a": "Det beror på din webbplats, målgrupp och vad du behöver hjälp med. Jämför relevant erfarenhet, en tydlig arbetsplan och hur byrån kopplar arbetet till dina affärsmål. Updro har ingen verifierad topplista över Sveriges bästa SEO-byråer."
+    },
+    {
+      "q": "Kan en SEO-byrå garantera en förstaplats på Google?",
+      "a": "Nej. Google varnar uttryckligen för byråer som garanterar förstaplatsen. Be i stället om en realistisk plan, tydliga leveranser och löpande uppföljning."
+    },
+    {
+      "q": "Vad ska finnas med i en SEO-offert?",
+      "a": "Mål, prioriterade åtgärder, konkreta leveranser, ansvarsfördelning, total kostnad och avtalsvillkor. Kontrollera om textproduktion och teknisk implementering ingår."
+    },
+    {
+      "q": "Är det gratis att jämföra SEO-offerter på Updro?",
+      "a": "Ja, för beställare. Beskriv behovet utan att skapa konto. Updro granskar uppdraget och högst tre relevanta byråer kan lämna offert. Du förbinder dig inte att köpa."
+    }
+  ],
+  "relatedLinks": [
+    {
+      "label": "Prisguide för SEO",
+      "href": "/priser/seo"
+    },
+    {
+      "label": "Se SEO-byråprofiler",
+      "href": "/byraer/kategori/seo"
+    },
+    {
+      "label": "Så fungerar vår metod",
+      "href": "/metod"
+    }
+  ],
+  "sources": [
+    {
+      "label": "Google Search Central: Att anlita en SEO",
+      "href": "https://developers.google.com/search/docs/fundamentals/do-i-need-seo"
+    }
+  ]
+},
   {
     slug: 'basta-webbyran',
     metaTitle: 'Bästa webbyrån 2026 – Topp 10 i Sverige | Updro',

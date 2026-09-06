@@ -1,4 +1,4 @@
-import { Sparkles, Star } from 'lucide-react'
+import { Star } from 'lucide-react'
 
 interface RatingDisplayProps {
   avgRating: number
@@ -7,13 +7,12 @@ interface RatingDisplayProps {
 }
 
 const RatingDisplay = ({ avgRating, reviewCount, size = 'sm' }: RatingDisplayProps) => {
-  const isNew = reviewCount === 0
+  const hasNoReviews = reviewCount === 0
 
-  if (isNew) {
+  if (hasNoReviews) {
     return (
-      <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full">
-        <Sparkles size={12} />
-        Ny på Updro!
+      <div className="inline-flex items-center gap-1.5 bg-muted border border-border text-muted-foreground text-xs font-semibold px-3 py-1.5 rounded-full">
+        Inga omdömen ännu
       </div>
     )
   }

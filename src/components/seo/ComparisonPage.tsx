@@ -7,6 +7,7 @@ import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight, Trophy } from 'lucide-react'
 import SEOLeadCTA from './SEOLeadCTA'
+import { seoLeadPath } from '@/lib/seoLeadPath'
 import NotFound from '@/pages/NotFound'
 import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
@@ -24,7 +25,7 @@ const ComparisonPage = () => {
     window.scrollTo(0, 0)
   }, [page])
 
-  if (page) mergeDeep(page, `/${page.slug}`)
+  if (page && !page.reviewedAt) mergeDeep(page, `/${page.slug}`)
 
   if (!page) return <NotFound />
 
@@ -86,8 +87,9 @@ const ComparisonPage = () => {
           </div>
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">{page.h1}</h1>
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{page.intro}</p>
+          {page.reviewedAt && <p className="mt-4 text-sm text-muted-foreground">Uppdaterad {page.reviewedAt} · Updros redaktion · Köpguide</p>}
           <div className="mt-6">
-            <Link to="/publicera">
+            <Link to={seoLeadPath(page.category)}>
               <Button size="lg" className="rounded-xl shadow-blue">
                 Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -109,7 +111,7 @@ const ComparisonPage = () => {
         </div>
       </div>
 
-      <SEOLeadCTA categoryName="digitala tjänster" />
+      <SEOLeadCTA category={page.category} categoryName={page.category || "digitala tjänster"} />
 
       {page.faq.length > 0 && (
         <section className="container py-12">
@@ -140,6 +142,7 @@ const ComparisonPage = () => {
         </div>
       </section>
 
+      {page.sources?.length ? <section className="container pb-12"><h2 className="font-display text-xl font-semibold mb-3">Källor och vidare läsning</h2><ul className="space-y-2">{page.sources.map(source => <li key={source.href}><a className="text-primary underline underline-offset-4" href={source.href}>{source.label}</a></li>)}</ul></section> : null}
       <Footer />
     </div>
   )

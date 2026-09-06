@@ -1683,6 +1683,28 @@ export type Database = {
       }
     }
     Functions: {
+      get_public_agencies: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          slug: string
+          bio: string | null
+          categories: string[] | null
+          services: string[] | null
+          logo_url: string | null
+          cover_url: string | null
+          website_url: string | null
+          portfolio_urls: string[] | null
+          company_name: string
+          city: string | null
+          avatar_url: string | null
+          created_at: string | null
+          is_verified: boolean
+          avg_rating: number
+          review_count: number
+          completed_projects: number
+        }[]
+      }
       apply_stripe_purchase_event: {
         Args: {
           p_amount_sek?: number
