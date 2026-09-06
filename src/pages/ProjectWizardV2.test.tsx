@@ -3,8 +3,9 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { PROJECT_DESCRIPTION_EXAMPLE } from '@/lib/wizardPrefill'
 
-const { trackLeadSubmitted, invokeMock } = vi.hoisted(() => ({
+const { trackLeadSubmitted, trackUppdragDetailsCompleted, invokeMock } = vi.hoisted(() => ({
   trackLeadSubmitted: vi.fn(),
+  trackUppdragDetailsCompleted: vi.fn(),
   invokeMock: vi.fn(),
 }))
 
@@ -40,7 +41,7 @@ vi.mock('@/lib/analytics', () => ({
   trackLeadSubmitted,
   trackOnceInSession: (_key: string, fn: () => void) => fn(),
   trackCategorySelected: () => {},
-  trackUppdragDetailsCompleted: () => {},
+  trackUppdragDetailsCompleted,
 }))
 
 vi.mock('@/integrations/supabase/client', () => ({
@@ -145,6 +146,40 @@ describe('ProjectWizardV2 category prefill', () => {
     expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('Vi behöver hjälp med sök')
     expect(screen.getByRole('button', { name: /^SEO$/ })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: /Nästa/ })).toBeEnabled()
+  })
+})
+
+describe('ProjectWizardV2 Uppdrag Details Completed timing', () => {
+  beforeEach(() => {
+    trackUppdragDetailsCompleted.mockReset()
+  })
+
+  it('fyrar inte på land/hydrate när kategori är förifylld och budget/start har default', () => {
+    renderWizard('/publicera/webbutveckling')
+
+    expect(trackUppdragDetailsCompleted).not.toHaveBeenCalled()
+  })
+
+  it('fyrar en gång när köparen går vidare med beskrivning + kategori via Nästa', () => {
+    renderWizard('/publicera/webbutveckling')
+    fillDescription()
+    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
+
+    expect(trackUppdragDetailsCompleted).toHaveBeenCalledTimes(1)
+    expect(trackUppdragDetailsCompleted).toHaveBeenCalledWith({
+      category: 'Webbutveckling',
+      budgetRange: 'unknown',
+    })
+  })
+
+  it('fyrar inte när beskrivningen är för kort även om kategori är förifylld', () => {
+    renderWizard('/publicera/webbutveckling')
+    fireEvent.change(screen.getByLabelText(/Beskriv uppdraget/), {
+      target: { value: 'kort' },
+    })
+
+    expect(screen.getByRole('button', { name: /Nästa/ })).toBeDisabled()
+    expect(trackUppdragDetailsCompleted).not.toHaveBeenCalled()
   })
 })
 

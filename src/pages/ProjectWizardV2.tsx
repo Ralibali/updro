@@ -77,11 +77,6 @@ const ProjectWizardV2 = () => {
   const contactReady = isAuthenticated || validEmail(form.email)
   const canSubmit = descriptionReady && detailsReady && contactReady
 
-  useEffect(() => {
-    if (!detailsReady || !form.category) return
-    trackUppdragDetailsCompleted({ category: form.category, budgetRange: form.budget_range || undefined })
-  }, [detailsReady, form.category, form.budget_range])
-
   const improveDescription = async () => {
     if (!form.category || form.description.trim().length < 10 || aiLoading) return
     setAiLoading(true)
@@ -114,6 +109,7 @@ const ProjectWizardV2 = () => {
     trackOnceInSession('lead_step_completed:1', () => {
       trackClick('lead_step_completed', 'Projektbeskrivning klar', { step: 1 })
     })
+    trackUppdragDetailsCompleted({ category: form.category, budgetRange: form.budget_range || undefined })
     setStep(2)
   }
 
