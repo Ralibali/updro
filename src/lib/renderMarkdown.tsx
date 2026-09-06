@@ -17,12 +17,10 @@ export function renderMarkdown(text: string): React.ReactNode[] {
     const isTable = lines.length >= 2 && lines.every(l => l.trim().startsWith('|') && l.trim().endsWith('|'))
     if (isTable) {
       const rows = lines
-        .filter(l => !/^\|\s*-+/.test(l.trim().replace(/\|/g, '|-'))) // filter separator rows
-        .filter(l => !/^\|[\s-|]+\|$/.test(l.trim())) // filter ---+--- rows
         .map(l => l.trim().slice(1, -1).split('|').map(c => c.trim()))
 
       // Filter out separator rows more robustly
-      const dataRows = rows.filter(row => !row.every(cell => /^-+$/.test(cell)))
+      const dataRows = rows.filter(row => !row.every(cell => /^:?-{3,}:?$/.test(cell)))
 
       if (dataRows.length === 0) return null
 
