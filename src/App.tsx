@@ -39,7 +39,6 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const SitemapPage = lazy(() => import("./pages/SitemapPage"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const SupplierLandingPage = lazy(() => import("./pages/SupplierLandingPage"));
-const AdsLandingPage = lazy(() => import("./pages/AdsLandingPage"));
 const SwivrrAlternativPage = lazy(() => import("./pages/seo/SwivrrAlternativPage"));
 const EditorialPolicyPage = lazy(() => import("./pages/EditorialPolicyPage"));
 const MetodPage = lazy(() => import("./pages/MetodPage"));
@@ -162,7 +161,7 @@ const App = () => (
         <Route path="/landing" element={<LandingPage />} />
         {/* /landing/byra redirecteras till /for-byraer via LEGACY_REDIRECTS nedan */}
         <Route path="/for-byraer" element={<SupplierLandingPage />} />
-        <Route path="/jamfor-offerter" element={<AdsLandingPage />} />
+        {/* /jamfor-offerter redirecteras till / via LEGACY_REDIRECTS nedan */}
         {/* Legacy-alias redirects – källa till sanning: src/lib/seoRedirects.ts */}
         {LEGACY_REDIRECTS.map(redirect => <Route key={redirect.from} path={redirect.from} element={<Navigate to={redirect.to} replace />} />)}
         <Route path="/guider/:slug" element={<LegacyAliasRedirect />} />

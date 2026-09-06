@@ -28,6 +28,9 @@ export const LEGACY_REDIRECTS: readonly LegacyRedirect[] = [
   // Duplicate landing page: rendered the same component as /for-byraer.
   { from: '/landing/byra', to: '/for-byraer', reason: 'dubblett av /for-byraer (samma komponent)' },
 
+  // Ads landing that duplicated the homepage; keep Ads destinations unchanged.
+  { from: '/jamfor-offerter', to: '/', reason: 'dubblett av startsidan' },
+
   // Old content-namespace names.
   { from: '/guider', to: '/artiklar', reason: 'gammalt namn på artikelindex' },
   { from: '/kunskapsbank', to: '/artiklar', reason: 'gammalt namn på artikelindex' },
