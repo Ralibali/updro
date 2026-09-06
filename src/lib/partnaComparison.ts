@@ -1,4 +1,4 @@
-export const PARTNA_VERIFIED_DATE = '2026-08-14'
+export const PARTNA_VERIFIED_DATE = '2026-09-06'
 
 export const PARTNA_FACTS = {
   payAsYouGo: 490,

@@ -31,7 +31,7 @@ const VerificationChecklist = ({ isVerified, hasFskatt, creditCheckPassed, compl
           Godkänd kredithistorik & skuldfrihet
         </div>
       )}
-      {completedProjects && completedProjects > 0 && (
+      {(completedProjects ?? 0) > 0 && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <CheckCircle size={14} className="text-muted-foreground shrink-0" />
           {completedProjects} genomförda uppdrag via Updro

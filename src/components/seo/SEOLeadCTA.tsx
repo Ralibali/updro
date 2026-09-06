@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, Shield, Star, Clock } from 'lucide-react'
+import { ArrowRight, FileCheck, Users, UserRound } from 'lucide-react'
+import { seoLeadPath } from '@/lib/seoLeadPath'
 
-const SEOLeadCTA = ({ categoryName }: { categoryName: string }) => (
+const SEOLeadCTA = ({ categoryName, category }: { categoryName: string; category?: string }) => (
   <section className="bg-primary/5 border-y">
     <div className="container py-12 md:py-16">
       <div className="max-w-2xl mx-auto text-center">
@@ -10,17 +11,17 @@ const SEOLeadCTA = ({ categoryName }: { categoryName: string }) => (
           Jämför offerter för {categoryName.toLowerCase()} – kostnadsfritt
         </h2>
         <p className="mt-3 text-muted-foreground text-lg">
-          Beskriv ditt projekt och få offerter från kvalitetssäkrade byråer – oftast inom 24 timmar. Helt gratis och utan förpliktelser.
+          Beskriv behovet en gång. Updro granskar briefen och högst tre relevanta byråer kan lämna offert. Du väljer själv om du vill gå vidare.
         </p>
-        <Link to="/publicera">
+        <Link to={seoLeadPath(category || categoryName)}>
           <Button size="lg" className="mt-6 rounded-xl shadow-blue text-base px-8">
-            Kom igång – 100% gratis <ArrowRight className="ml-2 h-4 w-4" />
+            Beskriv projektet gratis <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </Link>
         <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1.5"><Shield className="h-4 w-4 text-primary" /> Kvalitetssäkrade byråer</span>
-          <span className="flex items-center gap-1.5"><Star className="h-4 w-4 text-brand-amber" /> Högst tre byråer per uppdrag</span>
-          <span className="flex items-center gap-1.5"><Clock className="h-4 w-4 text-accent" /> Svar oftast inom 24h</span>
+          <span className="flex items-center gap-1.5"><FileCheck className="h-4 w-4 text-primary" /> Briefen granskas</span>
+          <span className="flex items-center gap-1.5"><Users className="h-4 w-4 text-brand-amber" /> Högst tre byråer</span>
+          <span className="flex items-center gap-1.5"><UserRound className="h-4 w-4 text-accent" /> Inget konto krävs för att börja</span>
         </div>
       </div>
     </div>

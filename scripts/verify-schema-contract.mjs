@@ -15,6 +15,7 @@ const REQUIRED_TABLES = [
 ]
 
 const REQUIRED_RPCS = [
+  'get_public_agencies',
   'save_project_attribution',
   'report_project_outcome',
   'request_lead_refund',

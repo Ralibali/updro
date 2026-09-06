@@ -6,6 +6,7 @@ import {
   getIndexableSeoRoutes,
   getNoindexSeoRoutes,
   renderStaticHtml,
+  generateSitemapXml,
   type StaticSeoRoute,
 } from './seoStatic'
 import { FOOTER_CITY_LINKS, FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from './footerLinks'
@@ -36,6 +37,33 @@ const route = (path: string) => {
 const countMatches = (html: string, regex: RegExp) => (html.match(regex) || []).length
 const internalLinks = (html: string) => countMatches(html, /<a\s[^>]*href="\/(?!\/)/gi)
 const render = (path: string) => renderStaticHtml(TEMPLATE, route(path))
+
+describe('substantive crawlable content', () => {
+  it('renders the reviewed SEO buying guide and source before JavaScript runs', () => {
+    const html = render('/basta-seo-byran')
+    expect(html).toContain('Sex frågor som gör offerterna jämförbara')
+    expect(html).toContain('<table>')
+    expect(html).toContain('https://developers.google.com/search/docs/fundamentals/do-i-need-seo')
+    expect(html).not.toContain('Topp 10')
+    expect(html).toContain('/publicera?kategori=SEO')
+  })
+  it('includes actual service and local guide sections', () => {
+    for (const path of ['/digital-marknadsforing', '/byraer/stockholm/ehandel']) {
+      const page = route(path)
+      expect(page.sections?.length).toBeGreaterThan(0)
+      expect(render(path)).toContain(page.sections![0].heading)
+    }
+  })
+  it('escapes HTML in body content and only assigns known modification dates', () => {
+    const html = renderStaticHtml(TEMPLATE, { ...route('/'), sections: [{ heading: 'A <script>', content: '<img src=x onerror=alert(1)>' }] })
+    expect(html).toContain('&lt;img')
+    expect(html).not.toContain('<img src=x')
+    const sitemap = generateSitemapXml()
+    const homeEntry = sitemap.split('<url><loc>https://updro.se/</loc>')[1].split('</url>')[0]
+    expect(homeEntry).not.toContain('<lastmod>')
+    expect(sitemap).toContain('<lastmod>2026-09-06</lastmod>')
+  })
+})
 
 describe('seoStatic routes', () => {
   it('har unika paths', () => {

@@ -12,13 +12,16 @@ import RatingDisplay from '@/components/shared/RatingDisplay'
 import VerificationChecklist from '@/components/shared/VerificationChecklist'
 import { CATEGORY_PRICE_MAP } from '@/lib/categoryPriceMap'
 import { setSEOMeta, setJsonLd } from '@/lib/seoHelpers'
+import DirectoryStatus from '@/components/shared/DirectoryStatus'
+import { seoLeadPath } from '@/lib/seoLeadPath'
 import NotFound from '@/pages/NotFound'
 
 const AgencyProfilePage = () => {
   const { slug } = useParams()
   const [agency, setAgency] = useState<any>(null)
   const [profile, setProfile] = useState<any>(null)
-  const [reviews, setReviews] = useState<any[]>([])
+  const [error, setError] = useState(false)
+  const [attempt, setAttempt] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -26,22 +29,24 @@ const AgencyProfilePage = () => {
     let cancelled = false
     const fetchAgency = async () => {
       setLoading(true)
-      const { data: sp } = await supabase.from('supplier_profiles').select('*, profiles!supplier_profiles_id_fkey(*)').eq('slug', slug).maybeSingle()
-      if (cancelled) return
-      if (sp) {
-        setAgency(sp)
-        setProfile(sp.profiles)
-        const { data: revs } = await supabase.from('reviews').select('*, profiles!reviews_buyer_id_fkey(full_name, company_name)').eq('supplier_id', sp.id).order('created_at', { ascending: false })
-        if (!cancelled && revs) setReviews(revs)
-      } else {
-        setAgency(null)
-        setProfile(null)
+      setError(false)
+      setAgency(null)
+      setProfile(null)
+      try {
+        const { data, error: queryError } = await supabase.rpc('get_public_agencies').eq('slug', slug).maybeSingle()
+        if (cancelled) return
+        if (queryError) throw queryError
+        setAgency(data)
+        setProfile(data)
+      } catch {
+        if (!cancelled) setError(true)
+      } finally {
+        if (!cancelled) setLoading(false)
       }
-      if (!cancelled) setLoading(false)
     }
     fetchAgency()
     return () => { cancelled = true }
-  }, [slug])
+  }, [slug, attempt])
 
   useEffect(() => {
     if (agency && profile) {
@@ -49,7 +54,7 @@ const AgencyProfilePage = () => {
       const url = `https://updro.se/byra/${slug}`
       setSEOMeta({
         title: `${name} – Byråprofil | Updro`,
-        description: `Se ${name}s profil på Updro. Betyg, tjänster, portfölj och kontaktuppgifter.`,
+        description: `Se ${name}s profil på Updro. Tjänster, presentation och portfölj. Beskriv ditt projekt och jämför offerter.`,
         canonical: url,
         ogType: 'profile',
       })
@@ -89,6 +94,7 @@ const AgencyProfilePage = () => {
     </div>
   )
 
+  if (error) return <div className="min-h-screen flex flex-col"><Navbar /><main className="container flex-1 py-12"><DirectoryStatus loading={false} error retry={() => setAttempt(value => value + 1)} /></main><Footer /></div>
   if (!agency) return <NotFound />
 
   return (
@@ -108,9 +114,9 @@ const AgencyProfilePage = () => {
                 (profile?.company_name || profile?.full_name || '?')[0]
               )}
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="font-display text-2xl font-bold">{profile?.company_name || profile?.full_name}</h1>
+                <h1 className="font-display text-2xl font-bold break-words">{profile?.company_name || profile?.full_name}</h1>
                 {agency.is_verified && <CheckCircle className="h-5 w-5 text-primary" />}
               </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
@@ -175,7 +181,7 @@ const AgencyProfilePage = () => {
           <Tabs defaultValue="overview">
             <TabsList>
               <TabsTrigger value="overview">Översikt</TabsTrigger>
-              <TabsTrigger value="reviews">Omdömen ({reviews.length})</TabsTrigger>
+              <TabsTrigger value="reviews">Verifierade omdömen ({agency.review_count})</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="mt-6">
@@ -281,26 +287,11 @@ const AgencyProfilePage = () => {
             </TabsContent>
 
             <TabsContent value="reviews" className="mt-6">
-              {reviews.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">Inga omdömen ännu.</p>
-              ) : (
-                <div className="space-y-4">
-                  {reviews.map(r => (
-                    <div key={r.id} className="bg-card rounded-xl border p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex gap-0.5">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={`h-3.5 w-3.5 ${i < r.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
-                          ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground">{timeAgo(r.created_at)}</span>
-                      </div>
-                      {r.comment && <p className="text-sm">{r.comment}</p>}
-                      <p className="text-xs text-muted-foreground mt-2">– {r.profiles?.company_name || r.profiles?.full_name || 'Anonym'}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="rounded-xl border bg-card p-6">
+                <h2 className="font-display text-xl font-semibold">Omdömen från uppdrag via Updro</h2>
+                <p className="mt-3 text-muted-foreground">{agency.review_count > 0 ? `${agency.review_count} omdömen med snittbetyg ${Number(agency.avg_rating).toFixed(1)} av 5.` : 'Det finns ännu inga omdömen kopplade till slutförda uppdrag för den här byrån.'}</p>
+                <p className="mt-3 text-sm text-muted-foreground">Här räknas bara omdömen från beställare med ett slutfört projekt och en accepterad offert från byrån. Be även om referenser och arbetsprover som passar ditt behov.</p>
+              </div>
             </TabsContent>
           </Tabs>
         </div>
