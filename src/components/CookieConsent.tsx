@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { COOKIE_CONSENT_KEY, createConsentState, parseCookieConsent, serializeCookieConsent, type CookieConsentState } from '@/lib/cookieConsent'
+import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from '@/lib/browserStorage'
 
 const GA_ID = 'G-C0XMZG0KDQ'
 // Ads-kontot kan bytas via VITE_GOOGLE_ADS_ID utan kodändring (fallback = nuvarande konto)
@@ -53,17 +54,17 @@ const CookieConsent = () => {
   useEffect(() => {
     const gtag = ensureDataLayer()
     gtag?.('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500 })
-    const stored = parseCookieConsent(localStorage.getItem(COOKIE_CONSENT_KEY))
-    if (!stored) { localStorage.removeItem(COOKIE_CONSENT_KEY); setVisible(true); return }
+    const stored = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
+    if (!stored) { removeBrowserStorage('localStorage', COOKIE_CONSENT_KEY); setVisible(true); return }
     setAnalytics(stored.analytics)
     setMarketing(stored.marketing)
-    localStorage.setItem(COOKIE_CONSENT_KEY, serializeCookieConsent(stored))
+    writeBrowserStorage('localStorage', COOKIE_CONSENT_KEY, serializeCookieConsent(stored))
     applyConsent(stored)
   }, [])
 
   useEffect(() => {
     const openSettings = () => {
-      const stored = parseCookieConsent(localStorage.getItem(COOKIE_CONSENT_KEY))
+      const stored = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
       setAnalytics(stored?.analytics ?? false)
       setMarketing(stored?.marketing ?? false)
       setShowDetails(true)
@@ -75,7 +76,7 @@ const CookieConsent = () => {
 
   const persist = (nextAnalytics: boolean, nextMarketing: boolean) => {
     const state = createConsentState(nextAnalytics, nextMarketing)
-    localStorage.setItem(COOKIE_CONSENT_KEY, serializeCookieConsent(state))
+    writeBrowserStorage('localStorage', COOKIE_CONSENT_KEY, serializeCookieConsent(state))
     setAnalytics(nextAnalytics); setMarketing(nextMarketing); applyConsent(state); setVisible(false); setShowDetails(false)
   }
 

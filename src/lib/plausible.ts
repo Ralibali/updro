@@ -196,8 +196,10 @@ export const trackPlausiblePageview = (path: string): boolean => {
   const plausible = getPlausible()
   if (!plausible) return false
   const url = buildPlausiblePageviewUrl(window.location.origin, path, window.location.search)
-  plausible('pageview', { u: url })
-  return true
+  try {
+    plausible('pageview', { u: url })
+    return true
+  } catch { return false }
 }
 
 export const trackPlausibleEvent = (name: PlausibleEventName, props?: PlausibleProps): boolean => {
@@ -205,6 +207,8 @@ export const trackPlausibleEvent = (name: PlausibleEventName, props?: PlausibleP
   const plausible = getPlausible()
   if (!plausible) return false
   const safeProps = sanitizePlausibleProps(props)
-  plausible(name, safeProps ? { props: safeProps } : undefined)
-  return true
+  try {
+    plausible(name, safeProps ? { props: safeProps } : undefined)
+    return true
+  } catch { return false }
 }

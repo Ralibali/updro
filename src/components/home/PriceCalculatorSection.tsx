@@ -24,7 +24,7 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
   const levelCopy = guide?.levels.find(levelItem => levelItem.level === level)
 
   const briefSeed = `Jag behöver hjälp med ${projectType.query.toLowerCase()} (${LEVEL_LABELS[level].toLowerCase()} nivå). `
-  const publishUrl = `/publicera?beskrivning=${encodeURIComponent(briefSeed)}`
+  const publishUrl = `/publicera?kategori=${encodeURIComponent(projectType.category)}&beskrivning=${encodeURIComponent(briefSeed)}`
 
   return (
     <section className="py-16 md:py-20 bg-secondary border-b-2 border-foreground" aria-labelledby="priskalkylator-rubrik">

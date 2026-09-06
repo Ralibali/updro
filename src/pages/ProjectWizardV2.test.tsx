@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { PROJECT_DESCRIPTION_EXAMPLE } from '@/lib/wizardPrefill'
 
 const { trackLeadSubmitted, trackUppdragDetailsCompleted, invokeMock } = vi.hoisted(() => ({
@@ -55,6 +55,8 @@ vi.mock('@/integrations/supabase/client', () => ({
 }))
 
 import ProjectWizardV2 from './ProjectWizardV2'
+
+afterEach(() => vi.restoreAllMocks())
 
 const renderWizard = (path: string) =>
   render(
@@ -279,5 +281,74 @@ describe('ProjectWizardV2 step 2 submit gate', () => {
       })
     })
     expect(screen.getByText('Ditt uppdrag är mottaget')).toBeInTheDocument()
+  })
+})
+
+
+describe('ProjectWizardV2 recovery and mobile navigation', () => {
+  beforeEach(() => {
+    invokeMock.mockReset()
+    trackLeadSubmitted.mockReset()
+    localStorage.clear()
+  })
+
+  const prepareSubmission = () => {
+    renderWizard('/publicera/webbutveckling')
+    goToStep2()
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
+  }
+
+  it('accepts exactly ten trimmed characters and focuses each step heading', () => {
+    renderWizard('/publicera/webbutveckling')
+    fireEvent.change(screen.getByLabelText(/Beskriv uppdraget/), { target: { value: '  Ny hemsida  ' } })
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveAttribute('aria-invalid', 'false')
+    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
+    expect(screen.getByRole('heading', { name: 'Sista detaljerna' })).toHaveFocus()
+    fireEvent.click(screen.getByRole('button', { name: /Tillbaka/ }))
+    expect(screen.getByRole('heading', { name: 'Vad behöver du hjälp med?' })).toHaveFocus()
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('  Ny hemsida  ')
+  })
+
+  it('shows a saved guest lead with email failure honestly', async () => {
+    invokeMock.mockResolvedValueOnce({ data: { success: true, project_id: 'saved-123', email_sent: false }, error: null })
+    prepareSubmission()
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+    expect(await screen.findByText(/bekräftelsemejlet kunde inte skickas/)).toBeInTheDocument()
+    expect(screen.queryByText('Förfrågan är sparad i ditt konto.')).not.toBeInTheDocument()
+    expect(trackLeadSubmitted).toHaveBeenCalledTimes(1)
+  })
+
+  it('submits successfully when both reads and writes to storage fail', async () => {
+    invokeMock.mockResolvedValueOnce({ data: { success: true, project_id: 'saved-123', email_sent: true }, error: null })
+    prepareSubmission()
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('blocked') })
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota') })
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+    expect(await screen.findByText('Ditt uppdrag är mottaget')).toBeInTheDocument()
+    expect(invokeMock).toHaveBeenCalledTimes(1)
+    expect(trackLeadSubmitted).toHaveBeenCalledTimes(1)
+  })
+
+  it('preserves data and allows retry after a failed request without recording a conversion', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    invokeMock.mockResolvedValueOnce({ data: null, error: { message: 'Tillfälligt fel' } })
+    prepareSubmission()
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Tillfälligt fel')
+    expect(screen.getByLabelText(/E-post/)).toHaveValue('anna@example.com')
+    expect(trackLeadSubmitted).not.toHaveBeenCalled()
+    invokeMock.mockResolvedValueOnce({ data: { success: true, project_id: 'retry-123', email_sent: true }, error: null })
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+    expect(await screen.findByText('Ditt uppdrag är mottaget')).toBeInTheDocument()
+    expect(trackLeadSubmitted).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not count a success response without a persisted project as a conversion', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    invokeMock.mockResolvedValueOnce({ data: { success: true }, error: null })
+    prepareSubmission()
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('kunde inte bekräfta')
+    expect(trackLeadSubmitted).not.toHaveBeenCalled()
   })
 })

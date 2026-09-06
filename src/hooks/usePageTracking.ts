@@ -3,14 +3,16 @@ import { useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import { trackPageView } from '@/lib/analytics'
 import { captureFromLocation } from '@/lib/attribution'
+import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 
+let fallbackSessionId: string | undefined
 function getSessionId() {
-  let id = sessionStorage.getItem('_sid')
+  let id = readBrowserStorage('sessionStorage', '_sid') || fallbackSessionId
   if (!id) {
     id = typeof crypto !== 'undefined' && 'randomUUID' in crypto
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}`
-    sessionStorage.setItem('_sid', id)
+    if (!writeBrowserStorage('sessionStorage', '_sid', id)) fallbackSessionId = id
   }
   return id
 }
@@ -76,15 +78,18 @@ export function usePageTracking() {
 }
 
 /** Track a click event. Call from onClick handlers on important CTAs. */
-export function trackClick(eventName: string, elementText?: string, metadata?: Record<string, any>) {
-  const sessionId = sessionStorage.getItem('_sid') || getSessionId()
-  supabase.from('click_events').insert({
-    session_id: sessionId,
-    event_name: eventName,
-    element_text: elementText || null,
-    path: window.location.pathname,
-    metadata: metadata || {},
-  }).then(({ error }) => {
+export async function trackClick(eventName: string, elementText?: string, metadata?: Record<string, any>) {
+  try {
+    const sessionId = getSessionId()
+    const { error } = await supabase.from('click_events').insert({
+      session_id: sessionId,
+      event_name: eventName,
+      element_text: elementText || null,
+      path: window.location.pathname,
+      metadata: metadata || {},
+    })
     if (error && import.meta.env.DEV) console.warn('Click tracking failed', error)
-  })
+  } catch (error) {
+    if (import.meta.env.DEV) console.warn('Click tracking unavailable', error)
+  }
 }

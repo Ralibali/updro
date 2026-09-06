@@ -90,13 +90,13 @@ export const PRICE_MATRIX: Record<string, Record<LevelKey, PriceCell>> = {
 
 /** Kalkylatorns pill-val på landningssidan. `id` matchar nycklar i PRICE_MATRIX. */
 export const PROJECT_TYPES = [
-  { id: 'hemsida', label: 'Ny hemsida', query: 'Ny hemsida', guideSlug: 'hemsida' },
-  { id: 'ehandel', label: 'E-handel', query: 'E-handel', guideSlug: 'e-handel' },
-  { id: 'seo', label: 'SEO', query: 'SEO', guideSlug: 'seo' },
-  { id: 'ads', label: 'Google Ads', query: 'Google Ads', guideSlug: 'google-ads' },
-  { id: 'app', label: 'Apputveckling', query: 'Apputveckling', guideSlug: 'apputveckling' },
-  { id: 'design', label: 'Design & varumärke', query: 'Design & varumärke', guideSlug: 'design' },
-  { id: 'ai', label: 'AI-utveckling', query: 'AI-utveckling', guideSlug: 'ai-utveckling' },
+  { id: 'hemsida', category: 'Webbutveckling', label: 'Ny hemsida', query: 'Ny hemsida', guideSlug: 'hemsida' },
+  { id: 'ehandel', category: 'E-handel', label: 'E-handel', query: 'E-handel', guideSlug: 'e-handel' },
+  { id: 'seo', category: 'SEO', label: 'SEO', query: 'SEO', guideSlug: 'seo' },
+  { id: 'ads', category: 'Digital marknadsföring', label: 'Google Ads', query: 'Google Ads', guideSlug: 'google-ads' },
+  { id: 'app', category: 'App-utveckling', label: 'Apputveckling', query: 'Apputveckling', guideSlug: 'apputveckling' },
+  { id: 'design', category: 'Grafisk design/UX', label: 'Design & varumärke', query: 'Design & varumärke', guideSlug: 'design' },
+  { id: 'ai', category: 'AI-utveckling', label: 'AI-utveckling', query: 'AI-utveckling', guideSlug: 'ai-utveckling' },
 ] as const
 
 export type LevelCopy = { level: LevelKey; label: string; includes: string }
