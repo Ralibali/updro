@@ -11,10 +11,6 @@ import { HOME_TITLE, HOME_DESCRIPTION, HOME_CANONICAL, HOME_FAQ } from '@/lib/ho
 
 const ExampleOffersSection = lazy(() => import('@/components/home/ExampleOffersSection'))
 const PriceCalculatorSection = lazy(() => import('@/components/home/PriceCalculatorSection'))
-const AgencyTrustSection = lazy(() => import('@/components/home/AgencyTrustSection'))
-const TwoSidedSection = lazy(() => import('@/components/home/TwoSidedSection'))
-const ComparisonSection = lazy(() => import('@/components/home/ComparisonSection'))
-const StatsSection = lazy(() => import('@/components/home/StatsSection'))
 const FAQSection = lazy(() => import('@/components/home/FAQSection'))
 const CTASection = lazy(() => import('@/components/home/CTASection'))
 
@@ -82,10 +78,6 @@ const BelowFold = () => (
   <Suspense fallback={null}>
     <ExampleOffersSection />
     <PriceCalculatorSection />
-    <ComparisonSection />
-    <AgencyTrustSection />
-    <TwoSidedSection />
-    <StatsSection />
     <FAQSection />
     <CTASection />
   </Suspense>
@@ -119,24 +111,6 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <TrustStripSection />
-        <section className="container py-10 md:py-14">
-          <div className="grid gap-6 border-y-2 border-foreground py-8 md:grid-cols-[0.85fr_1.15fr] md:items-start md:gap-12 md:py-10">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Varför Updro?</p>
-              <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-foreground md:text-4xl">
-                Varför inte bara googla fram en byrå?
-              </h2>
-            </div>
-            <div>
-              <p className="text-base leading-relaxed text-foreground/85 md:text-lg">
-                Det kan du. Men då behöver du själv hitta kandidater, förklara samma projekt flera gånger och försöka göra helt olika offerter jämförbara. Med Updro beskriver du behovet en gång, briefen granskas och högst tre relevanta byråer får möjlighet att lämna offert.
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                Resultatet är inte fler svar – utan ett tydligare beslutsunderlag med pris, tidsplan och omfattning samlat på ett ställe.
-              </p>
-            </div>
-          </div>
-        </section>
         <CategoriesSection />
         <HowItWorksSection />
         <BelowFold />

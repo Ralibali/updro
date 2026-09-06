@@ -1,4 +1,5 @@
 import { getStoredAttribution } from '@/lib/attribution'
+import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 import {
   isTrackablePath,
   projectValueSegment,
@@ -33,7 +34,7 @@ const getGtag = () => {
  * Google scripts are loaded after the visitor has accepted analytics cookies.
  */
 export const trackAnalyticsEvent = (eventName: string, params: AnalyticsParams = {}) => {
-  getGtag()?.('event', eventName, params)
+  try { getGtag()?.('event', eventName, params) } catch { /* Analytics is optional. */ }
 }
 
 export const trackPageView = (path: string) => {
@@ -77,12 +78,12 @@ export const trackLeadStarted = (source: string) => {
 }
 
 /** Dedupes the given event once per browser session using sessionStorage. */
+const storageUnavailableEvents = new Set<string>()
 export const trackOnceInSession = (key: string, fn: () => void): boolean => {
-  if (typeof sessionStorage === 'undefined') { fn(); return true }
   const stamp = `updro:evt:${key}`
-  if (sessionStorage.getItem(stamp)) return false
-  sessionStorage.setItem(stamp, '1')
-  fn()
+  if (readBrowserStorage('sessionStorage', stamp) || storageUnavailableEvents.has(stamp)) return false
+  if (!writeBrowserStorage('sessionStorage', stamp, '1')) storageUnavailableEvents.add(stamp)
+  try { fn() } catch { /* A failed tracker must not block the user's next step. */ }
   return true
 }
 
@@ -109,7 +110,7 @@ export const trackLeadSubmitted = ({
   // Optional direct Google Ads conversion. Configure the complete value,
   // for example AW-123456789/AbCdEfGhIjk, as VITE_GOOGLE_ADS_LEAD_SEND_TO.
   if (adsLeadDestination) {
-    getGtag()?.('event', 'conversion', {
+    trackAnalyticsEvent('conversion', {
       send_to: adsLeadDestination,
     })
   }

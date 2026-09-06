@@ -122,8 +122,8 @@ export const parseStoredTouch = (raw: string | null): Touch | null => {
 }
 
 const readStored = (key: string): Touch | null => {
-  if (typeof localStorage === 'undefined') return null
   try {
+    if (typeof localStorage === 'undefined') return null
     return parseStoredTouch(localStorage.getItem(key))
   } catch {
     return null
@@ -131,8 +131,8 @@ const readStored = (key: string): Touch | null => {
 }
 
 const writeStored = (key: string, touch: Touch): void => {
-  if (typeof localStorage === 'undefined') return
   try {
+    if (typeof localStorage === 'undefined') return
     localStorage.setItem(key, JSON.stringify(touch))
   } catch {
     /* ignore quota errors */

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -16,6 +16,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { trackCategorySelected, trackLeadStarted, trackLeadSubmitted, trackOnceInSession, trackUppdragDetailsCompleted } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { sanitizePrefill } from '@/lib/prefill'
+import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
 import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
@@ -46,6 +47,11 @@ const ProjectWizardV2 = () => {
   const [website, setWebsite] = useState('')
   const [confirmationEmailSent, setConfirmationEmailSent] = useState(false)
   const [submittedProjectId, setSubmittedProjectId] = useState('')
+  const stepHeading = useRef<HTMLHeadingElement>(null)
+  const previousStep = useRef(step)
+  const submissionInFlight = useRef(false)
+  const lastSubmissionAt = useRef(0)
+  const [submissionError, setSubmissionError] = useState('')
   const [form, setForm] = useState({
     category: initialCategory as Category | '',
     // Hoppa över auto-titeln när förifyllnaden kom från en olöst platshållare
@@ -71,6 +77,13 @@ const ProjectWizardV2 = () => {
   }, [])
 
   const totalSteps = 2
+  useEffect(() => {
+    if (previousStep.current === step) return
+    previousStep.current = step
+    stepHeading.current?.focus({ preventScroll: true })
+    stepHeading.current?.scrollIntoView?.({ block: 'start', behavior: 'instant' })
+  }, [step])
+
   const descriptionLength = form.description.trim().length
   const descriptionReady = descriptionLength >= 10
   const detailsReady = Boolean(form.category && form.budget_range && form.start_time)
@@ -125,7 +138,7 @@ const ProjectWizardV2 = () => {
   })()
 
   const publish = async () => {
-    if (loading) return
+    if (submissionInFlight.current) return
     if (!canSubmit) {
       toast.error(submitBlockReason || 'Fyll i alla obligatoriska fält.')
       return
@@ -136,6 +149,8 @@ const ProjectWizardV2 = () => {
       ? form.title.trim()
       : inferTitle(description) || `${form.category} – nytt uppdrag`
     setLoading(true)
+    submissionInFlight.current = true
+    setSubmissionError('')
 
     try {
       const attribution = getStoredAttribution()
@@ -175,7 +190,7 @@ const ProjectWizardV2 = () => {
       }
 
       const email = form.email.trim().toLowerCase()
-      const lastSubmission = Number(localStorage.getItem(SUBMISSION_KEY) || 0)
+      const lastSubmission = Math.max(lastSubmissionAt.current, Number(readBrowserStorage('localStorage', SUBMISSION_KEY) || 0) || 0)
       if (Date.now() - lastSubmission < 45_000) throw new Error('Vänta en liten stund innan du skickar ett nytt uppdrag.')
 
       const { data, error } = await supabase.functions.invoke('submit-guest-lead', {
@@ -196,8 +211,11 @@ const ProjectWizardV2 = () => {
         },
       })
       if (error || data?.error) throw new Error(data?.error || error?.message || 'Kunde inte skicka uppdraget.')
+      if (!data?.project_id) throw new Error('Vi kunde inte bekräfta att uppdraget sparades. Försök igen eller kontakta support.')
 
-      localStorage.setItem(SUBMISSION_KEY, String(Date.now()))
+      // The server's rate limit remains authoritative when storage is unavailable.
+      lastSubmissionAt.current = Date.now()
+      writeBrowserStorage('localStorage', SUBMISSION_KEY, String(lastSubmissionAt.current))
       setConfirmationEmailSent(Boolean(data?.email_sent))
       setSubmittedProjectId(String(data?.project_id || ''))
       trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'guest', budgetRange: form.budget_range || undefined })
@@ -205,9 +223,12 @@ const ProjectWizardV2 = () => {
       setStep(3)
     } catch (error: any) {
       console.error('Lead submission error:', error)
-      toast.error(error?.message || 'Kunde inte skicka in uppdraget. Försök igen.')
+      const message = error?.message || 'Kunde inte skicka in uppdraget. Försök igen.'
+      setSubmissionError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
+      submissionInFlight.current = false
     }
   }
 
@@ -239,23 +260,22 @@ const ProjectWizardV2 = () => {
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <h1 className="font-display text-2xl font-bold">Vad behöver du hjälp med?</h1>
+                <h1 ref={stepHeading} tabIndex={-1} className="font-display text-2xl font-bold scroll-mt-24 outline-none">Vad behöver du hjälp med?</h1>
                 <p className="mt-2 text-sm text-muted-foreground">Börja med att beskriva behovet med egna ord. Ingen registrering krävs.</p>
               </div>
               <div>
                 <Label htmlFor="project-description">Beskriv uppdraget *</Label>
                 <Textarea
                   id="project-description"
-                  autoFocus
                   value={form.description}
                   onChange={event => setForm(previous => ({ ...previous, description: event.target.value }))}
                   placeholder={PROJECT_DESCRIPTION_EXAMPLE}
                   maxLength={5000}
                   className="rounded-xl mt-1 min-h-[180px]"
                   aria-describedby="project-description-help"
-                  aria-invalid={form.description.length > 0 && form.description.trim().length < 20}
+                  aria-invalid={descriptionLength > 0 && !descriptionReady}
                 />
-                <DescriptionHelp length={form.description.length} />
+                <DescriptionHelp length={descriptionLength} />
               </div>
               <div>
                 <Label htmlFor="project-title">Rubrik (valfritt)</Label>
@@ -285,7 +305,7 @@ const ProjectWizardV2 = () => {
           {step === 2 && (
             <div className="space-y-6">
               <div>
-                <h2 className="font-display text-2xl font-bold">Sista detaljerna</h2>
+                <h1 ref={stepHeading} tabIndex={-1} className="font-display text-2xl font-bold scroll-mt-24 outline-none">Sista detaljerna</h1>
                 <p className="mt-2 text-sm text-muted-foreground">{isAuthenticated ? 'Bekräfta budget och start så skickar vi uppdraget för granskning.' : 'Bekräfta budget och start – och vart byråerna når dig.'}</p>
               </div>
 
@@ -343,6 +363,7 @@ const ProjectWizardV2 = () => {
               </label>
 
               <div className="space-y-2">
+                {submissionError && <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{submissionError} Dina uppgifter finns kvar här.</p>}
                 <div className="flex gap-3">
                   <Button type="button" variant="outline" onClick={() => setStep(1)}><ArrowLeft className="mr-2 h-4 w-4" />Tillbaka</Button>
                   <Button type="button" onClick={publish} disabled={loading || !canSubmit} className="flex-1 bg-accent hover:bg-brand-mint-hover text-accent-foreground">
@@ -358,11 +379,13 @@ const ProjectWizardV2 = () => {
             <div className="space-y-6 py-8" aria-live="polite">
               <div className="text-center">
                 <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center"><CheckCircle2 className="h-8 w-8 text-emerald-600" /></div>
-                <h2 className="mt-4 font-display text-2xl font-bold">Ditt uppdrag är mottaget</h2>
+                <h1 ref={stepHeading} tabIndex={-1} className="mt-4 font-display text-2xl font-bold scroll-mt-24 outline-none">Ditt uppdrag är mottaget</h1>
                 <p className="mt-2 text-muted-foreground max-w-md mx-auto">
                   {confirmationEmailSent
                     ? <>En bekräftelse har skickats till <strong className="text-foreground">{form.email.trim().toLowerCase()}</strong>.</>
-                    : <>Förfrågan är sparad i ditt konto.</>}
+                    : isAuthenticated
+                      ? <>Förfrågan är sparad i ditt konto.</>
+                      : <>Förfrågan är sparad, men bekräftelsemejlet kunde inte skickas. Spara referensen nedan. Du behöver inte skicka uppdraget igen.</>}
                 </p>
               </div>
 

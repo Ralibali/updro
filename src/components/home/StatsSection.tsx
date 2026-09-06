@@ -26,7 +26,7 @@ const CountUp = ({ target, suffix, label }: { target: number; suffix: string; la
   return (
     <div ref={ref}>
       <p className="font-display text-5xl md:text-6xl font-bold tracking-tight text-foreground">
-        {value.toLocaleString('sv-SE')}{suffix}
+        {(reduce ? target : value).toLocaleString('sv-SE')}{suffix}
       </p>
       <p className="mt-2 text-sm text-muted-foreground">{label}</p>
     </div>
