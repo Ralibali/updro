@@ -2,12 +2,13 @@ import { Suspense } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import DashboardLayout from '@/components/DashboardLayout'
 import LeadGuaranteeCard from '@/components/supplier/LeadGuaranteeCard'
-import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard, Gift } from 'lucide-react'
+import { Home, Search, FileText, MessageCircle, UserCircle, CreditCard, Gift, FolderOpen } from 'lucide-react'
 
 const navItems = [
   { label: 'Översikt', href: '/dashboard/supplier', icon: Home },
   { label: 'Uppdrag', href: '/dashboard/supplier/uppdrag', icon: Search },
   { label: 'Offerter', href: '/dashboard/supplier/offerter', icon: FileText },
+  { label: 'Kundportaler', href: '/dashboard/supplier/kundportal', icon: FolderOpen },
   { label: 'Meddelanden', href: '/dashboard/supplier/chatt', icon: MessageCircle },
   { label: 'Profil', href: '/dashboard/supplier/profil', icon: UserCircle },
   { label: 'Fakturering', href: '/dashboard/supplier/fakturering', icon: CreditCard },

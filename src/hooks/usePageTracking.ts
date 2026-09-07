@@ -50,7 +50,7 @@ export function usePageTracking() {
     // area still records the touch, and skips writes when no UTM/referrer signal.
     captureFromLocation({ search: location.search, pathname: location.pathname })
     // Skip admin and dashboard routes from tracking
-    if (path.startsWith('/admin') || path.startsWith('/dashboard')) return
+    if (path === '/kundportal' || path.startsWith('/admin') || path.startsWith('/dashboard')) return
     // Don't double-track same path
     if (path === lastPath.current) return
     lastPath.current = path
