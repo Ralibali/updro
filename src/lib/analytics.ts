@@ -1,5 +1,6 @@
 import { getStoredAttribution } from '@/lib/attribution'
 import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
+import { COOKIE_CONSENT_KEY, parseCookieConsent } from '@/lib/cookieConsent'
 import {
   isTrackablePath,
   projectValueSegment,
@@ -22,7 +23,10 @@ declare global {
   }
 }
 
+// Existing "Begär offert" action, verified in the Updro Ads account on 2026-09-08.
+// Keep the explicit override for previews or a future account migration.
 const adsLeadDestination = (import.meta.env.VITE_GOOGLE_ADS_LEAD_SEND_TO as string | undefined)?.trim()
+  || 'AW-10941540384/FJsSCP7vrd0cEKDQquEo'
 
 const getGtag = () => {
   if (typeof window === 'undefined') return null
@@ -30,8 +34,8 @@ const getGtag = () => {
 }
 
 /**
- * Events are queued in dataLayer before consent and are only transmitted when
- * Google scripts are loaded after the visitor has accepted analytics cookies.
+ * Google Consent Mode controls storage and consent signals. Callers must check
+ * consent before sending events that must not be queued before consent.
  */
 export const trackAnalyticsEvent = (eventName: string, params: AnalyticsParams = {}) => {
   try { getGtag()?.('event', eventName, params) } catch { /* Analytics is optional. */ }
@@ -107,9 +111,10 @@ export const trackLeadSubmitted = ({
   // GA4 event: mark "generate_lead" as a key event in GA4 or import it into Ads.
   trackAnalyticsEvent('generate_lead', params)
 
-  // Optional direct Google Ads conversion. Configure the complete value,
-  // for example AW-123456789/AbCdEfGhIjk, as VITE_GOOGLE_ADS_LEAD_SEND_TO.
-  if (adsLeadDestination) {
+  // Only completed submissions reach this helper. Do not queue an Ads conversion
+  // before marketing consent, including when browser storage is unavailable.
+  const consent = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
+  if (consent?.marketing) {
     trackAnalyticsEvent('conversion', {
       send_to: adsLeadDestination,
     })
