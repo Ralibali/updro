@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
+import { Button } from '@/components/ui/button'
 import { Activity, AlertTriangle, ShieldCheck, TrendingDown } from 'lucide-react'
 
 type HealthStatus = 'healthy' | 'watch' | 'low_supply' | 'pause_or_recruit'
@@ -12,7 +13,7 @@ interface CategoryHealth {
 }
 
 const STATUS_META: Record<HealthStatus, { label: string; cls: string; Icon: typeof Activity }> = {
-  healthy: { label: 'Sund', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200', Icon: ShieldCheck },
+  healthy: { label: 'Minst tre verifierade', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200', Icon: ShieldCheck },
   watch: { label: 'Bevaka', cls: 'bg-amber-50 text-amber-700 border-amber-200', Icon: Activity },
   low_supply: { label: 'Låg täckning', cls: 'bg-orange-50 text-orange-700 border-orange-200', Icon: TrendingDown },
   pause_or_recruit: { label: 'Pausa eller rekrytera', cls: 'bg-rose-50 text-rose-700 border-rose-200', Icon: AlertTriangle },
@@ -23,9 +24,9 @@ const MarketplaceHealthPanel = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const load = async () => {
+  const load = useCallback(async () => {
       setLoading(true)
+      setError(null)
       const { data, error } = await (supabase as any)
         .from('marketplace_category_health')
         .select('*')
@@ -39,21 +40,20 @@ const MarketplaceHealthPanel = () => {
         setRows(sorted)
       }
       setLoading(false)
-    }
-    load()
   }, [])
+  useEffect(() => { void load() }, [load])
 
   if (loading) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
-  if (error) return <div className="text-sm text-destructive">Kunde inte läsa marketplace-data: {error}</div>
+  if (error) return <div role="alert" className="rounded-xl border p-5"><p className="text-sm text-destructive">Kunde inte hämta utbud och efterfrågan.</p><Button size="sm" variant="outline" className="mt-3" onClick={load}>Försök igen</Button></div>
 
   return (
     <div className="bg-card rounded-xl border p-5">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <div>
           <h2 className="font-display font-semibold flex items-center gap-2">
-            <Activity className="h-4 w-4 text-primary" /> Marketplace health
+            <Activity className="h-4 w-4 text-primary" /> Utbud och efterfrågan
           </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Utbud vs efterfrågan per kategori.</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Öppna uppdrag och verifierade byråprofiler per kategori. Verifiering är inte en bekräftelse på ledig kapacitet.</p>
         </div>
       </div>
 
@@ -66,7 +66,7 @@ const MarketplaceHealthPanel = () => {
               <tr className="text-xs text-muted-foreground uppercase tracking-wider">
                 <th className="text-left font-medium px-1 py-2">Kategori</th>
                 <th className="text-right font-medium px-1 py-2">Öppna uppdrag</th>
-                <th className="text-right font-medium px-1 py-2">Aktiva byråer</th>
+                <th className="text-right font-medium px-1 py-2">Verifierade byråer</th>
                 <th className="text-right font-medium px-1 py-2">Status</th>
               </tr>
             </thead>

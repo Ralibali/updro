@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { Button } from '@/components/ui/button'
 import { supabase } from '@/integrations/supabase/client'
 import { AdminLayout } from './AdminDashboard'
 import { timeAgo } from '@/lib/dateUtils'
 import { cn } from '@/lib/utils'
 
 const AdminOffers = () => {
-  const [offers, setOffers] = useState<any[]>([])
-
-  useEffect(() => {
-    supabase.from('offers')
-      .select('*, profiles!offers_supplier_id_fkey(full_name, company_name), projects!offers_project_id_fkey(title)')
-      .order('created_at', { ascending: false })
-      .limit(200)
-      .then(({ data }) => { if (data) setOffers(data) })
-  }, [])
+  const { data: offers = [], isLoading, isError, refetch } = useQuery({
+    queryKey: ['admin-offers'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('offers')
+        .select('*, profiles!offers_supplier_id_fkey(full_name, company_name), projects!offers_project_id_fkey(title)')
+        .order('created_at', { ascending: false }).limit(200)
+      if (error) throw error
+      return data ?? []
+    },
+  })
 
   const statusColors: Record<string, string> = {
     pending: 'bg-brand-amber/10 text-brand-amber',
@@ -52,7 +54,9 @@ const AdminOffers = () => {
             ))}
           </tbody>
         </table>
-        {offers.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga offerter ännu.</p>}
+        {isLoading && <p role="status" className="p-6 text-center">Hämtar offerter…</p>}
+        {isError && <div role="alert" className="p-6"><p>Kunde inte hämta offerterna.</p><Button variant="outline" className="mt-3" onClick={() => refetch()}>Försök igen</Button></div>}
+        {!isLoading && !isError && offers.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga offerter ännu.</p>}
       </div>
     </AdminLayout>
   )
