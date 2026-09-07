@@ -14,6 +14,18 @@ export type Database = {
   }
   public: {
     Tables: {
+      project_agreements: {
+        Row: { id: string; project_id: string; offer_id: string; buyer_id: string; supplier_id: string; revision: number; content: Json; created_at: string; updated_at: string }
+        Insert: { id?: string; project_id: string; offer_id: string; buyer_id: string; supplier_id: string; revision?: number; content: Json; created_at?: string; updated_at?: string }
+        Update: { content?: Json; revision?: number; updated_at?: string }
+        Relationships: []
+      }
+      project_agreement_events: {
+        Row: { id: number; agreement_id: string; revision: number; actor_id: string; action: string; content: Json; created_at: string }
+        Insert: { id?: never; agreement_id: string; revision: number; actor_id: string; action: string; content: Json; created_at?: string }
+        Update: { content?: Json }
+        Relationships: []
+      }
       article_queue: {
         Row: {
           article_type: string
@@ -1683,6 +1695,15 @@ export type Database = {
       }
     }
     Functions: {
+      decide_project_offer: { Args: { p_offer_id: string; p_decision: string }; Returns: string }
+      close_project_without_offer: { Args: { p_project_id: string }; Returns: string }
+      get_unlocked_project_contact: { Args: { p_project_id: string }; Returns: Json }
+      get_buyer_project_offers: { Args: { p_project_id: string }; Returns: Json }
+      get_project_agreement: { Args: { p_project_id: string; p_offer_id: string }; Returns: Json }
+      update_project_agreement: {
+        Args: { p_offer_id: string; p_action: string; p_expected_revision?: number; p_scope?: string; p_special_terms?: string }
+        Returns: Json
+      }
       get_public_agencies: {
         Args: Record<PropertyKey, never>
         Returns: {

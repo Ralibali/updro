@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client'
+import { z } from 'zod'
 
 export type UnlockResult = {
   already_unlocked: boolean
@@ -6,12 +7,14 @@ export type UnlockResult = {
 }
 
 export const unlockProject = async (projectId: string): Promise<UnlockResult> => {
-  const { data, error } = await (supabase as any).rpc('unlock_project_for_supplier', {
+  const { data, error } = await supabase.rpc('unlock_project_for_supplier', {
     p_project_id: projectId,
   })
 
   if (error) throw error
-  const result = data as UnlockResult
+  const parsed = z.object({ already_unlocked: z.boolean(), credits_left: z.number().int().nonnegative() }).safeParse(data)
+  if (!parsed.success) throw new Error('Upplåsningen kunde inte bekräftas. Ladda om sidan innan du försöker igen.')
+  const result = parsed.data
   if (!result.already_unlocked) {
     try {
       const { trackClick } = await import('@/hooks/usePageTracking')
@@ -32,7 +35,7 @@ export type SubmitOfferInput = {
 }
 
 export const submitProjectOffer = async (input: SubmitOfferInput): Promise<string> => {
-  const { data, error } = await (supabase as any).rpc('submit_project_offer', {
+  const { data, error } = await supabase.rpc('submit_project_offer', {
     p_project_id: input.projectId,
     p_title: input.title,
     p_description: input.description,
@@ -43,11 +46,39 @@ export const submitProjectOffer = async (input: SubmitOfferInput): Promise<strin
   })
 
   if (error) throw error
+  if (typeof data !== 'string' || !data) throw new Error('Offerten kunde inte bekräftas. Kontrollera Mina offerter innan du försöker igen.')
   try {
     const { trackClick } = await import('@/hooks/usePageTracking')
     trackClick('offer_submitted', 'Skickade offert', { project_id: input.projectId })
   } catch { /* analytics best effort */ }
-  return data as string
+  return data
+}
+
+export async function decideProjectOffer(offerId: string, decision: 'accepted' | 'declined') {
+  const { data, error } = await supabase.rpc('decide_project_offer', { p_offer_id: offerId, p_decision: decision })
+  if (error) throw error
+  if (data !== offerId) throw new Error('Beslutet kunde inte bekräftas. Ladda om sidan och kontrollera offertens status.')
+}
+
+export async function closeProjectWithoutOffer(projectId: string) {
+  const { data, error } = await supabase.rpc('close_project_without_offer', { p_project_id: projectId })
+  if (error) throw error
+  if (data !== projectId) throw new Error('Uppdragets status kunde inte bekräftas. Ladda om sidan.')
+}
+
+const contactSchema = z.object({
+  full_name: z.string().nullable(), company_name: z.string().nullable(),
+  email: z.string().nullable(), phone: z.string().nullable(), city: z.string().nullable().optional(),
+})
+export type ProjectContact = z.infer<typeof contactSchema>
+
+export async function getUnlockedProjectContact(projectId: string): Promise<ProjectContact | null> {
+  const { data, error } = await supabase.rpc('get_unlocked_project_contact', { p_project_id: projectId })
+  if (error) throw error
+  if (data === null) return null
+  const parsed = contactSchema.safeParse(data)
+  if (!parsed.success) throw new Error('Kontaktuppgifterna kunde inte läsas.')
+  return parsed.data
 }
 
 export const OFFER_ATTACHMENT_BUCKET = 'offer-attachments'
@@ -79,7 +110,7 @@ export const validateOfferAttachment = (file: File): AttachmentValidation => {
   if (!mapped) {
     return { ok: false, error: 'Filtypen stöds inte. Använd PDF, DOC, DOCX, JPG eller PNG.' }
   }
-  return { ok: true, extension, contentType: file.type || mapped }
+  return { ok: true, extension, contentType: mapped }
 }
 
 const safeBaseName = (name: string) =>

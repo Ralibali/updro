@@ -9,6 +9,7 @@ export const AGREEMENT_VERSION = 1
 
 export interface AgreementContent {
   version: number
+  standard_clauses?: string[]
   /** Kort beskrivning av omfattningen, förifylld från uppdrag + offert. */
   scope: string
   /** Köparens egna tillägg, t.ex. återkommande avstämningsmöten. */
@@ -34,7 +35,7 @@ export const PAYMENT_PLAN_LABELS: Record<string, string> = {
 }
 
 export const agreementStatus = (content: AgreementContent): AgreementStatus => {
-  if (content.supplier_confirmed_at) return 'signed'
+  if (content.buyer_confirmed_at && content.supplier_confirmed_at) return 'signed'
   if (content.buyer_confirmed_at) return 'awaiting_supplier'
   return 'draft'
 }
@@ -89,10 +90,9 @@ export const buildDefaultAgreementContent = (
 })
 
 const defaultScope = (project: AgreementProjectInput, offer: AgreementOfferInput) => {
-  const offerSummary = (offer.description || '').trim().replace(/\s+/g, ' ')
-  const trimmed = offerSummary.length > 300 ? `${offerSummary.slice(0, 297)}…` : offerSummary
-  return trimmed
-    ? `${offer.title} – ${trimmed}`
+  const description = (offer.description || '').trim()
+  return description
+    ? `${offer.title}\n\n${description}`
     : `${offer.title} (enligt offert för uppdraget "${project.title}")`
 }
 
@@ -121,7 +121,7 @@ export const applyEdits = (
 ): AgreementContent => {
   const changed =
     edits.scope !== content.scope || edits.special_terms !== content.special_terms
-  if (!changed) return content
+  if (!changed || agreementStatus(content) === 'signed') return content
   return {
     ...content,
     scope: edits.scope,
@@ -135,8 +135,11 @@ export const applyEdits = (
 export const parseAgreementContent = (raw: unknown): AgreementContent | null => {
   if (!raw || typeof raw !== 'object') return null
   const c = raw as Partial<AgreementContent>
-  if (typeof c.scope !== 'string' || typeof c.price_sek !== 'number') return null
+  if (typeof c.scope !== 'string' || typeof c.price_sek !== 'number' || !Number.isFinite(c.price_sek)) return null
+  if (c.supplier_confirmed_at && !c.buyer_confirmed_at) return null
+  if ([c.buyer_confirmed_at, c.supplier_confirmed_at].some(value => value != null && (typeof value !== 'string' || !Number.isFinite(Date.parse(value))))) return null
   return {
+    ...(Array.isArray(c.standard_clauses) && c.standard_clauses.every(item => typeof item === 'string') ? { standard_clauses: c.standard_clauses } : {}),
     version: typeof c.version === 'number' ? c.version : 1,
     scope: c.scope,
     special_terms: typeof c.special_terms === 'string' ? c.special_terms : '',

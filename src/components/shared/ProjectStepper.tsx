@@ -1,71 +1,25 @@
 import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-type ProjectStep = 'created' | 'reviewing' | 'interested' | 'offers' | 'choosing' | 'review'
+type ProjectStep = 'created' | 'published' | 'choosing' | 'agreement' | 'review' | 'closed'
 
 const STEPS = [
-  {
-    id: 'created' as const,
-    label: 'Uppdrag publicerat',
-    description: 'Ditt uppdrag är live och synligt för byråer.',
-  },
-  {
-    id: 'reviewing' as const,
-    label: 'Granskas',
-    description: 'Vi säkerställer att uppdraget håller god kvalitet.',
-  },
-  {
-    id: 'interested' as const,
-    label: 'Byråer visar intresse',
-    description: 'Kvalificerade byråer har börjat titta på ditt uppdrag.',
-  },
-  {
-    id: 'offers' as const,
-    label: 'Offerter mottagna',
-    description: 'Du har fått offerter att jämföra.',
-  },
-  {
-    id: 'choosing' as const,
-    label: 'Jämför & välj byrå',
-    description: 'Välj den byrå du vill gå vidare med.',
-    cta: true,
-  },
-  {
-    id: 'review' as const,
-    label: 'Lämna omdöme',
-    description: 'Hjälp andra beställare genom att betygsätta byrån.',
-    cta: true,
-  },
+  { id: 'created' as const, label: 'Uppdrag sparat', description: 'Ditt uppdrag är sparat. När det publiceras kan byråer lämna offert.', cta: false },
+  { id: 'published' as const, label: 'Väntar på offerter', description: 'Uppdraget är publicerat. Du ser byråernas förslag här när de svarar.', cta: false },
+  { id: 'choosing' as const, label: 'Jämför och välj byrå', description: 'Jämför omfattning, pris och tidsplan innan du accepterar en offert.', cta: true },
+  { id: 'agreement' as const, label: 'Avtal och uppstart', description: 'Granska samarbetsavtalet och kom överens om uppstarten med byrån.', cta: true },
+  { id: 'review' as const, label: 'Lämna omdöme', description: 'Uppdraget är markerat som slutfört. Berätta hur samarbetet fungerade.', cta: true },
 ]
+const STEP_ORDER: ProjectStep[] = ['created', 'published', 'choosing', 'agreement', 'review']
+const getStepIndex = (step: ProjectStep) => STEP_ORDER.indexOf(step)
 
-const STEP_ORDER: ProjectStep[] = ['created', 'reviewing', 'interested', 'offers', 'choosing', 'review']
-
-function getStepIndex(step: ProjectStep) {
-  return STEP_ORDER.indexOf(step)
-}
-
-// Helper co-located with the stepper component so both stay in sync when steps change.
-// Consumers of the helper are React components that also import the stepper. Fast Refresh warning is safe here.
 // eslint-disable-next-line react-refresh/only-export-components
 export function calculateCurrentStep(project: any, offers: any[]): ProjectStep {
-  const hasAccepted = offers.some(o => o.status === 'accepted')
-  if (hasAccepted) return 'review'
   if (project.status === 'completed') return 'review'
-
-  const pendingOffers = offers.filter(o => o.status === 'pending')
-  if (pendingOffers.length > 0) return 'choosing'
-  if (offers.length > 0) return 'offers'
-
-  // Check if project has been viewed (unlocked_leads > 0 means interest)
-  if ((project.view_count || 0) > 3) return 'interested'
-
-  // Auto-approve after 2h
-  const created = new Date(project.created_at).getTime()
-  const twoHours = 2 * 60 * 60 * 1000
-  if (Date.now() - created > twoHours) return 'interested'
-
-  if (Date.now() - created > 5 * 60 * 1000) return 'reviewing'
-
+  if (offers.some(offer => offer.status === 'accepted')) return 'agreement'
+  if (offers.some(offer => offer.status === 'pending')) return 'choosing'
+  if (project.status === 'closed' || project.status === 'rejected') return 'closed'
+  if (project.status === 'active') return 'published'
   return 'created'
 }
 
@@ -85,6 +39,8 @@ const ProjectStepper = ({ project, offers, compact = false, onScrollToOffers, on
     // In compact: show completed + current + next
     return i >= currentIndex - 1 && i <= currentIndex + 1
   }) : STEPS
+
+  if (currentStep === 'closed') return <div className="rounded-2xl border bg-card p-6"><h3 className="font-semibold">Uppdraget tar inte emot fler offerter</h3><p className="mt-2 text-sm text-muted-foreground">Ingen offert är accepterad. Du kan läsa tidigare förslag här.</p></div>
 
   return (
     <div className="bg-card border rounded-2xl p-6">
@@ -131,13 +87,13 @@ const ProjectStepper = ({ project, offers, compact = false, onScrollToOffers, on
                     {step.description}
                   </p>
                 )}
-                {isCurrent && step.cta && step.id === 'choosing' && onScrollToOffers && (
+                {isCurrent && step.cta && (step.id === 'choosing' || step.id === 'agreement') && onScrollToOffers && (
                   <Button
                     size="sm"
                     onClick={onScrollToOffers}
                     className="mt-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
                   >
-                    Välj byrå →
+                    {step.id === 'agreement' ? 'Granska avtalet →' : 'Jämför offerter →'}
                   </Button>
                 )}
                 {isCurrent && step.cta && step.id === 'review' && onOpenReview && (
