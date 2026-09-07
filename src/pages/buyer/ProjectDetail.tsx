@@ -213,7 +213,7 @@ const ProjectDetail = () => {
                         <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap break-words">{offer.description}</p>
 
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm">
-                          <span className="font-bold text-lg text-primary">{formatPrice(offer.price)}{offer.payment_plan === 'hourly' ? '/timme' : ''}<span className="ml-1 text-xs font-normal text-muted-foreground">exkl. moms</span></span>
+                          <span className="font-bold text-lg text-primary">{formatPrice(offer.price)}{offer.payment_plan === 'hourly' ? '/timme' : ''}{' '}<span className="ml-1 text-xs font-normal text-muted-foreground">exkl. moms</span></span>
                           {offer.delivery_weeks && <span className="text-muted-foreground">{offer.delivery_weeks} veckor</span>}
                           {offer.payment_plan && <span className="text-muted-foreground capitalize">{PAYMENT_PLAN_LABELS[offer.payment_plan] || offer.payment_plan}</span>}
                         </div>
@@ -265,11 +265,11 @@ const ProjectDetail = () => {
                             </>
                           )}
                           {(offer.status === 'pending' || offer.status === 'accepted') && (
-                            <Link to={`/dashboard/buyer/chatt?project=${id}&user=${offer.supplier_id}`}>
-                              <Button size="sm" variant={offer.status === 'accepted' ? 'default' : 'outline'}>
+                            <Button asChild size="sm" variant={offer.status === 'accepted' ? 'default' : 'outline'}>
+                              <Link to={`/dashboard/buyer/chatt?project=${id}&user=${offer.supplier_id}`}>
                                 💬 Chatta med byrån
-                              </Button>
-                            </Link>
+                              </Link>
+                            </Button>
                           )}
                         </div>
 

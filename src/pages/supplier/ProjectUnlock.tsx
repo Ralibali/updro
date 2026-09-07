@@ -369,21 +369,21 @@ const ProjectUnlock = () => {
                   <div><Label htmlFor="offer-weeks">Leveranstid (veckor)</Label><Input id="offer-weeks" type="number" min="1" max="520" step="1" value={form.delivery_weeks} onChange={event => setForm(previous => ({ ...previous, delivery_weeks: event.target.value }))} className="rounded-xl mt-1" /></div>
                 </div>
                 <div>
-                  <Label>Betalningsmodell</Label>
+                  <Label htmlFor="offer-payment">Betalningsmodell</Label>
                   <Select value={form.payment_plan} onValueChange={value => setForm(previous => ({ ...previous, payment_plan: value }))}>
-                    <SelectTrigger className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
+                    <SelectTrigger id="offer-payment" className="rounded-xl mt-1"><SelectValue /></SelectTrigger>
                     <SelectContent><SelectItem value="fixed">Fast pris</SelectItem><SelectItem value="hourly">Timpris</SelectItem><SelectItem value="milestone">Milstolpar</SelectItem></SelectContent>
                   </Select>
                   <p className="mt-2 text-xs text-muted-foreground">{form.payment_plan === 'hourly' ? 'Ange pris per timme exkl. moms. Beskriv uppskattad tidsåtgång och eventuell kostnadsram i offerten.' : form.payment_plan === 'milestone' ? 'Ange totalt pris exkl. moms. Beskriv milstolpar och delbetalningar i offerten.' : 'Ange totalt pris exkl. moms och beskriv tydligt vad som ingår.'}</p>
                 </div>
                 <div>
-                  <Label>Bifoga fil (PDF, DOC, DOCX, JPG eller PNG, max 10 MB)</Label>
+                  <Label htmlFor="offer-attachment">Bifoga fil (PDF, DOC, DOCX, JPG eller PNG, max 10 MB)</Label>
                   {file ? (
                     <div className="mt-1 flex items-center gap-2 bg-muted rounded-xl px-3 py-2 text-sm"><Paperclip className="h-4 w-4" /><span className="truncate flex-1">{file.name}</span><button type="button" aria-label="Ta bort bilaga" onClick={() => setFile(null)}><X className="h-4 w-4" /></button></div>
                   ) : (
-                    <label className="mt-1 flex items-center gap-2 cursor-pointer border border-dashed rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50">
+                    <label className="mt-1 flex items-center gap-2 cursor-pointer border border-dashed rounded-xl px-4 py-3 text-sm text-muted-foreground hover:border-primary/50 focus-within:ring-2 focus-within:ring-ring">
                       <Paperclip className="h-4 w-4" /><span>Välj fil...</span>
-                      <input type="file" accept={OFFER_ATTACHMENT_ACCEPT} className="hidden" onChange={event => {
+                      <input id="offer-attachment" type="file" accept={OFFER_ATTACHMENT_ACCEPT} className="sr-only" onChange={event => {
                         const selected = event.target.files?.[0]
                         if (!selected) return
                         const validation = validateOfferAttachment(selected)
