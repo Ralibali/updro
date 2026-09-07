@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "acceptanstest-ny-hemsida-mall",
+    "h1": "Acceptanstest av en ny hemsida: en mall för beställaren",
+    "metaTitle": "Acceptanstest av ny hemsida – mall före lansering | Updro",
+    "metaDesc": "Testa den nya hemsidan mot det ni beställt. En praktisk mall för flöden, felrapportering, ansvar och ett tydligt beslut före lansering.",
+    "category": "Webbutveckling",
+    "publishedDate": "2026-09-07",
+    "updatedDate": "2026-09-07",
+    "readTimeMinutes": 5,
+    "intro": "Hemsidan ser färdig ut i byråns demonstration. Men kan en besökare göra det ni faktiskt beställde, och hamnar resultatet där det ska? Ett acceptanstest hjälper dig som beställare att kontrollera leveransen tillsammans med byrån. Börja med några verkliga användaruppgifter och skriv ned vad ett godkänt resultat betyder.",
+    "editorialNote": "AI-assisterad originalguide. Arbetsmallen är redaktionellt framtagen; externa faktauppgifter länkas till sina källor. Exemplen är testfall, inte kundresultat.",
+    "sections": [
+      {
+        "heading": "Gör beställningen möjlig att testa",
+        "content": "Ta fram den överenskomna omfattningen och välj vad besökaren ska kunna utföra. Skriv exempelvis ”skicka en offertförfrågan som når rätt mottagare” i stället för ”kontaktformuläret fungerar”. Ange förutsättning, steg och förväntat resultat för varje uppgift.\n\nSkilj avtalade krav från nya önskemål. Om en funktion inte ingick i beställningen kan ni diskutera den separat. Testprotokollet ska göra det lättare att bedöma leveransen, inte bli en lista där omfattningen ändras utan att någon märker det."
+      },
+      {
+        "heading": "Använd ett protokoll med en rad per kontroll",
+        "content": "Kopiera fälten nedan till ett dokument som både beställare och byrå kan läsa:\n\n- Test-ID och vilken funktion som kontrolleras.\n- Testmiljö, adress, datum och enhet.\n- Förutsättningar och de steg som utfördes.\n- Förväntat resultat och faktiskt resultat.\n- Status: godkänt, avvikelse eller inte testat.\n- Ansvarig, nästa åtgärd och datum för omtest.\n\nSkriv uttryckligen ”inte testat” när något återstår. En tom ruta kan annars tolkas som att kontrollen redan passerat. Lägg till en skärmbild när den förklarar avvikelsen, men låt stegen vara tillräckligt tydliga för att någon annan ska kunna upprepa testet."
+      },
+      {
+        "heading": "Följ kontaktförfrågan hela vägen",
+        "content": "Använd testuppgifter och en överenskommen testmottagare. Kontrollera först ett normalt inskick. Följ därefter meddelandet till den inkorg eller det system där det ska tas om hand. En grön bekräftelse på hemsidan visar bara vad sidan berättar; den bevisar inte ensam att mottagaren fått uppgifterna.\n\nProva också ett tomt obligatoriskt fält och en uppenbart felaktig e-postadress. Kontrollera att feltexten hjälper besökaren att rätta uppgiften. Dokumentera vad som ska hända om inskicket misslyckas och hur det kan göras om utan att skapa förvirring."
+      },
+      {
+        "heading": "Kontrollera läsning och användning på fler sätt",
+        "content": "Öppna de viktigaste sidorna på en smal mobilskärm och på dator. Gå igenom navigation och formulär med tangentbordet. Förstora texten och kontrollera att viktig information fortfarande går att nå. W3C WAI:s Easy Checks ger en första genomgång av bland annat tangentbordsfokus, rubriker och formuläretiketter. Det är en inledande kontroll, inte en fullständig tillgänglighetsutvärdering.\n\nAnpassa testningen efter det ni beställt och vilka som ska använda sajten. Om en mer omfattande tillgänglighetsgranskning ingår behöver den ha ett eget underlag och tydliga bedömningskriterier."
+      },
+      {
+        "heading": "Bestäm hur avvikelser ska hanteras",
+        "content": "Beskriv konsekvensen innan ni sätter prioritet. ”Förfrågan når inte mottagaren” kräver ett annat beslut än ”bilden behöver beskäras annorlunda”. Kom överens om vilka avvikelser som måste rättas före lanseringen, vilka som kan planeras efteråt och vem som fattar beslutet.\n\nNär byrån meddelar att något är rättat kör ni samma test igen. Spara både det första resultatet och omtestet. Då ser ni vad som ändrades och slipper förlita er på att någon minns ett tidigare samtal."
+      },
+      {
+        "heading": "Avsluta med ett konkret leveransbeslut",
+        "content": "Samla kvarstående punkter, ansvar och datum i en kort avslutande anteckning. Bekräfta också att rätt personer kan redigera innehåll och att ni vet var supportärenden ska lämnas. Ett godkänt testprotokoll är ett praktiskt beslutsunderlag; det ersätter inte era överenskommelser om leverans och ansvar.\n\nPlanerar du att beställa en ny hemsida? Lägg med de viktigaste användaruppgifterna redan i briefen. På Updro kan du beskriva projektet och jämföra högst tre relevanta offerter efter granskning av förfrågan."
+      },
+      {
+        "heading": "Om underlaget",
+        "content": "Denna AI-assisterade originalguide är en arbetsmall. Den bygger inte på uppmätta resultat från en kund. För en första tillgänglighetskontroll: [W3C WAI – Easy Checks](https://www.w3.org/WAI/test-evaluate/easy-checks/). Källan kontrollerades den 7 september 2026."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      },
+      {
+        "label": "Hur väljer man webbyrå?",
+        "href": "/artiklar/hur-valjer-man-webbyra"
+      }
+    ],
+    "sources": [
+      {
+        "label": "W3C WAI: Easy Checks",
+        "href": "https://www.w3.org/WAI/test-evaluate/easy-checks/"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "sourceCheckedAt": "2026-09-07T00:04:51.556128+00:00",
+      "publishedAt": "2026-09-07T00:04:51.556128+00:00",
+      "searchIntent": "Beställare som vill kontrollera en levererad webbplats före lansering",
+      "sourceUrls": [
+        "https://www.w3.org/WAI/test-evaluate/easy-checks/",
+        "https://updro.se/"
+      ]
+    }
+  }
+]

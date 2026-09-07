@@ -224,8 +224,7 @@ const ArticlePage = () => {
               {new Date(nextReviewDate).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
             <p className="text-xs pt-2 border-t border-border/60 mt-2">
-              Denna artikel är skriven baserat på oberoende marknadsdata och egen erfarenhet av den svenska
-              byråmarknaden. Hittar du ett fel?{' '}
+              {page.editorialNote || 'Läs artikelns underlag och källor när du jämför uppgifter och väljer nästa steg.'} Hittar du ett fel?{' '}
               <a href="mailto:info@auroramedia.se" className="text-primary underline">
                 Mejla oss
               </a>{' '}
