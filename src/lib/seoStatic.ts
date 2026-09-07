@@ -94,7 +94,7 @@ const baseRoutes = (): StaticSeoRoute[] => [
     ],
   },
   { path: '/om-oss', title: 'Om Updro – marknadsplatsen för digitala uppdrag', description: 'Updro hjälper företag att hitta rätt digital byrå genom granskade briefar, högst tre offerter och tydligare beslutsunderlag.', h1: 'Om Updro', priority: 0.6, changefreq: 'monthly' },
-  { path: '/artiklar', title: 'Artiklar och guider om digitala projekt | Updro', description: 'Guider om webb, SEO, e-handel, annonsering och digitala byråval för dig som ska köpa digitala tjänster.', h1: 'Artiklar och guider', priority: 0.8, changefreq: 'weekly' },
+  { path: '/artiklar', title: 'Artiklar och guider om digitala projekt | Updro', description: 'Guider om webb, SEO, e-handel, annonsering och digitala byråval för dig som ska köpa digitala tjänster.', h1: 'Artiklar och guider', priority: 0.8, changefreq: 'weekly', links: ARTICLES.map(article => ({ label: article.h1, href: `/artiklar/${article.slug}` })) },
   { path: '/verktyg', title: 'Gratis verktyg för digitala projekt | Updro', description: 'Kalkylatorer, mallar och beslutsstöd som hjälper dig planera och jämföra digitala projekt.', h1: 'Gratis verktyg', priority: 0.8, changefreq: 'weekly' },
   { path: '/stader', title: 'Hitta digitala byråer per stad | Updro', description: 'Utforska digitala byråer per stad och jämför offerter från lokala och nationella specialister.', h1: 'Digitala byråer per stad', priority: 0.8, changefreq: 'weekly' },
   { path: '/jamfor', title: 'Jämför byråer och alternativ | Updro', description: 'Jämförelser av byråer, plattformar och alternativ för digitala projekt.', h1: 'Jämför alternativ', priority: 0.8, changefreq: 'weekly' },
