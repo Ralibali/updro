@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom'
 import { Fragment, useEffect, useState } from 'react'
 import { Building2, CheckCircle, ChevronDown, ChevronUp, Download, Mail, Phone, Search, Trash2, User, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
@@ -28,7 +29,9 @@ const AdminProjectsV2 = () => {
   const [projects, setProjects] = useState<any[]>([])
   const [orphans, setOrphans] = useState<AdminGuestLead[]>([])
   const [search, setSearch] = useState('')
-  const [status, setStatus] = useState('all')
+  const [params] = useSearchParams()
+  const [status, setStatus] = useState(() => statuses.includes(params.get('status') || '') ? params.get('status')! : 'all')
+  const [loadError, setLoadError] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -36,6 +39,7 @@ const AdminProjectsV2 = () => {
 
   const load = async () => {
     setLoading(true)
+    setLoadError(false)
     try {
       const result = await loadAdminUppdrag(supabase as any)
       setProjects(result.projects)
@@ -46,6 +50,7 @@ const AdminProjectsV2 = () => {
       }
     } catch (error) {
       console.error(error)
+      setLoadError(true)
       toast.error('Kunde inte hämta uppdragen.')
     } finally {
       setLoading(false)
@@ -129,8 +134,8 @@ const AdminProjectsV2 = () => {
           {orphans.length > 0 && <span className="bg-orange-100 text-orange-800 text-xs font-semibold px-2.5 py-1 rounded-full">{orphans.length} gästleads utan uppdrag</span>}
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {statuses.map(item => <Button key={item} size="sm" variant={status === item ? 'default' : 'outline'} onClick={() => setStatus(item)}>{item === 'all' ? 'Alla' : item}</Button>)}
-          <div className="relative w-60"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input className="pl-10" placeholder="Sök uppdrag eller kontakt..." value={search} onChange={event => setSearch(event.target.value)} /></div>
+          {statuses.map(item => <Button key={item} size="sm" variant={status === item ? 'default' : 'outline'} onClick={() => setStatus(item)}>{({ all: 'Alla', pending: 'Väntar', active: 'Aktiva', closed: 'Stängda', rejected: 'Avvisade', completed: 'Slutförda', draft: 'Utkast' } as Record<string, string>)[item]}</Button>)}
+          <div className="relative w-60"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /><Input className="pl-10" aria-label="Sök uppdrag eller kontakt" placeholder="Sök uppdrag eller kontakt..." value={search} onChange={event => setSearch(event.target.value)} /></div>
           <Button size="sm" variant="outline" onClick={download}><Download className="h-4 w-4 mr-1" />CSV</Button>
         </div>
       </div>
@@ -190,8 +195,9 @@ const AdminProjectsV2 = () => {
             })}
           </tbody>
         </table>
+        {loadError && <div role="alert" className="p-6"><p>Kunde inte hämta uppdragen. Listan kan vara ofullständig.</p><Button className="mt-3" variant="outline" onClick={load}>Försök igen</Button></div>}
         {loading && <p className="p-6 text-center text-muted-foreground">Hämtar uppdrag…</p>}
-        {!loading && filtered.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga uppdrag hittades.</p>}
+        {!loading && !loadError && filtered.length === 0 && <p className="p-6 text-center text-muted-foreground">Inga uppdrag hittades.</p>}
       </div>
 
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}><DialogContent><DialogHeader><DialogTitle>Ta bort uppdrag?</DialogTitle><DialogDescription>Vill du verkligen ta bort ”{deleteTarget?.title}”? Åtgärden kan inte ångras.</DialogDescription></DialogHeader><div className="flex gap-3 mt-4"><Button variant="outline" onClick={() => setDeleteTarget(null)}>Avbryt</Button><Button variant="destructive" onClick={remove} disabled={deleting}>{deleting ? 'Tar bort…' : 'Ta bort'}</Button></div></DialogContent></Dialog>

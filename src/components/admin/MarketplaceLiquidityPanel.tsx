@@ -46,7 +46,7 @@ const useLiquidityData = () => {
           id, slug, bio, logo_url, categories, services, portfolio_urls, website_url,
           contact_email, contact_phone, contact_name, org_number,
           is_verified, has_fskatt, plan, trial_ends_at, lead_credits, created_at,
-          profiles:id(full_name, company_name, email, updated_at)
+          profiles!supplier_profiles_id_fkey(full_name, company_name, email, updated_at)
         `)
         .limit(500)
       if (error) throw error
@@ -122,7 +122,7 @@ const MarketplaceLiquidityPanel = () => {
   return (
     <Card className="mt-6 border-border/50">
       <CardHeader className="pb-3">
-        <CardTitle className="font-display text-base">Marketplace liquidity</CardTitle>
+        <CardTitle className="font-display text-base">Uppdrag och byråaktivering</CardTitle>
         <p className="text-xs text-muted-foreground">
           Realtidsbild av var köpsidan väntar och var byråer behöver hjälp att bli aktiva.
         </p>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Check } from 'lucide-react'
+import { seoLeadPath } from '@/lib/seoLeadPath'
 import { Button } from '@/components/ui/button'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -12,6 +13,7 @@ const SEOLandingPage = ({
   canonical,
   h1,
   serviceType,
+  category,
   wizardDescription,
   intro,
   considerations,
@@ -23,6 +25,7 @@ const SEOLandingPage = ({
   canonical: string
   h1: string
   serviceType: string
+  category: string
   wizardDescription: string
   intro: string
   considerations: string[]
@@ -51,37 +54,37 @@ const SEOLandingPage = ({
     })
   }, [title, metaDescription, canonical, h1, serviceType])
 
-  const publishUrl = `/publicera?beskrivning=${encodeURIComponent(wizardDescription)}`
+  const publishUrl = `${seoLeadPath(category)}&beskrivning=${encodeURIComponent(wizardDescription)}`
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <article className="container max-w-4xl py-16 md:py-24">
+        <article className="container max-w-4xl py-10 md:py-16">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">Gratis offertjämförelse</p>
-          <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground md:text-6xl">{h1}</h1>
+          <h1 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-6xl">{h1}</h1>
           <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">{intro}</p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to={publishUrl}>
-              <Button size="lg" className="rounded-xl px-8 py-6 text-base">
+            <Link to={publishUrl} className="w-full sm:w-auto">
+              <Button size="lg" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto">
                 Beskriv ditt projekt gratis <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link to="/#hur-det-fungerar">
-              <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base">Så fungerar Updro</Button>
+              <Button size="lg" variant="outline" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto">Så fungerar Updro</Button>
             </Link>
           </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <div className="mt-8 grid grid-cols-3 gap-2 sm:gap-4">
             {[
-              ['Max tre', 'byråer kan lämna offert'],
-              ['Granskad', 'brief före publicering'],
-              ['0 kr', 'för beställaren'],
+              ['Max tre', 'möjliga offerter'],
+              ['Brief', 'granskas först'],
+              ['0 kr', 'för beställare'],
             ].map(([value, label]) => (
-              <div key={label} className="rounded-2xl border bg-card p-5">
-                <p className="font-display text-2xl font-bold">{value}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{label}</p>
+              <div key={label} className="rounded-xl border bg-card p-2 sm:p-5">
+                <p className="font-display text-sm font-bold sm:text-2xl">{value}</p>
+                <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground sm:text-sm">{label}</p>
               </div>
             ))}
           </div>
@@ -99,7 +102,7 @@ const SEOLandingPage = ({
           </section>
 
           <section className="mt-14 rounded-2xl border bg-muted/30 p-6 md:p-8">
-            <h2 className="font-display text-2xl font-bold">Vad kostar {serviceType.toLowerCase()}?</h2>
+            <h2 className="font-display text-sm font-bold sm:text-2xl">Vad kostar {serviceType.toLowerCase()}?</h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">{priceText}</p>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               Pris är bara en del av beslutet. Kontrollera också omfattning, ansvar, leveranstid, support, rättigheter till material och hur resultatet ska följas upp.
@@ -154,6 +157,7 @@ export const HittaWebbbyraPage = () => (
     canonical="https://updro.se/hitta-webbyra"
     h1="Hitta rätt webbyrå utan massutskick"
     serviceType="Webbutveckling"
+    category="Webbutveckling"
     wizardDescription="Vi behöver hjälp av en webbyrå med "
     intro="En bra webbyrå ska förstå både teknik, målgrupp och affärsmål. Med Updro beskriver du projektet en gång, briefen granskas och högst tre matchande byråer kan lämna offert."
     considerations={[
@@ -178,6 +182,7 @@ export const HittaSeoByraPage = () => (
     canonical="https://updro.se/hitta-seo-byra"
     h1="Hitta en SEO-byrå med rätt metod"
     serviceType="SEO och sökmotoroptimering"
+    category="SEO"
     wizardDescription="Vi behöver hjälp av en SEO-byrå med "
     intro="SEO är ett långsiktigt arbete där metod, transparens och uppföljning är minst lika viktigt som pris. Updro hjälper dig jämföra högst tre relevanta upplägg i stället för att skicka förfrågan till ett stort antal byråer."
     considerations={[
@@ -197,6 +202,7 @@ export const HittaDigitalByraPage = () => (
     canonical="https://updro.se/hitta-digital-byra"
     h1="Hitta en digital byrå som passar uppdraget"
     serviceType="Digital marknadsföring"
+    category="Digital marknadsföring"
     wizardDescription="Vi behöver hjälp av en digital byrå med "
     intro="Digitala byråer kan vara fullservicepartners eller specialister inom exempelvis annonsering, innehåll, design, SEO och konvertering. Updro begränsar varje uppdrag till högst tre offerter för att göra jämförelsen tydligare."
     considerations={[

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { COOKIE_CONSENT_KEY, createConsentState, parseCookieConsent, serializeCookieConsent, type CookieConsentState } from '@/lib/cookieConsent'
 import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from '@/lib/browserStorage'
@@ -46,6 +46,8 @@ const applyConsent = (state: Pick<CookieConsentState, 'analytics' | 'marketing'>
 }
 
 const CookieConsent = () => {
+  const { pathname } = useLocation()
+  const hasBottomNavigation = pathname === '/admin' || pathname.startsWith('/admin/') || pathname.startsWith('/dashboard/')
   const [visible, setVisible] = useState(false)
   const [analytics, setAnalytics] = useState(false)
   const [marketing, setMarketing] = useState(false)
@@ -80,7 +82,7 @@ const CookieConsent = () => {
     setAnalytics(nextAnalytics); setMarketing(nextMarketing); applyConsent(state); setVisible(false); setShowDetails(false)
   }
 
-  if (!visible) return <button type="button" onClick={() => { setShowDetails(true); setVisible(true) }} className="fixed bottom-3 left-3 z-40 rounded-full border bg-background/95 px-3 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur hover:text-foreground" aria-label="Ändra cookieinställningar">Cookieinställningar</button>
+  if (!visible) return <button type="button" onClick={() => { setShowDetails(true); setVisible(true) }} className={`fixed ${hasBottomNavigation ? 'bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-3' : 'bottom-3'} left-3 z-40 rounded-full border bg-background/95 px-3 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur hover:text-foreground`} aria-label="Ändra cookieinställningar">Cookieinställningar</button>
 
   return (
     <div className="fixed bottom-0 inset-x-0 z-50 p-2 sm:p-4" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title">
