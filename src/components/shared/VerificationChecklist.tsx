@@ -14,21 +14,21 @@ const VerificationChecklist = ({ isVerified, hasFskatt, creditCheckPassed, compl
   return (
     <div className="flex flex-col gap-1.5 mt-3">
       {isVerified && (
-        <div className="flex items-center gap-2 text-sm text-emerald-700">
+        <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400">
           <CheckCircle size={14} className="text-emerald-500 shrink-0" />
           Verifierad byrå på Updro
         </div>
       )}
       {hasFskatt && (
-        <div className="flex items-center gap-2 text-sm text-emerald-700">
+        <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400">
           <CheckCircle size={14} className="text-emerald-500 shrink-0" />
-          Godkänd F-skatt & moms
+          Godkänd F-skatt
         </div>
       )}
       {creditCheckPassed && (
-        <div className="flex items-center gap-2 text-sm text-emerald-700">
+        <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-400">
           <CheckCircle size={14} className="text-emerald-500 shrink-0" />
-          Godkänd kredithistorik & skuldfrihet
+          Godkänd kreditkontroll
         </div>
       )}
       {(completedProjects ?? 0) > 0 && (

@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkle
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import BuyerConfidence from '@/components/BuyerConfidence'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -246,7 +247,8 @@ const ProjectWizardV2 = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 py-8 px-4">
-        <div className="max-w-2xl mx-auto">
+        <div className={step <= totalSteps ? 'mx-auto grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12' : 'max-w-2xl mx-auto'}>
+          <div className="min-w-0">
           {step <= totalSteps && (
             <>
               <div className="flex justify-between text-xs text-muted-foreground mb-3">
@@ -261,7 +263,8 @@ const ProjectWizardV2 = () => {
             <div className="space-y-6">
               <div>
                 <h1 ref={stepHeading} tabIndex={-1} className="font-display text-2xl font-bold scroll-mt-24 outline-none">Vad behöver du hjälp med?</h1>
-                <p className="mt-2 text-sm text-muted-foreground">Börja med att beskriva behovet med egna ord. Ingen registrering krävs.</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{initialCategory === 'Webbutveckling' ? 'Beskriv ditt webbprojekt och jämför upp till tre offerter.' : 'Beskriv behovet med egna ord och jämför upp till tre offerter.'} Gratis för dig som beställare. Ingen registrering krävs.</p>
+                <a href="#forfragan-hjalp" className="mt-2 inline-block text-sm text-primary underline underline-offset-4 lg:hidden">Så fungerar det och kontakt</a>
               </div>
               <div>
                 <Label htmlFor="project-description">Beskriv uppdraget *</Label>
@@ -334,7 +337,7 @@ const ProjectWizardV2 = () => {
                 <>
                   <div className="pt-2 border-t">
                     <h3 className="font-display text-lg font-semibold mb-1">Hur når byråerna dig?</h3>
-                    <p className="text-xs text-muted-foreground mb-4">Inget lösenord eller konto krävs.</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground mb-4">Byråer som öppnar kontaktuppgifterna till ditt uppdrag kan kontakta dig här. Telefon är valfritt. Inget lösenord eller konto krävs.</p>
                     <div className="space-y-4">
                       <Field label="Namn (valfritt)" id="full-name" value={form.full_name} onChange={value => setForm(previous => ({ ...previous, full_name: value }))} autoComplete="name" />
                       <Field label="E-post *" id="email" type="email" value={form.email} onChange={value => setForm(previous => ({ ...previous, email: value }))} autoComplete="email" />
@@ -431,6 +434,8 @@ const ProjectWizardV2 = () => {
               )}
             </div>
           )}
+          </div>
+          {step <= totalSteps && <BuyerConfidence />}
         </div>
       </main>
       <Footer />
