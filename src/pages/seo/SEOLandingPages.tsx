@@ -60,14 +60,14 @@ const SEOLandingPage = ({
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <article className="container max-w-4xl py-10 md:py-16">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">Gratis offertjämförelse</p>
+        <article className="container max-w-4xl py-10 md:py-20">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">Gratis offertjämförelse</p>
           <h1 className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-6xl">{h1}</h1>
           <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">{intro}</p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link to={publishUrl} className="w-full sm:w-auto">
-              <Button size="lg" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto">
+              <Button size="lg" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90 shadow-brand">
                 Beskriv ditt projekt gratis <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -82,7 +82,7 @@ const SEOLandingPage = ({
               ['Brief', 'granskas först'],
               ['0 kr', 'för beställare'],
             ].map(([value, label]) => (
-              <div key={label} className="rounded-xl border bg-card p-2 sm:p-5">
+              <div key={label} className="rounded-2xl border bg-card p-3 sm:p-5 shadow-sm">
                 <p className="font-display text-sm font-bold sm:text-2xl">{value}</p>
                 <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground sm:text-sm">{label}</p>
               </div>
@@ -101,7 +101,7 @@ const SEOLandingPage = ({
             </div>
           </section>
 
-          <section className="mt-14 rounded-2xl border bg-muted/30 p-6 md:p-8">
+          <section className="mt-14 rounded-2xl border bg-surface-alt p-6 md:p-8">
             <h2 className="font-display text-sm font-bold sm:text-2xl">Vad kostar {serviceType.toLowerCase()}?</h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">{priceText}</p>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

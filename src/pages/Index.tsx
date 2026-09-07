@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect } from 'react'
+import PageErrorBoundary from '@/components/PageErrorBoundary'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/home/HeroSection'
@@ -75,12 +76,14 @@ const websiteSchema = {
 }
 
 const BelowFold = () => (
+  <PageErrorBoundary embedded>
   <Suspense fallback={null}>
     <ExampleOffersSection />
     <PriceCalculatorSection />
     <FAQSection />
     <CTASection />
   </Suspense>
+  </PageErrorBoundary>
 )
 
 const Index = () => {

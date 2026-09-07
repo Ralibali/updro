@@ -7,6 +7,7 @@ import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/600.css";
 import "@fontsource/dm-sans/700.css";
+import PageErrorBoundary from "./components/PageErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
 import { initAttribution } from "./lib/attribution";
@@ -21,7 +22,7 @@ const rootEl = document.getElementById("root")!;
 // It is not a React-rendered tree, so hydrating it can leave visitors stuck on the fallback.
 // Always clear the fallback and mount the real app for users.
 rootEl.replaceChildren();
-createRoot(rootEl).render(<App />);
+createRoot(rootEl).render(<PageErrorBoundary><App /></PageErrorBoundary>);
 
 // PWA: registrera service worker för snabb uppstart och offline-stöd.
 // Bara i produktion – i dev skulle cachen störa hot-reload.

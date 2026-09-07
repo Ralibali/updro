@@ -8,7 +8,7 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "0",
       screens: {
         "2xl": "1400px",
       },
@@ -67,7 +67,7 @@ export default {
           "amber-glow": "hsl(var(--brand-amber-glow))",
         },
         surface: {
-          DEFAULT: "hsl(0 0% 100%)",
+          DEFAULT: "hsl(var(--card))",
           alt: "hsl(var(--surface-alt))",
           2: "hsl(var(--surface-2))",
           3: "hsl(var(--surface-3))",
@@ -82,6 +82,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      boxShadow: {
+        sm: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        brand: "var(--shadow-brand)",
       },
       borderRadius: {
         lg: "var(--radius)",

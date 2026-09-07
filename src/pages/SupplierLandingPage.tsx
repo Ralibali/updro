@@ -132,21 +132,21 @@ const SupplierLandingPage = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-background border-b-2 border-foreground">
+        <section className="relative overflow-hidden bg-background border-b border-border">
           <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-accent/5 blur-3xl" />
 
           <div className="container relative z-10 py-16 md:py-24">
             <div className="max-w-4xl mx-auto text-center">
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                <span className="inline-flex items-center gap-2 border-2 border-foreground bg-secondary px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-foreground">
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-foreground">
                   <Zap className="h-3.5 w-3.5 text-accent" />
                   {TRIAL_LEADS} kostnadsfria lead-krediter · inget kort krävs
                 </span>
               </motion.div>
 
               <motion.h1
-                className="mt-6 font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[0.98] [text-wrap:balance]"
+                className="mt-6 font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.08] [text-wrap:balance]"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
@@ -171,13 +171,13 @@ const SupplierLandingPage = () => {
                 transition={{ duration: 0.4, delay: 0.2 }}
               >
                 <Link to="/registrera/byra" onClick={() => trackSignup('supplier_hero')}>
-                  <Button size="lg" className="min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none border-2 border-foreground px-10 text-base font-bold shadow-[5px_5px_0_0_hsl(var(--foreground))] active:translate-x-1 active:translate-y-1 active:shadow-none">
+                  <Button size="lg" className="min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground w-full sm:w-auto rounded-xl border border-border px-6 sm:px-10 text-base font-semibold shadow-brand motion-safe:active:scale-[0.98]">
                     Starta med {TRIAL_LEADS} gratis leads
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
                 <Link to="/priser">
-                  <Button size="lg" variant="outline" className="min-h-14 rounded-none border-2 border-foreground px-8 text-base font-bold">Se priser och villkor</Button>
+                  <Button size="lg" variant="outline" className="min-h-14 rounded-xl border border-border px-8 text-base font-bold">Se priser och villkor</Button>
                 </Link>
               </motion.div>
 
@@ -193,7 +193,7 @@ const SupplierLandingPage = () => {
           </div>
         </section>
 
-        <section className="border-b-2 border-foreground bg-card">
+        <section className="border-b border-border bg-card">
           <div className="container py-6 md:py-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
               {[
@@ -202,7 +202,7 @@ const SupplierLandingPage = () => {
                 [`${STRIPE_PRODUCTS.lead.price} kr`, 'per valt lead'],
                 ['0 %', 'provision på vunnet projekt'],
               ].map(([value, label]) => (
-                <div key={label} className="border border-foreground/15 bg-background p-4 text-center">
+                <div key={label} className="rounded-xl border border-border bg-background p-4 text-center">
                   <div className="font-display text-2xl md:text-3xl font-bold text-foreground">{value}</div>
                   <div className="text-xs text-muted-foreground mt-1">{label}</div>
                 </div>
@@ -223,8 +223,8 @@ const SupplierLandingPage = () => {
 
             <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {benefits.map(benefit => (
-                <article key={benefit.title} className="border-2 border-foreground/20 bg-card p-6 hover:border-foreground transition-colors">
-                  <div className="w-10 h-10 flex items-center justify-center border border-foreground bg-secondary mb-4">
+                <article key={benefit.title} className="rounded-2xl border border-border bg-card p-6 hover:border-accent/40 hover:shadow-md transition-colors">
+                  <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-accent/10 mb-4">
                     <benefit.icon className="h-5 w-5 text-accent" />
                   </div>
                   <h3 className="font-display font-bold text-lg mb-2">{benefit.title}</h3>
@@ -235,7 +235,7 @@ const SupplierLandingPage = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-secondary border-y-2 border-foreground">
+        <section className="py-16 bg-secondary border-y border-border">
           <div className="container max-w-5xl">
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div>
@@ -249,14 +249,14 @@ const SupplierLandingPage = () => {
                 </Link>
               </div>
 
-              <div className="border-2 border-foreground bg-background p-6 md:p-8 shadow-[7px_7px_0_0_hsl(var(--accent))]">
+              <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-md">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="border border-foreground/15 p-5">
+                  <div className="rounded-xl border border-border p-5">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">Pay per lead</p>
                     <p className="mt-2 font-display text-4xl font-bold">{STRIPE_PRODUCTS.lead.price} kr</p>
                     <p className="mt-2 text-sm text-muted-foreground">per kontakt ni själva väljer att låsa upp</p>
                   </div>
-                  <div className="border border-foreground/15 p-5">
+                  <div className="rounded-xl border border-border p-5">
                     <p className="text-xs uppercase tracking-wider text-muted-foreground">När ni vinner</p>
                     <p className="mt-2 font-display text-4xl font-bold">0 %</p>
                     <p className="mt-2 text-sm text-muted-foreground">Updro tar ingen procent av ert projektvärde</p>
@@ -277,7 +277,7 @@ const SupplierLandingPage = () => {
             <div className="grid md:grid-cols-3 gap-8">
               {steps.map(step => (
                 <div key={step.number} className="text-center">
-                  <div className="mx-auto w-12 h-12 border-2 border-foreground bg-accent text-accent-foreground font-display font-bold text-xl flex items-center justify-center mb-4">{step.number}</div>
+                  <div className="mx-auto w-12 h-12 rounded-full border border-transparent bg-accent text-accent-foreground font-display font-bold text-xl flex items-center justify-center mb-4">{step.number}</div>
                   <h3 className="font-display font-bold text-lg mb-2">{step.title}</h3>
                   <p className="text-sm leading-relaxed text-muted-foreground">{step.description}</p>
                 </div>
@@ -290,7 +290,7 @@ const SupplierLandingPage = () => {
           <h2 className="font-display text-3xl font-bold mb-6">Vanliga frågor från byråer</h2>
           <div className="space-y-3">
             {faqs.map(item => (
-              <details key={item.q} className="border-2 border-foreground/15 bg-card p-5 open:border-foreground">
+              <details key={item.q} className="rounded-2xl border border-border bg-card p-5 open:border-accent/40">
                 <summary className="cursor-pointer font-display font-bold">{item.q}</summary>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
               </details>
@@ -298,7 +298,7 @@ const SupplierLandingPage = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-foreground text-background border-t-2 border-foreground">
+        <section className="py-16 bg-foreground text-background border-t border-border">
           <div className="container max-w-3xl text-center">
             <h2 className="font-display text-3xl md:text-5xl font-bold">Testa med riktiga leads innan ni bestämmer er.</h2>
             <p className="mt-4 text-background/70 text-lg">
@@ -310,7 +310,7 @@ const SupplierLandingPage = () => {
               <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-accent" /> 0 % projektprovision</span>
             </div>
             <Link to="/registrera/byra" onClick={() => trackSignup('supplier_bottom_cta')}>
-              <Button size="lg" className="mt-8 min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground rounded-none border-2 border-background px-10 text-base font-bold">
+              <Button size="lg" className="mt-8 min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl border border-transparent px-10 text-base font-bold">
                 Skapa byråkonto gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

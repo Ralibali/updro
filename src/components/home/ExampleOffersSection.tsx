@@ -79,7 +79,7 @@ const ExampleOffersSection = () => {
   const activeLens = LENSES.find(item => item.id === lens)?.label ?? 'Bäst helhet'
 
   return (
-    <section className="py-16 md:py-20 bg-secondary border-b-2 border-foreground" aria-labelledby="exempelofferter-rubrik">
+    <section className="py-16 md:py-20 bg-surface-alt border-b border-border" aria-labelledby="exempelofferter-rubrik">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Se värdet innan du börjar</p>
@@ -99,10 +99,10 @@ const ExampleOffersSection = () => {
                 key={item.id}
                 type="button"
                 onClick={() => setLens(item.id)}
-                className={`inline-flex min-h-11 items-center gap-2 border-2 px-4 text-sm font-display font-bold transition-all ${
+                className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-display font-bold transition-all ${
                   active
-                    ? 'border-foreground bg-foreground text-background shadow-[3px_3px_0_0_hsl(var(--accent))]'
-                    : 'border-foreground/20 bg-background text-foreground hover:border-foreground'
+                    ? 'border-primary bg-primary text-background shadow-sm'
+                    : 'border-border bg-background text-foreground hover:border-foreground'
                 }`}
                 aria-pressed={active}
               >
@@ -126,14 +126,14 @@ const ExampleOffersSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.08 }}
-                className={`relative border-2 bg-card p-5 md:p-6 transition-all ${
+                className={`relative rounded-2xl border bg-card p-5 md:p-6 transition-all ${
                   featured
-                    ? 'border-foreground shadow-[7px_7px_0_0_hsl(var(--accent))] -translate-y-1'
-                    : 'border-foreground/35 shadow-[3px_3px_0_0_hsl(var(--foreground))]'
+                    ? 'border-accent shadow-md -translate-y-1'
+                    : 'border-border shadow-sm'
                 }`}
               >
                 {featured && (
-                  <span className="absolute -top-3 left-4 bg-accent text-accent-foreground border-2 border-foreground px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-widest font-display">
+                  <span className="absolute -top-3 left-4 bg-accent text-accent-foreground rounded-xl border border-border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-widest font-display">
                     Matchar ditt val
                   </span>
                 )}
@@ -172,7 +172,7 @@ const ExampleOffersSection = () => {
           })}
         </div>
 
-        <div className="mx-auto mt-8 max-w-3xl border-2 border-dashed border-foreground/25 bg-background p-5 text-center">
+        <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-dashed border-foreground/25 bg-background p-5 text-center">
           <p className="font-display text-sm font-bold text-foreground">Illustrerat exempel – inte riktiga byråer eller kundomdömen.</p>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
             Syftet är att visa hur ett strukturerat beslutsunderlag kan se ut. Verkliga offerter, priser och leveranstider beror på ditt projekt.
@@ -183,7 +183,7 @@ const ExampleOffersSection = () => {
           <Link
             to="/publicera"
             onClick={() => trackClick('example_offers_cta', 'Få riktiga offerter', { placement: 'example_offers', lens })}
-            className="inline-flex h-12 items-center justify-center gap-2 px-8 bg-accent text-accent-foreground font-display font-bold uppercase tracking-wide text-sm border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] hover:bg-[hsl(14_75%_50%)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all"
+            className="inline-flex h-12 items-center justify-center gap-2 px-8 bg-accent text-accent-foreground font-semibold text-sm rounded-xl border border-border shadow-brand hover:bg-accent/90 motion-safe:active:scale-[0.98] transition-all"
           >
             Beskriv mitt projekt gratis <ArrowRight className="h-4 w-4" />
           </Link>

@@ -26,7 +26,7 @@ const HowItWorksSection = () => {
     <section className="py-20 bg-surface-alt" id="hur-det-fungerar">
       <div className="container">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -40,23 +40,21 @@ const HowItWorksSection = () => {
           </p>
         </motion.div>
 
-        <div className="max-w-4xl mx-auto space-y-16 md:space-y-20">
+        <div className="grid gap-5 md:grid-cols-3">
           {steps.map((step, index) => (
             <motion.div
               key={step.number}
-              className={`flex items-start gap-6 max-w-md ${
-                step.align === 'right' ? 'md:ml-auto md:mr-0' : 'md:ml-0 md:mr-auto'
-              }`}
+              className="rounded-2xl border border-border bg-card p-6 md:p-7"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
             >
-              <span className="font-display text-6xl font-normal text-muted-foreground/40 leading-none shrink-0">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-secondary font-display text-sm font-bold text-accent">
                 {step.number}
               </span>
-              <div className="pt-2">
-                <h3 className="font-display text-2xl text-foreground mb-2">{step.title}</h3>
+              <div className="pt-5">
+                <h3 className="font-display text-xl text-foreground mb-3">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {step.description}
                 </p>
