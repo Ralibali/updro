@@ -48,6 +48,17 @@ const WebsitePriceCalculator = () => {
     return { low: l, high: l * 1.45 }
   }, [typeIndex, pages, levelIndex, selected])
 
+  const projectDescription = [
+    `Vi behöver hjälp med ${PROJECT_TYPES[typeIndex].label.toLowerCase()}, cirka ${pages} sidor.`,
+    `Ambitionsnivå: ${LEVELS[levelIndex].label}.`,
+    selected.length > 0 ? `Önskade funktioner: ${selected.map(index => FEATURES[index].label).join(', ')}.` : '',
+    `Updros kalkylator gav riktpriset ${format(low)}–${format(high)} kr. Vi vill få en offert utifrån vårt behov.`,
+  ].filter(Boolean).join(' ')
+  const projectUrl = `/publicera?${new URLSearchParams({
+    kategori: PROJECT_TYPES[typeIndex].label === 'E-handel' ? 'E-handel' : 'Webbutveckling',
+    beskrivning: projectDescription,
+  })}`
+
   return (
     <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
       <div className="rounded-2xl border bg-card p-6 md:p-8">
@@ -119,11 +130,12 @@ const WebsitePriceCalculator = () => {
           <li>Be om tydligt scope och leveranslista.</li>
           <li>Kontrollera support, ägande och löpande kostnader.</li>
         </ul>
-        <Link to="/publicera" className="block mt-6">
-          <Button size="lg" className="w-full rounded-xl shadow-blue">
+        <Button asChild size="lg" className="mt-6 w-full rounded-xl shadow-blue">
+          <Link to={projectUrl}>
             Få riktiga offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
+        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">Dina val följer med till förfrågan. Du kan ändra beskrivningen innan du skickar.</p>
       </aside>
     </div>
   )
