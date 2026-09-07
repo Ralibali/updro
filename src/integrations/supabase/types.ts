@@ -14,17 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      project_agreements: {
-        Row: { id: string; project_id: string; offer_id: string; buyer_id: string; supplier_id: string; revision: number; content: Json; created_at: string; updated_at: string }
-        Insert: { id?: string; project_id: string; offer_id: string; buyer_id: string; supplier_id: string; revision?: number; content: Json; created_at?: string; updated_at?: string }
-        Update: { content?: Json; revision?: number; updated_at?: string }
-        Relationships: []
-      }
-      project_agreement_events: {
-        Row: { id: number; agreement_id: string; revision: number; actor_id: string; action: string; content: Json; created_at: string }
-        Insert: { id?: never; agreement_id: string; revision: number; actor_id: string; action: string; content: Json; created_at?: string }
-        Update: { content?: Json }
-        Relationships: []
+      agency_portals: {
+        Row: {
+          brief: string
+          client_contact: string
+          client_name: string
+          created_at: string
+          deliveries: Json
+          extras: Json
+          history: Json
+          id: string
+          is_open: boolean
+          owner_contact: string
+          owner_id: string
+          revision: number
+          source_offer_id: string | null
+          title: string
+          token_expires_at: string | null
+          token_hash: string | null
+          updated_at: string
+        }
+        Insert: {
+          brief?: string
+          client_contact?: string
+          client_name: string
+          created_at?: string
+          deliveries?: Json
+          extras?: Json
+          history?: Json
+          id?: string
+          is_open?: boolean
+          owner_contact?: string
+          owner_id: string
+          revision?: number
+          source_offer_id?: string | null
+          title: string
+          token_expires_at?: string | null
+          token_hash?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brief?: string
+          client_contact?: string
+          client_name?: string
+          created_at?: string
+          deliveries?: Json
+          extras?: Json
+          history?: Json
+          id?: string
+          is_open?: boolean
+          owner_contact?: string
+          owner_id?: string
+          revision?: number
+          source_offer_id?: string | null
+          title?: string
+          token_expires_at?: string | null
+          token_hash?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agency_portals_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agency_portals_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agency_portals_source_offer_id_fkey"
+            columns: ["source_offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       article_queue: {
         Row: {
@@ -867,6 +937,137 @@ export type Database = {
         }
         Relationships: []
       }
+      project_agreement_events: {
+        Row: {
+          action: string
+          actor_id: string
+          agreement_id: string
+          content: Json
+          created_at: string
+          id: number
+          revision: number
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          agreement_id: string
+          content: Json
+          created_at?: string
+          id?: never
+          revision: number
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          agreement_id?: string
+          content?: Json
+          created_at?: string
+          id?: never
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_agreement_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreement_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreement_events_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "project_agreements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_agreements: {
+        Row: {
+          buyer_id: string
+          content: Json
+          created_at: string
+          id: string
+          offer_id: string
+          project_id: string
+          revision: number
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          content: Json
+          created_at?: string
+          id?: string
+          offer_id: string
+          project_id: string
+          revision?: number
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          content?: Json
+          created_at?: string
+          id?: string
+          offer_id?: string
+          project_id?: string
+          revision?: number
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_agreements_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: true
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_agreements_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_attribution: {
         Row: {
           created_at: string
@@ -1527,6 +1728,15 @@ export type Database = {
       }
     }
     Views: {
+      marketplace_category_health: {
+        Row: {
+          active_suppliers: number | null
+          category: string | null
+          health_status: string | null
+          open_projects: number | null
+        }
+        Relationships: []
+      }
       public_agency_directory: {
         Row: {
           avatar_url: string | null
@@ -1695,36 +1905,19 @@ export type Database = {
       }
     }
     Functions: {
-      decide_project_offer: { Args: { p_offer_id: string; p_decision: string }; Returns: string }
-      close_project_without_offer: { Args: { p_project_id: string }; Returns: string }
-      get_unlocked_project_contact: { Args: { p_project_id: string }; Returns: Json }
-      get_buyer_project_offers: { Args: { p_project_id: string }; Returns: Json }
-      get_project_agreement: { Args: { p_project_id: string; p_offer_id: string }; Returns: Json }
-      update_project_agreement: {
-        Args: { p_offer_id: string; p_action: string; p_expected_revision?: number; p_scope?: string; p_special_terms?: string; p_delivery_plan?: Json }
+      agency_portal_payload: {
+        Args: { p_id: string; p_owner: boolean }
         Returns: Json
       }
-      get_public_agencies: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          id: string
-          slug: string
-          bio: string | null
-          categories: string[] | null
-          services: string[] | null
-          logo_url: string | null
-          cover_url: string | null
-          website_url: string | null
-          portfolio_urls: string[] | null
-          company_name: string
-          city: string | null
-          avatar_url: string | null
-          created_at: string | null
-          is_verified: boolean
-          avg_rating: number
-          review_count: number
-          completed_projects: number
-        }[]
+      agency_portal_text: {
+        Args: {
+          p_data: Json
+          p_key: string
+          p_label: string
+          p_max: number
+          p_optional?: boolean
+        }
+        Returns: string
       }
       apply_stripe_purchase_event: {
         Args: {
@@ -1747,10 +1940,28 @@ export type Database = {
         }
         Returns: boolean
       }
+      change_agency_portal: {
+        Args: {
+          p_action: string
+          p_data?: Json
+          p_expected_revision: number
+          p_id: string
+          p_token?: string
+        }
+        Returns: Json
+      }
       claim_guest_projects: { Args: never; Returns: number }
+      close_project_without_offer: {
+        Args: { p_project_id: string }
+        Returns: string
+      }
       consume_edge_rate_limit: {
         Args: { p_key: string; p_limit: number; p_window_seconds: number }
         Returns: boolean
+      }
+      create_agency_portal: {
+        Args: { p_data: Json; p_id: string; p_source_offer_id?: string }
+        Returns: Json
       }
       create_guest_project: {
         Args: {
@@ -1771,7 +1982,54 @@ export type Database = {
           project_id: string
         }[]
       }
+      decide_project_offer: {
+        Args: { p_decision: string; p_offer_id: string }
+        Returns: string
+      }
+      get_agency_portal: {
+        Args: { p_id?: string; p_token?: string }
+        Returns: Json
+      }
+      get_buyer_project_offers: {
+        Args: { p_project_id: string }
+        Returns: Json
+      }
+      get_project_agreement: {
+        Args: { p_offer_id: string; p_project_id: string }
+        Returns: Json
+      }
+      get_public_agencies: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          avg_rating: number
+          bio: string
+          categories: string[]
+          city: string
+          company_name: string
+          completed_projects: number
+          cover_url: string
+          created_at: string
+          id: string
+          is_verified: boolean
+          logo_url: string
+          portfolio_urls: string[]
+          review_count: number
+          services: string[]
+          slug: string
+          website_url: string
+        }[]
+      }
+      get_unlocked_project_contact: {
+        Args: { p_project_id: string }
+        Returns: Json
+      }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      list_agency_portals: { Args: never; Returns: Json }
+      normalize_agreement_delivery_plan: {
+        Args: { p_plan: Json }
+        Returns: Json
+      }
       report_project_outcome: {
         Args: {
           p_actual_value_sek?: number
@@ -1830,6 +2088,17 @@ export type Database = {
       }
       unlock_project_for_supplier: {
         Args: { p_project_id: string }
+        Returns: Json
+      }
+      update_project_agreement: {
+        Args: {
+          p_action: string
+          p_delivery_plan?: Json
+          p_expected_revision?: number
+          p_offer_id: string
+          p_scope?: string
+          p_special_terms?: string
+        }
         Returns: Json
       }
     }

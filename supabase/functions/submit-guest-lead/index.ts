@@ -24,6 +24,23 @@ const respond = (body: unknown, status = 200) => new Response(JSON.stringify(bod
 
 const text = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : ''
 const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+// E-postleverantören kräver ren ASCII. Domäner med å/ä/ö kan översättas (IDN/punycode),
+// men icke-ASCII före @ går inte att skicka till.
+const toAsciiEmail = (value: string): string | null => {
+  if (/^[\x00-\x7F]*$/.test(value)) return value
+  const at = value.lastIndexOf('@')
+  if (at < 1) return null
+  const local = value.slice(0, at)
+  const domain = value.slice(at + 1)
+  if (!/^[\x00-\x7F]*$/.test(local)) return null
+  try {
+    const ascii = new URL(`http://${domain}`).hostname
+    if (!ascii || !/^[\x00-\x7F]+$/.test(ascii)) return null
+    return `${local}@${ascii}`
+  } catch {
+    return null
+  }
+}
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
 }[character] || character))
@@ -86,7 +103,7 @@ Deno.serve(async request => {
     const payload = await request.json().catch(() => ({}))
     if (text(payload.website, 200)) return finish(respond({ success: true }), undefined, { reason: 'honeypot' })
 
-    const email = text(payload.email, 254).toLowerCase()
+    const rawEmail = text(payload.email, 254).toLowerCase()
     const fullName = text(payload.full_name, 120)
     const companyName = text(payload.company_name, 160)
     const phone = text(payload.phone, 40)
@@ -97,8 +114,13 @@ Deno.serve(async request => {
     const startTime = text(payload.start_time, 40)
     const title = rawTitle.length >= 3 ? rawTitle : (description.slice(0, 60).trim() || 'Nytt uppdrag')
 
-
-    if (!validEmail(email)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
+    if (!validEmail(rawEmail)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
+    const email = toAsciiEmail(rawEmail)
+    if (!email) {
+      return finish(respond({
+        error: 'E-postadressen innehåller tecken som å, ä eller ö. Ange en adress utan sådana tecken så att bekräftelsen kan skickas.',
+      }, 400), 'non_ascii_email')
+    }
     if (description.length < 10) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
     if (!allowedCategories.has(category) || !allowedBudgets.has(budgetRange) || !allowedStarts.has(startTime)) {
       return finish(respond({ error: 'Kontrollera kategori, budget och önskad start.' }, 400), 'invalid_enums')
