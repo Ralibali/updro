@@ -87,6 +87,8 @@ const ProjectDetail = lazy(() => import("./pages/buyer/ProjectDetail"));
 const SupplierDashboard = lazy(() => import("./pages/supplier/SupplierDashboard"));
 const BrowseProjects = lazy(() => import("./pages/supplier/BrowseProjects"));
 const ProjectUnlock = lazy(() => import("./pages/supplier/ProjectUnlock"));
+const SupplierPortals = lazy(() => import("./pages/supplier/SupplierPortals"));
+const ClientPortal = lazy(() => import("./pages/ClientPortal"));
 const SupplierOffers = lazy(() => import("./pages/supplier/SupplierOffers"));
 const BillingPage = lazy(() => import("./pages/supplier/BillingPage"));
 const ReferralPage = lazy(() => import("./pages/supplier/ReferralPage"));
@@ -121,7 +123,7 @@ const NoindexGuard = () => {
     const path = location.pathname.replace(/\/$/, '') || '/';
     const noindexPaths = new Set(getNoindexSeoRoutes().map(route => route.path));
     const privatePrefixes = ['/admin', '/dashboard'];
-    const privateExact = ['/logga-in', '/registrera', '/registrera/byra', '/aterstall-losenord', '/landing', '/landing/byra', '/jamfor-offerter'];
+    const privateExact = ['/kundportal', '/logga-in', '/registrera', '/registrera/byra', '/aterstall-losenord', '/landing', '/landing/byra', '/jamfor-offerter'];
     const shouldNoindex = noindexPaths.has(path) || privateExact.includes(path) || privatePrefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
     if (!shouldNoindex || typeof document === 'undefined') return;
     const applyNoindex = () => {
@@ -141,6 +143,7 @@ const App = () => (
       <a href="#main-content" className="skip-link">Hoppa till innehåll</a><PageTracker /><NoindexGuard />
       <Suspense fallback={<PageLoader />}><div id="main-content"><Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/kundportal" element={<ClientPortal />} />
         <Route path="/publicera" element={<ProjectWizard />} />
         <Route path="/publicera/:kategori" element={<ProjectWizard />} />
         <Route path="/byraer" element={<BrowseAgenciesPage />} />
@@ -192,7 +195,7 @@ const App = () => (
         <Route path="/admin/nyhetsbrev" element={<ProtectedRoute role="admin"><AdminNewsletter /></ProtectedRoute>} />
         {COMPARISON_PAGES.map(p => <Route key={p.slug} path={`/${p.slug}`} element={<ComparisonPage />} />)}
         <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerLayout /></ProtectedRoute>}><Route index element={<BuyerDashboard />} /><Route path="uppdrag" element={<BuyerProjects />} /><Route path="uppdrag/:id" element={<ProjectDetail />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /></Route>
-        <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierLayout /></ProtectedRoute>}><Route index element={<SupplierDashboard />} /><Route path="uppdrag" element={<BrowseProjects />} /><Route path="uppdrag/:id" element={<ProjectUnlock />} /><Route path="offerter" element={<SupplierOffers />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /><Route path="fakturering" element={<BillingPage />} /><Route path="bjud-in" element={<ReferralPage />} /></Route>
+        <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierLayout /></ProtectedRoute>}><Route index element={<SupplierDashboard />} /><Route path="uppdrag" element={<BrowseProjects />} /><Route path="uppdrag/:id" element={<ProjectUnlock />} /><Route path="offerter" element={<SupplierOffers />} /><Route path="kundportal" element={<SupplierPortals />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /><Route path="fakturering" element={<BillingPage />} /><Route path="bjud-in" element={<ReferralPage />} /></Route>
         <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/anvandare" element={<ProtectedRoute role="admin"><AdminUsers /></ProtectedRoute>} />
         <Route path="/admin/anvandare/:id" element={<ProtectedRoute role="admin"><AdminUserDetail /></ProtectedRoute>} />

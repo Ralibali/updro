@@ -144,7 +144,7 @@ export const sanitizePlausibleProps = (props?: PlausibleProps): Record<string, s
 // Paths on which we never send pageviews — admin surfaces and other
 // authenticated dashboards can contain buyer names, project titles etc. in the
 // document.title. Custom events from those surfaces are still allowed.
-const SENSITIVE_PATH_PREFIXES = ['/admin', '/dashboard']
+const SENSITIVE_PATH_PREFIXES = ['/admin', '/dashboard', '/kundportal']
 
 export const isTrackablePath = (path: string): boolean => {
   const pathname = path.split('?')[0].split('#')[0] || '/'

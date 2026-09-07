@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import OfferAttachment from '@/components/shared/OfferAttachment'
 import { PAYMENT_PLAN_LABELS } from '@/lib/agreements'
+import StartPortalButton from '@/components/portal/StartPortalButton'
 import AgreementPanel from '@/components/agreements/AgreementPanel'
 
 
@@ -52,6 +53,7 @@ export const OfferCard = ({ o }: { o: any }) => (
       <OfferAttachment path={o.attachment_url} />
     </details>
     <div className="mt-4 flex flex-wrap gap-2">
+      {o.status === 'accepted' && <StartPortalButton offerId={o.id} />}
       <Button asChild variant="outline" size="sm"><Link to={`/dashboard/supplier/uppdrag/${o.project_id}`}>Uppdrag och kontakt</Link></Button>
       {o.projects?.buyer_id && (o.status === 'accepted' || o.status === 'pending') && <Button asChild variant="outline" size="sm"><Link to={`/dashboard/supplier/chatt?project=${o.project_id}&user=${o.projects.buyer_id}`}>Chatta med beställaren</Link></Button>}
     </div>
