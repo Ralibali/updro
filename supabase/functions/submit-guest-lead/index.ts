@@ -24,6 +24,23 @@ const respond = (body: unknown, status = 200) => new Response(JSON.stringify(bod
 
 const text = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : ''
 const validEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+// E-postleverantören kräver ren ASCII. Domäner med å/ä/ö kan översättas (IDN/punycode),
+// men icke-ASCII före @ går inte att skicka till.
+const toAsciiEmail = (value: string): string | null => {
+  if (/^[\x00-\x7F]*$/.test(value)) return value
+  const at = value.lastIndexOf('@')
+  if (at < 1) return null
+  const local = value.slice(0, at)
+  const domain = value.slice(at + 1)
+  if (!/^[\x00-\x7F]*$/.test(local)) return null
+  try {
+    const ascii = new URL(`http://${domain}`).hostname
+    if (!ascii || !/^[\x00-\x7F]+$/.test(ascii)) return null
+    return `${local}@${ascii}`
+  } catch {
+    return null
+  }
+}
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
 }[character] || character))
