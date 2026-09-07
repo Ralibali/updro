@@ -14,7 +14,6 @@ const categoryLinks = getCategoryNavLinks()
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [servicesOpen, setServicesOpen] = useState(false)
   const { isAuthenticated, profile, isBuyer, isSupplier, isAdmin, signOut, isOnTrial, trialLeadsLeft } = useAuth()
 
   const dashboardLink = isAdmin ? '/admin' : isSupplier ? '/dashboard/supplier' : '/dashboard/buyer'
@@ -29,44 +28,29 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
         <div className="container flex min-h-16 items-center justify-between gap-3 py-2">
           <Logo />
 
-          <nav className="hidden md:flex items-center gap-6" aria-label="Huvudnavigation">
+          <nav className="hidden md:flex items-center gap-4" aria-label="Huvudnavigation">
             <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Hitta byrå
             </Link>
 
-            <div
-              className="relative"
-              onMouseEnter={() => setServicesOpen(true)}
-              onMouseLeave={() => setServicesOpen(false)}
-            >
-              <button
-                type="button"
-                className="flex min-h-11 items-center gap-1 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                aria-expanded={servicesOpen}
-              >
-                Kategorier <ChevronDown className="h-3.5 w-3.5" />
-              </button>
-              {servicesOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
-                  <div className="bg-white dark:bg-card border rounded-xl shadow-lg p-4 w-[520px] grid grid-cols-2 gap-1">
-                    {categoryLinks.map(link => (
-                      <Link
-                        key={link.href}
-                        to={link.href}
-                        onClick={() => setServicesOpen(false)}
-                        className="text-sm px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button type="button" className="flex min-h-11 items-center gap-1 rounded-lg px-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">
+                  Kategorier <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" sideOffset={12} className="grid w-[min(32rem,calc(100vw-2rem))] grid-cols-2 gap-1 rounded-2xl p-3 shadow-lg">
+                {categoryLinks.map(link => (
+                  <DropdownMenuItem asChild key={link.href}>
+                    <Link to={link.href} className="min-h-11 rounded-lg px-3 py-2.5 text-sm">{link.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <Link to="/registrera/byra" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               För byråer
@@ -83,13 +67,13 @@ const Navbar = () => {
               <>
                 {isSupplier && isOnTrial && (
                   <span className="text-xs font-semibold bg-primary/10 text-primary rounded-full px-3 py-1 flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" /> Trial: {trialLeadsLeft} leads
+                    <Sparkles className="h-3 w-3" /> Provperiod: {trialLeadsLeft} upplåsningar
                   </span>
                 )}
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full min-h-11 min-w-11">
+                    <Button variant="ghost" size="icon" className="rounded-full min-h-11 min-w-11" aria-label="Mitt konto">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="text-xs bg-primary/10 text-primary">{initials}</AvatarFallback>
                       </Avatar>
@@ -106,12 +90,10 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/logga-in"><Button variant="ghost" size="sm" className="min-h-11">Logga in</Button></Link>
-                <Link to="/publicera">
-                  <Button size="sm" className="min-h-11 bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl px-5 shadow-md">
-                    Starta förfrågan
-                  </Button>
-                </Link>
+                <Button asChild variant="ghost" size="sm" className="min-h-11"><Link to="/logga-in">Logga in</Link></Button>
+                <Button asChild size="sm" className="min-h-11 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl px-5 shadow-brand">
+                  <Link to="/publicera">Starta förfrågan</Link>
+                </Button>
               </>
             )}
           </div>
@@ -163,21 +145,19 @@ const Navbar = () => {
               </div>
               {isAuthenticated ? (
                 <>
-                  <Link to={dashboardLink} onClick={closeMobile}>
-                    <Button variant="outline" className="w-full min-h-12 rounded-xl">Dashboard</Button>
-                  </Link>
+                  <Button asChild variant="outline" className="w-full min-h-12 rounded-xl">
+                    <Link to={dashboardLink} onClick={closeMobile}>Min arbetsyta</Link>
+                  </Button>
                   <Button variant="ghost" className="w-full min-h-12 rounded-xl text-destructive" onClick={() => { signOut(); closeMobile() }}>Logga ut</Button>
                 </>
               ) : (
                 <>
-                  <Link to="/logga-in" onClick={closeMobile}>
-                    <Button variant="outline" className="w-full min-h-12 rounded-xl">Logga in</Button>
-                  </Link>
-                  <Link to="/publicera" onClick={closeMobile}>
-                    <Button className="w-full min-h-12 rounded-xl bg-brand-orange hover:bg-brand-orange-hover text-white">
-                      Starta förfrågan
-                    </Button>
-                  </Link>
+                  <Button asChild variant="outline" className="w-full min-h-12 rounded-xl">
+                    <Link to="/logga-in" onClick={closeMobile}>Logga in</Link>
+                  </Button>
+                  <Button asChild className="w-full min-h-12 rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground">
+                    <Link to="/publicera" onClick={closeMobile}>Starta förfrågan</Link>
+                  </Button>
                 </>
               )}
             </div>

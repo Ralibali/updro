@@ -27,7 +27,7 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
   const publishUrl = `/publicera?kategori=${encodeURIComponent(projectType.category)}&beskrivning=${encodeURIComponent(briefSeed)}`
 
   return (
-    <section className="py-16 md:py-20 bg-secondary border-b-2 border-foreground" aria-labelledby="priskalkylator-rubrik">
+    <section className="py-16 md:py-20 bg-surface-alt border-b border-border" aria-labelledby="priskalkylator-rubrik">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Prisindikator</p>
@@ -39,12 +39,12 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
           </p>
         </div>
 
-        <div className="mt-10 max-w-3xl mx-auto border-2 border-foreground bg-card shadow-[6px_6px_0_0_hsl(var(--foreground))]">
-          <div className="p-5 md:p-7 border-b-2 border-foreground">
+        <div className="mt-10 max-w-3xl mx-auto overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+          <div className="p-5 md:p-7 border-b border-border">
             <p className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">1. Vad behöver du?</p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Välj projekttyp">
               {PROJECT_TYPES.map(type => (
-                <button key={type.id} type="button" aria-pressed={typeId === type.id} onClick={() => setTypeId(type.id)} className={`px-4 py-2 text-sm font-semibold border-2 border-foreground transition-colors ${typeId === type.id ? 'bg-foreground text-background' : 'bg-background hover:bg-secondary'}`}>
+                <button key={type.id} type="button" aria-pressed={typeId === type.id} onClick={() => setTypeId(type.id)} className={`px-4 py-2 text-sm font-semibold rounded-xl border border-border transition-colors ${typeId === type.id ? 'bg-foreground text-background' : 'bg-background hover:bg-secondary'}`}>
                   {type.label}
                 </button>
               ))}
@@ -53,7 +53,7 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
             <p className="mt-6 mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">2. Vilken nivå passar?</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2" role="group" aria-label="Välj omfattning">
               {LEVELS.map(levelKey => (
-                <button key={levelKey} type="button" aria-pressed={level === levelKey} onClick={() => setLevel(levelKey)} className={`px-4 py-3 text-left border-2 border-foreground transition-colors ${level === levelKey ? 'bg-accent text-accent-foreground' : 'bg-background hover:bg-secondary'}`}>
+                <button key={levelKey} type="button" aria-pressed={level === levelKey} onClick={() => setLevel(levelKey)} className={`px-4 py-3 text-left rounded-xl border border-border transition-colors ${level === levelKey ? 'bg-accent text-accent-foreground' : 'bg-background hover:bg-secondary'}`}>
                   <span className="block font-display font-bold text-sm uppercase tracking-wide">{LEVEL_LABELS[levelKey]}</span>
                 </button>
               ))}
@@ -80,7 +80,7 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
-              <Link to={publishUrl} onClick={() => trackClick('price_calculator_cta', 'Jämför riktiga offerter', { project_type: typeId, level })} className="inline-flex h-12 items-center justify-center gap-2 px-6 bg-accent text-accent-foreground font-display font-bold uppercase tracking-wide text-sm border-2 border-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all">
+              <Link to={publishUrl} onClick={() => trackClick('price_calculator_cta', 'Jämför riktiga offerter', { project_type: typeId, level })} className="inline-flex h-12 items-center justify-center gap-2 px-6 bg-accent text-accent-foreground font-semibold text-sm rounded-xl border border-border shadow-brand motion-safe:active:scale-[0.98] transition-all">
                 Jämför riktiga offerter <ArrowRight className="h-4 w-4" />
               </Link>
               {guide && <Link to={`/priser/${guide.slug}`} className="text-sm font-semibold text-foreground underline underline-offset-4 hover:text-accent">Se antaganden i prisguiden för {guide.serviceLabel}</Link>}

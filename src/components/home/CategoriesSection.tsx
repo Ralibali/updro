@@ -17,12 +17,12 @@ const CategoriesSection = () => {
   const reduce = useReducedMotion()
 
   return (
-    <section className="py-16 md:py-20 border-b border-foreground/10" aria-labelledby="kategorier-rubrik">
+    <section className="py-16 md:py-20 border-b border-border" aria-labelledby="kategorier-rubrik">
       <div className="container">
         <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div className="max-w-2xl">
-            <span className="inline-block px-3 py-1 border border-foreground text-[11px] font-bold uppercase tracking-widest bg-secondary font-display mb-4">Digitala tjänster</span>
-            <h2 id="kategorier-rubrik" className="font-display text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-[1]">
+            <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-accent mb-4">Digitala tjänster</span>
+            <h2 id="kategorier-rubrik" className="font-display text-3xl md:text-5xl font-bold tracking-tight text-foreground leading-[1.1]">
               Börja i rätt kategori. <span className="text-accent">Finjustera i briefen.</span>
             </h2>
           </div>
@@ -31,17 +31,17 @@ const CategoriesSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {categories.map((category, index) => (
             <motion.div key={category.slug} initial={reduce ? undefined : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: index * 0.03 }}>
-              <Link to={category.href} className="group flex h-full items-start gap-4 bg-card border border-foreground/15 p-5 hover:border-foreground hover:-translate-y-0.5 hover:shadow-sm transition-all">
-                <div className="w-10 h-10 shrink-0 flex items-center justify-center bg-secondary border border-foreground/20 group-hover:border-foreground">
-                  <category.icon className="w-5 h-5 text-foreground" strokeWidth={2} />
+              <Link to={category.href} className="group flex h-full items-start gap-4 rounded-2xl bg-card border border-border p-5 hover:border-accent/40 motion-safe:hover:-translate-y-1 hover:shadow-md transition-all">
+                <div className="w-10 h-10 shrink-0 flex items-center justify-center rounded-xl bg-secondary group-hover:bg-accent/10">
+                  <category.icon className="w-5 h-5 text-accent" strokeWidth={1.75} />
                 </div>
                 <div className="min-w-0">
                   <h3 className="font-display font-bold text-base leading-tight">{category.label}</h3>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{category.desc}</p>
-                  <span className="mt-3 inline-block text-xs font-semibold text-foreground underline underline-offset-4 opacity-70 group-hover:opacity-100">Utforska →</span>
+                  <span className="mt-3 inline-block text-xs font-semibold text-muted-foreground group-hover:text-accent">Utforska →</span>
                 </div>
               </Link>
             </motion.div>

@@ -21,7 +21,7 @@ const MobileStickyCTA = () => {
   if (!pastHero || (isAuthenticated && (isSupplier || isAdmin))) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t-2 border-foreground bg-background/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden">
       <div className="mx-auto flex max-w-lg items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="pt-1 font-display text-xs font-bold text-foreground">Gratis · max tre offerter</p>
@@ -29,7 +29,7 @@ const MobileStickyCTA = () => {
         <Link
           to="/publicera"
           onClick={() => trackClick('mobile_sticky_cta', 'Starta gratis', { placement: 'homepage_sticky' })}
-          className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 border-2 border-foreground bg-accent px-5 font-display text-sm font-bold text-accent-foreground shadow-[3px_3px_0_0_hsl(var(--foreground))] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+          className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-accent px-5 font-display text-sm font-bold text-accent-foreground shadow-sm motion-safe:active:scale-[0.98]"
         >
           Starta gratis <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>

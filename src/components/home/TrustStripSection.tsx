@@ -24,12 +24,12 @@ const items = [
 ]
 
 const TrustStripSection = () => (
-  <section className="border-b-2 border-foreground bg-card" aria-label="Så fungerar Updro i korthet">
+  <section className="border-b border-border bg-card" aria-label="Så fungerar Updro i korthet">
     <div className="container py-5 md:py-6">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(item => (
-          <div key={item.title} className="flex items-start gap-3 border border-foreground/10 bg-background px-4 py-4">
-            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center border border-foreground bg-secondary">
+          <div key={item.title} className="flex items-start gap-3 px-2 py-3">
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/10">
               <item.icon className="h-4 w-4 text-accent" aria-hidden="true" />
             </div>
             <div>

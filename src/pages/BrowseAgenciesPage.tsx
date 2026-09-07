@@ -38,19 +38,19 @@ const BrowseAgenciesPage = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="py-12">
+        <section className="py-10 md:py-16">
           <div className="container">
-            <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] items-start mb-10">
+            <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] items-center mb-12">
               <div>
-                <p className="text-sm font-semibold text-primary mb-3">DITT NÄSTA BYRÅSAMARBETE</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent mb-3">DITT NÄSTA BYRÅSAMARBETE</p>
                 <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight max-w-xl">Hitta byrån som passar ditt projekt.</h1>
                 <p className="text-muted-foreground mt-5 text-lg max-w-xl">Jämför kompetens och arbetsprover i byråprofilerna. Eller beskriv ditt projekt en gång och jämför upp till tre offerter, helt gratis.</p>
                 <Link to={seoLeadPath(filterCat === 'all' ? undefined : filterCat)} className="inline-block mt-6">
-                  <Button size="lg" className="rounded-xl">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                  <Button size="lg" className="rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 shadow-brand">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Button>
                 </Link>
                 <p className="text-sm text-muted-foreground mt-3">Inget konto krävs för att börja · Ingen köpplikt</p>
               </div>
-              <aside className="hidden lg:block rounded-2xl border bg-card p-6 md:p-8">
+              <aside className="hidden lg:block rounded-3xl border bg-card p-6 md:p-8 shadow-md">
                 <h2 className="font-display text-xl font-semibold">Ett tydligare underlag att välja från</h2>
                 <div className="mt-5 space-y-5 text-sm">
                   <p className="flex gap-3"><FileCheck className="h-5 w-5 shrink-0 text-primary" /><span><strong className="block text-foreground">Samma brief till byråerna</strong><span className="text-muted-foreground">Beskriv mål, omfattning och budget så att svaren går att jämföra.</span></span></p>
@@ -65,7 +65,7 @@ const BrowseAgenciesPage = () => {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-8">
+            <div className="flex flex-wrap gap-3 mb-8 rounded-2xl border bg-card p-4 shadow-sm">
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -77,7 +77,7 @@ const BrowseAgenciesPage = () => {
                 />
               </div>
               <Select value={filterCat} onValueChange={setFilterCat}>
-                <SelectTrigger aria-label="Filtrera byråer efter kategori" className="w-48 rounded-xl"><SelectValue placeholder="Alla kategorier" /></SelectTrigger>
+                <SelectTrigger aria-label="Filtrera byråer efter kategori" className="w-full sm:w-56 rounded-xl"><SelectValue placeholder="Alla kategorier" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Alla kategorier</SelectItem>
                   {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
@@ -97,10 +97,10 @@ const BrowseAgenciesPage = () => {
                 {filtered.map(a => {
                   const profile = a.profiles
                   return (
-                    <Link key={a.id} to={`/byra/${a.slug}`} className="block">
-                      <div className="bg-card rounded-2xl border p-5 hover:shadow-md transition-all h-full">
+                    <Link key={a.id} to={`/byra/${a.slug}`} className="group block rounded-2xl">
+                      <div className="bg-card rounded-2xl border p-6 shadow-sm group-hover:border-accent/40 group-hover:shadow-md motion-safe:group-hover:-translate-y-1 transition-all h-full">
                         <div className="flex items-center gap-3 mb-3">
-                          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-lg font-bold text-primary">
+                          <div className="h-12 w-12 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center text-lg font-bold text-primary">
                             {(profile?.company_name || profile?.full_name || '?')[0]}
                           </div>
                           <div>
