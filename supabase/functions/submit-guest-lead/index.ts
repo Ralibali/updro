@@ -103,7 +103,7 @@ Deno.serve(async request => {
     const payload = await request.json().catch(() => ({}))
     if (text(payload.website, 200)) return finish(respond({ success: true }), undefined, { reason: 'honeypot' })
 
-    const email = text(payload.email, 254).toLowerCase()
+    const rawEmail = text(payload.email, 254).toLowerCase()
     const fullName = text(payload.full_name, 120)
     const companyName = text(payload.company_name, 160)
     const phone = text(payload.phone, 40)
@@ -114,8 +114,13 @@ Deno.serve(async request => {
     const startTime = text(payload.start_time, 40)
     const title = rawTitle.length >= 3 ? rawTitle : (description.slice(0, 60).trim() || 'Nytt uppdrag')
 
-
-    if (!validEmail(email)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
+    if (!validEmail(rawEmail)) return finish(respond({ error: 'Ange en giltig e-postadress.' }, 400), 'invalid_email')
+    const email = toAsciiEmail(rawEmail)
+    if (!email) {
+      return finish(respond({
+        error: 'E-postadressen innehåller tecken som å, ä eller ö. Ange en adress utan sådana tecken så att bekräftelsen kan skickas.',
+      }, 400), 'non_ascii_email')
+    }
     if (description.length < 10) return finish(respond({ error: 'Beskriv uppdraget tydligare.' }, 400), 'brief_too_short')
     if (!allowedCategories.has(category) || !allowedBudgets.has(budgetRange) || !allowedStarts.has(startTime)) {
       return finish(respond({ error: 'Kontrollera kategori, budget och önskad start.' }, 400), 'invalid_enums')
