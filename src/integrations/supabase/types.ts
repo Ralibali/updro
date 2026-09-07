@@ -1701,7 +1701,7 @@ export type Database = {
       get_buyer_project_offers: { Args: { p_project_id: string }; Returns: Json }
       get_project_agreement: { Args: { p_project_id: string; p_offer_id: string }; Returns: Json }
       update_project_agreement: {
-        Args: { p_offer_id: string; p_action: string; p_expected_revision?: number; p_scope?: string; p_special_terms?: string }
+        Args: { p_offer_id: string; p_action: string; p_expected_revision?: number; p_scope?: string; p_special_terms?: string; p_delivery_plan?: Json }
         Returns: Json
       }
       get_public_agencies: {

@@ -17,6 +17,24 @@ beforeEach(() => { vi.clearAllMocks(); mocks.load.mockResolvedValue({ context, a
 afterEach(cleanup)
 
 describe('AgreementPanel', () => {
+  it('saves and displays delivery details through the revision-checked API', async () => {
+    mocks.save.mockImplementation(async (_offer, _action, _revision, edits) => ({
+      ...row, revision: 3, content: { ...row.content, ...edits, buyer_confirmed_at: null },
+    }))
+    render(<AgreementPanel projectId="project" offerId="offer" role="buyer" />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Redigera utkast' }))
+    fireEvent.change(screen.getByLabelText('Vad ska levereras? En leverans per rad'), { target: { value: 'Fem sidor\nÖverlämning' } })
+    fireEvent.change(screen.getByLabelText('Överenskommet leveransdatum'), { target: { value: '2026-10-31' } })
+    fireEvent.change(screen.getByLabelText('Korrekturrundor som ingår'), { target: { value: '0' } })
+    fireEvent.change(screen.getByLabelText('Vad behöver vara klart för godkännande?'), { target: { value: 'Alla avtalade kontroller passerar' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Spara ändringar' }))
+    expect(await screen.findByRole('region', { name: 'Leveransunderlag' })).toHaveTextContent('Fem sidor')
+    expect(mocks.save).toHaveBeenCalledWith('offer', 'edit', 2, expect.objectContaining({ delivery_plan: {
+      deliverables: ['Fem sidor', 'Överlämning'], due_date: '2026-10-31', revision_rounds: 0, acceptance_criteria: 'Alla avtalade kontroller passerar',
+    } }))
+    expect(screen.getByRole('button', { name: 'Bekräfta och skicka till byrån' })).toBeDisabled()
+  })
+
   it('requires explicit review of the displayed version before confirming', async () => {
     render(<AgreementPanel projectId="project" offerId="offer" role="supplier" />)
     const button = await screen.findByRole('button', { name: 'Bekräfta samarbetsavtalet' })

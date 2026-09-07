@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { formatPrice } from '@/lib/dateUtils'
 import { AGREEMENT_STATUS_LABELS, PAYMENT_PLAN_LABELS, STANDARD_CLAUSES, agreementStatus } from '@/lib/agreements'
+import { deliveryPlanText, emptyDeliveryPlan, parseDeliveryPlan } from '@/lib/deliveryPlan'
+import { DeliveryPlanFields, DeliveryPlanSummary } from './DeliveryPlanFields'
 import { getProjectAgreement, updateProjectAgreement, type AgreementContext, type AgreementRow } from '@/lib/agreementActions'
 
 interface AgreementPanelProps { projectId: string; offerId: string; role: 'buyer' | 'supplier' }
@@ -23,6 +25,7 @@ const AgreementPanel = ({ projectId, offerId, role }: AgreementPanelProps) => {
   const [consent, setConsent] = useState(false)
   const [scopeDraft, setScopeDraft] = useState('')
   const [termsDraft, setTermsDraft] = useState('')
+  const [deliveryDraft, setDeliveryDraft] = useState(emptyDeliveryPlan)
   const isBuyer = role === 'buyer'
   const content = agreement?.content
   const status = content ? agreementStatus(content) : null
@@ -50,12 +53,14 @@ const AgreementPanel = ({ projectId, offerId, role }: AgreementPanelProps) => {
 
   const save = async (action: 'create' | 'edit' | 'confirm') => {
     if (savingRef.current || (action === 'confirm' && !consent)) return
+    const plan = action === 'edit' ? parseDeliveryPlan({ ...deliveryDraft, deliverables: deliveryDraft.deliverables.map(item => item.trim()).filter(Boolean) }) : null
+    if (action === 'edit' && !plan) { toast.error('Kontrollera leveranserna: högst 20 rader med 200 tecken, giltigt datum och 0–20 korrekturrundor.'); return }
     savingRef.current = true
     setSaving(true)
     setError(null)
     try {
       const row = await updateProjectAgreement(offerId, action, agreement?.revision ?? 0,
-        action === 'edit' ? { scope: scopeDraft.trim(), special_terms: termsDraft.trim() } : undefined)
+        action === 'edit' ? { scope: scopeDraft.trim(), special_terms: termsDraft.trim(), delivery_plan: plan! } : undefined)
       setAgreement(row)
       setEditing(false)
       setConsent(false)
@@ -83,6 +88,7 @@ const AgreementPanel = ({ projectId, offerId, role }: AgreementPanelProps) => {
       `Betalningsmodell: ${PAYMENT_PLAN_LABELS[content.payment_plan || 'fixed']}`,
       `Tidsplan: ${content.delivery_weeks ? `${content.delivery_weeks} veckor` : 'Enligt dialog'}`,
       '\nOmfattning', content.scope, '\nSärskilda villkor', content.special_terms || 'Inga tillägg.',
+      '\n' + deliveryPlanText(content.delivery_plan ?? emptyDeliveryPlan()),
       '\nStandardvillkor', ...(content.standard_clauses ?? STANDARD_CLAUSES),
       `\nBeställarens bekräftelse: ${content.buyer_confirmed_at ?? 'Saknas'}`,
       `Byråns bekräftelse: ${content.supplier_confirmed_at ?? 'Saknas'}`,
@@ -122,11 +128,13 @@ const AgreementPanel = ({ projectId, offerId, role }: AgreementPanelProps) => {
         {editing ? <div className="space-y-3">
           <div><Label htmlFor={`scope-${offerId}`}>Omfattning</Label><Textarea id={`scope-${offerId}`} value={scopeDraft} onChange={e => setScopeDraft(e.target.value)} maxLength={30000} className="mt-1 min-h-[160px]" /></div>
           <div><Label htmlFor={`terms-${offerId}`}>Särskilda villkor</Label><Textarea id={`terms-${offerId}`} value={termsDraft} onChange={e => setTermsDraft(e.target.value)} maxLength={10000} className="mt-1 min-h-[100px]" /></div>
+          <DeliveryPlanFields plan={deliveryDraft} onChange={setDeliveryDraft} />
           <p className="text-xs text-muted-foreground">Ändringar skapar en ny version och nollställer tidigare bekräftelser.</p>
           <div className="flex flex-wrap gap-2"><Button size="sm" onClick={() => save('edit')} disabled={saving || !!error || scopeDraft.trim().length < 3}>Spara ändringar</Button><Button size="sm" variant="outline" disabled={saving} onClick={() => setEditing(false)}>Avbryt</Button></div>
         </div> : <>
           <div><h4 className="text-sm font-semibold">Omfattning</h4><p className="mt-1 whitespace-pre-wrap break-words text-sm">{content.scope}</p></div>
           {content.special_terms && <div><h4 className="text-sm font-semibold">Särskilda villkor</h4><p className="mt-1 whitespace-pre-wrap break-words text-sm">{content.special_terms}</p></div>}
+          <DeliveryPlanSummary plan={content.delivery_plan ?? emptyDeliveryPlan()} />
           <div><h4 className="text-sm font-semibold">Standardvillkor</h4><ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-muted-foreground">{(content.standard_clauses ?? STANDARD_CLAUSES).map(clause => <li key={clause}>{clause}</li>)}</ul></div>
           <div className="space-y-2 rounded-lg border bg-muted/20 p-3 text-xs text-muted-foreground">
             <p>Version {agreement.revision} · Skapat {formatDateTime(content.created_at)}</p>
@@ -140,7 +148,7 @@ const AgreementPanel = ({ projectId, offerId, role }: AgreementPanelProps) => {
           </div>}
           {status === 'signed' && <p className="flex items-start gap-2 text-sm font-semibold text-emerald-700"><ShieldCheck className="h-5 w-5 shrink-0" />Avtalet är låst. Kontakta varandra vid behov av ett nytt eller kompletterande avtal.</p>}
           <div className="flex flex-wrap gap-2">
-            {isBuyer && status !== 'signed' && <Button size="sm" variant="outline" disabled={saving || !!error} onClick={() => { setScopeDraft(content.scope); setTermsDraft(content.special_terms); setConsent(false); setEditing(true) }}><PenLine className="mr-2 h-4 w-4" />Redigera utkast</Button>}
+            {isBuyer && status !== 'signed' && <Button size="sm" variant="outline" disabled={saving || !!error} onClick={() => { setScopeDraft(content.scope); setTermsDraft(content.special_terms); setDeliveryDraft(content.delivery_plan ?? emptyDeliveryPlan()); setConsent(false); setEditing(true) }}><PenLine className="mr-2 h-4 w-4" />Redigera utkast</Button>}
             <Button size="sm" variant="outline" onClick={download}><Download className="mr-2 h-4 w-4" />Ladda ner avtal (.txt)</Button>
           </div>
         </>}

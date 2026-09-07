@@ -5,11 +5,14 @@
  * överenskommelse mellan beställare och byrå.
  */
 
-export const AGREEMENT_VERSION = 1
+import { emptyDeliveryPlan, parseDeliveryPlan, type DeliveryPlan } from './deliveryPlan'
+
+export const AGREEMENT_VERSION = 2
 
 export interface AgreementContent {
   version: number
   standard_clauses?: string[]
+  delivery_plan?: DeliveryPlan
   /** Kort beskrivning av omfattningen, förifylld från uppdrag + offert. */
   scope: string
   /** Köparens egna tillägg, t.ex. återkommande avstämningsmöten. */
@@ -77,6 +80,7 @@ export const buildDefaultAgreementContent = (
   version: AGREEMENT_VERSION,
   scope: defaultScope(project, offer),
   special_terms: '',
+  delivery_plan: emptyDeliveryPlan(),
   price_sek: Number(offer.price) || 0,
   payment_plan: (offer.payment_plan as AgreementContent['payment_plan']) || null,
   delivery_weeks: offer.delivery_weeks ?? null,
@@ -117,15 +121,17 @@ export const markSupplierConfirmed = (content: AgreementContent, now = new Date(
  */
 export const applyEdits = (
   content: AgreementContent,
-  edits: { scope: string; special_terms: string },
+  edits: { scope: string; special_terms: string; delivery_plan?: DeliveryPlan },
 ): AgreementContent => {
   const changed =
-    edits.scope !== content.scope || edits.special_terms !== content.special_terms
+    edits.scope !== content.scope || edits.special_terms !== content.special_terms ||
+    (edits.delivery_plan !== undefined && JSON.stringify(edits.delivery_plan) !== JSON.stringify(content.delivery_plan ?? emptyDeliveryPlan()))
   if (!changed || agreementStatus(content) === 'signed') return content
   return {
     ...content,
     scope: edits.scope,
     special_terms: edits.special_terms,
+    ...(edits.delivery_plan ? { delivery_plan: edits.delivery_plan } : {}),
     buyer_confirmed_at: null,
     supplier_confirmed_at: null,
   }
@@ -138,7 +144,10 @@ export const parseAgreementContent = (raw: unknown): AgreementContent | null => 
   if (typeof c.scope !== 'string' || typeof c.price_sek !== 'number' || !Number.isFinite(c.price_sek)) return null
   if (c.supplier_confirmed_at && !c.buyer_confirmed_at) return null
   if ([c.buyer_confirmed_at, c.supplier_confirmed_at].some(value => value != null && (typeof value !== 'string' || !Number.isFinite(Date.parse(value))))) return null
+  const deliveryPlan = parseDeliveryPlan(c.delivery_plan)
+  if (!deliveryPlan) return null
   return {
+    delivery_plan: deliveryPlan,
     ...(Array.isArray(c.standard_clauses) && c.standard_clauses.every(item => typeof item === 'string') ? { standard_clauses: c.standard_clauses } : {}),
     version: typeof c.version === 'number' ? c.version : 1,
     scope: c.scope,
