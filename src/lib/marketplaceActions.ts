@@ -14,7 +14,7 @@ export const unlockProject = async (projectId: string): Promise<UnlockResult> =>
   if (error) throw error
   const parsed = z.object({ already_unlocked: z.boolean(), credits_left: z.number().int().nonnegative() }).safeParse(data)
   if (!parsed.success) throw new Error('Upplåsningen kunde inte bekräftas. Ladda om sidan innan du försöker igen.')
-  const result = parsed.data
+  const result: UnlockResult = { already_unlocked: parsed.data.already_unlocked, credits_left: parsed.data.credits_left }
   if (!result.already_unlocked) {
     try {
       const { trackClick } = await import('@/hooks/usePageTracking')
