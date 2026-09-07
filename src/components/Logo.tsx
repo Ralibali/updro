@@ -19,7 +19,7 @@ const iconSizes = {
 
 const Logo = ({ size = 'md', className = '' }: LogoProps) => {
   return (
-    <a href="/" className={`flex items-center gap-1.5 font-display font-bold ${sizes[size]} ${className}`} aria-label="Updro logotyp – marknadsplats för digitala byråer i Sverige">
+    <a href="/" className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap font-display font-bold ${sizes[size]} ${className}`} aria-label="Updro logotyp – marknadsplats för digitala byråer i Sverige">
       <Zap className={`${iconSizes[size]} text-accent fill-accent`} aria-hidden="true" />
       <span className="text-foreground tracking-tight">upd</span>
       <span className="text-foreground tracking-tight -ml-1">ro</span>

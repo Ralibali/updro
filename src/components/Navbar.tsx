@@ -32,7 +32,7 @@ const Navbar = () => {
         <div className="container flex min-h-16 items-center justify-between gap-3 py-2">
           <Logo />
 
-          <nav className="hidden md:flex items-center gap-4" aria-label="Huvudnavigation">
+          <nav className="hidden lg:flex items-center gap-4" aria-label="Huvudnavigation">
             <Link to="/byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Hitta byrå
             </Link>
@@ -61,7 +61,7 @@ const Navbar = () => {
             </Link>
           </nav>
 
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden lg:flex items-center gap-2">
             <ThemeToggle />
             {isAuthenticated ? (
               <>
@@ -100,7 +100,7 @@ const Navbar = () => {
 
           <button
             type="button"
-            className="md:hidden min-h-12 min-w-12 inline-flex items-center justify-center rounded-xl text-foreground relative z-[60] active:bg-muted"
+            className="lg:hidden min-h-12 min-w-12 inline-flex items-center justify-center rounded-xl text-foreground relative z-[60] active:bg-muted"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label={mobileOpen ? 'Stäng meny' : 'Öppna meny'}
             aria-expanded={mobileOpen}
@@ -112,7 +112,7 @@ const Navbar = () => {
       </header>
 
       {mobileOpen && (
-        <div id="mobile-menu" className="md:hidden fixed inset-x-0 top-16 bottom-0 z-[9999] bg-background overflow-y-auto overscroll-contain border-t">
+        <div id="mobile-menu" className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-[9999] bg-background overflow-y-auto overscroll-contain border-t">
           <nav className="flex flex-col p-4 gap-2 pb-[calc(2rem+env(safe-area-inset-bottom))]" aria-label="Mobilnavigation">
             <Link to="/byraer" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               Hitta byrå
