@@ -5,7 +5,9 @@
  * överenskommelse mellan beställare och byrå.
  */
 
-export const AGREEMENT_VERSION = 1
+import { emptyDeliveryPlan, parseDeliveryPlan, type DeliveryPlan } from './deliveryPlan'
+
+export const AGREEMENT_VERSION = 2
 
 export interface AgreementContent {
   version: number
@@ -13,6 +15,7 @@ export interface AgreementContent {
   scope: string
   /** Köparens egna tillägg, t.ex. återkommande avstämningsmöten. */
   special_terms: string
+  delivery_plan?: DeliveryPlan
   price_sek: number
   payment_plan: 'fixed' | 'hourly' | 'milestone' | null
   delivery_weeks: number | null
@@ -76,6 +79,7 @@ export const buildDefaultAgreementContent = (
   version: AGREEMENT_VERSION,
   scope: defaultScope(project, offer),
   special_terms: '',
+  delivery_plan: emptyDeliveryPlan(),
   price_sek: Number(offer.price) || 0,
   payment_plan: (offer.payment_plan as AgreementContent['payment_plan']) || null,
   delivery_weeks: offer.delivery_weeks ?? null,
@@ -117,15 +121,17 @@ export const markSupplierConfirmed = (content: AgreementContent, now = new Date(
  */
 export const applyEdits = (
   content: AgreementContent,
-  edits: { scope: string; special_terms: string },
+  edits: { scope: string; special_terms: string; delivery_plan?: DeliveryPlan },
 ): AgreementContent => {
   const changed =
-    edits.scope !== content.scope || edits.special_terms !== content.special_terms
+    edits.scope !== content.scope || edits.special_terms !== content.special_terms ||
+    (edits.delivery_plan !== undefined && JSON.stringify(edits.delivery_plan) !== JSON.stringify(content.delivery_plan ?? emptyDeliveryPlan()))
   if (!changed) return content
   return {
     ...content,
     scope: edits.scope,
     special_terms: edits.special_terms,
+    ...(edits.delivery_plan ? { delivery_plan: edits.delivery_plan } : {}),
     buyer_confirmed_at: null,
     supplier_confirmed_at: null,
   }
@@ -136,10 +142,13 @@ export const parseAgreementContent = (raw: unknown): AgreementContent | null => 
   if (!raw || typeof raw !== 'object') return null
   const c = raw as Partial<AgreementContent>
   if (typeof c.scope !== 'string' || typeof c.price_sek !== 'number') return null
+  const deliveryPlan = parseDeliveryPlan(c.delivery_plan)
+  if (!deliveryPlan) return null
   return {
     version: typeof c.version === 'number' ? c.version : 1,
     scope: c.scope,
     special_terms: typeof c.special_terms === 'string' ? c.special_terms : '',
+    delivery_plan: deliveryPlan,
     price_sek: c.price_sek,
     payment_plan: c.payment_plan ?? null,
     delivery_weeks: typeof c.delivery_weeks === 'number' ? c.delivery_weeks : null,
