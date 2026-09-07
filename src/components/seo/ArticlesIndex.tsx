@@ -145,8 +145,8 @@ const ArticlesIndex = () => {
         <div className="max-w-3xl">
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">Artiklar & guider</h1>
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-            Vi publicerar löpande prisguider, jämförelser och nyheter om den svenska byråmarknaden. Alla artiklar är
-            granskade av en människa innan publicering.
+            Vi publicerar löpande prisguider, jämförelser och nyheter om den svenska byråmarknaden. Artiklar kan vara AI-assisterade.
+            Underlag och källor framgår i respektive guide.
           </p>
         </div>
       </section>

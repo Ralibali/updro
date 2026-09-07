@@ -1,6 +1,10 @@
+import editorialArticles from '../content/editorial/articles.json'
+
 export type ArticleType = 'guide' | 'news' | 'comparison' | 'case-study'
 
 export interface ArticlePage {
+  editorialNote?: string
+  sources?: { label: string; href: string }[]
   slug: string
   metaTitle: string
   metaDesc: string
@@ -28,6 +32,7 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
 }
 
 export const ARTICLES: ArticlePage[] = [
+  ...editorialArticles,
   {
     slug: 'vad-kostar-en-hemsida-2026',
     metaTitle: 'Vad kostar en hemsida 2026? Komplett prisguide | Updro',
