@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import ProjectUnlock from './ProjectUnlock'
+import { readOfferDraft } from '@/lib/offerDrafts'
 
 const mocks = vi.hoisted(() => ({
   from: vi.fn(), unlock: vi.fn(), contact: vi.fn(), submit: vi.fn(), success: vi.fn(), error: vi.fn(),
@@ -21,6 +22,7 @@ vi.mock('sonner', () => ({ toast: { success: mocks.success, error: mocks.error, 
 const renderPage = () => render(<MemoryRouter initialEntries={['/uppdrag/project']}><Routes><Route path="/uppdrag/:id" element={<ProjectUnlock />} /></Routes></MemoryRouter>)
 beforeEach(() => {
   vi.clearAllMocks()
+  localStorage.clear()
   mocks.existing = false
   mocks.unlocked = false
   mocks.refresh.mockResolvedValue(undefined)
@@ -37,6 +39,28 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('supplier offer flow', () => {
+  it('restores an account draft and submits only after the preview is confirmed', async () => {
+    mocks.unlocked = true
+    mocks.contact.mockResolvedValue({ full_name: 'Testkund' })
+    mocks.submit.mockResolvedValue({})
+    const first = renderPage()
+    fireEvent.change(await screen.findByLabelText('Offert-titel *'), { target: { value: 'Mitt förslag' } })
+    fireEvent.change(screen.getByLabelText('Beskrivning *'), { target: { value: 'Fem sidor med mobilanpassning och överlämning.' } })
+    fireEvent.change(screen.getByLabelText('Totalpris (kr) *'), { target: { value: '24000' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Spara utkast' }))
+    expect(mocks.submit).not.toHaveBeenCalled()
+    first.unmount(); renderPage()
+    expect(await screen.findByLabelText('Offert-titel *')).toHaveValue('Mitt förslag')
+    fireEvent.click(screen.getByRole('button', { name: 'Granska offert →' }))
+    expect(await screen.findByRole('dialog')).toHaveTextContent('24 000 kr')
+    expect(mocks.submit).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Fortsätt redigera' }))
+    expect(screen.getByLabelText('Beskrivning *')).toHaveValue('Fem sidor med mobilanpassning och överlämning.')
+    fireEvent.click(screen.getByRole('button', { name: 'Granska offert →' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Skicka offert' }))
+    await waitFor(() => expect(mocks.submit).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(readOfferDraft('supplier', 'project')).toBeNull())
+  })
   it('keeps a successful unlock even if loading the contact details fails', async () => {
     mocks.unlock.mockResolvedValue({ already_unlocked: false, credits_left: 2 })
     mocks.contact.mockRejectedValue(new Error('Network failed'))
