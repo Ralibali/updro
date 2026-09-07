@@ -102,7 +102,7 @@ export function DeliveryPlanSummary({ plan }: { plan: DeliveryPlan }) {
       <h4 className="font-semibold">Leveransunderlag</h4>
       <ol className="list-decimal space-y-1 pl-5 text-sm">
         {plan.deliverables.map((item, index) => (
-          <li key={index}>{item}</li>
+          <li key={index} className="break-words">{item}</li>
         ))}
       </ol>
       <dl className="grid gap-3 text-sm sm:grid-cols-2">
@@ -116,7 +116,7 @@ export function DeliveryPlanSummary({ plan }: { plan: DeliveryPlan }) {
         </div>
       </dl>
       {plan.acceptance_criteria && (
-        <p className="whitespace-pre-wrap text-sm">
+        <p className="whitespace-pre-wrap break-words text-sm">
           <strong>Klart när: </strong>
           {plan.acceptance_criteria}
         </p>

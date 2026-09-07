@@ -40,11 +40,11 @@ describe('buildDefaultAgreementContent', () => {
     expect(c.scope).toContain(project.title)
   })
 
-  it('truncates very long offer descriptions', () => {
+  it('preserves the full offer description in the agreement', () => {
     const long = 'a'.repeat(500)
     const c = buildDefaultAgreementContent(project, { ...offer, description: long }, 'K', 'B', NOW)
-    expect(c.scope.length).toBeLessThanOrEqual(330)
-    expect(c.scope.endsWith('…')).toBe(true)
+    expect(c.scope).toContain(long)
+    expect(c.scope.endsWith('…')).toBe(false)
   })
 })
 
@@ -71,12 +71,17 @@ describe('markSupplierConfirmed', () => {
 
 describe('applyEdits', () => {
   it('invalidates both confirmations when content changes', () => {
-    const signed = markSupplierConfirmed(markBuyerConfirmed(draft(), NOW), LATER)
-    const edited = applyEdits(signed, { scope: 'Ny omfattning', special_terms: signed.special_terms })
+    const sent = markBuyerConfirmed(draft(), NOW)
+    const edited = applyEdits(sent, { scope: 'Ny omfattning', special_terms: sent.special_terms })
     expect(edited.scope).toBe('Ny omfattning')
     expect(edited.buyer_confirmed_at).toBeNull()
     expect(edited.supplier_confirmed_at).toBeNull()
     expect(agreementStatus(edited)).toBe('draft')
+  })
+
+  it('does not edit an agreement already confirmed by both parties', () => {
+    const signed = markSupplierConfirmed(markBuyerConfirmed(draft(), NOW), LATER)
+    expect(applyEdits(signed, { scope: 'Changed', special_terms: '' })).toBe(signed)
   })
 
   it('keeps confirmations untouched when nothing changed', () => {
@@ -95,6 +100,8 @@ describe('parseAgreementContent', () => {
     expect(parseAgreementContent(null)).toBeNull()
     expect(parseAgreementContent('text')).toBeNull()
     expect(parseAgreementContent({ price_sek: 100 })).toBeNull()
+    expect(parseAgreementContent({ ...draft(), supplier_confirmed_at: LATER.toISOString() })).toBeNull()
+    expect(parseAgreementContent({ ...draft(), buyer_confirmed_at: 'invalid' })).toBeNull()
   })
   it('fills defaults for missing optional fields', () => {
     const parsed = parseAgreementContent({ scope: 'X', price_sek: 100 })

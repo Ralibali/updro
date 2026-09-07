@@ -9,12 +9,22 @@ import { resolve } from 'node:path'
 const TYPES_PATH = resolve(process.cwd(), 'src/integrations/supabase/types.ts')
 
 const REQUIRED_TABLES = [
+  'project_agreements',
+  'project_agreement_events',
   'project_attribution',
   'project_outcomes',
   'lead_refund_requests',
 ]
 
 const REQUIRED_RPCS = [
+  'submit_project_offer',
+  'unlock_project_for_supplier',
+  'decide_project_offer',
+  'close_project_without_offer',
+  'get_unlocked_project_contact',
+  'get_buyer_project_offers',
+  'get_project_agreement',
+  'update_project_agreement',
   'get_public_agencies',
   'save_project_attribution',
   'report_project_outcome',

@@ -1,4 +1,5 @@
-import { supabase } from '@/integrations/supabase/client'
+import { useRef, useState } from 'react'
+import { closeProjectWithoutOffer } from '@/lib/marketplaceActions'
 import { toast } from 'sonner'
 
 interface BuyerDecisionCardProps {
@@ -14,6 +15,8 @@ function getDaysSince(dateStr: string | null) {
 }
 
 const BuyerDecisionCard = ({ project, offers, onScrollToOffers, onProjectClosed }: BuyerDecisionCardProps) => {
+  const [closing, setClosing] = useState(false)
+  const closingRef = useRef(false)
   const pendingOffers = offers.filter(o => o.status === 'pending')
   const hasAccepted = offers.some(o => o.status === 'accepted')
   const firstOfferDate = offers.length > 0 ? offers[offers.length - 1]?.created_at : null
@@ -22,36 +25,19 @@ const BuyerDecisionCard = ({ project, offers, onScrollToOffers, onProjectClosed 
   if (pendingOffers.length === 0 || hasAccepted || daysSinceFirstOffer < 3) return null
 
   const handleClose = async (reason: 'external' | 'cancelled') => {
-    const { error: projErr } = await supabase
-      .from('projects')
-      .update({ status: 'closed' })
-      .eq('id', project.id)
-
-    if (projErr) {
-      toast.error('Kunde inte stänga uppdraget')
-      return
+    if (closingRef.current) return
+    closingRef.current = true
+    setClosing(true)
+    try {
+      await closeProjectWithoutOffer(project.id)
+      toast.success(reason === 'external' ? 'Uppdraget markerat som avslutat' : 'Uppdraget har avslutats')
+      onProjectClosed()
+    } catch (cause) {
+      toast.error((cause as { message?: string })?.message || 'Kunde inte stänga uppdraget. Försök igen.')
+    } finally {
+      closingRef.current = false
+      setClosing(false)
     }
-
-    await supabase
-      .from('offers')
-      .update({ status: 'declined' })
-      .eq('project_id', project.id)
-      .eq('status', 'pending')
-
-    // Notify suppliers
-    const supplierIds = offers.map(o => o.supplier_id).filter(Boolean)
-    for (const sid of supplierIds) {
-      await supabase.from('notifications').insert({
-        user_id: sid,
-        type: 'project_closed',
-        title: 'Uppdrag stängt',
-        message: `Beställaren har stängt uppdraget "${project.title}". Tack för din offert.`,
-        link: null,
-      })
-    }
-
-    toast.success(reason === 'external' ? 'Uppdraget markerat som avslutat' : 'Uppdraget har avslutats')
-    onProjectClosed()
   }
 
   return (
@@ -71,12 +57,14 @@ const BuyerDecisionCard = ({ project, offers, onScrollToOffers, onProjectClosed 
           ✅ Välj en byrå att gå vidare med
         </button>
         <button
+          disabled={closing}
           onClick={() => handleClose('external')}
           className="text-left text-sm font-semibold text-primary hover:underline flex items-center gap-2"
         >
           🔄 Jag valde ett företag utanför Updro
         </button>
         <button
+          disabled={closing}
           onClick={() => handleClose('cancelled')}
           className="text-left text-sm font-semibold text-muted-foreground hover:underline flex items-center gap-2"
         >

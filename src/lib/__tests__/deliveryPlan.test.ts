@@ -36,7 +36,7 @@ describe('delivery agreement', () => {
       scope: 'Film',
       price_sek: 500,
       buyer_confirmed_at: '2026-09-01',
-      supplier_confirmed_at: '2026-09-02',
+      supplier_confirmed_at: null,
     })!
     const updated = applyEdits(content, {
       scope: content.scope,

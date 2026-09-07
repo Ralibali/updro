@@ -1,144 +1,85 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { buildDefaultAgreementContent, STANDARD_CLAUSES } from '@/lib/agreements'
 import AgreementPanel from './AgreementPanel'
-import { buildDefaultAgreementContent } from '@/lib/agreements'
-const m = vi.hoisted(() => ({
-  from: vi.fn(),
-  update: vi.fn(),
-  eq: vi.fn(),
-  notification: vi.fn(),
-  save: vi.fn(),
-  loadError: false,
-  raw: {} as unknown,
-}))
-vi.mock('@/hooks/useAuth', () => ({
-  useAuth: () => ({ user: { id: 'buyer' } }),
-}))
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: { from: m.from },
-}))
-vi.mock('sonner', () => ({
-  toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn() },
-}))
-beforeEach(() => {
-  vi.clearAllMocks()
-  m.loadError = false
-  m.raw = {
-    ...buildDefaultAgreementContent(
-      { title: 'Testuppdrag' },
-      { title: 'Film', description: 'Tre filmer', price: 5000 },
-      'Testbeställare',
-      'Testbyrå'
-    ),
-    buyer_confirmed_at: '2026-09-07T10:00:00Z',
-  }
-  m.save.mockResolvedValue({
-    data: { id: 'agreement', content: m.raw },
-    error: null,
-  })
-  m.notification.mockResolvedValue({ error: null })
-  m.from.mockImplementation((table) => {
-    let writing = false
-    const builder = {
-      select: () => builder,
-      eq: (...args: unknown[]) => {
-        m.eq(...args)
-        return builder
-      },
-      update: (data: unknown) => {
-        writing = true
-        m.update(data)
-        return builder
-      },
-      insert: m.notification,
-      maybeSingle: async () => {
-        if (table === 'project_agreements')
-          return writing
-            ? m.save()
-            : {
-                data: { id: 'agreement', content: m.raw },
-                error: m.loadError ? { message: 'failed' } : null,
-              }
-        if (table === 'offers')
-          return {
-            data: {
-              id: 'offer',
-              status: 'accepted',
-              title: 'Film',
-              description: 'Tre filmer',
-              price: 5000,
-              supplier_id: 'supplier',
-              projects: {
-                id: 'project',
-                title: 'Testuppdrag',
-                buyer_id: 'buyer',
-              },
-            },
-            error: null,
-          }
-        return { data: { full_name: 'Testpart' }, error: null }
-      },
-    }
-    return builder
-  })
-})
-const mount = () =>
-  render(<AgreementPanel projectId="project" offerId="offer" role="buyer" />)
-describe('agreement delivery plan saving', () => {
-  it('saves the plan with a comparison to the loaded document and resets confirmation', async () => {
-    mount()
-    fireEvent.click(await screen.findByRole('button', { name: 'Redigera' }))
-    fireEvent.change(
-      screen.getByLabelText('Vad ska levereras? En leverans per rad'),
-      { target: { value: 'Tre filmer\nUndertexter' } }
-    )
-    fireEvent.change(screen.getByLabelText('Korrekturrundor som ingår'), {
-      target: { value: '2' },
-    })
+
+const mocks = vi.hoisted(() => ({ load: vi.fn(), save: vi.fn(), success: vi.fn(), error: vi.fn() }))
+vi.mock('@/lib/agreementActions', () => ({ getProjectAgreement: mocks.load, updateProjectAgreement: mocks.save }))
+vi.mock('sonner', () => ({ toast: { success: mocks.success, error: mocks.error } }))
+
+const content = { ...buildDefaultAgreementContent({ title: 'Testuppdrag' }, {
+  title: 'Testoffert', description: 'Fullständig omfattning för detta test.', price: 1200, payment_plan: 'hourly', delivery_weeks: 4,
+}, 'Testkund AB', 'Testbyrå AB', new Date('2026-09-07T12:00:00Z')), standard_clauses: STANDARD_CLAUSES }
+const context = { buyerName: 'Testkund AB', supplierName: 'Testbyrå AB', projectTitle: 'Testuppdrag', buyerId: 'buyer', supplierId: 'supplier' }
+const row = { id: 'agreement', revision: 2, content: { ...content, buyer_confirmed_at: '2026-09-07T12:10:00Z' } }
+
+beforeEach(() => { vi.clearAllMocks(); mocks.load.mockResolvedValue({ context, agreement: row }) })
+afterEach(cleanup)
+
+describe('AgreementPanel', () => {
+  it('saves and displays delivery details through the revision-checked API', async () => {
+    mocks.save.mockImplementation(async (_offer, _action, _revision, edits) => ({
+      ...row, revision: 3, content: { ...row.content, ...edits, buyer_confirmed_at: null },
+    }))
+    render(<AgreementPanel projectId="project" offerId="offer" role="buyer" />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Redigera utkast' }))
+    fireEvent.change(screen.getByLabelText('Vad ska levereras? En leverans per rad'), { target: { value: 'Fem sidor\nÖverlämning' } })
+    fireEvent.change(screen.getByLabelText('Överenskommet leveransdatum'), { target: { value: '2026-10-31' } })
+    fireEvent.change(screen.getByLabelText('Korrekturrundor som ingår'), { target: { value: '0' } })
+    fireEvent.change(screen.getByLabelText('Vad behöver vara klart för godkännande?'), { target: { value: 'Alla avtalade kontroller passerar' } })
     fireEvent.click(screen.getByRole('button', { name: 'Spara ändringar' }))
-    await waitFor(() => expect(m.update).toHaveBeenCalledOnce())
-    expect(m.update.mock.calls[0][0].content).toMatchObject({
-      delivery_plan: {
-        deliverables: ['Tre filmer', 'Undertexter'],
-        revision_rounds: 2,
-      },
-      buyer_confirmed_at: null,
-      supplier_confirmed_at: null,
-    })
-    expect(m.eq).toHaveBeenCalledWith('content', JSON.stringify(m.raw))
-    await screen.findByRole('region', { name: 'Leveransunderlag' })
+    expect(await screen.findByRole('region', { name: 'Leveransunderlag' })).toHaveTextContent('Fem sidor')
+    expect(mocks.save).toHaveBeenCalledWith('offer', 'edit', 2, expect.objectContaining({ delivery_plan: {
+      deliverables: ['Fem sidor', 'Överlämning'], due_date: '2026-10-31', revision_rounds: 0, acceptance_criteria: 'Alla avtalade kontroller passerar',
+    } }))
+    expect(screen.getByRole('button', { name: 'Bekräfta och skicka till byrån' })).toBeDisabled()
   })
-  it('keeps edits visible and never sends a notification if another party changed the document', async () => {
-    m.save.mockResolvedValue({ data: null, error: null })
-    mount()
-    fireEvent.click(await screen.findByRole('button', { name: 'Redigera' }))
-    fireEvent.change(
-      screen.getByLabelText('Vad ska levereras? En leverans per rad'),
-      { target: { value: 'Ny leverans' } }
-    )
+
+  it('requires explicit review of the displayed version before confirming', async () => {
+    render(<AgreementPanel projectId="project" offerId="offer" role="supplier" />)
+    const button = await screen.findByRole('button', { name: 'Bekräfta samarbetsavtalet' })
+    expect(button).toBeDisabled()
+    expect(screen.getByText(/Ingen BankID-signering ingår/)).toBeInTheDocument()
+    expect(screen.getByText(/\/timme/)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('checkbox'))
+    expect(button).toBeEnabled()
+    mocks.save.mockResolvedValue({ ...row, revision: 3, content: { ...row.content, supplier_confirmed_at: '2026-09-07T12:20:00Z' } })
+    fireEvent.click(button)
+    await waitFor(() => expect(mocks.save).toHaveBeenCalledWith('offer', 'confirm', 2, undefined))
+    expect(await screen.findByText(/Avtalet är låst/)).toBeInTheDocument()
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+  })
+
+  it('shows a stale-version failure without pretending the agreement is signed', async () => {
+    mocks.save.mockRejectedValue({ message: 'Avtalet har ändrats. Ladda om.' })
+    render(<AgreementPanel projectId="project" offerId="offer" role="supplier" />)
+    await screen.findByRole('checkbox')
+    fireEvent.click(screen.getByRole('checkbox'))
+    fireEvent.click(screen.getByRole('button', { name: 'Bekräfta samarbetsavtalet' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Avtalet har ändrats')
+    expect(mocks.success).not.toHaveBeenCalled()
+    expect(screen.queryByText(/Avtalet är låst/)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Bekräfta samarbetsavtalet' })).toBeDisabled()
+  })
+
+  it('keeps an unsaved edit visible when saving fails', async () => {
+    mocks.save.mockRejectedValue(new Error('Kunde inte spara'))
+    render(<AgreementPanel projectId="project" offerId="offer" role="buyer" />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Redigera utkast' }))
+    fireEvent.change(screen.getByLabelText('Omfattning'), { target: { value: 'Mitt osparade tillägg' } })
     fireEvent.click(screen.getByRole('button', { name: 'Spara ändringar' }))
-    await waitFor(() => expect(m.save).toHaveBeenCalledOnce())
-    expect(
-      screen.getByLabelText('Vad ska levereras? En leverans per rad')
-    ).toHaveValue('Ny leverans')
-    expect(m.notification).not.toHaveBeenCalled()
-  })
-  it('does not notify on a failed send and restores the retry button', async () => {
-    m.save.mockRejectedValue(new Error('network'))
-    mount()
-    fireEvent.click(await screen.findByRole('button', { name: 'Skicka igen' }))
-    await waitFor(() => expect(m.save).toHaveBeenCalledOnce())
-    await waitFor(() =>
-      expect(screen.getByRole('button', { name: 'Skicka igen' })).toBeEnabled()
-    )
-    expect(m.notification).not.toHaveBeenCalled()
-  })
-  it('does not offer to overwrite a document that could not be loaded', async () => {
-    m.loadError = true
-    mount()
     await screen.findByRole('alert')
-    expect(
-      screen.queryByRole('button', { name: 'Skapa samarbetsavtal' })
-    ).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Omfattning')).toHaveValue('Mitt osparade tillägg')
+    expect(mocks.success).not.toHaveBeenCalled()
+  })
+
+  it('distinguishes a failed read from an agreement that has not been created', async () => {
+    mocks.load.mockRejectedValue(new Error('Avtalstjänsten kunde inte nås'))
+    render(<AgreementPanel projectId="project" offerId="offer" role="buyer" />)
+    expect(await screen.findByRole('alert')).toHaveTextContent('Avtalstjänsten')
+    expect(screen.queryByRole('button', { name: 'Skapa avtalsutkast' })).not.toBeInTheDocument()
+    mocks.load.mockResolvedValue({ context, agreement: null })
+    fireEvent.click(screen.getByRole('button', { name: 'Läs senaste versionen' }))
+    expect(await screen.findByRole('button', { name: 'Skapa avtalsutkast' })).toBeEnabled()
   })
 })

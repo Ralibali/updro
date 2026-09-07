@@ -14,6 +14,7 @@ vi.mock('@/integrations/supabase/client', () => ({
 
 import {
   buildOfferAttachmentPath,
+  decideProjectOffer,
   getOfferAttachmentSignedUrl,
   OFFER_ATTACHMENT_MAX_BYTES,
   submitProjectOffer,
@@ -36,6 +37,10 @@ afterEach(() => {
 })
 
 describe('unlockProject', () => {
+  it('does not report a successful unlock when the server returns no result', async () => {
+    rpcMock.mockResolvedValueOnce({ data: null, error: null })
+    await expect(unlockProject('p')).rejects.toThrow('kunde inte bekräftas')
+  })
   it('anropar atomiska RPC:n och returnerar resultatet från servern', async () => {
     rpcMock.mockResolvedValueOnce({ data: { already_unlocked: false, credits_left: 4 }, error: null })
 
@@ -75,6 +80,10 @@ describe('unlockProject', () => {
 })
 
 describe('submitProjectOffer', () => {
+  it('does not report success for an empty response', async () => {
+    rpcMock.mockResolvedValueOnce({ data: null, error: null })
+    await expect(submitProjectOffer({ projectId: 'p', title: 'Titel', description: 'Beskrivning', price: 1000, deliveryWeeks: 4, paymentPlan: 'fixed', attachmentUrl: null })).rejects.toThrow('kunde inte bekräftas')
+  })
   it('anropar atomiska RPC:n och uppdaterar inte offer_count från klienten', async () => {
     rpcMock.mockResolvedValueOnce({ data: 'offer-uuid', error: null })
 
@@ -119,6 +128,15 @@ describe('submitProjectOffer', () => {
         projectId: 'p', title: 't', description: 'd', price: 1, deliveryWeeks: null, paymentPlan: 'fixed', attachmentUrl: null,
       }),
     ).rejects.toThrow('tar inte emot fler offerter')
+  })
+})
+
+describe('decideProjectOffer', () => {
+  it('requires the server to confirm the selected offer', async () => {
+    rpcMock.mockResolvedValueOnce({ data: null, error: null })
+    await expect(decideProjectOffer('offer', 'accepted')).rejects.toThrow('kunde inte bekräftas')
+    rpcMock.mockResolvedValueOnce({ data: 'offer', error: null })
+    await expect(decideProjectOffer('offer', 'declined')).resolves.toBeUndefined()
   })
 })
 

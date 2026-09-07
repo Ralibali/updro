@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
 import { toast } from 'sonner'
+import { decideProjectOffer } from '@/lib/marketplaceActions'
+import { PAYMENT_PLAN_LABELS } from '@/lib/agreements'
+import OfferAttachment from '@/components/shared/OfferAttachment'
 import { trackAgencySelected } from '@/lib/analytics'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import ProjectStepper from '@/components/shared/ProjectStepper'
@@ -28,42 +31,59 @@ const ProjectDetail = () => {
   const [deleting, setDeleting] = useState(false)
   const offersRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!id) return
-    const fetchData = async () => {
-      const { data: proj } = await supabase.from('projects').select('*').eq('id', id).single()
-      if (proj) setProject(proj)
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [deciding, setDeciding] = useState(false)
+  const decidingRef = useRef(false)
+  const requestId = useRef(0)
 
-      const { data: offs } = await supabase
-        .from('offers')
-        .select('*, profiles!offers_supplier_id_fkey(full_name, company_name, city, avatar_url, email, phone), supplier_profiles:supplier_id(avg_rating, review_count, is_verified, has_fskatt, credit_check_passed, completed_projects, contact_name, contact_phone, contact_email)')
-        .eq('project_id', id)
-        .order('created_at', { ascending: false })
-      if (offs) setOffers(offs)
+  const load = useCallback(async () => {
+    if (!id) return
+    const current = ++requestId.current
+    setLoading(true)
+    setLoadError(null)
+    try {
+      const [projectResult, offerResult] = await Promise.all([
+        supabase.from('projects').select('*').eq('id', id).single(),
+        supabase.rpc('get_buyer_project_offers', { p_project_id: id }),
+      ])
+      if (projectResult.error) throw projectResult.error
+      if (offerResult.error) throw offerResult.error
+      if (!Array.isArray(offerResult.data)) throw new Error('Offertlistan kunde inte läsas.')
+      if (current !== requestId.current) return
+      setProject(projectResult.data)
+      setOffers(offerResult.data)
+    } catch {
+      if (current === requestId.current) setLoadError('Kunde inte läsa uppdraget och dess offerter. Försök igen.')
+    } finally {
+      if (current === requestId.current) setLoading(false)
     }
-    fetchData()
   }, [id])
 
-  const handleAccept = async (offerId: string) => {
-    const { error } = await supabase.from('offers').update({ status: 'accepted' }).eq('id', offerId)
-    if (!error) {
-      await supabase.from('offers').update({ status: 'declined' }).eq('project_id', id).neq('id', offerId)
-      await supabase.from('projects').update({ status: 'closed' }).eq('id', id)
-      trackAgencySelected(
-        typeof project?.category === 'string' ? project.category : undefined,
-        typeof project?.city === 'string' ? project.city : undefined,
-      )
-      toast.success('Offert accepterad! 🎉')
-      setOffers(prev => prev.map(o => o.id === offerId ? { ...o, status: 'accepted' } : { ...o, status: 'declined' }))
-      setProject((prev: any) => prev ? { ...prev, status: 'closed' } : prev)
-    }
-    setConfirmOffer(null)
-  }
+  const cancelPendingLoad = useCallback(() => { requestId.current++ }, [])
+  useEffect(() => { setProject(null); setOffers([]); void load(); return cancelPendingLoad }, [load, cancelPendingLoad])
 
-  const handleDecline = async (offerId: string) => {
-    await supabase.from('offers').update({ status: 'declined' }).eq('id', offerId)
-    setOffers(prev => prev.map(o => o.id === offerId ? { ...o, status: 'declined' } : o))
-    toast.info('Offert avböjd')
+  const handleDecision = async (offerId: string, decision: 'accepted' | 'declined') => {
+    if (decidingRef.current) return
+    decidingRef.current = true
+    setDeciding(true)
+    try {
+      await decideProjectOffer(offerId, decision)
+      setOffers(previous => previous.map(offer => offer.id === offerId ? { ...offer, status: decision }
+        : decision === 'accepted' && offer.status === 'pending' ? { ...offer, status: 'declined' } : offer))
+      if (decision === 'accepted') {
+        setProject((previous: any) => ({ ...previous, status: 'closed' }))
+        try { trackAgencySelected(project?.category, project?.city) } catch { /* Analytics must not block the saved decision. */ }
+      }
+      setConfirmOffer(null)
+      toast.success(decision === 'accepted' ? 'Offert accepterad. Granska och skapa ert samarbetsavtal.' : 'Offerten är avböjd. Byrån har fått en notis.')
+      await load()
+    } catch (cause) {
+      toast.error((cause as { message?: string })?.message || 'Beslutet kunde inte sparas. Försök igen.')
+    } finally {
+      decidingRef.current = false
+      setDeciding(false)
+    }
   }
 
   const scrollToOffers = () => {
@@ -78,7 +98,7 @@ const ProjectDetail = () => {
   const handleDeleteProject = async () => {
     if (!id) return
     setDeleting(true)
-    const { error } = await supabase.from('projects').delete().eq('id', id)
+    const { error } = await supabase.from('projects').delete().eq('id', id).select('id').single()
     setDeleting(false)
     if (error) {
       toast.error(error.message || 'Kunde inte ta bort uppdraget')
@@ -89,11 +109,13 @@ const ProjectDetail = () => {
     setShowDeleteConfirm(false)
   }
 
-  if (!project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
+  if (loading && !project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
+  if (!project) return <div role="alert" className="rounded-xl border p-6"><p>{loadError || 'Uppdraget kunde inte hittas.'}</p><Button onClick={load} className="mt-3">Försök igen</Button></div>
 
   return (
     <>
       <div className="max-w-5xl">
+        {loadError && <div role="alert" className="mb-4 rounded-xl border border-destructive/30 p-4"><p>{loadError}</p><Button variant="outline" onClick={load} disabled={loading} className="mt-2">Försök igen</Button></div>}
         <div className="grid md:grid-cols-3 gap-6">
           {/* Main content */}
           <div className="md:col-span-2">
@@ -105,8 +127,10 @@ const ProjectDetail = () => {
                 </div>
                 <button
                   onClick={() => setShowDeleteConfirm(true)}
+                  disabled={offers.some(offer => offer.status === 'accepted')}
+                  aria-label="Ta bort uppdrag"
                   className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                  title="Ta bort uppdrag"
+                  title={offers.some(offer => offer.status === 'accepted') ? 'Uppdrag med accepterad offert bevaras för er överenskommelse' : 'Ta bort uppdrag'}
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
@@ -148,7 +172,7 @@ const ProjectDetail = () => {
 
               {offers.length === 0 ? (
                 <div className="bg-card rounded-xl border p-6 text-center">
-                  <p className="text-muted-foreground">Inga intresserade byråer ännu. Byråer matchar vanligtvis inom 24 timmar.</p>
+                  <p className="text-muted-foreground">Du har inte fått någon offert ännu. När en byrå svarar kan du jämföra förslag, pris och tidsplan här.</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -158,7 +182,7 @@ const ProjectDetail = () => {
                       <div key={offer.id} className="bg-card rounded-xl border p-5">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h3 className="font-semibold">{offer.profiles?.company_name || offer.profiles?.full_name}</h3>
+                            <h3 className="font-semibold">{offer.profiles?.company_name || offer.profiles?.full_name || 'Byrå'}</h3>
                             <p className="text-xs text-muted-foreground">{offer.profiles?.city} · {timeAgo(offer.created_at)}</p>
                             {sp && (
                               <div className="mt-2">
@@ -186,13 +210,15 @@ const ProjectDetail = () => {
                         )}
 
                         <h4 className="font-medium mt-3">{offer.title}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">{offer.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap break-words">{offer.description}</p>
 
-                        <div className="flex items-center gap-4 mt-3 text-sm">
-                          <span className="font-bold text-lg text-primary">{formatPrice(offer.price)}</span>
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm">
+                          <span className="font-bold text-lg text-primary">{formatPrice(offer.price)}{offer.payment_plan === 'hourly' ? '/timme' : ''}{' '}<span className="ml-1 text-xs font-normal text-muted-foreground">exkl. moms</span></span>
                           {offer.delivery_weeks && <span className="text-muted-foreground">{offer.delivery_weeks} veckor</span>}
-                          {offer.payment_plan && <span className="text-muted-foreground capitalize">{offer.payment_plan}</span>}
+                          {offer.payment_plan && <span className="text-muted-foreground capitalize">{PAYMENT_PLAN_LABELS[offer.payment_plan] || offer.payment_plan}</span>}
                         </div>
+
+                        <OfferAttachment path={offer.attachment_url} />
 
                         {/* Contact info when accepted */}
                         {offer.status === 'accepted' && offer.profiles && (
@@ -215,13 +241,13 @@ const ProjectDetail = () => {
                                     {sp?.contact_phone || offer.profiles.phone}
                                   </a>
                                 )}
-                                <a
+                                {offer.profiles.email && <a
                                   href={`mailto:${sp?.contact_email || offer.profiles.email}`}
                                   className="flex items-center gap-1 text-sm text-primary hover:underline"
                                 >
                                   <Mail size={12} />
                                   {sp?.contact_email || offer.profiles.email}
-                                </a>
+                                </a>}
                               </div>
                             </div>
                           </div>
@@ -230,20 +256,20 @@ const ProjectDetail = () => {
                         <div className="flex gap-2 mt-4 flex-wrap">
                           {offer.status === 'pending' && (
                             <>
-                              <Button size="sm" onClick={() => setConfirmOffer(offer)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+                              <Button size="sm" disabled={deciding || loading || !!loadError} onClick={() => setConfirmOffer(offer)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
                                 <Check className="mr-1 h-3 w-3" /> Acceptera
                               </Button>
-                              <Button size="sm" variant="outline" onClick={() => handleDecline(offer.id)}>
+                              <Button size="sm" variant="outline" disabled={deciding || loading || !!loadError} onClick={() => handleDecision(offer.id, 'declined')}>
                                 <X className="mr-1 h-3 w-3" /> Avböj
                               </Button>
                             </>
                           )}
                           {(offer.status === 'pending' || offer.status === 'accepted') && (
-                            <Link to={`/dashboard/buyer/chatt?project=${id}&user=${offer.supplier_id}`}>
-                              <Button size="sm" variant={offer.status === 'accepted' ? 'default' : 'outline'}>
+                            <Button asChild size="sm" variant={offer.status === 'accepted' ? 'default' : 'outline'}>
+                              <Link to={`/dashboard/buyer/chatt?project=${id}&user=${offer.supplier_id}`}>
                                 💬 Chatta med byrån
-                              </Button>
-                            </Link>
+                              </Link>
+                            </Button>
                           )}
                         </div>
 
@@ -276,7 +302,7 @@ const ProjectDetail = () => {
       </div>
 
       {/* Confirm accept dialog */}
-      <Dialog open={!!confirmOffer} onOpenChange={() => setConfirmOffer(null)}>
+      <Dialog open={!!confirmOffer} onOpenChange={() => { if (!deciding) setConfirmOffer(null) }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Acceptera offert?</DialogTitle>
@@ -286,9 +312,9 @@ const ProjectDetail = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 mt-4">
-            <Button variant="outline" onClick={() => setConfirmOffer(null)}>Avbryt</Button>
-            <Button onClick={() => handleAccept(confirmOffer.id)} className="bg-accent hover:bg-accent/90 text-accent-foreground">
-              Bekräfta
+            <Button variant="outline" disabled={deciding} onClick={() => setConfirmOffer(null)}>Avbryt</Button>
+            <Button disabled={deciding || !confirmOffer} onClick={() => handleDecision(confirmOffer.id, 'accepted')} className="bg-accent hover:bg-accent/90 text-accent-foreground">
+              {deciding ? 'Sparar beslut…' : 'Acceptera offerten'}
             </Button>
           </div>
         </DialogContent>
