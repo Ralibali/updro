@@ -26,18 +26,11 @@ const TrialBanner = () => {
     }
 
     return (
-      <div className="fixed inset-0 z-50 bg-foreground/60 flex items-center justify-center p-4">
-        <div className="bg-card rounded-2xl p-8 max-w-lg w-full shadow-lg text-center">
-          <h2 className="font-display text-2xl font-bold mb-2">Din provperiod är slut</h2>
-          <p className="text-muted-foreground mb-6">Välj en plan för att fortsätta ta emot uppdrag.</p>
-          <div className="flex flex-col gap-3">
-            <Link to="/dashboard/supplier/fakturering">
-              <Button className="w-full bg-primary hover:bg-primary/90">Välj plan – från 119 kr/lead</Button>
-            </Link>
-            <Link to="/" className="text-xs text-muted-foreground hover:underline">
-              Fortsätt utan plan
-            </Link>
-          </div>
+      <div className="mb-6 rounded-xl border bg-muted/40 p-4" role="note" aria-label="Din provperiod">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0"><h2 className="text-sm font-semibold">Din provperiod är slut</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Befintliga affärer finns kvar. Välj en plan för nya upplåsningar.</p></div>
+          <Button asChild variant="outline" size="sm" className="shrink-0"><Link to="/dashboard/supplier/fakturering">Se priser</Link></Button>
         </div>
       </div>
     )

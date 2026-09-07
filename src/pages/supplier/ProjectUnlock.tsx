@@ -12,7 +12,9 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { BUDGET_LABELS, CATEGORY_STYLES, MAX_OFFERS_PER_PROJECT, START_TIME_LABELS } from '@/lib/constants'
-import { timeAgo } from '@/lib/dateUtils'
+import { timeAgo, formatPrice } from '@/lib/dateUtils'
+import { PAYMENT_PLAN_LABELS } from '@/lib/agreements'
+import { clearOfferDraft, emptyOfferForm, readOfferDraft, saveOfferDraft } from '@/lib/offerDrafts'
 import { numWord } from '@/lib/numberWords'
 import {
   OFFER_ATTACHMENT_ACCEPT,
@@ -85,7 +87,7 @@ type Contact = {
 
 const ProjectUnlock = () => {
   const { id } = useParams()
-  const { user, supplierProfile, refreshProfile, hasActiveSubscription } = useAuth()
+  const { user, supplierProfile, refreshProfile, hasActiveSubscription, trialExpired } = useAuth()
   const navigate = useNavigate()
   const [project, setProject] = useState<any>(null)
   const [contactError, setContactError] = useState(false)
@@ -102,14 +104,10 @@ const ProjectUnlock = () => {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [unlocking, setUnlocking] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [draftInfo, setDraftInfo] = useState('')
   const [file, setFile] = useState<File | null>(null)
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    price: '',
-    delivery_weeks: '',
-    payment_plan: 'fixed',
-  })
+  const [form, setForm] = useState(emptyOfferForm)
 
   const loadContact = useCallback(async (projectId: string) => {
     setContactError(false)
@@ -133,6 +131,10 @@ const ProjectUnlock = () => {
       setContact(null)
       setIsUnlocked(false)
       setExistingOffer(false)
+      setForm(emptyOfferForm())
+      setFile(null)
+      setPreviewOpen(false)
+      setDraftInfo('')
       try {
         const [projectResult, unlockResult, offerResult] = await Promise.all([
           supabase.from('projects').select('*').eq('id', id).single(),
@@ -146,6 +148,11 @@ const ProjectUnlock = () => {
         setProject(projectResult.data)
         setIsUnlocked(Boolean(unlockResult.data))
         setExistingOffer(Boolean(offerResult.data))
+        if (offerResult.data) clearOfferDraft(user.id, id)
+        else if (unlockResult.data) {
+          const draft = readOfferDraft(user.id, id)
+          if (draft) { setForm(draft); setDraftInfo('Ditt sparade utkast har återställts. Välj eventuell bilaga igen.') }
+        }
         try { trackLeadViewed(id, { category: projectResult.data.category, city: projectResult.data.city || undefined }) } catch { /* Best effort */ }
         if (unlockResult.data) await loadContact(id)
       } catch {
@@ -224,13 +231,12 @@ const ProjectUnlock = () => {
     toast.success('Offertmall ifylld')
   }
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault()
+  const handleSubmit = async () => {
     if (!user || !id || !project || submittingRef.current || existingOffer || !isUnlocked || project.status !== 'active') return
     const wasFirstOffer = (project.offer_count || 0) === 0
 
     const price = Number(form.price)
-    if (!Number.isFinite(price) || price <= 0) {
+    if (!Number.isFinite(price) || price <= 0 || price > 100000000) {
       toast.error('Ange ett giltigt pris.')
       return
     }
@@ -269,6 +275,9 @@ const ProjectUnlock = () => {
       })
 
       offerSaved = true
+      clearOfferDraft(user.id, id)
+      setPreviewOpen(false)
+      setExistingOffer(true)
       const category = typeof project?.category === 'string' ? project.category : undefined
       const city = typeof project?.city === 'string' ? project.city : undefined
       try {
@@ -295,7 +304,7 @@ const ProjectUnlock = () => {
 
   const leadScore = scoreProject(project)
   const creditsLeft = supplierProfile?.lead_credits || 0
-  const canUnlock = hasActiveSubscription || creditsLeft > 0
+  const canUnlock = hasActiveSubscription || (creditsLeft > 0 && !trialExpired)
   const maxOffers = project.max_offers || MAX_OFFERS_PER_PROJECT
   const isClosed = (project.offer_count || 0) >= maxOffers || project.status !== 'active'
 
@@ -361,10 +370,12 @@ const ProjectUnlock = () => {
                 <h2 className="font-display text-lg font-semibold">Skicka offert</h2>
                 <Button type="button" variant="outline" size="sm" onClick={applyOfferTemplate} className="gap-1.5"><Sparkles className="h-4 w-4" />Snabb offertmall</Button>
               </div>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <p className="mb-4 text-sm text-muted-foreground">Beskriv vad som ingår och ange priset. Granska offerten innan den skickas till beställaren.</p>
+              {draftInfo && <p role="status" className="mb-4 rounded-lg bg-muted p-3 text-sm">{draftInfo}</p>}
+              <form onSubmit={event => { event.preventDefault(); setPreviewOpen(true) }} className="space-y-4">
                 <div><Label htmlFor="offer-title">Offert-titel *</Label><Input id="offer-title" minLength={3} maxLength={200} value={form.title} onChange={event => setForm(previous => ({ ...previous, title: event.target.value }))} className="rounded-xl mt-1" required /></div>
                 <div><Label htmlFor="offer-description">Beskrivning *</Label><Textarea id="offer-description" minLength={20} maxLength={20000} value={form.description} onChange={event => setForm(previous => ({ ...previous, description: event.target.value }))} className="rounded-xl mt-1 min-h-[120px]" required /></div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div><Label htmlFor="offer-price">{form.payment_plan === 'hourly' ? 'Timpris (kr/timme) *' : 'Totalpris (kr) *'}</Label><Input id="offer-price" type="number" min="0.01" max="100000000" step="0.01" value={form.price} onChange={event => setForm(previous => ({ ...previous, price: event.target.value }))} className="rounded-xl mt-1" required /></div>
                   <div><Label htmlFor="offer-weeks">Leveranstid (veckor)</Label><Input id="offer-weeks" type="number" min="1" max="520" step="1" value={form.delivery_weeks} onChange={event => setForm(previous => ({ ...previous, delivery_weeks: event.target.value }))} className="rounded-xl mt-1" /></div>
                 </div>
@@ -397,9 +408,15 @@ const ProjectUnlock = () => {
                     </label>
                   )}
                 </div>
-                <Button type="submit" disabled={submitting} className="w-full bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl py-5">
-                  {submitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Skickar...</> : 'Skicka offert →'}
-                </Button>
+                <div className="flex flex-wrap gap-3">
+                  <Button type="submit" disabled={submitting} className="flex-1 rounded-xl">Granska offert →</Button>
+                  <Button type="button" variant="outline" disabled={!form.title.trim() && !form.description.trim()} onClick={() => {
+                    if (!user || !id) return
+                    if (saveOfferDraft(user.id, id, form)) setDraftInfo('Utkast sparat i 14 dagar på den här enheten. Bilagor sparas inte.')
+                    else toast.error('Utkastet kunde inte sparas på enheten. Behåll sidan öppen eller kopiera texten.')
+                  }}>Spara utkast</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">Ett utkast skickas inte till kunden. Det sparas bara på den här enheten.</p>
               </form>
             </div>
           )}
@@ -419,12 +436,26 @@ const ProjectUnlock = () => {
             }} className="bg-primary hover:bg-primary/90">🔓 Lås upp ({hasActiveSubscription ? 'obegränsat' : `${numWord(creditsLeft)} krediter kvar`})</Button>
           ) : (
             <div className="space-y-3">
-              <p className="rounded-xl bg-muted/60 px-4 py-3 text-sm text-muted-foreground">Du har inga krediter kvar.</p>
+              <p className="rounded-xl bg-muted/60 px-4 py-3 text-sm text-muted-foreground">{trialExpired ? 'Provperioden är slut. Välj en plan för att låsa upp en ny kontakt.' : 'Du har inga krediter kvar.'}</p>
               <Link to="/dashboard/supplier/fakturering"><Button className="gap-2"><CreditCard className="h-4 w-4" />Köp lead eller månadskort</Button></Link>
             </div>
           )}
         </div>
       )}
+
+      <Dialog open={previewOpen} onOpenChange={open => { if (!submitting) setPreviewOpen(open) }}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader><DialogTitle>Granska din offert</DialogTitle><DialogDescription>Kontrollera innehållet som beställaren får. Inget skickas förrän du väljer Skicka offert.</DialogDescription></DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-xs text-muted-foreground">Till uppdraget: {project.title}</p>
+            <h3 className="font-display text-lg font-semibold break-words">{form.title}</h3>
+            <div className="grid gap-3 rounded-xl bg-muted/50 p-4 sm:grid-cols-2"><div><p className="text-xs text-muted-foreground">{form.payment_plan === 'hourly' ? 'Timpris' : 'Totalpris'}</p><p className="mt-1 text-lg font-semibold">{formatPrice(Number(form.price))}{form.payment_plan === 'hourly' ? '/timme' : ''}</p><p className="text-xs text-muted-foreground">Exkl. moms · {PAYMENT_PLAN_LABELS[form.payment_plan]}</p></div><div><p className="text-xs text-muted-foreground">Leveranstid</p><p className="mt-1 font-semibold">{form.delivery_weeks ? `${form.delivery_weeks} veckor` : 'Enligt överenskommelse'}</p></div></div>
+            <p className="whitespace-pre-wrap break-words text-sm">{form.description}</p>
+            {file && <p className="flex items-center gap-2 text-sm"><Paperclip className="h-4 w-4 shrink-0" /><span className="break-all">Bilaga: {file.name}</span></p>}
+          </div>
+          <div className="flex flex-wrap gap-3 border-t pt-4"><Button variant="outline" disabled={submitting} onClick={() => setPreviewOpen(false)}>Fortsätt redigera</Button><Button disabled={submitting} onClick={handleSubmit}>{submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{submitting ? 'Skickar…' : 'Skicka offert'}</Button></div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
