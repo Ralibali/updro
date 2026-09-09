@@ -36,7 +36,7 @@ const partnaSeoOverride = route => {
   return {
     ...route,
     title: 'Partna pris 2026 & alternativ – Updro vs Partna',
-    description: `Jämför Partna och Updro: ${PARTNA_FACTS.payAsYouGo} kr per Partna-förfrågan, ${Math.round(PARTNA_FACTS.successFeeRate * 100)} % slagavgift vid vunnen affär, upp till ${PARTNA_FACTS.maxOffers} offerter – mot Updros 119 kr per valt lead och max tre byråer.`,
+    description: `Jämför Partna och Updro: ${PARTNA_FACTS.payAsYouGo} kr per Partna-förfrågan, ${Math.round(PARTNA_FACTS.successFeeRate * 100)} % slagavgift vid vunnen affär, upp till ${PARTNA_FACTS.maxOffers} offerter – mot Updros 99 kr per valt lead och max tre byråer.`,
     h1: 'Partna pris och alternativ – Updro vs Partna',
     faq: PARTNA_FAQS.map(item => ({ q: item.q, a: item.a })),
   }
