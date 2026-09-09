@@ -9,7 +9,7 @@ import { MAX_OFFERS_PER_PROJECT, STRIPE_PRODUCTS } from '@/lib/constants'
  * Copy-truth guard rails.
  *
  * Background: marketplace-stats showed 0 projects / 0 offers when these claims
- * were live. Updro's real model is 119 kr/lead or 1 995 kr/month, max three
+ * were live. Updro's real model is 99 kr/lead or 1 995 kr/month, max three
  * agencies per project and 0 % commission. Marketing copy must not claim a
  * proprietary offer dataset, verified reviews, per-close pricing, more than
  * three offers, guaranteed 24h responses or unsourced savings percentages.
@@ -105,15 +105,15 @@ describe('copy-truth: verified business facts are preserved', () => {
     expect(MAX_OFFERS_PER_PROJECT).toBe(3)
   })
 
-  it('agency pricing stays 119 kr/lead and 1 995 kr/month', () => {
-    expect(STRIPE_PRODUCTS.lead.price).toBe(119)
+  it('agency pricing stays 99 kr/lead and 1 995 kr/month', () => {
+    expect(STRIPE_PRODUCTS.lead.price).toBe(99)
     expect(STRIPE_PRODUCTS.monthly.price).toBe(1995)
     expect(STRIPE_PRODUCTS.yearly.price).toBe(19950)
   })
 
   it('comparison pages state the real pricing model instead of per-close fees', () => {
     const blob = serialize(COMPARISON_PAGES)
-    expect(blob).toContain('119 kr per lead')
+    expect(blob).toContain('99 kr per lead')
     expect(blob).toContain('1 995 kr/månad')
     expect(blob).toContain('0 % provision')
   })

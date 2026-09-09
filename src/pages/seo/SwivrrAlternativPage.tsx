@@ -8,8 +8,8 @@ import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 
 const comparisonRows = [
   ['Antal offerter', 'Högst tre byråer kan lämna offert på samma uppdrag.', 'Swivrr anger tre till fem offerter per projekt.'],
-  ['Byråernas pris', '119 kr per valt lead eller 1 995 kr/mån obegränsat – publicerat och förutsägbart.', 'Swivrr tar en avgift av byrån som vinner uppdraget; nivån anges inte öppet på deras webbplats.'],
-  ['Kostnad per uppdrag', 'Högst 357 kr i leadavgift (tre leads × 119 kr) – eller obegränsat med månadskort.', 'Avgiften tas först vid vunnet uppdrag och kan variera med projektets värde.'],
+  ['Byråernas pris', '99 kr per valt lead eller 1 995 kr/mån obegränsat – publicerat och förutsägbart.', 'Swivrr tar en avgift av byrån som vinner uppdraget; nivån anges inte öppet på deras webbplats.'],
+  ['Kostnad per uppdrag', 'Högst 297 kr i leadavgift (tre leads × 99 kr) – eller obegränsat med månadskort.', 'Avgiften tas först vid vunnet uppdrag och kan variera med projektets värde.'],
   ['AI-brief', 'Inbyggd AI hjälper beställaren formulera briefen.', 'Swivrr erbjuder en liknande AI-funktion.'],
   ['Prisuppskattning', 'Ja – förankrad i 15 öppna prisguider som alla kan läsa utan konto.', 'Ja – Swivrr visar ett prisspann i publiceringsflödet.'],
   ['Öppna prisguider', '15 kostnadsfria prisguider plus priskalkylator – utan krav på konto.', 'Prisdata finns inbäddat i guidetexter; ingen öppen prisguide eller kalkylator utanför flödet.'],
@@ -30,7 +30,7 @@ const faqs = [
   },
   {
     q: 'Vad skiljer affärsmodellerna åt för byråer?',
-    a: 'Updro tar 119 kr per valt lead eller 1 995 kr/mån obegränsat – kostnaden är känd i förväg. Swivrr debiterar byrån som vinner uppdraget, men nivån anges inte öppet. Jämför alltid kostnad per vunnen affär, inte bara prislistan.',
+    a: 'Updro tar 99 kr per valt lead eller 1 995 kr/mån obegränsat – kostnaden är känd i förväg. Swivrr debiterar byrån som vinner uppdraget, men nivån anges inte öppet. Jämför alltid kostnad per vunnen affär, inte bara prislistan.',
   },
   {
     q: 'Vilken tjänst ska jag välja som beställare?',

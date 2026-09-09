@@ -87,7 +87,7 @@ const baseRoutes = (): StaticSeoRoute[] => [
     ],
     faq: [
       { q: 'Tar Updro provision när vi vinner ett projekt?', a: 'Nej. Updro tar ingen procent av offert- eller projektvärdet när beställaren väljer er. Ni betalar enligt vald lead- eller abonnemangsmodell.' },
-      { q: 'Vad kostar ett lead på Updro?', a: 'Ett enskilt valt lead kostar 119 kronor exklusive moms. Ni ser brief, kategori, budget och tidsram innan ni väljer att låsa upp kontakten.' },
+      { q: 'Vad kostar ett lead på Updro?', a: 'Ett enskilt valt lead kostar 99 kronor exklusive moms. Ni ser brief, kategori, budget och tidsram innan ni väljer att låsa upp kontakten.' },
       { q: 'Hur många byråer konkurrerar om samma uppdrag?', a: 'Högst tre byråer kan lämna offert på samma uppdrag.' },
       { q: 'Måste vi teckna abonnemang?', a: 'Nej. Ni kan använda pay-per-lead. För högre volym finns även månadskort med obegränsade upplåsningar under aktiv period.' },
       { q: 'Kan vi testa Updro innan vi betalar?', a: 'Ja. Nya byråkonton får fem kostnadsfria lead-krediter under den inledande provperioden utan krav på kortuppgifter vid registrering.' },

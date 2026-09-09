@@ -38,7 +38,7 @@ const RegisterSupplierPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Registrera din byrå – Få fler kunder gratis | Updro',
-      description: 'Registrera din byrå på Updro: fem gratis leads, högst tre byråer per uppdrag och leadgaranti. 119 kr per lead eller 1 995 kr/mån.',
+      description: 'Registrera din byrå på Updro: fem gratis leads, högst tre byråer per uppdrag och leadgaranti. 99 kr per lead eller 1 995 kr/mån.',
       canonical: 'https://updro.se/registrera/byra',
       noindex: true,
     })
@@ -147,7 +147,7 @@ const RegisterSupplierPage = () => {
             <div className="relative z-10 max-w-xl">
               <span className="inline-block rounded-full bg-white/15 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest mb-6">För byråer</span>
               <h1 className="font-display text-3xl lg:text-4xl font-bold mb-3">Vinn uppdrag. Betala bara för leads ni själva väljer.</h1>
-              <p className="text-white/75 mb-8 text-lg">119 kr per upplåst lead – eller 1 995 kr/mån obegränsat. Ett enda uppdrag på 50 000 kr betalar över 400 leads.</p>
+              <p className="text-white/75 mb-8 text-lg">99 kr per upplåst lead – eller 1 995 kr/mån obegränsat. Ett enda uppdrag på 50 000 kr betalar över 400 leads.</p>
 
               <div className="space-y-4 mb-10">
                 {benefits.map(benefit => (
