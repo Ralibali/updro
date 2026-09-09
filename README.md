@@ -15,7 +15,7 @@ Sveriges marknadsplats för digitala uppdrag. Beställaren beskriver sitt projek
 ## Affärsmodell
 
 - **Beställare:** gratis att publicera uppdrag, jämföra offerter och välja byrå.
-- **Byråer:** 119 kr per upplåst lead eller 1 995 kr/månad för obegränsad åtkomst.
+- **Byråer:** 99 kr per upplåst lead eller 1 995 kr/månad för obegränsad åtkomst.
 - **Provperiod:** fem lead-krediter under sju dagar, utan krav på kortuppgifter.
 
 ## Tech stack
