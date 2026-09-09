@@ -206,7 +206,7 @@ export const trackLeadPurchaseCompleted = () => {
   }))
 }
 
-/** Split 119 kr lead purchases from monthly/yearly subscriptions. */
+/** Split 99 kr lead purchases from monthly/yearly subscriptions. */
 export const trackPurchaseCompleted = (planId: string) => {
   if (planId === 'lead') {
     trackLeadPurchaseCompleted()

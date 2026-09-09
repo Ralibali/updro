@@ -1,6 +1,6 @@
 # Updro
 
-> Updro är en svensk marknadsplats som matchar företag med granskade digitala byråer. Beställaren beskriver sitt projekt gratis – Updro granskar briefen och högst tre relevanta byråer får lämna offert. Tjänsten är helt gratis för beställare; byråer betalar per lead (119 kr) eller månadskort (1 995 kr/månad). Inga massutskick, inga dolda avgifter.
+> Updro är en svensk marknadsplats som matchar företag med granskade digitala byråer. Beställaren beskriver sitt projekt gratis – Updro granskar briefen och högst tre relevanta byråer får lämna offert. Tjänsten är helt gratis för beställare; byråer betalar per lead (99 kr) eller månadskort (1 995 kr/månad). Inga massutskick, inga dolda avgifter.
 
 ## Så fungerar det
 
@@ -15,7 +15,7 @@
 - [Hitta SEO-byrå](https://updro.se/hitta-seo-byra): Matchning mot granskade SEO-byråer.
 - [Hitta digital byrå](https://updro.se/hitta-digital-byra): Matchning mot digitala byråer i hela Sverige.
 - [Byråer per stad](https://updro.se/stader): Lokala byråguider för 25 svenska städer.
-- [Priser för byråer](https://updro.se/priser): Öppen prissättning – 119 kr per lead eller 1 995 kr per månad.
+- [Priser för byråer](https://updro.se/priser): Öppen prissättning – 99 kr per lead eller 1 995 kr per månad.
 - [Artiklar och guider](https://updro.se/artiklar): Prisguider och rådgivning om webb, SEO, e-handel och byråval.
 - [Jämförelser](https://updro.se/jamfor): Oberoende jämförelser av byråförmedlingar och alternativ.
 - [Alternativ till Partna](https://updro.se/partna-alternativ): Jämförelse mellan Updro och Partna.
@@ -28,7 +28,7 @@
 - Tjänst: marknadsplats för offertjämförelse av digitala byråer (webbyråer, SEO-byråer, e-handelsbyråer, apputvecklare, UX/UI-designers, marknadsföringsbyråer).
 - Pris för beställare: 0 kr – helt gratis, ingen bindning.
 - Max antal offerter per uppdrag: 3 (medvetet tak för att skydda beställaren från massutskick).
-- Pris för byråer: 119 kr per lead eller 1 995 kr per månad – priserna publiceras öppet.
+- Pris för byråer: 99 kr per lead eller 1 995 kr per månad – priserna publiceras öppet.
 - Täckning: hela Sverige, med lokala guider för 25 städer.
 - Bolag: Aurora Media AB, org.nr 559272-0220, Sverige.
 - Kontakt: info@auroramedia.se

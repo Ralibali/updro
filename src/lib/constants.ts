@@ -135,7 +135,7 @@ export const STRIPE_PRODUCTS = {
   },
   lead: {
     name: 'Enskilt lead',
-    price: 119,
+    price: 99,
     per: 'per lead',
     mode: 'payment' as const,
   },
@@ -145,7 +145,7 @@ export const PLANS = [
   {
     id: 'lead' as const,
     name: 'Pay per lead',
-    price: 119,
+    price: 99,
     per: 'per lead',
     features: [
       'Se brief, budget och tidsram före upplåsning',

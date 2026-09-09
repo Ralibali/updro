@@ -40,7 +40,7 @@ export const PARTNA_FAQS = [
   },
   {
     q: 'Är Updro billigare än Partna?',
-    a: 'På Updros Pay per lead-plan kostar ett valt lead 119 kr. Den faktiska kostnaden per vunnen kund beror alltid på leadkvalitet och konvertering, men Updro tar inte ut någon procentuell slagavgift på projektvärdet i sin publicerade prismodell.',
+    a: 'På Updros Pay per lead-plan kostar ett valt lead 99 kr. Den faktiska kostnaden per vunnen kund beror alltid på leadkvalitet och konvertering, men Updro tar inte ut någon procentuell slagavgift på projektvärdet i sin publicerade prismodell.',
   },
   {
     q: 'Kan en byrå använda Updro och Partna samtidigt?',
