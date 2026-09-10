@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "writtenAt": "2026-09-10T18:29:08Z",
+  "repository": "Ralibali/updro",
+  "publicationGate": "Recheck current main and all published content; complete previous live article and product/source-link browser checks before promotion. Set actual publication dates only at publication.",
+  "sourceReview": {
+    "checkedAt": "2026-09-10T18:29:08Z",
+    "status": "product_html_and_repository_reviewed_browser_pending",
+    "note": "Original editorial work template. Recheck the live product and links before publishing; no human review or measured outcomes claimed."
+  },
+  "article": {
+    "slug": "andringar-webbprojekt-beslutslogg",
+    "h1": "Ändringar i ett webbprojekt: en beslutslogg för beställaren",
+    "metaTitle": "Ändringar i ett webbprojekt: en beslutslogg för beställaren",
+    "metaDesc": "Samla nya önskemål under webbprojektet. En mall för att beskriva ändringar, jämföra konsekvenser och hålla isär förslag och beslut.",
+    "category": "Webbutveckling",
+    "readTimeMinutes": 5,
+    "intro": "När webbprojektet har börjat dyker det ofta upp nya idéer. En extra sida, ett nytt formulär eller en annan målgrupp kan låta som en liten justering. Med en gemensam ändringslogg kan beställare och byrå förstå vad som föreslås och vilket beslut som faktiskt har fattats.",
+    "editorialNote": "AI-assisterad originalguide. Arbetsmallen är redaktionellt framtagen; externa faktauppgifter länkas till sina källor. Exemplen är testfall, inte kundresultat.",
+    "sections": [
+      {
+        "heading": "Utgå från den version ni arbetar efter",
+        "content": "Spara en tydlig hänvisning till den brief och omfattning som ligger till grund för arbetet. Ange dokumentets namn och version. Det ska gå att skilja ett nytt önskemål från en rättning av något som redan ingår.\n\nSkriv vad besökaren behöver kunna göra och varför önskemålet har uppstått. ”Vi behöver en egen kontaktväg för återförsäljare” ger mer sammanhang än ”lägg till ett formulär”. Beskriv behovet innan ni bestämmer lösningen."
+      },
+      {
+        "heading": "Ge varje förslag ett eget nummer",
+        "content": "Samla förslaget i en rad som går att hänvisa till i samtal och återkoppling. Använd samma nummer även om lösningen senare ändras.\n\n- Förslagets nummer och datum.\n- Behovet och vem som använder resultatet.\n- Berörd sida eller funktion.\n- Hänvisning till befintlig omfattning.\n- Frågor som behöver besvaras.\n- Ansvarig för nästa besked.\n- Status: förslag, under utredning, beslutat eller avstått.\n\nLåt ett tomt beslutsfält betyda att beslut saknas. Att någon har läst förslaget innebär inte att arbetet är beställt."
+      },
+      {
+        "heading": "Be om konsekvenser för hela leveransen",
+        "content": "Be byrån beskriva vilket arbete som tillkommer, vad som behöver ändras och vilka beroenden som påverkas. En ny sida kan exempelvis också behöva text, bilder, navigation och kontroller i mobil. Det är frågor att undersöka, inte ett påstående om att varje ändring alltid kräver allt detta.\n\nLägg eventuella kostnads- och tidsuppgifter bredvid den version av förslaget de avser. Skilj en uppskattning från ett besked som parterna uttryckligen har bekräftat. Hänvisa till er överenskommelse om hur ändringar hanteras."
+      },
+      {
+        "heading": "Jämför ett par tydliga alternativ",
+        "content": "Skriv vad som händer om förslaget genomförs nu, förenklas eller tas efter den planerade leveransen. Koppla alternativen till besökarens behov. Ibland kan det räcka att förtydliga befintlig information; ibland behövs ett nytt flöde.\n\nSamla öppna frågor innan beslutet. Om ett alternativ bygger på material som ni ännu inte har fått fram ska det synas i underlaget. Undvik att samma osäkerhet behandlas som ett fast besked i nästa möte."
+      },
+      {
+        "heading": "Dokumentera beslutet och uppdatera testningen",
+        "content": "Skriv vilket alternativ som valdes, av vem och när. Hänvisa till bekräftelsen och uppdatera arbetsunderlaget. Markera äldre förslag som ersatta så att de inte börjar genomföras av misstag.\n\nLägg till ett konkret test för det nya resultatet. Om en besökare ska kunna välja återförsäljarärenden behöver ni också kontrollera vad som händer efter valet. Använd [mallen för acceptanstest](/artiklar/acceptanstest-ny-hemsida-mall) när leveransen ska kontrolleras."
+      },
+      {
+        "heading": "Ta med arbetssättet redan i nästa brief",
+        "content": "Bestäm en gemensam plats för loggen och en person som samlar beställarens beslut. På så sätt behöver byrån inte tolka motstridiga önskemål från flera samtal. Loggen är ett praktiskt samarbetsunderlag och ersätter inte parternas avtal.\n\nInför ett nytt projekt kan du beskriva behovet och hur ni vill arbeta med ändringar på [Updro](/publicera). Briefen granskas innan högst tre relevanta byråer kan lämna offert. AI-assisterad originalguide; exemplen är arbetsförslag, inte genomförda kundprojekt."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Aktuell produktinformation",
+        "href": "https://updro.se/publicera"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "searchIntent": "Beställare som behöver hantera nya önskemål under ett pågående webbprojekt, före acceptanstestet.",
+      "sourceUrls": [
+        "https://updro.se/publicera"
+      ]
+    }
+  }
+}
