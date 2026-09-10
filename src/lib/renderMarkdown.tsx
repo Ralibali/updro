@@ -2,7 +2,7 @@ import React from 'react'
 
 /**
  * Converts a simple markdown string to React elements.
- * Supports: **bold**, - unordered lists, 1. ordered lists, | tables |, \n\n paragraphs
+ * Supports: **bold**, HTTPS/internal links, lists, tables and paragraphs.
  */
 export function renderMarkdown(text: string): React.ReactNode[] {
   const paragraphs = text.split('\n\n')
@@ -81,12 +81,23 @@ export function renderMarkdown(text: string): React.ReactNode[] {
 
 /** Convert **bold** markers to <strong> elements */
 function inlineMarkdown(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*)/)
+  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/)
   if (parts.length === 1) return text
 
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
+    }
+    const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+    if (link) {
+      const [, label, href] = link
+      try {
+        const url = new URL(href, 'https://updro.se')
+        const supported = href.startsWith('https://') || /^\/(?!\/)/.test(href)
+        if (supported && url.protocol === 'https:' && !url.username && !url.password && !/[\\\s]/.test(href)) {
+          return <a key={i} href={href} className="text-primary underline underline-offset-2" rel={url.origin === 'https://updro.se' ? undefined : 'noopener noreferrer'}>{label}</a>
+        }
+      } catch { /* Keep unsupported destinations as literal text. */ }
     }
     return part
   })
