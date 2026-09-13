@@ -19,7 +19,7 @@ const ArticleCTA = () => (
       Redo att ta in offerter? Publicera ditt projekt gratis
     </h2>
     <p className="mt-3 text-background/80 max-w-2xl">
-      Beskriv projektet på 3 minuter och få upp till tre offerter från kvalitetssäkrade svenska byråer – oftast inom 24 timmar.
+      Beskriv ditt projekt gratis. Updro granskar underlaget innan matchning, du kan få upp till tre offerter och väljer själv vem du vill gå vidare med.
     </p>
     <div className="mt-6 flex flex-wrap gap-3">
       <Link
