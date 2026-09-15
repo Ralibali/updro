@@ -1,5 +1,70 @@
 [
   {
+    "slug": "innehallslista-infor-ny-hemsida",
+    "h1": "Samla innehållet till den nya hemsidan: en mall inför byråstarten",
+    "metaTitle": "Innehåll till ny hemsida – mall inför byråstarten",
+    "metaDesc": "Gör en innehållslista med sidor, texter, bilder, ansvar och status. Ett praktiskt underlag för beställaren inför arbetet med en ny hemsida.",
+    "category": "Webbutveckling",
+    "readTimeMinutes": 5,
+    "intro": "En sidstruktur berättar vilka sidor ni vill ha. Den visar inte alltid om texten finns, vem som godkänner den eller vilken bild som ska användas. Med en innehållslista kan beställare och byrå se vad som är klart och vad som fortfarande behöver tas fram innan sidorna fylls.",
+    "editorialNote": "AI-assisterad originalguide. Arbetsmallen är ett redaktionellt förslag, inte en redovisning av kundresultat.",
+    "sections": [
+      {
+        "heading": "Börja med besökarens uppgift",
+        "content": "Skriv vad besökaren ska förstå eller kunna göra på varje planerad sida. En tjänstesida kan behöva förklara omfattningen och hur en förfrågan lämnas. En kontaktsida behöver visa rätt kontaktväg för de ärenden ni faktiskt vill ta emot.\n\nSamla inte text bara för att fylla en tom yta. Be den som ansvarar för sidan att förklara vilket beslut informationen ska hjälpa besökaren att fatta. Det gör det lättare att upptäcka när två sidor försöker göra samma sak."
+      },
+      {
+        "heading": "Ge varje sida en rad och en ansvarig",
+        "content": "Använd en gemensam lista där varje planerad sida har ett eget namn eller nummer. Hänvisa till den sidstruktur ni arbetar efter, så att listan går att jämföra med byråns underlag.\n\n- Sidans namn och syfte.\n- Textens plats och aktuella version.\n- Bilder, illustrationer eller annat material som behövs.\n- Vem som tar fram respektive del.\n- Vem som godkänner innehållet.\n- Status: saknas, utkast, under granskning eller godkänt.\n- Nästa åtgärd och överenskommet datum.\n\nLåt inte en fil i en mapp automatiskt betyda att den är godkänd. Statusen ska uttrycka vad ansvarig person faktiskt har bekräftat."
+      },
+      {
+        "heading": "Samla material där byrån kan hitta rätt version",
+        "content": "Bestäm en gemensam plats för text och bilder. Använd filnamn som gör det möjligt att hitta rätt sida och skilja aktuellt material från äldre utkast. Länka från innehållslistan till filen i stället för att kopiera samma text mellan många dokument.\n\nSkriv vilka fakta som behöver kontrolleras före publicering. Det kan vara öppettider, kontaktuppgifter eller vad som ingår i en tjänst. Markera osäker information som en fråga till rätt ansvarig, så att ett arbetsutkast inte börjar behandlas som ett bekräftat besked."
+      },
+      {
+        "heading": "Ge bilderna ett tydligt sammanhang",
+        "content": "Beskriv vad bilden ska visa och var den är tänkt att användas. Ange materialets källa och vem i verksamheten som kan bekräfta att det får användas i det aktuella sammanhanget. Skicka inte en bild från en sökträff som om användningen redan vore klar.\n\nBe byrån ange vilka format och storlekar som behövs innan ni producerar nytt material. Förbered också en kort beskrivning av bildens innehåll och funktion, så att rätt textalternativ kan diskuteras när sidan byggs."
+      },
+      {
+        "heading": "Samla återkopplingen till ett besked",
+        "content": "Låt utsedd ansvarig samla synpunkter från verksamheten. Skilj faktarättningar från förslag om ett annat budskap eller en ny sida. Ange vilken version återkopplingen gäller och vad som behöver ändras.\n\nNär önskemålet påverkar projektets omfattning kan ni använda [beslutsloggen för ändringar](/artiklar/andringar-webbprojekt-beslutslogg). Innehållslistan visar då vilket material som behövs, medan beslutsloggen håller reda på vad parterna har valt att göra."
+      },
+      {
+        "heading": "Ta med listan till projektstarten",
+        "content": "Gå igenom öppna punkter tillsammans med byrån. Bestäm vilket material som behövs först och hur nya versioner lämnas över. Följ sedan upp listan som en del av projektets vanliga avstämningar.\n\nInför en ny förfrågan kan du beskriva behovet på [Updro](/publicera) och ange vilket innehåll ni redan har. Updro granskar briefen före matchning, och du väljer själv om du vill gå vidare med en offert. AI-assisterad originalguide; mallen anger ingen garanterad tidsåtgång eller leveranstid."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      },
+      {
+        "label": "Beslutslogg för ändringar",
+        "href": "/artiklar/andringar-webbprojekt-beslutslogg"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Updro – beskriv ditt projekt",
+        "href": "https://updro.se/publicera"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "searchIntent": "Beställare som behöver förbereda, fördela och versionshantera hemsidans innehåll inför byråstart, före själva leveranstestet.",
+      "sourceUrls": [
+        "https://updro.se/publicera"
+      ],
+      "publishedAt": "2026-09-15T17:54:31Z",
+      "sourceCheckedAt": "2026-09-15T17:54:31Z"
+    },
+    "publishedDate": "2026-09-15",
+    "updatedDate": "2026-09-15"
+  },
+  {
     "slug": "andringar-webbprojekt-beslutslogg",
     "h1": "Ändringar i ett webbprojekt: en beslutslogg för beställaren",
     "metaTitle": "Ändringar i ett webbprojekt: en beslutslogg för beställaren",
