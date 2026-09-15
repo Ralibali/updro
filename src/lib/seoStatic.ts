@@ -276,7 +276,21 @@ const staticFooter = () => `<footer><p>Jämför digitala byråer och offerter ut
 
 const convertCta = (route: StaticSeoRoute) => route.cta ? `<p><a href="${esc(route.cta.href)}">${esc(route.cta.label)}</a></p>` : ''
 
-const staticText = (text: string) => esc(text).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+const staticText = (text: string) => text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/).map(part => {
+  if (part.startsWith('**') && part.endsWith('**')) return `<strong>${esc(part.slice(2, -2))}</strong>`
+  const link = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+  if (link) {
+    const [, label, href] = link
+    try {
+      const url = new URL(href, SITE_URL)
+      const supported = href.startsWith('https://') || /^\/(?!\/)/.test(href)
+      if (supported && url.protocol === 'https:' && !url.username && !url.password && !/[\\\s]/.test(href)) {
+        return `<a href="${esc(href)}">${esc(label)}</a>`
+      }
+    } catch { /* Keep unsupported destinations as escaped text. */ }
+  }
+  return esc(part)
+}).join('')
 const staticMarkdown = (text: string) => text.split('\n\n').map(block => {
   const lines = block.trim().split('\n')
   if (lines.every(line => /^-\s/.test(line))) return `<ul>${lines.map(line => `<li>${staticText(line.replace(/^-\s/, ''))}</li>`).join('')}</ul>`
