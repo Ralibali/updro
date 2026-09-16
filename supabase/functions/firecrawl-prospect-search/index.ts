@@ -4,6 +4,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0'
+import { buildCompanyIntelligence } from '../_shared/company-intelligence.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -234,6 +235,14 @@ serve(async (req: Request) => {
         const { score, signals } = computeFitScore({
           needType, industry, location, markdown, contactPageUrl,
         })
+        const companyIntelligence = buildCompanyIntelligence({
+          markdown,
+          links,
+          observedSignals: signals,
+          contactPageUrl,
+          industry,
+          location,
+        })
 
         const { error: insErr } = await service
           .from('prospecting_leads')
@@ -249,6 +258,9 @@ serve(async (req: Request) => {
             fit_score: score,
             observed_signals: signals,
             contact_page_url: contactPageUrl,
+            company_intelligence: companyIntelligence,
+            intelligence_source: 'firecrawl-search-v1',
+            intelligence_updated_at: new Date().toISOString(),
           })
         if (!insErr) inserted++
       }
