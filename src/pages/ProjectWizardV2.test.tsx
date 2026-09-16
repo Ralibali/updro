@@ -74,6 +74,25 @@ const fillDescription = () => {
   })
 }
 
+describe('ProjectWizardV2 page metadata', () => {
+  it.each(['/publicera', '/publicera/seo'])('replaces inherited article metadata on %s', (path) => {
+    document.title = 'En tidigare artikel'
+    document.head.querySelectorAll('link[rel="canonical"]').forEach(element => element.remove())
+    const previousCanonical = document.createElement('link')
+    previousCanonical.rel = 'canonical'
+    previousCanonical.href = 'https://updro.se/artiklar/foregaende-artikel'
+    document.head.appendChild(previousCanonical)
+
+    renderWizard(path)
+
+    expect(document.title).toBe('Publicera uppdrag – få offerter från digitala byråer | Updro')
+    expect(document.head.querySelectorAll('link[rel="canonical"]')).toHaveLength(1)
+    expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute('href', `https://updro.se${path}`)
+    expect(document.head.querySelector('meta[property="og:type"]')).toHaveAttribute('content', 'website')
+    expect(document.head.querySelector('meta[property="og:url"]')).toHaveAttribute('content', `https://updro.se${path}`)
+  })
+})
+
 const goToStep2 = () => {
   fillDescription()
   const category = screen.getByRole('button', { name: /Webbutveckling/ })

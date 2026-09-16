@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { trackCategorySelected, trackLeadStarted, trackLeadSubmitted, trackOnceInSession, trackUppdragDetailsCompleted } from '@/lib/analytics'
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { sanitizePrefill } from '@/lib/prefill'
+import { setSEOMeta } from '@/lib/seoHelpers'
 import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
@@ -35,6 +36,7 @@ const SUBMISSION_KEY = 'updro:last_guest_lead_submission'
 const ProjectWizardV2 = () => {
   const { user, isAuthenticated } = useAuth()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { kategori: pathKategori } = useParams<{ kategori: string }>()
   const [searchParams] = useSearchParams()
   // Sanitera förifyllnadstexten – annonslänkar kan innehålla olösta platshållare ({keyword} m.m.)
@@ -67,6 +69,14 @@ const ProjectWizardV2 = () => {
     phone: '',
     newsletter_opt_in: false,
   })
+
+  useEffect(() => {
+    setSEOMeta({
+      title: 'Publicera uppdrag – få offerter från digitala byråer | Updro',
+      description: 'Beskriv ditt digitala projekt. Updro granskar briefen före matchning med högst tre relevanta byråer. Du väljer själv om du vill gå vidare.',
+      canonical: `https://updro.se${pathname}`,
+    })
+  }, [pathname])
 
   // Fire `lead_landing_viewed` at most once per session when the wizard opens.
   useEffect(() => {
