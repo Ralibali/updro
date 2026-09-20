@@ -92,51 +92,6 @@
     }
     </script>
 
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      window.gtag = gtag;
-      gtag('consent', 'default', {
-        analytics_storage: 'denied',
-        ad_storage: 'denied',
-        ad_user_data: 'denied',
-        ad_personalization: 'denied',
-        wait_for_update: 500
-      });
-      gtag('js', new Date());
-      gtag('config', 'AW-10941540384', { page_location: location.origin + location.pathname, send_page_view: location.pathname !== '/kundportal' });
-      gtag('config', 'G-C0XMZG0KDQ', { anonymize_ip: true, page_location: location.origin + location.pathname, send_page_view: location.pathname !== '/kundportal' });
-    </script>
-    <!-- Google tag (gtag.js) – laddas med Consent Mode v2 (allt denied tills samtycke) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10941540384"></script>
-
-
-    <script async src="https://plausible.io/js/pa-fu8KtsEjEy6OTr1ou_gqo.js"></script>
-    <script>
-      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      function isSensitivePlausiblePath(path) {
-        return path === '/kundportal' || path === '/admin' || path.indexOf('/admin/') === 0 || path === '/dashboard' || path.indexOf('/dashboard/') === 0;
-      }
-      function transformPlausibleRequest(payload) {
-        if (!payload) return payload;
-        var url;
-        try { url = new URL(payload.u || location.href); } catch (e) { return payload; }
-        if (payload.n === 'pageview' && isSensitivePlausiblePath(url.pathname)) return null;
-        var kept = new URLSearchParams();
-        ['ref','source','utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function (key) {
-          var value = url.searchParams.get(key);
-          if (value) kept.set(key, value);
-        });
-        var qs = kept.toString();
-        payload.u = url.origin + url.pathname + (qs ? '?' + qs : '');
-        return payload;
-      }
-      plausible.init({
-        autoCapturePageviews: false,
-        formSubmissions: false,
-        transformRequest: transformPlausibleRequest
-      })
-    </script>
   </head>
 
   <body>

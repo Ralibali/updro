@@ -17,15 +17,15 @@ type PlausibleCall = [string, unknown?]
 
 declare global {
   interface Window {
-    plausible?: (...args: unknown[]) => void
+    analyticsEvent?: (...args: unknown[]) => void
   }
 }
 
 const setupPlausibleSpy = () => {
   const calls: PlausibleCall[] = []
-  window.plausible = ((event: string, options?: unknown) => {
+  window.analyticsEvent = ((event: string, options?: unknown) => {
     calls.push([event, options])
-  }) as unknown as Window['plausible']
+  }) as unknown as Window['analyticsEvent']
   return calls
 }
 
@@ -126,7 +126,7 @@ describe('buildPlausiblePageviewUrl', () => {
 
 describe('trackPlausiblePageview', () => {
   beforeEach(() => { __resetPlausibleStateForTests() })
-  afterEach(() => { delete window.plausible })
+  afterEach(() => { delete window.analyticsEvent })
 
   it('sends the first public pageview because snippet auto-capture is off', () => {
     const calls = setupPlausibleSpy()
@@ -157,7 +157,7 @@ describe('trackPlausiblePageview', () => {
 })
 
 describe('trackPlausibleEvent', () => {
-  afterEach(() => { delete window.plausible; vi.restoreAllMocks() })
+  afterEach(() => { delete window.analyticsEvent; vi.restoreAllMocks() })
 
   it('sends allowlisted props only', () => {
     const calls = setupPlausibleSpy()
@@ -195,13 +195,10 @@ describe('trackPlausibleEvent', () => {
   })
 })
 
-describe('Plausible snippet constraints', () => {
+describe('GA4 installation', () => {
   const html = readFileSync(resolve(process.cwd(), 'index.html'), 'utf8')
-
-  it('disables auto form submissions and auto pageviews so Form: Submission and hard-load /admin are not recorded', () => {
-    expect(html).toMatch(/formSubmissions:\s*false/)
-    expect(html).toMatch(/autoCapturePageviews:\s*false/)
-    expect(html).toMatch(/isSensitivePlausiblePath/)
-    expect(html).toMatch(/payload\.n === 'pageview'/)
+  it('removes the old tracker and avoids a second inline Google installation', () => {
+    expect(html).not.toMatch(/plausible\.io|plausible\.init/)
+    expect(html).not.toMatch(/googletagmanager\.com\/gtag/)
   })
 })

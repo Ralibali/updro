@@ -5,7 +5,7 @@ import { trackOnceInSession, trackLeadSubmitted } from '@/lib/analytics'
 afterEach(() => {
   vi.restoreAllMocks()
   delete window.gtag
-  delete window.plausible
+  delete window.analyticsEvent
 })
 
 describe('optional storage and analytics', () => {
@@ -27,7 +27,7 @@ describe('optional storage and analytics', () => {
 
   it('never turns a saved lead into a UI failure when analytics throws', () => {
     window.gtag = () => { throw new Error('gtag unavailable') }
-    window.plausible = () => { throw new Error('plausible unavailable') }
+    window.analyticsEvent = () => { throw new Error('plausible unavailable') }
     expect(() => trackLeadSubmitted({ source: 'publicera', category: 'SEO', userType: 'guest' })).not.toThrow()
   })
 })

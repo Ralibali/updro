@@ -1,10 +1,10 @@
+import { setAnalyticsConsent } from '@/lib/ga4Runtime';
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { COOKIE_CONSENT_KEY, createConsentState, parseCookieConsent, serializeCookieConsent, type CookieConsentState } from '@/lib/cookieConsent'
 import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from '@/lib/browserStorage'
 
-const GA_ID = 'G-C0XMZG0KDQ'
 // Ads-kontot kan bytas via VITE_GOOGLE_ADS_ID utan kodändring (fallback = nuvarande konto)
 const ADS_ID = (import.meta.env.VITE_GOOGLE_ADS_ID as string | undefined)?.trim() || 'AW-10941540384'
 type Gtag = (...args: unknown[]) => void
@@ -38,10 +38,10 @@ const applyConsent = (state: Pick<CookieConsentState, 'analytics' | 'marketing'>
     ad_user_data: state.marketing ? 'granted' : 'denied',
     ad_personalization: state.marketing ? 'granted' : 'denied',
   })
-  if (!state.analytics && !state.marketing) return
+  setAnalyticsConsent(state.analytics)
+  if (!state.marketing) return
   injectGtagScript()
   gtag('js', new Date())
-  if (state.analytics) gtag('config', GA_ID, { anonymize_ip: true })
   if (state.marketing) gtag('config', ADS_ID)
 }
 
@@ -54,8 +54,6 @@ const CookieConsent = () => {
   const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
-    const gtag = ensureDataLayer()
-    gtag?.('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500 })
     const stored = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
     if (!stored) { removeBrowserStorage('localStorage', COOKIE_CONSENT_KEY); setVisible(true); return }
     setAnalytics(stored.analytics)
