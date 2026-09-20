@@ -2,7 +2,7 @@
  * Enhanced measurement must be disabled in the stream: this owns SPA pageviews.
  */
 export type EventOptions = { props?: Record<string, unknown>; u?: string; url?: string; callback?: () => void };
-type Config = { measurementId: string; hosts: string[]; excluded: string[]; consentKey: string; consentFormat?: 'updro' | 'simple' };
+type Config = { measurementId: string; loaderId?: string; hosts: string[]; excluded: string[]; consentKey: string; consentFormat?: 'updro' | 'simple' };
 type AnalyticsWindow = Window & {
   dataLayer?: unknown[];
   gtag?: (...args: unknown[]) => void;
@@ -124,7 +124,7 @@ export function setAnalyticsConsent(granted: boolean): void {
     if (!document.querySelector('script[src*="googletagmanager.com/gtag/js"]')) {
       const script = document.createElement('script');
       script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${config.measurementId}`;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${config.loaderId || config.measurementId}`;
       document.head.appendChild(script);
     }
     configured = true;

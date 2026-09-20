@@ -1,3 +1,4 @@
+import { sendAnalyticsEvent } from '@/lib/ga4Runtime'
 import { getStoredAttribution } from '@/lib/attribution'
 import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 import { COOKIE_CONSENT_KEY, parseCookieConsent } from '@/lib/cookieConsent'
@@ -38,21 +39,18 @@ const getGtag = () => {
  * consent before sending events that must not be queued before consent.
  */
 export const trackAnalyticsEvent = (eventName: string, params: AnalyticsParams = {}) => {
-  try { getGtag()?.('event', eventName, params) } catch { /* Analytics is optional. */ }
+  if (eventName === 'conversion') {
+    const consent = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
+    if (consent?.marketing) { try { getGtag()?.('event', eventName, params) } catch { /* Optional Ads conversion. */ } }
+    return
+  }
+  sendAnalyticsEvent(eventName, { props: params })
 }
 
 export const trackPageView = (path: string) => {
   if (typeof window === 'undefined') return
 
-  // Do not send query parameters. The project wizard may contain a user's brief
-  // in the URL, which must never be forwarded to analytics providers.
-  trackAnalyticsEvent('page_view', {
-    page_path: path,
-    page_location: `${window.location.origin}${path}`,
-    page_title: document.title,
-  })
-
-  // Plausible SPA + hard-load pageview. Sensitive paths are dropped inside.
+  // The GA4 runtime deduplicates automatic and explicit SPA pageviews.
   trackPlausiblePageview(path)
 }
 
