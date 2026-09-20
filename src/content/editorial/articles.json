@@ -1,5 +1,70 @@
 [
   {
+    "slug": "brief-lopande-webbunderhall",
+    "h1": "Beställ löpande webbunderhåll: skriv en brief som går att följa upp",
+    "metaTitle": "Brief för löpande webbunderhåll – praktisk mall",
+    "metaDesc": "Beskriv uppgifter, prioriteringar, kontaktvägar och uppföljning när hemsidan ska förvaltas. En arbetsmall inför dialogen med en webbyrå.",
+    "category": "Webbutveckling",
+    "readTimeMinutes": 5,
+    "intro": "När hemsidan har lanserats fortsätter frågor att komma: vem ändrar en text, vem undersöker ett formulär som inte fungerar och hur beställs en ny funktion? En brief för det löpande arbetet hjälper dig att beskriva vad verksamheten behöver. Här får du ett underlag att gå igenom med en möjlig förvaltningspartner.",
+    "editorialNote": "AI-assisterad originalguide. Mallen är ett redaktionellt förslag och beskriver inga kundresultat.",
+    "sections": [
+      {
+        "heading": "Utgå från det som återkommer i verksamheten",
+        "content": "Samla exempel på sådant ni faktiskt behöver hjälp med under en vanlig period. Det kan vara nya medarbetarbilder, uppdaterade tjänstetexter eller frågor från den som administrerar webbplatsen. Skriv vad som utlöser varje uppgift och vem i verksamheten som kan lämna rätt underlag.\n\nHåll regelbundet innehållsarbete skilt från tekniska kontroller och nyutveckling. De kan kräva olika kompetenser och planeras på olika sätt. Om ni ännu inte vet hur ofta en uppgift återkommer, skriv att frekvensen är okänd. En uppskattning ska gå att känna igen som en uppskattning."
+      },
+      {
+        "heading": "Beskriv en uppgift så att den går att avgränsa",
+        "content": "Skriv vad som ska bli annorlunda för besökaren eller administratören när uppgiften är klar. Ange vilken sida eller funktion det gäller och vilket underlag som redan finns. Undvik formuleringar som ”håll allt uppdaterat” utan att förklara vad ordet allt omfattar.\n\nEtt avgränsat exempel är att publicera en godkänd tjänstetext på en angiven sida och kontrollera att dess kontaktlänk fungerar. Ett annat är att undersöka ett rapporterat formulärfel och återkomma med en bedömning. Undersökningen och själva rättningen behöver inte vara samma beställning."
+      },
+      {
+        "heading": "Kopiera fälten till er underhållsbrief",
+        "content": "Gör en rad per återkommande uppgift eller behov:\n\n- Uppgift och berörd sida eller funktion.\n- Önskat resultat och hur det ska kontrolleras.\n- Underlag som verksamheten lämnar.\n- Ansvarig beställare och den som godkänner resultatet.\n- Känd frekvens eller vad som behöver kartläggas.\n- Föreslagen prioritet och skälet till den.\n- Frågor som leverantören behöver besvara.\n\nLåt leverantören förklara vilka uppgifter den kan ta ansvar för och vilka som kräver ett separat upplägg. Markera öppna punkter i briefen tills ni har fått ett konkret besked."
+      },
+      {
+        "heading": "Skilj mottagen fråga från färdig åtgärd",
+        "content": "Bestäm var nya ärenden ska lämnas och hur ni får veta att de har tagits emot. Fråga sedan hur bedömning, planering, genomförande och godkännande kommuniceras. Ett mottagningsbesked säger inte i sig när arbetet blir färdigt.\n\nBeskriv också hur verksamheten förklarar brådska. Ange den observerade påverkan, exempelvis att en viss kontaktväg inte går att använda, i stället för att märka varje önskemål som akut. Be leverantören beskriva kontaktvägen och förväntningarna för just den situationen."
+      },
+      {
+        "heading": "Bestäm hur nya önskemål tas in",
+        "content": "Löpande arbete kan väcka idéer om fler sidor eller ändrade funktioner. Skriv hur ett sådant önskemål ska beskrivas, bedömas och godkännas innan någon börjar genomföra det. Be om besked om omfattning och kostnad när det behövs, utan att behandla ett första förslag som en bekräftad beställning.\n\nAnvänd gärna [beslutsloggen för ändringar](/artiklar/andringar-webbprojekt-beslutslogg) för att hålla reda på beslutet. Briefen beskriver den återkommande arbetsrutinen; loggen visar vad ni väljer att ändra i ett enskilt fall."
+      },
+      {
+        "heading": "Följ upp med ett begripligt arbetsunderlag",
+        "content": "Bestäm vilka uppgifter ni vill se vid en avstämning: vad som är klart, vad som väntar på underlag och vilka frågor som kräver ett nytt beslut. Jämför resultatet med det ni kom överens om för respektive uppgift. Be om ett förtydligande när en status inte går att förstå.\n\nPå [Updro](/publicera) kan du beskriva ett digitalt projekt och ta med vilka löpande behov verksamheten har. Fråga den aktuella byrån hur den kan hjälpa till efter leveransen. AI-assisterad originalguide; inga priser, svarstider eller underhållstjänster för en viss byrå utlovas."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt behov",
+        "href": "/publicera"
+      },
+      {
+        "label": "Beslutslogg för ändringar",
+        "href": "/artiklar/andringar-webbprojekt-beslutslogg"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Updro – beskriv ditt projekt",
+        "href": "https://updro.se/publicera"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "searchIntent": "Beställare som behöver avgränsa och följa upp löpande arbete med en befintlig hemsida efter leveransen.",
+      "sourceUrls": [
+        "https://updro.se/publicera"
+      ],
+      "publishedAt": "2026-09-20T12:42:21.351536+00:00",
+      "sourceCheckedAt": "2026-09-20T12:42:21.351536+00:00"
+    },
+    "publishedDate": "2026-09-20",
+    "updatedDate": "2026-09-20"
+  },
+  {
     "slug": "innehallslista-infor-ny-hemsida",
     "h1": "Samla innehållet till den nya hemsidan: en mall inför byråstarten",
     "metaTitle": "Innehåll till ny hemsida – mall inför byråstarten",
