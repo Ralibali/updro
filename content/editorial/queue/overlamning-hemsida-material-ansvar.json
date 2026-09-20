@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "writtenAt": "2026-09-20T13:27:25.389794+00:00",
+  "repository": "Ralibali/updro",
+  "publicationGate": "Earliest 2026-09-22 Europe/Stockholm. Recheck previous article reader flow, current main, complete inventory and live sources before publication. Assign actual publication dates only when publishing.",
+  "sourceReview": {
+    "checkedAt": "2026-09-20T13:27:25.389794+00:00",
+    "status": "current_product_and_inventory_reviewed_recheck_before_publication",
+    "note": "Original editorial work template; no human review, measured result or unsupported product feature claimed."
+  },
+  "article": {
+    "slug": "overlamning-hemsida-material-ansvar",
+    "h1": "Överlämning av en hemsida: samla material, kontakter och ansvar",
+    "metaTitle": "Överlämning av hemsida – mall för material och ansvar",
+    "metaDesc": "Samla dokumentation, material, ansvariga och öppna frågor när en hemsida lämnas över. En praktisk mall för beställaren inför avslutande genomgång.",
+    "category": "Webbutveckling",
+    "readTimeMinutes": 5,
+    "intro": "En hemsida kan vara färdig för besökare samtidigt som beställaren fortfarande undrar var originalbilderna finns eller vem som kan ändra en kontaktadress. Planera en överlämning där ni går igenom materialet och vardagsuppgifterna tillsammans. Här är en mall för att göra den genomgången konkret.",
+    "editorialNote": "AI-assisterad originalguide. Arbetsmallen är ett redaktionellt förslag.",
+    "sections": [
+      {
+        "heading": "Bestäm vad genomgången ska ge er",
+        "content": "Börja med vilka uppgifter verksamheten ska kunna hantera efter leveransen. Välj några verkliga exempel, som att rätta en text, byta en bild eller hitta kontaktvägen när ett formulär behöver undersökas. Skriv vem som normalt gör varje uppgift och vilket stöd personen behöver.\n\nSkicka listan till byrån före genomgången. Be den markera vad som ingår i överlämningen och vilka frågor som behöver ett separat besked. Det gör mötet lättare att förbereda och hjälper er att skilja en saknad instruktion från ett nytt önskemål."
+      },
+      {
+        "heading": "Gör en innehållsförteckning över leveransen",
+        "content": "Lista materialet ni har kommit överens om att få tillgång till. Det kan vara redigerbara texter, bildfiler, en lista över använda tjänster och instruktioner för återkommande ändringar. Skriv var varje del finns och vilket format som ska användas.\n\nUtgå från er bekräftade beställning. Att en fil syns på webbplatsen säger inte i sig vilken originalfil ni får eller vilka användningsvillkor som gäller. Be ansvarig part reda ut oklara punkter och spara hänvisningen till svaret. Lägg inte privata inloggningsuppgifter i en allmänt delad materiallista."
+      },
+      {
+        "heading": "Kopiera fälten till en överlämningslista",
+        "content": "Gör en rad per del av leveransen:\n\n- Material, tjänst eller vardagsuppgift.\n- Var rätt fil eller instruktion finns.\n- Vem i verksamheten som ansvarar för den.\n- Vem hos leverantören som besvarar frågor.\n- Vad mottagaren ska kunna göra efter genomgången.\n- Vad som är bekräftat och vad som återstår.\n- Nästa steg, ansvarig och överenskommen uppföljning.\n\nSkriv okänt när ett svar saknas. En tom ruta är svår att skilja från något som redan är kontrollerat. För åtkomst räcker det här att beskriva ansvar och hur den ska bekräftas; själva behörigheten ordnas genom respektive tjänsts avsedda funktioner."
+      },
+      {
+        "heading": "Låt mottagaren utföra en vanlig uppgift",
+        "content": "Välj ett exempel från den första listan och låt den blivande administratören följa instruktionen. Använd den miljö och det underlag som ni har kommit överens om för genomgången. Bestäm i förväg om en ändring får bli publik eller bara ska visas som ett exempel.\n\nAnteckna var personen behöver fråga eller leta efter något som inte står i instruktionen. Be om en förklaring som går att hitta även efter mötet. Syftet är att se om överlämningsmaterialet fungerar för mottagaren, inte att låta ett enstaka exempel bevisa att hela webbplatsen är felfri."
+      },
+      {
+        "heading": "Samla kvarvarande frågor i en gemensam lista",
+        "content": "Avsluta genomgången med de punkter som fortfarande behöver ett svar. Skilj mellan en fråga om materialet, en felrapport och ett önskemål om mer funktionalitet. Beskriv varje punkt så att den ansvariga personen förstår vad som efterfrågas.\n\nAnvänd [mallen för acceptanstest](/artiklar/acceptanstest-ny-hemsida-mall) för kontroller av själva leveransen. Överlämningslistan visar i stället om verksamheten har fått ett begripligt underlag för det fortsatta arbetet. Länka mellan listorna när samma fråga berör båda."
+      },
+      {
+        "heading": "Gör nästa kontaktväg tydlig",
+        "content": "Spara vem verksamheten ska kontakta när den första frågan uppstår efter genomgången. Be byrån förklara hur fortsatt hjälp beställs och vad som behöver avtalas separat. Beskriv återkommande behov i [briefen för löpande webbunderhåll](/artiklar/brief-lopande-webbunderhall).\n\nNär du [beskriver ditt projekt på Updro](/publicera) kan du ta med vilka personer som ska arbeta med hemsidan efter leveransen. Då finns överlämningen med redan i samtalet med möjliga byråer. AI-assisterad originalguide; inga särskilda leveransvillkor eller stödtjänster hos en viss byrå utlovas."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      },
+      {
+        "label": "Brief för löpande webbunderhåll",
+        "href": "/artiklar/brief-lopande-webbunderhall"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Updro – beskriv ditt projekt",
+        "href": "https://updro.se/publicera"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "searchIntent": "Beställare som ska ta emot dokumentation och vardagsansvar vid överlämning av en hemsida; skilt från acceptanstest och löpande underhåll.",
+      "sourceUrls": [
+        "https://updro.se/publicera"
+      ]
+    }
+  }
+}
