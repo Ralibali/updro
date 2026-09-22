@@ -1,19 +1,6 @@
-/**
- * Typed Plausible Analytics helper.
- *
- * The Plausible script itself is loaded once from index.html. This module only
- * pushes events into the global `plausible()` queue. It is safe to call before
- * the script has finished loading — Plausible's own snippet defines a queue
- * (`plausible.q`) that flushes on load.
- *
- * The snippet disables auto pageviews and auto form submissions. Pageviews are
- * sent from the SPA hook so `/admin` and `/dashboard` are skipped on both hard
- * load and client navigation. Real conversions use the named events below.
- *
- * Strict privacy rules enforced here:
- *   - Only low-cardinality, non-identifying property values are accepted.
- *   - Event names are a fixed union — no free-form names from call sites.
- *   - Pageviews never include briefs, tokens or other non-attribution query data.
+/** Typed business events delivered through consent-gated GA4.
+ * ga4Runtime owns SPA pageviews, URL redaction and delivery callbacks.
+ * Existing exported helper names are kept for call-site compatibility.
  */
 
 export type PlausibleEventName =
@@ -181,7 +168,7 @@ type PlausibleFn = (
 
 const getPlausible = (): PlausibleFn | null => {
   if (typeof window === 'undefined') return null
-  const fn = (window as unknown as { plausible?: PlausibleFn }).plausible
+  const fn = (window as unknown as { analyticsEvent?: PlausibleFn }).analyticsEvent
   return typeof fn === 'function' ? fn : null
 }
 

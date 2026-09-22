@@ -169,7 +169,7 @@ const AdminAdsAI = () => {
             </div>
           </Panel>
 
-          <Panel title="2. Länk och spårning" subtitle="Plausible läser UTM-värdena och Updro sparar attributionen på uppdraget.">
+          <Panel title="2. Länk och spårning" subtitle="GA4 läser UTM-värdena efter samtycke och Updro sparar attributionen på uppdraget.">
             <Field label="Slutlig webbadress"><Input value={draft.finalUrl} onChange={e => update('finalUrl', e.target.value)} /></Field>
             <div className="grid sm:grid-cols-2 gap-4">
               <Field label="Visningssökväg 1"><LimitedInput value={draft.path1} max={15} onChange={value => update('path1', value)} /></Field>

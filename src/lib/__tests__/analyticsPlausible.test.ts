@@ -18,15 +18,15 @@ type PlausibleCall = [string, unknown?]
 
 declare global {
   interface Window {
-    plausible?: (...args: unknown[]) => void
+    analyticsEvent?: (...args: unknown[]) => void
   }
 }
 
 const setupPlausibleSpy = () => {
   const calls: PlausibleCall[] = []
-  window.plausible = ((event: string, options?: unknown) => {
+  window.analyticsEvent = ((event: string, options?: unknown) => {
     calls.push([event, options])
-  }) as unknown as Window['plausible']
+  }) as unknown as Window['analyticsEvent']
   return calls
 }
 
@@ -35,7 +35,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  delete window.plausible
+  delete window.analyticsEvent
   sessionStorage.clear()
 })
 
