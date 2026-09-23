@@ -3,10 +3,12 @@
 // edge function and the admin UI.
 
 export type ProspectingNeedType = 'webb' | 'ehandel' | 'ai' | 'valfritt'
+export type ProspectingSignalFocus = 'any' | 'buying' | 'growth' | 'pain'
 
 export interface BuildQueryInput {
   freeText: string
   needType: ProspectingNeedType
+  signalFocus?: ProspectingSignalFocus
   industry?: string | null
   location?: string | null
 }
@@ -38,6 +40,13 @@ const NEED_TERMS: Record<ProspectingNeedType, string> = {
   valfritt: '',
 }
 
+const SIGNAL_TERMS: Record<ProspectingSignalFocus, string> = {
+  any: '',
+  buying: '"söker byrå" OR "söker leverantör" OR "behöver hjälp" OR "offertförfrågan" OR upphandling OR "request for proposal" OR "request for quote"',
+  growth: '"öppnar nytt" OR expanderar OR expansion OR "ny butik" OR "nytt kontor" OR rekryterar OR "we are hiring"',
+  pain: '"manuellt arbete" OR excel OR "tar för lång tid" OR "gammal hemsida" OR "under ombyggnad" OR "problem med"',
+}
+
 /** Build the Firecrawl search query from admin form inputs. Deterministic. */
 export function buildProspectingQuery(input: BuildQueryInput): string {
   const parts: string[] = []
@@ -45,6 +54,8 @@ export function buildProspectingQuery(input: BuildQueryInput): string {
   if (free) parts.push(free)
   const need = NEED_TERMS[input.needType]
   if (need) parts.push(`(${need})`)
+  const signal = SIGNAL_TERMS[input.signalFocus ?? 'any']
+  if (signal) parts.push(`(${signal})`)
   if (input.industry?.trim()) parts.push(`"${input.industry.trim()}"`)
   if (input.location?.trim()) parts.push(input.location.trim())
   return parts.join(' ').replace(/\s+/g, ' ').trim()
@@ -97,6 +108,7 @@ export interface FitScoreInput {
   location?: string | null
   markdown?: string | null
   contactPageUrl?: string | null
+  publishedAt?: string | null
 }
 
 export interface FitScoreResult {
@@ -159,6 +171,28 @@ export function computeFitScore(input: FitScoreInput): FitScoreResult {
   if (input.needType === 'webb' && /(gammal\s+hemsida|ny\s+hemsida|bygga\s+om\s+webbplats)/.test(md)) {
     score += 5
     signals.push('Text om ny/gammal hemsida')
+  }
+
+  if (/(söker\s+(?:en\s+)?(?:byrå|leverantör|partner)|behöver\s+hjälp|offertförfrågan|request\s+for\s+(?:proposal|quote)|upphandling)/.test(md)) {
+    score += 20
+    signals.push('Köpsignal: aktivt behov eller leverantörssökande omnämns')
+  }
+  if (/(öppnar\s+(?:ny|nytt)|expanderar|expansion|ny\s+(?:butik|lokal|kontor)|rekryterar|we\s+are\s+hiring)/.test(md)) {
+    score += 15
+    signals.push('Tillväxtsignal: expansion, nyetablering eller rekrytering omnämns')
+  }
+  if (/(manuellt\s+arbete|excel|tar\s+för\s+lång\s+tid|gammal\s+hemsida|under\s+ombyggnad|problem\s+med)/.test(md)) {
+    score += 12
+    signals.push('Problemsignal: ett konkret manuellt, tekniskt eller digitalt problem omnämns')
+  }
+
+  if (input.publishedAt) {
+    const published = new Date(input.publishedAt)
+    const ageMs = Date.now() - published.getTime()
+    if (Number.isFinite(ageMs) && ageMs >= 0 && ageMs <= 90 * 24 * 60 * 60 * 1000) {
+      score += 10
+      signals.push(`Färsk källa: ${published.toISOString().slice(0, 10)}`)
+    }
   }
 
   // Missing clear CTA is a mild signal that the site could be improved.
