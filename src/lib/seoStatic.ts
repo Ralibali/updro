@@ -1,3 +1,11 @@
+import { getOgImage } from './seoHelpers'
+import { completeMetaDescription } from './metaDescription'
+import { mergeDeep } from './seoDeepEnrichment'
+import { shouldIndexCityService } from './seoCityIndexing'
+import { PARTNA_FACTS, PARTNA_FAQS } from './partnaComparison'
+
+export { shouldIndexCityService } from './seoCityIndexing'
+
 import { seoLeadPath } from './seoLeadPath'
 import { SEO_PAGES, getCategoryNavLinks } from './seoData'
 import { CITIES, SERVICE_CATEGORIES } from './seoCities'
@@ -28,6 +36,7 @@ export interface StaticSeoRoute {
   noindex?: boolean
   links?: { label: string; href: string }[]
   faq?: { q: string; a: string }[]
+  article?: { published?: string; modified?: string }
   intro?: string
   sections?: { heading: string; content: string }[]
   sources?: { label: string; href: string }[]
@@ -40,13 +49,6 @@ const clean = (value = '') => value.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ')
 const trunc = (value: string, max = 155) => clean(value).length <= max ? clean(value) : `${clean(value).slice(0, max - 1).trim()}…`
 const words = (slug: string) => slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 const esc = (value = '') => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-
-export const shouldIndexCityService = (citySlug: string, serviceSlug: string) => {
-  const city = CITIES.find(cityItem => cityItem.slug === citySlug)
-  const service = SERVICE_CATEGORIES.find(serviceItem => serviceItem.slug === serviceSlug)
-  if (!city || !service) return false
-  return Boolean(CITY_CATEGORY_DEEP[`${citySlug}/${serviceSlug}`])
-}
 
 const baseRoutes = (): StaticSeoRoute[] => [
   {
@@ -160,25 +162,25 @@ const categoryRoutes = (): StaticSeoRoute[] => SERVICE_CATEGORIES.map(category =
   changefreq: 'weekly' as const,
   links: [
     { label: 'Alla byråer', href: '/byraer' },
-    ...SERVICE_CATEGORIES.filter(other => other.slug !== category.slug).slice(0, 6).map(other => ({ label: `${other.name}-byråer`, href: `/byraer/kategori/${other.slug}` })),
+    ...SERVICE_CATEGORIES.filter(other => other.slug !== category.slug).map(other => ({ label: `${other.name}-byråer`, href: `/byraer/kategori/${other.slug}` })),
   ],
 }))
 
 const serviceRoutes = (): StaticSeoRoute[] => SEO_PAGES.flatMap((page: any) => [
-  { path: `/${page.categorySlug}`, title: page.metaTitle, description: trunc(page.metaDesc || page.intro), h1: page.h1 || page.categoryName, intro: page.intro, sections: page.sections, priority: 0.9, changefreq: 'weekly', cta: { label: 'Jämför offerter gratis', href: `/publicera/${page.categorySlug}` }, links: (page.subPages || []).slice(0, 8).map((subPage: any) => ({ label: subPage.h1 || subPage.title, href: `/${page.categorySlug}/${subPage.slug}` })), faq: (page.faq || []).slice(0, 5) },
-  ...(page.subPages || []).map((subPage: any) => ({ path: `/${page.categorySlug}/${subPage.slug}`, title: subPage.title || `${page.categoryName} ${words(subPage.slug)} | Updro`, description: trunc(subPage.metaDesc || subPage.intro), h1: subPage.h1 || `${page.categoryName} ${words(subPage.slug)}`, intro: subPage.intro, sections: subPage.sections, cta: { label: "Jämför offerter gratis", href: seoLeadPath(page.categorySlug) }, priority: 0.7, changefreq: 'monthly' as const, links: [{ label: page.categoryName, href: `/${page.categorySlug}` }, ...((subPage.relatedLinks || []).slice(0, 6))], faq: (subPage.faq || []).slice(0, 5) })),
+  { path: `/${page.categorySlug}`, title: page.metaTitle, description: completeMetaDescription(page.metaDesc || page.intro), h1: page.h1 || page.categoryName, intro: page.intro, sections: page.sections, priority: 0.9, changefreq: 'weekly', cta: { label: 'Jämför offerter gratis', href: `/publicera/${page.categorySlug}` }, links: (page.subPages || []).map((subPage: any) => ({ label: subPage.h1 || subPage.title, href: `/${page.categorySlug}/${subPage.slug}` })), faq: (page.faq || []) },
+  ...(page.subPages || []).map((subPage: any) => ({ path: `/${page.categorySlug}/${subPage.slug}`, title: subPage.title || `${page.categoryName} ${words(subPage.slug)} | Updro`, description: completeMetaDescription(subPage.metaDesc || subPage.intro), h1: subPage.h1 || `${page.categoryName} ${words(subPage.slug)}`, intro: subPage.intro, sections: subPage.sections, cta: { label: "Jämför offerter gratis", href: seoLeadPath(page.categorySlug) }, priority: 0.7, changefreq: 'monthly' as const, links: [{ label: page.categoryName, href: `/${page.categorySlug}` }, ...((subPage.relatedLinks || []).slice(0, 6))], faq: (subPage.faq || []) })),
 ])
 
 const cityRoutes = (): StaticSeoRoute[] => CITIES.flatMap((city: any) => {
   const serviceLinks = SERVICE_CATEGORIES.map((service: any) => ({ label: `${service.shortName || service.name} i ${city.name}`, href: `/byraer/${city.slug}/${service.slug}` }))
   const cityDeep = CITY_DEEP[city.slug]
   return [
-    { path: `/byraer/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(cityDeep?.intro || `Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, intro: cityDeep?.intro, sections: cityDeep?.sections.map(section => ({ heading: section.heading, content: section.paragraphs.join("\n\n") })), priority: 0.8, changefreq: 'weekly' as const, links: serviceLinks, faq: cityDeep?.faq?.slice(0, 5) },
+    { path: `/byraer/${city.slug}`, title: `Digitala byråer i ${city.name} – jämför offerter | Updro`, description: trunc(cityDeep?.intro || `Hitta digitala byråer i ${city.name}. ${city.techDescription} Beskriv projektet gratis och jämför högst tre relevanta offerter.`), h1: `Digitala byråer i ${city.name}`, intro: cityDeep?.intro, sections: cityDeep?.sections.map(section => ({ heading: section.heading, content: section.paragraphs.join("\n\n") })), priority: 0.8, changefreq: 'weekly' as const, links: serviceLinks, faq: cityDeep?.faq },
     ...SERVICE_CATEGORIES.map((service: any) => {
       const deep = CITY_CATEGORY_DEEP[`${city.slug}/${service.slug}`]
       const noindex = !shouldIndexCityService(city.slug, service.slug)
-      const relatedServices = SERVICE_CATEGORIES.filter((item: any) => item.slug !== service.slug).slice(0, 5).map((item: any) => ({ label: `${item.name} i ${city.name}`, href: `/byraer/${city.slug}/${item.slug}` }))
-      const relatedCities = CITIES.filter((item: any) => item.slug !== city.slug).slice(0, 5).map((item: any) => ({ label: `${service.name} i ${item.name}`, href: `/byraer/${item.slug}/${service.slug}` }))
+      const relatedServices = SERVICE_CATEGORIES.filter((item: any) => item.slug !== service.slug && shouldIndexCityService(city.slug, item.slug)).slice(0, 5).map((item: any) => ({ label: `${item.name} i ${city.name}`, href: `/byraer/${city.slug}/${item.slug}` }))
+      const relatedCities = CITIES.filter((item: any) => item.slug !== city.slug && shouldIndexCityService(item.slug, service.slug)).slice(0, 5).map((item: any) => ({ label: `${service.name} i ${item.name}`, href: `/byraer/${item.slug}/${service.slug}` }))
       return {
         path: `/byraer/${city.slug}/${service.slug}`,
         title: deep?.title || `${service.name}-byrå i ${city.name} – jämför offerter | Updro`,
@@ -190,24 +192,69 @@ const cityRoutes = (): StaticSeoRoute[] => CITIES.flatMap((city: any) => {
         priority: noindex ? 0.2 : 0.7,
         changefreq: 'monthly' as const,
             noindex,
-        links: [...relatedServices, ...relatedCities],
-        faq: deep?.faq?.slice(0, 5),
+        links: [{ label: `Digitala byråer i ${city.name}`, href: `/byraer/${city.slug}` }, { label: `${categoryAgencyLabel(service.slug, service.name)} i Sverige`, href: `/byraer/kategori/${service.slug}` }, ...relatedServices, ...relatedCities],
+        faq: deep?.faq,
       }
     }),
   ]
 })
 
 const contentRoutes = (): StaticSeoRoute[] => [
-  ...COMPARISON_PAGES.map((page: any) => ({ path: `/${page.slug}`, title: page.metaTitle || page.title || `${words(page.slug)} | Updro`, description: trunc(page.metaDesc || page.description || `Jämför ${words(page.slug)}.`), h1: page.h1 || page.title || words(page.slug), intro: page.intro, sections: page.sections, sources: page.sources, cta: { label: "Jämför offerter gratis", href: seoLeadPath(page.category) }, priority: 0.8, changefreq: 'monthly' as const, links: [{ label: 'Alla jämförelser', href: '/jamfor' }, ...(page.relatedLinks || [])], faq: page.faq, lastmod: page.reviewedAt })),
-  ...ARTICLES.map(article => ({ path: `/artiklar/${article.slug}`, title: article.metaTitle, description: article.metaDesc, h1: article.h1, intro: article.intro, sections: article.sections, faq: article.faq, sources: article.sources, priority: 0.7, changefreq: 'monthly' as const, lastmod: article.updatedDate || article.publishedDate, links: [{ label: 'Alla artiklar', href: '/artiklar' }, ...article.relatedLinks], cta: { label: 'Beskriv ditt projekt', href: '/publicera' } })),
+  ...COMPARISON_PAGES.map((page: any) => ({ path: `/${page.slug}`, title: page.metaTitle || page.title || `${words(page.slug)} | Updro`, description: trunc(page.metaDesc || page.description || `Jämför ${words(page.slug)}.`), h1: page.h1 || page.title || words(page.slug), intro: page.intro, sections: page.sections, sources: page.sources, cta: { label: "Jämför offerter gratis", href: seoLeadPath(page.category) }, priority: 0.8, changefreq: 'monthly' as const, links: [{ label: 'Alla jämförelser', href: '/jamfor' }, ...(page.relatedLinks || [])], faq: page.faq, lastmod: page.reviewedAt, article: page.reviewedAt ? { modified: page.reviewedAt } : undefined })),
+  ...ARTICLES.map(article => ({ path: `/artiklar/${article.slug}`, title: article.metaTitle, description: article.metaDesc, h1: article.h1, intro: article.intro, sections: article.sections, faq: article.faq, sources: article.sources, priority: 0.7, changefreq: 'monthly' as const, lastmod: article.updatedDate || article.publishedDate, article: { published: article.publishedDate, modified: article.updatedDate || article.publishedDate }, links: [{ label: 'Alla artiklar', href: '/artiklar' }, ...article.relatedLinks], cta: { label: 'Beskriv ditt projekt', href: '/publicera' } })),
   ...TOOLS.map((tool: any) => ({ path: `/verktyg/${tool.slug}`, title: tool.metaTitle || tool.title || `${words(tool.slug)} | Updro`, description: trunc(tool.metaDesc || tool.description || `Använd Updros kostnadsfria verktyg för ${words(tool.slug)}.`), h1: tool.h1 || tool.title || words(tool.slug), priority: 0.7, changefreq: 'monthly' as const, links: [{ label: 'Alla verktyg', href: '/verktyg' }] })),
-  ...PRICE_GUIDES.map(guide => ({ path: `/priser/${guide.slug}`, title: guide.title, description: trunc(guide.metaDescription), h1: guide.h1, priority: 0.8, changefreq: 'monthly' as const, links: [{ label: 'Alla prisguider', href: '/priser' }, ...PRICE_GUIDES.filter(other => other.slug !== guide.slug).map(other => ({ label: other.h1, href: `/priser/${other.slug}` }))], faq: guide.faq.slice(0, 5) })),
+  ...PRICE_GUIDES.map(guide => ({ path: `/priser/${guide.slug}`, title: guide.title, description: trunc(guide.metaDescription), h1: guide.h1, priority: 0.8, changefreq: 'monthly' as const, links: [{ label: 'Alla prisguider', href: '/priser' }, ...PRICE_GUIDES.filter(other => other.slug !== guide.slug).map(other => ({ label: other.h1, href: `/priser/${other.slug}` }))], faq: guide.faq })),
 ]
 
-export const getAllStaticSeoRoutes = () => {
+// Hubs expose every child, including pages outside the main navigation.
+const hubLinks = (): Record<string, { label: string; href: string }[]> => ({
+  '/byraer': [
+    ...SERVICE_CATEGORIES.map(category => ({ label: `${categoryAgencyLabel(category.slug, category.name)} i Sverige`, href: `/byraer/kategori/${category.slug}` })),
+    ...CITIES.map(city => ({ label: `Digitala byråer i ${city.name}`, href: `/byraer/${city.slug}` })),
+  ],
+  '/stader': CITIES.map(city => ({ label: `Digitala byråer i ${city.name}`, href: `/byraer/${city.slug}` })),
+  '/jamfor': [
+    ...COMPARISON_PAGES.map(page => ({ label: page.h1, href: `/${page.slug}` })),
+    { label: 'Alternativ till Partna', href: '/partna-alternativ' },
+    { label: 'Alternativ till Swivrr', href: '/swivrr-alternativ' },
+    { label: 'Byt från Partna (för byråer)', href: '/for-byraer/byt-fran-partna' },
+  ],
+  '/artiklar': ARTICLES.map(article => ({ label: article.h1, href: `/artiklar/${article.slug}` })),
+  '/verktyg': TOOLS.map(tool => ({ label: tool.h1, href: `/verktyg/${tool.slug}` })),
+  '/priser': PRICE_GUIDES.map(guide => ({ label: guide.h1, href: `/priser/${guide.slug}` })),
+  '/integritetspolicy': [{ label: 'Integritetsinformation för prospektering', href: '/integritet/prospektering' }],
+})
+
+const deepEnrichedPaths = new Set([
+  ...SEO_PAGES.flatMap(page => [`/${page.categorySlug}`, ...(page.subPages || []).map(sub => `/${page.categorySlug}/${sub.slug}`)]),
+  ...ARTICLES.map(article => `/artiklar/${article.slug}`),
+  ...COMPARISON_PAGES.filter(page => !page.reviewedAt).map(page => `/${page.slug}`),
+])
+
+// All consumers (prerender, sitemap and tests) receive the production content.
+// Clone mutable arrays before mergeDeep so the shared source data stays intact.
+export const getAllStaticSeoRoutes = (): StaticSeoRoute[] => {
   const map = new Map<string, StaticSeoRoute>()
   for (const route of [...baseRoutes(), ...serviceRoutes(), ...cityRoutes(), ...categoryRoutes(), ...contentRoutes()]) map.set(route.path, route)
-  return [...map.values()]
+  const hubs = hubLinks()
+  const noindexPaths = new Set([...map.values()].filter(route => route.noindex).map(route => route.path))
+  return [...map.values()].map(route => {
+    const enriched = { ...route, sections: [...(route.sections || [])], faq: [...(route.faq || [])] }
+    if (route.path === '/partna-alternativ') {
+      enriched.title = 'Partna pris 2026 & alternativ – Updro vs Partna'
+      enriched.description = `Jämför Partna och Updro: ${PARTNA_FACTS.payAsYouGo} kr per Partna-förfrågan, ${Math.round(PARTNA_FACTS.successFeeRate * 100)} % slagavgift vid vunnen affär, upp till ${PARTNA_FACTS.maxOffers} offerter – mot Updros 99 kr per valt lead och max tre byråer.`
+      enriched.h1 = 'Partna pris och alternativ – Updro vs Partna'
+      enriched.faq = PARTNA_FAQS.map(item => ({ q: item.q, a: item.a }))
+    }
+    if (deepEnrichedPaths.has(route.path)) mergeDeep(enriched, route.path)
+    const seen = new Set<string>()
+    enriched.links = [...(route.links || []), ...(hubs[route.path] || [])].filter(link => {
+      if (noindexPaths.has(link.href) || link.href === route.path || seen.has(link.href)) return false
+      seen.add(link.href)
+      return true
+    })
+    return enriched
+  })
 }
 
 export const getIndexableSeoRoutes = () => getAllStaticSeoRoutes().filter(route => !route.noindex)
@@ -248,22 +295,33 @@ export const getBreadcrumbs = (route: StaticSeoRoute): Breadcrumb[] => {
   segments.forEach((segment, index) => {
     const path = `/${segments.slice(0, index + 1).join('/')}`
     const isLast = index === segments.length - 1
-    const name = isLast ? route.h1 : lookupH1(path) ?? words(segment)
-    crumbs.push({ name, path })
+    const name = isLast ? route.h1 : lookupH1(path)
+    if (name) crumbs.push({ name, path })
   })
   return crumbs
 }
 
 const jsonLd = (route: StaticSeoRoute) => {
   const breadcrumbs = getBreadcrumbs(route)
-  return JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Updro', legalName: 'Aurora Media AB', url: SITE_URL }, { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: 'Updro', publisher: { '@id': `${SITE_URL}/#organization` }, inLanguage: 'sv-SE' }, { '@type': 'WebPage', '@id': `${abs(route.path)}#webpage`, url: abs(route.path), name: route.title, headline: route.h1, description: route.description, inLanguage: 'sv-SE' }, ...(breadcrumbs.length ? [{ '@type': 'BreadcrumbList', '@id': `${abs(route.path)}#breadcrumb`, itemListElement: breadcrumbs.map((crumb, index) => ({ '@type': 'ListItem', position: index + 1, name: crumb.name, item: abs(crumb.path) })) }] : []), ...(route.faq?.length ? [{ '@type': 'FAQPage', mainEntity: route.faq.map(faq => ({ '@type': 'Question', name: faq.q, acceptedAnswer: { '@type': 'Answer', text: faq.a } })) }] : [])] }).replace(/</g, '\\u003c')
+  return JSON.stringify({ '@context': 'https://schema.org', '@graph': [{ '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Updro', legalName: 'Aurora Media AB', url: SITE_URL, logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo-updro.png`, width: 800, height: 512 }, email: 'info@auroramedia.se' }, { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: 'Updro', publisher: { '@id': `${SITE_URL}/#organization` }, inLanguage: 'sv-SE' }, { '@type': 'WebPage', '@id': `${abs(route.path)}#webpage`, url: abs(route.path), name: route.title, headline: route.h1, description: route.description, inLanguage: 'sv-SE' }, ...(breadcrumbs.length ? [{ '@type': 'BreadcrumbList', '@id': `${abs(route.path)}#breadcrumb`, itemListElement: breadcrumbs.map((crumb, index) => ({ '@type': 'ListItem', position: index + 1, name: crumb.name, item: abs(crumb.path) })) }] : []), ...(route.article ? [{ '@type': 'Article', '@id': `${abs(route.path)}#article`, headline: route.h1, description: route.description, ...(route.article.published ? { datePublished: route.article.published } : {}), ...(route.article.modified ? { dateModified: route.article.modified } : {}), author: { '@type': 'Organization', name: 'Updro-redaktionen', url: `${SITE_URL}/redaktionell-policy` }, publisher: { '@id': `${SITE_URL}/#organization` }, mainEntityOfPage: { '@id': `${abs(route.path)}#webpage` }, image: ogImageFor(route.path), inLanguage: 'sv-SE' }] : []), ...(route.faq?.length ? [{ '@type': 'FAQPage', mainEntity: route.faq.map(faq => ({ '@type': 'Question', name: faq.q, acceptedAnswer: { '@type': 'Answer', text: faq.a } })) }] : [])] }).replace(/</g, '\\u003c')
 }
 
-const head = (route: StaticSeoRoute) => [`<title>${esc(route.title)}</title>`, `<meta name="description" content="${esc(route.description)}" />`, `<meta name="robots" content="${route.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}" />`, `<link rel="canonical" href="${abs(route.path)}" />`, `<meta property="og:type" content="website" />`, `<meta property="og:url" content="${abs(route.path)}" />`, `<meta property="og:title" content="${esc(route.title)}" />`, `<meta property="og:description" content="${esc(route.description)}" />`, `<meta property="og:image" content="${SITE_URL}/og/og-default.png" />`, `<meta name="twitter:card" content="summary_large_image" />`, `<meta name="twitter:title" content="${esc(route.title)}" />`, `<meta name="twitter:description" content="${esc(route.description)}" />`, `<script type="application/ld+json">${jsonLd(route)}</script>`].join('\n    ')
+export const ogImageFor = (path: string): string => {
+  const fallback = getOgImage()
+  for (const segment of path.split('/').filter(Boolean).reverse()) {
+    for (const candidate of [segment, segment.replace(/-/g, '')]) {
+      const image = getOgImage(candidate)
+      if (image !== fallback) return image
+    }
+  }
+  return section(path) === 'comparisons' ? getOgImage('jamfor') : fallback
+}
+
+const head = (route: StaticSeoRoute) => [`<title>${esc(route.title)}</title>`, `<meta name="description" content="${esc(route.description)}" />`, `<meta name="robots" content="${route.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}" />`, `<link rel="canonical" href="${abs(route.path)}" />`, `<meta property="og:type" content="${route.article ? 'article' : 'website'}" />`, `<meta property="og:site_name" content="Updro" />`, `<meta property="og:locale" content="sv_SE" />`, `<meta property="og:url" content="${abs(route.path)}" />`, `<meta property="og:title" content="${esc(route.title)}" />`, `<meta property="og:description" content="${esc(route.description)}" />`, `<meta property="og:image" content="${ogImageFor(route.path)}" />`, `<meta name="twitter:image" content="${ogImageFor(route.path)}" />`, `<meta name="twitter:card" content="summary_large_image" />`, `<meta name="twitter:title" content="${esc(route.title)}" />`, `<meta name="twitter:description" content="${esc(route.description)}" />`, `<script type="application/ld+json">${jsonLd(route)}</script>`].join('\n    ')
 
 // Crawlbar header som speglar Navbar.tsx: logotyp, huvudlänkar, samtliga
 // tjänstekategorier (samma data som nav-dropdownen) och CTA:n.
-const staticHeader = () => `<header><nav aria-label="Huvudnavigation"><a href="/">Updro</a><a href="/byraer">Hitta byrå</a><a href="/registrera/byra">För byråer</a><a href="/om-oss">Om Updro</a><a href="/publicera">Beskriv ditt projekt</a></nav><nav aria-label="Kategorier"><ul>${getCategoryNavLinks().map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></nav></header>`
+const staticHeader = () => `<header><nav aria-label="Huvudnavigation"><a href="/">Updro</a><a href="/byraer">Hitta byrå</a><a href="/for-byraer">För byråer</a><a href="/om-oss">Om Updro</a><a href="/publicera">Beskriv ditt projekt</a></nav><nav aria-label="Kategorier"><ul>${getCategoryNavLinks().map(link => `<li><a href="${esc(link.href)}">${esc(link.label)}</a></li>`).join('')}</ul></nav></header>`
 
 const staticBreadcrumbs = (route: StaticSeoRoute) => {
   const crumbs = getBreadcrumbs(route)

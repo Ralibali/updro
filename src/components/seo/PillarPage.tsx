@@ -10,6 +10,7 @@ import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
+import { completeMetaDescription } from '@/lib/metaDescription'
 import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const PillarPage = () => {
@@ -20,7 +21,7 @@ const PillarPage = () => {
     if (page) {
       setSEOMeta({
         title: page.metaTitle,
-        description: page.metaDesc,
+        description: completeMetaDescription(page.metaDesc || page.intro),
         canonical: `https://updro.se/${page.categorySlug}`,
         ogImage: getOgImage(page.categorySlug),
       })
