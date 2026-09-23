@@ -1280,6 +1280,7 @@ export type Database = {
           need_type: string
           query: string
           result_limit: number
+          source_provider: string
           status: string
           updated_at: string
         }
@@ -1294,6 +1295,7 @@ export type Database = {
           need_type?: string
           query: string
           result_limit?: number
+          source_provider?: string
           status?: string
           updated_at?: string
         }
@@ -1308,6 +1310,7 @@ export type Database = {
           need_type?: string
           query?: string
           result_limit?: number
+          source_provider?: string
           status?: string
           updated_at?: string
         }
@@ -1315,57 +1318,108 @@ export type Database = {
       }
       prospecting_leads: {
         Row: {
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
           campaign_id: string
           city: string | null
           company_name: string
+          contact_email: string | null
+          contact_first_name: string | null
+          contact_last_name: string | null
           contact_page_url: string | null
+          contact_title: string | null
           contacted_at: string | null
           created_at: string
           description: string | null
           domain: string
+          export_count: number
+          fit_reason: string | null
           fit_score: number
           id: string
           industry: string | null
+          last_exported_at: string | null
+          linkedin_url: string | null
           observed_signals: Json
+          outreach_body: string | null
           outreach_note: string | null
+          outreach_subject: string | null
+          provider_lead_id: string | null
+          qualified_at: string | null
+          reply_note: string | null
+          source_provider: string
           source_url: string
           status: string
           updated_at: string
           website_url: string
         }
         Insert: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           campaign_id: string
           city?: string | null
           company_name: string
+          contact_email?: string | null
+          contact_first_name?: string | null
+          contact_last_name?: string | null
           contact_page_url?: string | null
+          contact_title?: string | null
           contacted_at?: string | null
           created_at?: string
           description?: string | null
           domain: string
+          export_count?: number
+          fit_reason?: string | null
           fit_score?: number
           id?: string
           industry?: string | null
+          last_exported_at?: string | null
+          linkedin_url?: string | null
           observed_signals?: Json
+          outreach_body?: string | null
           outreach_note?: string | null
+          outreach_subject?: string | null
+          provider_lead_id?: string | null
+          qualified_at?: string | null
+          reply_note?: string | null
+          source_provider?: string
           source_url: string
           status?: string
           updated_at?: string
           website_url: string
         }
         Update: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
           campaign_id?: string
           city?: string | null
           company_name?: string
+          contact_email?: string | null
+          contact_first_name?: string | null
+          contact_last_name?: string | null
           contact_page_url?: string | null
+          contact_title?: string | null
           contacted_at?: string | null
           created_at?: string
           description?: string | null
           domain?: string
+          export_count?: number
+          fit_reason?: string | null
           fit_score?: number
           id?: string
           industry?: string | null
+          last_exported_at?: string | null
+          linkedin_url?: string | null
           observed_signals?: Json
+          outreach_body?: string | null
           outreach_note?: string | null
+          outreach_subject?: string | null
+          provider_lead_id?: string | null
+          qualified_at?: string | null
+          reply_note?: string | null
+          source_provider?: string
           source_url?: string
           status?: string
           updated_at?: string
