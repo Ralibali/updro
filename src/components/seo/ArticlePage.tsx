@@ -133,7 +133,7 @@ const ArticlePage = () => {
       description: page.metaDesc,
       datePublished: page.publishedDate,
       dateModified: updatedDate,
-      author: { '@type': 'Person', name: 'Updro-redaktionen', url: 'https://updro.se/om-oss' },
+      author: { '@type': 'Organization', name: 'Updro-redaktionen', url: 'https://updro.se/redaktionell-policy' },
       publisher: {
         '@type': 'Organization',
         name: 'Updro',

@@ -124,7 +124,7 @@ describe('renderStaticHtml head-metadata', () => {
   it('sätter noindex på noindex-routes och index på indexbara', () => {
     const noindexRoute = getNoindexSeoRoutes()[0]
     expect(noindexRoute).toBeDefined()
-    expect(renderStaticHtml(TEMPLATE, noindexRoute)).toContain('<meta name="robots" content="noindex, nofollow" />')
+    expect(renderStaticHtml(TEMPLATE, noindexRoute)).toContain('<meta name="robots" content="noindex, follow" />')
     expect(render(getIndexableSeoRoutes()[0].path)).toContain('content="index, follow')
   })
 })
@@ -142,7 +142,7 @@ describe('renderStaticHtml crawlbar body', () => {
     const html = render('/')
     expect(html).toContain('aria-label="Huvudnavigation"')
     expect(html).toContain('<a href="/byraer">Hitta byrå</a>')
-    expect(html).toContain('<a href="/registrera/byra">För byråer</a>')
+    expect(html).toContain('<a href="/for-byraer">För byråer</a>')
     expect(html).toContain('<a href="/om-oss">Om Updro</a>')
     expect(html).toContain('<a href="/publicera">Beskriv ditt projekt</a>')
     expect(html).toContain('aria-label="Kategorier"')

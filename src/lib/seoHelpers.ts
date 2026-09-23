@@ -41,6 +41,8 @@ export interface SEOMeta {
   noindex?: boolean
   /** Override og:url specifically (defaults to canonical) */
   ogUrl?: string
+  /** Allow crawling onward from a public noindex page. */
+  follow?: boolean
 }
 
 const ROBOTS_INDEX = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
@@ -116,14 +118,15 @@ function resolvePageDefaults(path: string): { defaults: PageTypeDefault; key: st
  * - Indexable pages always get full robots directive (NEVER removes the robots tag).
  * - Canonical is always present, self-referential by default.
  * - OG / Twitter metadata is always updated for every page.
- * - Noindex pages get noindex,nofollow AND a canonical pointing to themselves
+ * - Noindex pages default to noindex,nofollow (public directories may opt into
+ *   follow) AND a canonical pointing to themselves
  *   (never inheriting the home canonical), so they don't inherit signals.
  * - Missing title/description fall back to a clear per-pagetype default and
  *   emit a dev-only console warning so metadata is never empty in production.
  */
 export const setSEOMeta = (meta: SEOMeta) => {
   if (typeof document === 'undefined') return
-  const { canonical, ogImage, ogType = 'website', noindex, ogUrl } = meta
+  const { canonical, ogImage, ogType = 'website', noindex, ogUrl, follow } = meta
 
   const path = typeof window !== 'undefined' ? window.location.pathname : '/'
   const { defaults, key } = resolvePageDefaults(path)
@@ -164,7 +167,7 @@ export const setSEOMeta = (meta: SEOMeta) => {
   setOrCreateLink('canonical', canonicalUrl)
 
   // Robots — ALWAYS present, never removed
-  setOrCreateMeta('robots', noindex ? ROBOTS_NOINDEX : ROBOTS_INDEX)
+  setOrCreateMeta('robots', noindex ? (follow ? 'noindex, follow' : ROBOTS_NOINDEX) : ROBOTS_INDEX)
 
   const finalOgImage = ogImage || DEFAULT_OG_IMAGE
   const finalOgUrl = ogUrl || canonicalUrl
