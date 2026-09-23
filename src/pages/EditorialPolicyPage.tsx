@@ -14,7 +14,7 @@ const EditorialPolicyPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <section className="container py-16 max-w-3xl">

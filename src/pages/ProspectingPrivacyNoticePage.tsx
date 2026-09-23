@@ -9,7 +9,7 @@ const ProspectingPrivacyNoticePage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col"><Navbar /><main className="flex-1 py-16 px-4"><article className="max-w-3xl mx-auto prose prose-slate">
+    <div className="updro-content-page min-h-screen flex flex-col"><Navbar /><main className="flex-1 py-16 px-4"><article className="max-w-3xl mx-auto prose prose-slate">
       <h1 className="font-display text-3xl font-bold mb-2">Integritetsinformation för företagsprospektering</h1><p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-07-12</p>
       <section className="space-y-6 text-sm leading-relaxed text-foreground/80">
         <div><h2 className="font-display text-lg font-semibold text-foreground mb-2">Personuppgiftsansvarig</h2><p><strong>Aurora Media AB</strong>, org.nr. <strong>559272-0220</strong>, Gustafstorpsvägen 42, 585 74 Ljungsbro. Kontakt: <a href="mailto:info@auroramedia.se" className="text-primary hover:underline">info@auroramedia.se</a>.</p></div>

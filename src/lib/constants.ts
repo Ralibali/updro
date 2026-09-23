@@ -49,23 +49,9 @@ export const CATEGORY_ICONS: Record<string, string> = {
   'AI-utveckling': '🤖',
 }
 
-export const CATEGORY_STYLES: Record<string, string> = {
-  'Webbutveckling': 'bg-blue-50 text-blue-700 border border-blue-200',
-  'E-handel': 'bg-violet-50 text-violet-700 border border-violet-200',
-  'Digital marknadsföring': 'bg-orange-50 text-orange-700 border border-orange-200',
-  'Grafisk design/UX': 'bg-pink-50 text-pink-700 border border-pink-200',
-  'SEO': 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-  'App-utveckling': 'bg-indigo-50 text-indigo-700 border border-indigo-200',
-  'IT-konsult': 'bg-slate-50 text-slate-700 border border-slate-200',
-  'Sociala medier': 'bg-rose-50 text-rose-700 border border-rose-200',
-  'Mjukvaruutveckling': 'bg-cyan-50 text-cyan-700 border border-cyan-200',
-  'Video & foto': 'bg-amber-50 text-amber-700 border border-amber-200',
-  'Varumärke & PR': 'bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-200',
-  'UX/Webbdesign': 'bg-teal-50 text-teal-700 border border-teal-200',
-  'Underhåll/IT Support': 'bg-gray-50 text-gray-700 border border-gray-200',
-  'Affärsutveckling': 'bg-lime-50 text-lime-700 border border-lime-200',
-  'AI-utveckling': 'bg-purple-50 text-purple-700 border border-purple-200',
-}
+export const CATEGORY_STYLES: Record<string, string> = Object.fromEntries(
+  CATEGORIES.map(category => [category, 'bg-secondary text-secondary-foreground border border-border'])
+)
 
 export const CATEGORY_COVER_IMAGES: Record<string, string> = {
   'Webbutveckling': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&h=300&fit=crop',

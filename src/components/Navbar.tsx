@@ -8,9 +8,9 @@ import NotificationBell from '@/components/NotificationBell'
 import ThemeToggle from '@/components/ThemeToggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { getCategoryNavLinks } from '@/lib/seoData'
+import { CATEGORY_NAV_LINKS } from '@/lib/categoryNavLinks'
 
-const categoryLinks = getCategoryNavLinks()
+const categoryLinks = CATEGORY_NAV_LINKS
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -24,11 +24,23 @@ const Navbar = () => {
     return () => document.body.classList.remove('overflow-hidden')
   }, [mobileOpen])
 
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileOpen(false)
+        document.querySelector<HTMLButtonElement>('[aria-controls="mobile-menu"]')?.focus()
+      }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [mobileOpen])
+
   const closeMobile = () => setMobileOpen(false)
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+      <header className="updro-site-nav sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/85">
         <div className="container flex min-h-16 items-center justify-between gap-3 py-2">
           <Logo />
 
@@ -52,7 +64,7 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link to="/registrera/byra" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/for-byraer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               För byråer
             </Link>
 
@@ -82,7 +94,7 @@ const Navbar = () => {
                   <DropdownMenuContent align="end" className="w-48">
                     {isAdmin && <DropdownMenuItem asChild><Link to="/admin">Admin</Link></DropdownMenuItem>}
                     {isAdmin && <DropdownMenuItem asChild><Link to="/admin/uppdrag">Sök uppdrag</Link></DropdownMenuItem>}
-                    {!isAdmin && <DropdownMenuItem asChild><Link to={dashboardLink}>Dashboard</Link></DropdownMenuItem>}
+                    {!isAdmin && <DropdownMenuItem asChild><Link to={dashboardLink}>Min arbetsyta</Link></DropdownMenuItem>}
                     <DropdownMenuItem asChild><Link to={isAdmin ? '/admin/installningar' : isBuyer ? '/dashboard/buyer/profil' : '/dashboard/supplier/profil'}>Min profil</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={signOut} className="text-destructive">Logga ut</DropdownMenuItem>
                   </DropdownMenuContent>
@@ -92,7 +104,7 @@ const Navbar = () => {
               <>
                 <Button asChild variant="ghost" size="sm" className="min-h-11"><Link to="/logga-in">Logga in</Link></Button>
                 <Button asChild size="sm" className="min-h-11 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl px-5 shadow-brand">
-                  <Link to="/publicera">Starta förfrågan</Link>
+                  <Link to="/publicera">Beskriv ditt projekt</Link>
                 </Button>
               </>
             )}
@@ -117,7 +129,7 @@ const Navbar = () => {
             <Link to="/byraer" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               Hitta byrå
             </Link>
-            <Link to="/registrera/byra" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
+            <Link to="/for-byraer" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
               För byråer
             </Link>
             <Link to="/om-oss" className="min-h-12 flex items-center rounded-xl px-3 text-lg font-medium text-foreground active:bg-muted" onClick={closeMobile}>
@@ -156,7 +168,7 @@ const Navbar = () => {
                     <Link to="/logga-in" onClick={closeMobile}>Logga in</Link>
                   </Button>
                   <Button asChild className="w-full min-h-12 rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground">
-                    <Link to="/publicera" onClick={closeMobile}>Starta förfrågan</Link>
+                    <Link to="/publicera" onClick={closeMobile}>Beskriv ditt projekt</Link>
                   </Button>
                 </>
               )}

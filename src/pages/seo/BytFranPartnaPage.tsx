@@ -61,7 +61,7 @@ const BytFranPartnaPage = () => {
   const partnaPayg = exampleLeads * partna.payg
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <section className="container py-16 md:py-24">
@@ -128,7 +128,7 @@ const BytFranPartnaPage = () => {
         </section>
 
         <section className="container pb-16">
-          <div className="rounded-3xl border-2 border-foreground bg-secondary p-7 md:p-10">
+          <div className="rounded-xl border border-border bg-secondary p-7 md:p-10">
             <FlaskConical className="h-7 w-7 text-accent" />
             <h2 className="mt-4 font-display text-3xl font-bold">Mät detta under testperioden</h2>
             <div className="mt-6 grid gap-3 text-sm md:grid-cols-2">
@@ -154,7 +154,7 @@ const BytFranPartnaPage = () => {
         </section>
 
         <section className="container pb-20">
-          <div className="rounded-3xl bg-foreground p-8 text-background md:p-12">
+          <div className="rounded-xl bg-foreground p-8 text-background md:p-12">
             <h2 className="font-display text-3xl font-bold md:text-4xl">Låt resultatet avgöra</h2>
             <p className="mt-3 max-w-2xl text-background/75">Registrera byrån, använd de kostnadsfria krediterna och följ samma mätetal som för era andra leadkanaler.</p>
             <Link to="/registrera/byra" className="mt-7 inline-block"><Button size="lg" variant="secondary" className="rounded-xl px-7">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>

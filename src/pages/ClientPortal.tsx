@@ -6,7 +6,7 @@ export default function ClientPortal() {
     new URLSearchParams(location.hash.slice(1)).get("token") || undefined;
   const id = new URLSearchParams(location.search).get("id");
   return (
-    <main className="min-h-screen bg-background px-4 py-8 sm:py-12">
+    <main className="min-h-screen bg-surface-alt px-4 py-8 sm:py-12">
       <div className="mx-auto max-w-5xl">
         <p className="mb-6 text-sm font-semibold text-primary">
           Kundportal · Updro

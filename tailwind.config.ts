@@ -15,7 +15,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['"Space Grotesk"', '"DM Sans"', 'system-ui', 'sans-serif'],
+        display: ['"Manrope Variable"', 'system-ui', 'sans-serif'],
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },

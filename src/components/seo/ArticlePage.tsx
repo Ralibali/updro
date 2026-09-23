@@ -14,7 +14,7 @@ import { trackLeadStarted } from '@/lib/analytics'
 import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const ArticleCTA = () => (
-  <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))] my-10">
+  <div className="rounded-xl border border-border bg-foreground text-background p-8 md:p-12 shadow-sm my-10">
     <h2 className="font-display text-2xl md:text-3xl font-bold">
       Redo att ta in offerter? Publicera ditt projekt gratis
     </h2>
@@ -25,7 +25,7 @@ const ArticleCTA = () => (
       <Link
         to="/publicera"
         onClick={() => trackLeadStarted('seo_article')}
-        className="inline-flex items-center gap-2 h-12 px-6 bg-accent text-accent-foreground font-bold font-display uppercase tracking-wide hover:bg-[hsl(14_75%_50%)] transition-colors"
+        className="inline-flex items-center gap-2 h-12 px-6 bg-accent text-accent-foreground font-bold font-display uppercase tracking-wide hover:bg-primary/90 transition-colors"
       >
         Publicera uppdrag
         <ArrowRight className="w-4 h-4" />
@@ -166,7 +166,7 @@ const ArticlePage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       {schemas.map((s, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />

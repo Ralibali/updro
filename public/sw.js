@@ -80,7 +80,14 @@ self.addEventListener('push', event => {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close()
-  const link = event.notification.data?.link || '/'
+  // Öppna bara sidor på updro.se, även om en notis skulle bära en extern länk.
+  let link = '/'
+  try {
+    const target = new URL(event.notification.data?.link || '/', self.location.origin)
+    if (target.origin === self.location.origin) link = target.pathname + target.search + target.hash
+  } catch {
+    link = '/'
+  }
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
       for (const client of windowClients) {

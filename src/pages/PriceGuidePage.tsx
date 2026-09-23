@@ -64,7 +64,7 @@ const PriceGuidePage = () => {
           </h1>
           <p className="mt-4 text-lg text-foreground/80 leading-relaxed">{guide.intro}</p>
 
-          <div className="mt-8 rounded-2xl border-2 border-foreground bg-card p-6 md:p-8 shadow-[4px_4px_0_0_hsl(var(--foreground))]">
+          <div className="mt-8 rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm">
             <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground mb-2">
               Snabbt svar
             </div>
@@ -148,7 +148,7 @@ const PriceGuidePage = () => {
       </section>
 
       <section className="container pb-16">
-        <div className="rounded-3xl border-2 border-foreground bg-foreground text-background p-8 md:p-12 shadow-[6px_6px_0_0_hsl(var(--accent))]">
+        <div className="rounded-xl border border-border bg-foreground text-background p-8 md:p-12 shadow-sm">
           <h2 className="font-display text-2xl md:text-4xl font-bold">
             Få exakta priser för just ditt projekt
           </h2>
@@ -158,7 +158,7 @@ const PriceGuidePage = () => {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to={`/publicera?kategori=${encodeURIComponent(guide.wizardCategoryQuery)}`}
-              className="inline-flex items-center gap-2 h-12 px-6 bg-accent text-accent-foreground font-bold font-display uppercase tracking-wide hover:bg-[hsl(14_75%_50%)] transition-colors"
+              className="inline-flex items-center gap-2 h-12 px-6 bg-accent text-accent-foreground font-bold font-display uppercase tracking-wide hover:bg-primary/90 transition-colors"
             >
               Publicera uppdrag
               <ArrowRight className="w-4 h-4" />

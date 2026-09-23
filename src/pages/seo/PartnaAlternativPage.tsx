@@ -66,7 +66,7 @@ const PartnaAlternativPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <section className="container py-16 md:py-24">
@@ -138,7 +138,7 @@ const PartnaAlternativPage = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border bg-card p-6 md:p-8 shadow-sm">
+            <div className="rounded-xl border bg-card p-6 md:p-8 shadow-sm">
               <div className="flex items-center gap-2 text-primary">
                 <Percent className="h-5 w-5" />
                 <span className="text-sm font-semibold uppercase tracking-[0.14em]">Exempel vid vunnen affär</span>
@@ -212,7 +212,7 @@ const PartnaAlternativPage = () => {
         </section>
 
         <section className="container pb-20">
-          <div className="rounded-3xl bg-foreground p-8 text-background md:p-12">
+          <div className="rounded-xl bg-foreground p-8 text-background md:p-12">
             <h2 className="font-display text-3xl font-bold md:text-4xl">Mät Updro med riktiga leads – innan du betalar</h2>
             <p className="mt-3 max-w-2xl text-background/75">Nya byråer får fem kostnadsfria lead-krediter under sju dagar utan kortuppgifter. Jämför faktisk kvalitet, svar och möten med dina andra kanaler.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">

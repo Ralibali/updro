@@ -1,6 +1,8 @@
 // @ts-nocheck – Deno/npm-typer finns inte i frontendens tsconfig
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
 import webpush from "npm:web-push@3.6.7";
+import { bearerToken, constantTimeEqual } from "../_shared/auth.ts";
+import { safeRelativeLink } from "../_shared/push-link.ts";
 
 /**
  * send-push – skickar web push när en notis skapas.
@@ -10,7 +12,9 @@ import webpush from "npm:web-push@3.6.7";
  *
  * Hemligheter som krävs:
  *   VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT (mailto:...)
- * Valfri: PUSH_WEBHOOK_SECRET – om satt måste headern x-webhook-secret matcha.
+ *   PUSH_WEBHOOK_SECRET – skickas som headern x-webhook-secret från webhooken.
+ * Anrop utan rätt x-webhook-secret eller service-role-nyckel avvisas, och
+ * länkar tillåts bara inom updro.se (relativa sökvägar).
  * Döda prenumerationer (404/410) städas bort automatiskt.
  */
 
@@ -28,10 +32,13 @@ Deno.serve(async req => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
-  const webhookSecret = Deno.env.get("PUSH_WEBHOOK_SECRET");
-  if (webhookSecret && req.headers.get("x-webhook-secret") !== webhookSecret) {
-    return json({ error: "Unauthorized" }, 401);
-  }
+  // Fail closed: a missing secret must not leave push open to the internet.
+  const webhookSecret = Deno.env.get("PUSH_WEBHOOK_SECRET") || "";
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+  const authorized =
+    constantTimeEqual(req.headers.get("x-webhook-secret") || "", webhookSecret) ||
+    constantTimeEqual(bearerToken(req.headers.get("authorization")), serviceRoleKey);
+  if (!authorized) return json({ error: "Unauthorized" }, 401);
 
   try {
     const vapidPublic = Deno.env.get("VAPID_PUBLIC_KEY");
@@ -61,7 +68,7 @@ Deno.serve(async req => {
     const body = JSON.stringify({
       title: notification.title,
       body: notification.message || "",
-      link: notification.link || "/",
+      link: safeRelativeLink(notification.link),
       icon: "/icons/icon-192.png",
     });
 

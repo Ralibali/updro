@@ -1,9 +1,6 @@
 import './lib/initGa4';
 import { createRoot } from "react-dom/client";
-import "@fontsource/space-grotesk/400.css";
-import "@fontsource/space-grotesk/500.css";
-import "@fontsource/space-grotesk/600.css";
-import "@fontsource/space-grotesk/700.css";
+import "@fontsource-variable/manrope";
 import "@fontsource/dm-sans/400.css";
 import "@fontsource/dm-sans/500.css";
 import "@fontsource/dm-sans/600.css";
@@ -11,7 +8,15 @@ import "@fontsource/dm-sans/700.css";
 import PageErrorBoundary from "./components/PageErrorBoundary";
 import App from "./App.tsx";
 import "./index.css";
+import "./studio-design.css";
 import { initAttribution } from "./lib/attribution";
+import { reloadOnceForNewDeploy } from "./lib/chunkReload";
+
+// A tab opened before a deploy may request chunks that no longer exist.
+// Reload once to pick up the new build instead of showing the error screen.
+window.addEventListener("vite:preloadError", event => {
+  if (reloadOnceForNewDeploy()) event.preventDefault();
+});
 
 // Capture first/latest-touch as early as possible so the very first landing
 // is recorded even before the React router mounts.

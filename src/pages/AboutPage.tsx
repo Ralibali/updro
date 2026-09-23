@@ -1,32 +1,22 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, Building2, Mail, MapPin } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { Building2, Target, Users, Heart, MapPin, ShieldCheck } from 'lucide-react'
 import { setSEOMeta, setJsonLd } from '@/lib/seoHelpers'
-import { Link } from 'react-router-dom'
-
-const values = [
-  { icon: Target, title: 'Transparens', desc: 'Inga dolda avgifter eller låsningar – du ser alltid vad du betalar för.' },
-  { icon: Users, title: 'Kvalitet före kvantitet', desc: 'Vi granskar varje byrå och uppdrag för att säkerställa en hög standard.' },
-  { icon: Heart, title: 'Lokal förankring', desc: 'Vi fokuserar på den svenska marknaden och förstår lokala behov.' },
-  { icon: Building2, title: 'Partnerskap', desc: 'Vi lyckas bara när våra kunder och byråer lyckas – det driver allt vi gör.' },
-]
-
-const AboutPage = () => {
+export default function AboutPage() {
   useEffect(() => {
     setSEOMeta({
-      title: 'Om Updro – Sveriges marknadsplats för digitala byråer',
+      title: 'Om Updro – digitala uppdrag och byråsamarbeten',
       description:
-        'Updro kopplar samman företag med rätt digitala byråer – snabbt, tryggt och kostnadsfritt. Läs om grundaren, vår metod och våra värderingar.',
-      canonical: 'https://updro.se/om-oss',
+        'Updro drivs av Aurora Media AB och hjälper företag att jämföra upp till tre offerter från digitala byråer.',
+      canonical: 'https://updro.se/om-oss'
     })
     setJsonLd('aboutpage-jsonld', {
       '@context': 'https://schema.org',
       '@type': 'AboutPage',
       url: 'https://updro.se/om-oss',
       name: 'Om Updro',
-      description:
-        'Updro är en svensk marknadsplats där företag jämför offerter från kvalitetssäkrade digitala byråer.',
       mainEntity: {
         '@type': 'Organization',
         '@id': 'https://updro.se/#organization',
@@ -34,116 +24,118 @@ const AboutPage = () => {
         legalName: 'Aurora Media AB',
         url: 'https://updro.se',
         email: 'info@auroramedia.se',
-        founder: { '@type': 'Person', name: 'Christoffer Daranyi' },
-        foundingDate: '2026',
-        address: { '@type': 'PostalAddress', addressCountry: 'SE', addressLocality: 'Linköping' },
-        taxID: '559272-0220',
-      },
+        taxID: '559272-0220'
+      }
     })
   }, [])
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        {/* Hero – AI-friendly answer-first paragraph */}
-        <section className="bg-muted/40 py-20 px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground">Om Updro</h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Updro är en svensk marknadsplats där företag publicerar digitala uppdrag efter att briefen har granskats.
-              Högst tre relevanta byråer kan lämna offert per uppdrag. Tjänsten är gratis för uppdragsgivare, drivs av
-              Aurora Media AB och har sitt säte i Linköping.
+        <section className="updro-page-heading py-14 md:py-20">
+          <div className="container">
+            <p className="updro-eyebrow">Om Updro</p>
+            <h1 className="mt-4 max-w-3xl text-4xl md:text-5xl">
+              Det ska vara enklare
+              <br />
+              att välja rätt byrå.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+              Vi samlar projektbeskrivning, offerter och dialog så att företag
+              kan fatta ett mer genomtänkt beslut om sin digitala partner.
             </p>
           </div>
         </section>
-
-        {/* Founder + story */}
-        <section className="py-16 px-4">
-          <div className="max-w-3xl mx-auto space-y-6 text-foreground/85 leading-relaxed">
-            <h2 className="font-display text-2xl font-semibold text-foreground">Vår historia</h2>
-            <p>
-              Updro startades 2026 av Christoffer Daranyi, som drivit digitala projekt i Sverige sedan 2010 och tidigare
-              grundat Aurora Media AB. Insikten kom från egen erfarenhet: att hitta rätt digital byrå är onödigt
-              krångligt. Företag lägger timmar på research, möten och offerter – ofta utan att veta om de pratar med
-              rätt byrå för just sitt projekt.
+        <section className="container updro-section grid lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-20">
+          <div>
+            <h2 className="text-3xl">Ett gemensamt underlag från början.</h2>
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+              När olika byråer får olika information blir deras offerter svåra
+              att jämföra. På Updro beskriver du behovet en gång. Förfrågan
+              granskas och högst tre relevanta byråer kan sedan lämna offert.
             </p>
-            <p>
-              Vi byggde Updro för att lösa det. Genom att låta uppdragsgivare publicera sitt projekt och ta emot
-              offerter från granskade byråer sparar vi tid för båda parter. Byråerna får relevanta leads utan
-              kallakvirering, och beställarna får jämförbara offerter utan att googla i dagar.
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground">
+              Du väljer själv vilka förslag du vill diskutera och om du vill gå
+              vidare. Tjänsten är gratis för beställare. Byråer betalar för
+              tillgång till leads eller använder ett månadskort.
             </p>
-
-            <div className="flex items-center gap-3 text-sm text-muted-foreground pt-2">
-              <MapPin className="h-4 w-4" />
-              Säte i Linköping · Aktiv över hela Sverige
-            </div>
+            <Link
+              to="/metod"
+              className="mt-7 inline-flex items-center gap-2 font-medium text-primary"
+            >
+              Så fungerar vår metod <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
-        </section>
-
-        {/* Values */}
-        <section className="bg-muted/40 py-16 px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-display text-2xl font-semibold text-foreground text-center mb-10">Våra värderingar</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {values.map(v => (
-                <div key={v.title} className="bg-card rounded-xl border p-6 flex gap-4 items-start">
-                  <div className="rounded-lg bg-primary/10 p-2.5 shrink-0">
-                    <v.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-semibold text-foreground">{v.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{v.desc}</p>
-                  </div>
+          <aside className="rounded-xl border bg-surface-alt p-7">
+            <p className="updro-eyebrow">Företaget bakom Updro</p>
+            <h2 className="mt-4 text-2xl">Aurora Media AB</h2>
+            <dl className="mt-6 space-y-5 text-sm">
+              <div className="flex gap-3">
+                <Building2 className="h-5 w-5 text-primary" />
+                <div>
+                  <dt className="text-muted-foreground">Organisationsnummer</dt>
+                  <dd className="mt-1 font-medium">559272-0220</dd>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+              <div className="flex gap-3">
+                <MapPin className="h-5 w-5 text-primary" />
+                <div>
+                  <dt className="text-muted-foreground">Säte</dt>
+                  <dd className="mt-1 font-medium">Linköping, Sverige</dd>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Mail className="h-5 w-5 text-primary" />
+                <div>
+                  <dt className="text-muted-foreground">Kontakt</dt>
+                  <dd className="mt-1">
+                    <a
+                      href="mailto:info@auroramedia.se"
+                      className="text-primary underline underline-offset-4"
+                    >
+                      info@auroramedia.se
+                    </a>
+                  </dd>
+                </div>
+              </div>
+            </dl>
+          </aside>
         </section>
-
-        {/* Quality assurance */}
-        <section className="py-16 px-4">
-          <div className="max-w-3xl mx-auto">
-            <div className="flex items-center gap-3 mb-4">
-              <ShieldCheck className="h-6 w-6 text-primary" />
-              <h2 className="font-display text-2xl font-semibold text-foreground">Så kvalitetssäkrar vi byråer</h2>
-            </div>
-            <p className="text-foreground/85 leading-relaxed">
-              Vi släpper bara in byråer som klarar fyra grundkrav: aktivt svenskt företag med F-skatt, godkänd
-              kreditkontroll, minst tre publicerbara case och en namngiven kontaktperson som svarar på telefon. Varje
-              ansökan granskas manuellt av en människa innan byrån blir synlig på plattformen.
-            </p>
-            <p className="text-foreground/85 leading-relaxed mt-3">
-              Den fullständiga processen finns dokumenterad på{' '}
-              <Link to="/metod" className="text-primary underline">
-                Vår metod
+        <section className="container pb-16 grid md:grid-cols-3 gap-6">
+          {[
+            {
+              title: 'För beställare',
+              text: 'Beskriv ditt behov och jämför upp till tre förslag. Du bestämmer nästa steg.',
+              href: '/publicera',
+              label: 'Beskriv ett projekt'
+            },
+            {
+              title: 'För byråer',
+              text: 'Läs brief, budget och tidsram innan du väljer att låsa upp ett uppdrag.',
+              href: '/for-byraer',
+              label: 'Så fungerar det för byråer'
+            },
+            {
+              title: 'Frågor och rättelser',
+              text: 'Läs om hur vi arbetar med källor, guider och rättelser på webbplatsen.',
+              href: '/redaktionell-policy',
+              label: 'Vår redaktionella policy'
+            }
+          ].map((item) => (
+            <article key={item.href} className="updro-decision-card">
+              <h2 className="text-xl">{item.title}</h2>
+              <p>{item.text}</p>
+              <Link
+                to={item.href}
+                className="inline-block mt-5 text-sm font-medium text-primary"
+              >
+                {item.label}
               </Link>
-              . Hur vi jobbar med innehåll – källor, AI och rättelser – beskrivs i{' '}
-              <Link to="/redaktionell-policy" className="text-primary underline">
-                Redaktionell policy
-              </Link>
-              .
-            </p>
-          </div>
-        </section>
-
-        {/* Contact */}
-        <section className="bg-muted/40 py-16 px-4">
-          <div className="max-w-3xl mx-auto text-center space-y-3">
-            <h2 className="font-display text-2xl font-semibold text-foreground">Kontakta oss</h2>
-            <p className="text-muted-foreground">
-              Har du frågor, klagomål eller vill veta mer? Hör av dig till{' '}
-              <a href="mailto:info@auroramedia.se" className="text-primary hover:underline font-medium">
-                info@auroramedia.se
-              </a>
-            </p>
-            <p className="text-sm text-muted-foreground">Aurora Media AB · Org.nr 559272-0220 · Sverige</p>
-          </div>
+            </article>
+          ))}
         </section>
       </main>
       <Footer />
     </div>
   )
 }
-
-export default AboutPage

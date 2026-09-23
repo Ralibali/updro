@@ -29,12 +29,12 @@ const TrustStripSection = () => (
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(item => (
           <div key={item.title} className="flex items-start gap-3 px-2 py-3">
-            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/10">
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary">
               <item.icon className="h-4 w-4 text-accent" aria-hidden="true" />
             </div>
             <div>
-              <p className="font-display text-sm font-bold text-foreground">{item.title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.text}</p>
+              <p className="font-display text-sm font-semibold text-foreground">{item.title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
             </div>
           </div>
         ))}

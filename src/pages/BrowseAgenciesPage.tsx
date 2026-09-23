@@ -35,10 +35,10 @@ const BrowseAgenciesPage = () => {
   })
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="py-10 md:py-16">
+        <section className="py-10 md:py-16 bg-surface-alt/60">
           <div className="container">
             <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] items-center mb-12">
               <div>
@@ -50,7 +50,7 @@ const BrowseAgenciesPage = () => {
                 </Link>
                 <p className="text-sm text-muted-foreground mt-3">Inget konto krävs för att börja · Ingen köpplikt</p>
               </div>
-              <aside className="hidden lg:block rounded-3xl border bg-card p-6 md:p-8 shadow-md">
+              <aside className="hidden lg:block rounded-xl border bg-card p-6 md:p-8 shadow-md">
                 <h2 className="font-display text-xl font-semibold">Ett tydligare underlag att välja från</h2>
                 <div className="mt-5 space-y-5 text-sm">
                   <p className="flex gap-3"><FileCheck className="h-5 w-5 shrink-0 text-primary" /><span><strong className="block text-foreground">Samma brief till byråerna</strong><span className="text-muted-foreground">Beskriv mål, omfattning och budget så att svaren går att jämföra.</span></span></p>
@@ -65,7 +65,7 @@ const BrowseAgenciesPage = () => {
             </div>
 
             {/* Filters */}
-            <div className="flex flex-wrap gap-3 mb-8 rounded-2xl border bg-card p-4 shadow-sm">
+            <div className="updro-directory-filters mb-8">
               <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -98,7 +98,7 @@ const BrowseAgenciesPage = () => {
                   const profile = a.profiles
                   return (
                     <Link key={a.id} to={`/byra/${a.slug}`} className="group block rounded-2xl">
-                      <div className="bg-card rounded-2xl border p-6 shadow-sm group-hover:border-accent/40 group-hover:shadow-md motion-safe:group-hover:-translate-y-1 transition-all h-full">
+                      <div className="updro-directory-card">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="h-12 w-12 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center text-lg font-bold text-primary">
                             {(profile?.company_name || profile?.full_name || '?')[0]}
@@ -116,7 +116,7 @@ const BrowseAgenciesPage = () => {
 
                         <div className="flex flex-wrap gap-1 mb-3">
                           {(a.categories || []).slice(0, 3).map((cat: string) => (
-                            <span key={cat} className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{cat}</span>
+                            <span key={cat} className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{cat}</span>
                           ))}
                         </div>
 

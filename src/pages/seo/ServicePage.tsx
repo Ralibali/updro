@@ -39,7 +39,7 @@ const ServicePage = () => {
   ]
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       {schemas.map((s, i) => <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }} />)}
       <link rel="canonical" href={`https://updro.se/leveranser/${service.slug}`} />

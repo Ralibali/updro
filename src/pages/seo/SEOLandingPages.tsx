@@ -57,7 +57,7 @@ const SEOLandingPage = ({
   const publishUrl = `${seoLeadPath(category)}&beskrivning=${encodeURIComponent(wizardDescription)}`
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <article className="container max-w-4xl py-10 md:py-20">
@@ -125,7 +125,7 @@ const SEOLandingPage = ({
             </ol>
           </section>
 
-          <div className="mt-14 rounded-3xl bg-foreground p-8 text-background md:p-10">
+          <div className="mt-14 rounded-xl bg-foreground p-8 text-background md:p-10">
             <h2 className="font-display text-3xl font-bold">Få ett bättre beslutsunderlag</h2>
             <p className="mt-3 max-w-2xl text-background/75">Beskriv projektet en gång och låt högst tre relevanta byråer visa hur de skulle lösa det.</p>
             <Link to={publishUrl} className="mt-7 inline-block">

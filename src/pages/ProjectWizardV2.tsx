@@ -254,14 +254,14 @@ const ProjectWizardV2 = () => {
   const registerLink = `/registrera?email=${encodeURIComponent(form.email.trim().toLowerCase())}${submittedProjectId ? `&project=${encodeURIComponent(submittedProjectId)}` : ''}`
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 py-8 px-4">
+      <main className="flex-1 bg-surface-alt py-10 md:py-14 px-4">
         <div className={step <= totalSteps ? 'mx-auto grid max-w-5xl gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12' : 'max-w-2xl mx-auto'}>
-          <div className="min-w-0">
+          <div className="min-w-0 rounded-xl border bg-card p-5 sm:p-8">
           {step <= totalSteps && (
             <>
-              <div className="flex justify-between text-xs text-muted-foreground mb-3">
+              <div className="flex justify-between text-sm text-muted-foreground mb-3">
                 <span>Steg {step} av {totalSteps}</span>
                 <span>Gratis · ingen bindning</span>
               </div>
@@ -438,7 +438,7 @@ const ProjectWizardV2 = () => {
               ) : (
                 <div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left">
                   <p className="text-sm font-semibold mb-2">Följ offerterna på ett ställe</p>
-                  <p className="text-xs text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress. Kopplingen sker säkert efter att e-postadressen har bekräftats.</p>
+                  <p className="text-sm text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress. Kopplingen sker säkert efter att e-postadressen har bekräftats.</p>
                   <Link to={registerLink}><Button className="w-full">Skapa gratis konto</Button></Link>
                 </div>
               )}

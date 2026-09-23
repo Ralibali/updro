@@ -42,7 +42,7 @@ const SubPage = () => {
   // Render city service page if found
   if (cityPage && pillar) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="updro-content-page min-h-screen flex flex-col">
         <Navbar />
         <div className="container pt-6">
           <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -107,7 +107,7 @@ const SubPage = () => {
   if (!pillar || !page) return <NotFound />
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <SchemaMarkup page={page} type="sub" parentCategory={pillar.categoryName} parentSlug={pillar.categorySlug} />
 

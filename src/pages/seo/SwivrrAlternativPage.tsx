@@ -66,7 +66,7 @@ const SwivrrAlternativPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <section className="container py-16 md:py-24">
@@ -150,7 +150,7 @@ const SwivrrAlternativPage = () => {
         </section>
 
         <section className="container pb-20">
-          <div className="rounded-3xl bg-foreground p-8 text-background md:p-12">
+          <div className="rounded-xl bg-foreground p-8 text-background md:p-12">
             <h2 className="font-display text-3xl font-bold md:text-4xl">Bedöm Updro med riktiga uppdrag</h2>
             <p className="mt-3 max-w-2xl text-background/75">Beställare använder tjänsten gratis. Byråer kan börja med fem kostnadsfria lead-krediter och utvärdera faktisk kvalitet innan de betalar.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">

@@ -5,17 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "next-themes";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
-import { COMPARISON_PAGES } from "./lib/seoComparisons";
-import { getNoindexSeoRoutes } from "./lib/seoStatic";
+import { COMPARISON_SLUGS } from "./lib/seoComparisonSlugs";
 import { LEGACY_REDIRECTS, resolveLegacyRedirect } from "./lib/seoRedirects";
-import { CITIES } from "./lib/seoCities";
-import SupplierLayout from "@/components/SupplierLayout";
-import BuyerLayout from "@/components/BuyerLayout";
 
 import Index from "./pages/Index";
 
@@ -53,12 +49,6 @@ const LegacyAliasRedirect = () => {
   return <Navigate to={resolveLegacyRedirect(location.pathname) ?? '/'} replace />;
 };
 
-const CityOrAgencyRedirect = () => {
-  const { stad } = useParams<{ stad: string }>();
-  const isCity = CITIES.some(c => c.slug === stad);
-  if (isCity) return <AgencyCityPage />;
-  return <Navigate to={`/byra/${stad}`} replace />;
-};
 
 const PillarPage = lazy(() => import("./components/seo/PillarPage"));
 const SubPage = lazy(() => import("./components/seo/SubPage"));
@@ -70,7 +60,7 @@ const ArticlesIndex = lazy(() => import("./components/seo/ArticlesIndex"));
 const ToolPage = lazy(() => import("./components/seo/ToolPage"));
 const ToolsIndex = lazy(() => import("./components/seo/ToolsIndex"));
 
-const AgencyCityPage = lazy(() => import("./pages/seo/AgencyCityPage"));
+const CityOrAgencyRoute = lazy(() => import("./pages/seo/CityOrAgencyRoute"));
 const AgencyCityCategoryPage = lazy(() => import("./pages/seo/AgencyCityCategoryPage"));
 const AgencyCategoryPage = lazy(() => import("./pages/seo/AgencyCategoryPage"));
 const ServicePage = lazy(() => import("./pages/seo/ServicePage"));
@@ -81,6 +71,8 @@ const HjalpMedHemsidaPage = lazy(() => import("./pages/seo/HjalpMedHemsidaPage")
 const PartnaAlternativPage = lazy(() => import("./pages/seo/PartnaAlternativPage"));
 const BytFranPartnaPage = lazy(() => import("./pages/seo/BytFranPartnaPage"));
 
+const SupplierLayout = lazy(() => import("@/components/SupplierLayout"));
+const BuyerLayout = lazy(() => import("@/components/BuyerLayout"));
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const BuyerProjects = lazy(() => import("./pages/buyer/BuyerProjects"));
 const ProjectDetail = lazy(() => import("./pages/buyer/ProjectDetail"));
@@ -121,10 +113,12 @@ const NoindexGuard = () => {
   const location = useLocation();
   useEffect(() => {
     const path = location.pathname.replace(/\/$/, '') || '/';
-    const noindexPaths = new Set(getNoindexSeoRoutes().map(route => route.path));
+    // Public SEO pages set their own robots meta (e.g. thin city/category
+    // combinations via setSEOMeta). This guard only covers private routes, so
+    // the SEO content modules stay out of the main bundle.
     const privatePrefixes = ['/admin', '/dashboard'];
     const privateExact = ['/kundportal', '/logga-in', '/registrera', '/registrera/byra', '/aterstall-losenord', '/landing', '/landing/byra', '/jamfor-offerter'];
-    const shouldNoindex = noindexPaths.has(path) || privateExact.includes(path) || privatePrefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
+    const shouldNoindex = privateExact.includes(path) || privatePrefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`));
     if (!shouldNoindex || typeof document === 'undefined') return;
     const applyNoindex = () => {
       let robots = document.querySelector('meta[name="robots"]') as HTMLMetaElement | null;
@@ -188,12 +182,12 @@ const App = () => (
         <Route path="/jamfor" element={<ComparisonsIndex />} />
         <Route path="/byraer/kategori/:kategori" element={<AgencyCategoryPage />} />
         <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
-        <Route path="/byraer/:stad" element={<CityOrAgencyRedirect />} />
+        <Route path="/byraer/:stad" element={<CityOrAgencyRoute />} />
         <Route path="/leveranser/:tjanst" element={<ServicePage />} />
         <Route path="/admin/innehallsplan" element={<ProtectedRoute role="admin"><AdminContentPlanner /></ProtectedRoute>} />
         <Route path="/admin/prospektering" element={<ProtectedRoute role="admin"><AdminProspecting /></ProtectedRoute>} />
         <Route path="/admin/nyhetsbrev" element={<ProtectedRoute role="admin"><AdminNewsletter /></ProtectedRoute>} />
-        {COMPARISON_PAGES.map(p => <Route key={p.slug} path={`/${p.slug}`} element={<ComparisonPage />} />)}
+        {COMPARISON_SLUGS.map(slug => <Route key={slug} path={`/${slug}`} element={<ComparisonPage />} />)}
         <Route path="/dashboard/buyer" element={<ProtectedRoute role="buyer"><BuyerLayout /></ProtectedRoute>}><Route index element={<BuyerDashboard />} /><Route path="uppdrag" element={<BuyerProjects />} /><Route path="uppdrag/:id" element={<ProjectDetail />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /></Route>
         <Route path="/dashboard/supplier" element={<ProtectedRoute role="supplier"><SupplierLayout /></ProtectedRoute>}><Route index element={<SupplierDashboard />} /><Route path="uppdrag" element={<BrowseProjects />} /><Route path="uppdrag/:id" element={<ProjectUnlock />} /><Route path="offerter" element={<SupplierOffers />} /><Route path="kundportal" element={<SupplierPortals />} /><Route path="chatt" element={<ChatPage />} /><Route path="profil" element={<ProfilePage />} /><Route path="fakturering" element={<BillingPage />} /><Route path="bjud-in" element={<ReferralPage />} /></Route>
         <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />

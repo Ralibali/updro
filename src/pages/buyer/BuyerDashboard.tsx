@@ -53,8 +53,8 @@ const BuyerDashboard = () => {
   }, [user])
 
   return (
-    <div className="max-w-4xl">
-      <h1 className="font-display text-2xl font-bold mb-6">Hej {profile?.full_name?.split(' ')[0]}! 👋</h1>
+    <div className="max-w-6xl">
+      <header className="updro-dashboard-heading"><div><p className="updro-eyebrow">Ditt beställarkonto</p><h1>Översikt{profile?.full_name ? ` för ${profile.full_name.split(' ')[0]}` : ''}</h1><p className="mt-3">Dina senaste uppdrag, offerter och nästa steg.</p></div></header>
 
       <div className="mb-6">
         <PushNotificationCard />
@@ -62,12 +62,12 @@ const BuyerDashboard = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-card rounded-xl border p-4">
-          <p className="text-sm text-muted-foreground">Aktiva uppdrag</p>
+        <div className="updro-metric">
+          <p className="text-sm text-muted-foreground">Aktiva bland de senaste</p>
           <p className="text-2xl font-bold font-display">{stats.active}</p>
         </div>
-        <div className="bg-card rounded-xl border p-4">
-          <p className="text-sm text-muted-foreground">Intresserade byråer</p>
+        <div className="updro-metric">
+          <p className="text-sm text-muted-foreground">Offerter på de senaste uppdragen</p>
           <p className="text-2xl font-bold font-display">{stats.interested}</p>
         </div>
         <div className="bg-card rounded-xl border p-4 col-span-2 md:col-span-1">
@@ -80,7 +80,7 @@ const BuyerDashboard = () => {
       </div>
 
       {/* Projects */}
-      <h2 className="font-display text-lg font-semibold mb-3">Dina uppdrag</h2>
+      <h2 className="font-display text-lg font-semibold mb-3">Senaste uppdragen</h2>
       {projects.length === 0 ? (
         <div className="bg-card rounded-xl border p-8 text-center">
           <p className="text-muted-foreground mb-4">Du har inga uppdrag ännu.</p>

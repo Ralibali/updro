@@ -88,7 +88,7 @@ const HjalpMedHemsidaPage = () => {
   const publishUrl = `/publicera?beskrivning=${encodeURIComponent('Vi behöver hjälp med vår hemsida: ')}`
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <article className="container max-w-4xl py-16 md:py-24">
@@ -224,7 +224,7 @@ const HjalpMedHemsidaPage = () => {
             </div>
           </section>
 
-          <div className="mt-16 rounded-3xl bg-foreground p-8 text-background md:p-10">
+          <div className="mt-16 rounded-xl bg-foreground p-8 text-background md:p-10">
             <h2 className="font-display text-3xl font-bold">Redo att ta in offerter?</h2>
             <p className="mt-3 max-w-2xl text-background/75">
               Beskriv hemsidan du behöver – även om du är osäker på detaljerna – och låt högst tre byråer visa hur de

@@ -117,7 +117,7 @@ const GuidePage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="updro-content-page min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1 container max-w-3xl py-16">
           <Skeleton className="h-8 w-48 mb-6" />
@@ -150,7 +150,7 @@ const GuidePage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <article className="container max-w-3xl py-12 md:py-16">

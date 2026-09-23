@@ -92,7 +92,7 @@ const AdsLandingPage = () => {
                 </p>
               </div>
 
-              <div className="border-2 border-foreground bg-card p-5 sm:p-6 shadow-[6px_6px_0_0_hsl(var(--foreground))]">
+              <div className="border border-border bg-card p-5 sm:p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Så fungerar matchningen</p>
                 <div className="space-y-4">
                   <div className="flex gap-3"><FileSearch className="h-5 w-5 text-accent shrink-0 mt-0.5" /><div><p className="font-semibold">Briefen granskas</p><p className="text-sm text-muted-foreground">Färre otydliga förfrågningar och felmatchningar.</p></div></div>
@@ -160,7 +160,7 @@ const AdsLandingPage = () => {
 
         {/* Avslutande CTA */}
         <section className="container mx-auto px-4 pb-12 sm:pb-16 max-w-3xl">
-          <div className="rounded-2xl border-2 border-foreground p-6 sm:p-10 text-center bg-card shadow-[6px_6px_0_0_hsl(var(--foreground))]">
+          <div className="rounded-2xl border border-border p-6 sm:p-10 text-center bg-card shadow-sm">
             <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3">Beskriv projektet – resten hjälper vi dig med</h2>
             <p className="text-muted-foreground mb-6">Det tar ungefär två minuter och du behöver inte skapa konto.</p>
             <Button asChild size="lg" className="w-full sm:w-auto rounded-xl px-8 py-6 text-base font-semibold">

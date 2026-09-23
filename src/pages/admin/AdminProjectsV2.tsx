@@ -64,6 +64,9 @@ const AdminProjectsV2 = () => {
     const { error } = await supabase.from('projects').update({ status: next }).eq('id', id)
     if (error) return toast.error('Kunde inte uppdatera uppdraget.')
     if (next === 'active') {
+      // Godkännandet köar mejl till matchande byråer. Skicka dem direkt i stället
+      // för att vänta på cron-körningen; cron tar omförsök om något fallerar.
+      void supabase.functions.invoke('send-supplier-lead-alerts')
       trackClick('lead_approved', 'Godkände uppdrag', { project_id: id })
       trackUppdragQualified({
         category: typeof project?.category === 'string' ? project.category : undefined,

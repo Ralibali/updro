@@ -146,13 +146,13 @@ const ChatPage = () => {
 
   return (
     <>
-      <div className="flex h-[calc(100vh-10rem)] bg-card rounded-xl border overflow-hidden">
+      <div className="flex min-h-[28rem] h-[calc(100dvh-12rem)] bg-card rounded-xl border overflow-hidden">
         {/* Conversation list - hidden on mobile when a convo is active */}
         <div className={cn(
-          'w-full md:w-80 border-r flex flex-col',
+          'w-full md:w-80 border-r flex flex-col bg-surface-alt',
           activeConvo ? 'hidden md:flex' : 'flex'
         )}>
-          <div className="p-3 border-b font-display font-semibold text-sm">Meddelanden</div>
+          <div className="p-5 border-b font-display font-semibold text-base">Meddelanden</div>
           <div className="flex-1 overflow-y-auto">
             {conversations.length === 0 ? (
               <p className="p-4 text-sm text-muted-foreground text-center">Inga meddelanden ännu</p>
@@ -182,7 +182,7 @@ const ChatPage = () => {
           ) : (
             <>
               <div className="p-3 border-b flex items-center gap-2">
-                <button onClick={() => setActiveConvo(null)} className="md:hidden p-1 rounded-lg hover:bg-muted">
+                <button aria-label="Tillbaka till konversationer" onClick={() => setActiveConvo(null)} className="md:hidden p-1 rounded-lg hover:bg-muted">
                   <ArrowLeft className="h-5 w-5" />
                 </button>
                 <div>
@@ -196,7 +196,7 @@ const ChatPage = () => {
                     <div className={cn('rounded-2xl px-4 py-2 text-sm', m.sender_id === user?.id ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
                       {m.content}
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-1">{timeAgo(m.created_at)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{timeAgo(m.created_at)}</p>
                   </div>
                 ))}
                 <div ref={bottomRef} />
@@ -206,10 +206,11 @@ const ChatPage = () => {
                   value={newMsg}
                   onChange={e => setNewMsg(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  aria-label="Ditt meddelande"
                   placeholder="Skriv ett meddelande..."
                   className="rounded-xl"
                 />
-                <Button size="icon" onClick={sendMessage} className="bg-primary hover:bg-primary/90 rounded-xl">
+                <Button aria-label="Skicka meddelande" size="icon" onClick={sendMessage} className="bg-primary hover:bg-primary/90 rounded-xl">
                   <Send className="h-4 w-4" />
                 </Button>
               </div>

@@ -83,7 +83,7 @@ const PasswordRecovery = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center py-16 px-4">
         <div className="w-full max-w-md">
@@ -156,7 +156,7 @@ const PlaceholderPage = ({ title, description }: PlaceholderPageProps) => {
   if (title === 'Återställ lösenord') return <PasswordRecovery />
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center py-20">
         <div className="text-center">

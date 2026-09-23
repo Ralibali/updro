@@ -128,7 +128,7 @@ const ArticlesIndex = () => {
   }, [activeCategory, activeType, sort, query])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
 
       <div className="container pt-6">
@@ -219,7 +219,7 @@ const ArticlesIndex = () => {
         <section className="container pb-10">
           <Link
             to={`/artiklar/${featured.slug}`}
-            className="block bg-card border rounded-3xl p-8 md:p-12 hover:border-primary/40 hover:shadow-lg transition-all group"
+            className="block bg-card border rounded-xl p-8 md:p-12 hover:border-primary/40 hover:shadow-lg transition-all group"
           >
             <div className="flex flex-wrap items-center gap-3 mb-4">
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${typeBadgeStyle[featured.type || 'guide']}`}>

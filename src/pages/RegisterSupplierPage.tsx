@@ -37,7 +37,7 @@ const RegisterSupplierPage = () => {
 
   useEffect(() => {
     setSEOMeta({
-      title: 'Registrera din byrå – Få fler kunder gratis | Updro',
+      title: 'Registrera din byrå – Skapa byråkonto | Updro',
       description: 'Registrera din byrå på Updro: fem gratis leads, högst tre byråer per uppdrag och leadgaranti. 99 kr per lead eller 1 995 kr/mån.',
       canonical: 'https://updro.se/registrera/byra',
       noindex: true,
@@ -122,8 +122,8 @@ const RegisterSupplierPage = () => {
 
   const benefits = [
     { icon: Gift, text: `${TRIAL_LEADS} gratis leads att börja med – inga kortuppgifter` },
-    { icon: Users, text: 'Max två konkurrenter per uppdrag, aldrig fem som hos andra' },
-    { icon: ShieldCheck, text: 'Leadgaranti: felaktiga kontaktuppgifter eller spam ersätts' },
+    { icon: Users, text: 'Högst tre byråer kan lämna offert på samma uppdrag' },
+    { icon: ShieldCheck, text: 'Begär kreditprövning om ett lead är felaktigt' },
     { icon: Star, text: 'Omdömen från genomförda uppdrag bygger er offentliga byråprofil' },
     { icon: FileSignature, text: 'Digitala samarbetsavtal direkt i plattformen' },
     { icon: MessageCircle, text: 'Chatta med beställaren innan ni lämnar offert' },
@@ -132,22 +132,22 @@ const RegisterSupplierPage = () => {
   const steps = [
     { number: '1', title: 'Skapa er profil', text: 'Kategorier, referenser och prisexempel – tar några minuter.' },
     { number: '2', title: 'Välj uppdragen själva', text: 'Se granskade briefar och lås upp kontaktuppgifterna för de som passar er.' },
-    { number: '3', title: 'Lämna offert och vinn', text: 'Chatta, konkurrera med max två andra och bekräfta samarbetet digitalt.' },
+    { number: '3', title: 'Lämna offert och följ dialogen', text: 'Chatta, konkurrera med max två andra och bekräfta samarbetet digitalt.' },
   ]
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         <div className="grid lg:grid-cols-2 min-h-[calc(100vh-4rem)]">
-          <div className="relative p-8 lg:p-16 flex flex-col justify-center text-white overflow-hidden" style={{ background: 'linear-gradient(160deg, hsl(245 62% 38%), hsl(245 58% 48%), hsl(260 50% 42%))' }}>
+          <div className="relative p-8 lg:p-16 flex flex-col justify-center text-white overflow-hidden" style={{ background: 'hsl(var(--brand-dark))' }}>
             <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-white/5 blur-3xl -translate-y-1/3 translate-x-1/4" />
             <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-white/5 blur-3xl translate-y-1/3 -translate-x-1/4" />
 
             <div className="relative z-10 max-w-xl">
               <span className="inline-block rounded-full bg-white/15 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-widest mb-6">För byråer</span>
-              <h1 className="font-display text-3xl lg:text-4xl font-bold mb-3">Vinn uppdrag. Betala bara för leads ni själva väljer.</h1>
-              <p className="text-white/75 mb-8 text-lg">99 kr per upplåst lead – eller 1 995 kr/mån obegränsat. Ett enda uppdrag på 50 000 kr betalar över 400 leads.</p>
+              <h1 className="font-display text-3xl lg:text-4xl font-bold mb-3">Välj uppdrag som passar er byrå.</h1>
+              <p className="text-white/75 mb-8 text-lg">Granska behov, budget och tidsplan innan ni låser upp kontakten. Välj pay per lead eller månadskort. Updro tar ingen provision på projektvärdet.</p>
 
               <div className="space-y-4 mb-10">
                 {benefits.map(benefit => (
@@ -162,7 +162,7 @@ const RegisterSupplierPage = () => {
                 <p className="text-xs font-semibold uppercase tracking-widest text-white/60">Så funkar det</p>
                 {steps.map(step => (
                   <div key={step.number} className="flex items-start gap-3">
-                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold" style={{ color: 'hsl(245 58% 48%)' }}>{step.number}</span>
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold" style={{ color: 'hsl(var(--brand-dark))' }}>{step.number}</span>
                     <div>
                       <p className="font-semibold">{step.title}</p>
                       <p className="text-sm text-white/70">{step.text}</p>
@@ -174,10 +174,10 @@ const RegisterSupplierPage = () => {
               <div className="rounded-2xl p-6 bg-white/10 backdrop-blur-md border border-white/15">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="h-5 w-5" />
-                  <p className="font-semibold">Tidiga byråer vinner mest</p>
+                  <p className="font-semibold">Börja med att bedöma relevansen</p>
                 </div>
                 <p className="text-sm text-white/80 leading-relaxed">
-                  De första byråerna på Updro bygger nu upp sina profiler och sin historik. Den som börjar i dag står högst när beställarvolymen växer.
+                  Använd provperioden för att se om uppdragen passar er. Tillgänglig volym varierar, och Updro garanterar inte ett visst antal affärer.
                 </p>
               </div>
             </div>
@@ -186,7 +186,7 @@ const RegisterSupplierPage = () => {
           <div className="p-6 sm:p-8 lg:p-16 flex items-center">
             <div className="w-full max-w-lg mx-auto">
               <h2 className="font-display text-2xl font-bold mb-2">Skapa byråkonto</h2>
-              <p className="text-sm text-muted-foreground mb-6">Tar bara några minuter. Leadgarantin gäller från första dagen – ogiltiga leads ersätts alltid.</p>
+              <p className="text-sm text-muted-foreground mb-6">Fyll i företagsuppgifter och välj era kompetensområden. Ett nytt konto får kostnadsfria lead-krediter enligt provperiodens villkor.</p>
 
               {presetCampaignCode && (
                 <div className="mb-6 rounded-xl border-2 border-accent bg-accent/10 p-4 flex items-start gap-3">

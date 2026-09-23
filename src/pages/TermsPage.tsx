@@ -13,7 +13,7 @@ const TermsPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 py-16 px-4">
         <article className="max-w-3xl mx-auto prose prose-slate">

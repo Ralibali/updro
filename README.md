@@ -76,8 +76,12 @@ check-subscription
 customer-portal
 stripe-webhook
 send-guest-offer-emails
+send-supplier-lead-alerts
 offer-reminder-cron
+send-push
 ```
+
+`send-transactional-email` är intern och tar bara emot anrop med service-role-nyckeln. Används den inte kan den tas bort helt i Supabase.
 
 ### Secrets
 
@@ -94,7 +98,10 @@ CRON_SECRET
 GUEST_CRON_TOKEN
 RATE_LIMIT_SALT
 UPDRO_ADMIN_EMAIL
+PUSH_WEBHOOK_SECRET
 ```
+
+`PUSH_WEBHOOK_SECRET` är en slumpmässig hemlighet som database-webhooken för `send-push` skickar i headern `x-webhook-secret`. Utan den avvisas alla push-anrop som inte bär service-role-nyckeln.
 
 `UPDRO_ADMIN_EMAIL` bör vara `info@auroramedia.se`. `RATE_LIMIT_SALT` ska vara en slumpmässig hemlig sträng. `GUEST_CRON_TOKEN` kan vara en separat slumpmässig hemlighet eller samma värde som `CRON_SECRET`.
 
@@ -125,6 +132,13 @@ POST https://opgjoevvlwhsddscqmpe.supabase.co/functions/v1/send-guest-offer-emai
 Header: x-cron-secret: <GUEST_CRON_TOKEN>
 ```
 
+Kör `send-supplier-lead-alerts` var femte minut. Adminpanelen triggar den också direkt när ett uppdrag godkänns, så cron-jobbet är ett säkerhetsnät för omförsök:
+
+```text
+POST https://opgjoevvlwhsddscqmpe.supabase.co/functions/v1/send-supplier-lead-alerts
+Header: x-cron-secret: <CRON_SECRET>
+```
+
 Kör `offer-reminder-cron` en gång per dag:
 
 ```text
@@ -148,7 +162,7 @@ Lovable-previewdomäner kan läggas till separat under utveckling.
 ## Kontroll efter deployment
 
 1. Skicka ett gästuppdrag och verifiera att både beställaren och administratören får e-post.
-2. Godkänn uppdraget i admin och kontrollera att det visas för byråer.
+2. Godkänn uppdraget i admin och kontrollera att det visas för byråer och att matchande byråer får notis och mejl (`supplier_lead_alert_queue` ska visa `sent`).
 3. Lås upp ett lead med en provkredit.
 4. Köp ett lead i Stripe testläge och kontrollera att exakt en kredit läggs till.
 5. Starta och avsluta ett testabonnemang och kontrollera att planen växlar mellan `monthly` och `payg`.

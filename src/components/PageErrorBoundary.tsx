@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { isChunkLoadError, reloadOnceForNewDeploy } from '@/lib/chunkReload'
 
 interface Props {
   children: ReactNode
@@ -13,6 +14,12 @@ class PageErrorBoundary extends Component<Props, { failed: boolean }> {
 
   static getDerivedStateFromError() {
     return { failed: true }
+  }
+
+  componentDidCatch(error: unknown) {
+    // A missing chunk after a deploy is fixed by one reload; anything else
+    // (or a second failure within a minute) shows the fallback below.
+    if (isChunkLoadError(error)) reloadOnceForNewDeploy()
   }
 
   render() {

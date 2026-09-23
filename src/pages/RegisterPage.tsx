@@ -79,11 +79,11 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
+      <main className="updro-auth-main">
+        <div className="updro-auth-panel">
+          <div className="mb-8">
             <h1 className="font-display text-3xl font-bold">Skapa gratis konto</h1>
             <p className="text-muted-foreground mt-2">Följ dina uppdrag och offerter på ett ställe.</p>
           </div>
@@ -108,7 +108,7 @@ const RegisterPage = () => {
             </div>
           )}
 
-          <div className="bg-card rounded-2xl border p-6 shadow-sm">
+          <div className="bg-card">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="buyer-name">Namn *</Label>

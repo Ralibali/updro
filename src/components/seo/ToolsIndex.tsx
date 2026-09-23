@@ -22,7 +22,7 @@ const ToolsIndex = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
 
       <div className="container pt-6">
@@ -46,7 +46,7 @@ const ToolsIndex = () => {
       <section className="container pb-16">
         <div className="grid sm:grid-cols-2 gap-6">
           {activeTools.map(tool => (
-            <Link key={tool.slug} to={`/verktyg/${tool.slug}`} className="relative bg-card border-2 border-foreground rounded-2xl p-6 hover:-translate-y-1 hover:shadow-[6px_6px_0_0_hsl(var(--foreground))] transition-all group">
+            <Link key={tool.slug} to={`/verktyg/${tool.slug}`} className="relative bg-card border border-border rounded-2xl p-6 hover:-translate-y-1 shadow-sm transition-all group">
               <span className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 text-[11px] font-semibold">
                 <CheckCircle2 className="h-3 w-3" /> Färdigt
               </span>

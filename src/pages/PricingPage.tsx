@@ -56,19 +56,19 @@ const PricingPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="py-16 text-center">
+        <section className="updro-page-heading py-14 md:py-20 text-center mb-10">
           <div className="container">
             <span className="inline-block bg-accent/10 text-accent rounded-full px-4 py-1.5 text-sm font-semibold mb-4">Tydligt från början</span>
-            <h1 className="font-display text-4xl md:text-5xl font-bold">Transparent prissättning</h1>
+            <h1 className="font-display text-4xl md:text-5xl font-bold">Tydliga priser. Ditt val.</h1>
             <p className="text-muted-foreground mt-3 max-w-xl mx-auto">Välj bara uppdrag som passar. Inga dolda avgifter, ingen bindningstid och 0 % provision på projektvärdet när ni vinner.</p>
 
             <div className="flex justify-center mt-8">
               <div className="inline-flex bg-muted rounded-xl p-1">
-                <button onClick={() => setTab('supplier')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === 'supplier' ? 'bg-card shadow-sm' : ''}`}>För byråer</button>
-                <button onClick={() => setTab('buyer')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === 'buyer' ? 'bg-card shadow-sm' : ''}`}>För beställare</button>
+                <button aria-pressed={tab === 'supplier'} onClick={() => setTab('supplier')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === 'supplier' ? 'bg-card shadow-sm' : ''}`}>För byråer</button>
+                <button aria-pressed={tab === 'buyer'} onClick={() => setTab('buyer')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${tab === 'buyer' ? 'bg-card shadow-sm' : ''}`}>För beställare</button>
               </div>
             </div>
           </div>

@@ -46,15 +46,15 @@ const SupplierDashboard = () => {
 
   const accepted = offers.filter(o => o.status === 'accepted').length
   const pending = offers.filter(o => o.status === 'pending').length
-  return <div className="max-w-4xl space-y-6">
-    <header className="flex flex-wrap items-start justify-between gap-3">
-      <div><p className="text-sm text-muted-foreground">Din byrå</p><h1 className="mt-1 font-display text-2xl font-bold">Hej{profile?.full_name ? ' ' + profile.full_name.split(' ')[0] : ''}, hitta nästa uppdrag.</h1><p className="mt-2 text-sm text-muted-foreground">Se vad kunden behöver, lämna offert och följ affären här.</p></div>
+  return <div className="max-w-6xl space-y-7">
+    <header className="updro-dashboard-heading">
+      <div><p className="updro-eyebrow">{profile?.company_name || 'Din byrå'}</p><h1 className="mt-1 font-display text-2xl font-bold">Byråns översikt</h1><p className="mt-2 text-sm text-muted-foreground">Följ aktuella förfrågningar, offerter och kunddialoger.</p></div>
       <Button asChild><Link to="/dashboard/supplier/uppdrag">Hitta uppdrag <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
     </header>
-    <div className="grid grid-cols-3 gap-2 sm:gap-3">
-      <Link to="/dashboard/supplier/uppdrag" className="rounded-xl border bg-card p-3 transition-colors sm:p-4 hover:border-primary/50"><Search className="h-5 w-5 text-primary" /><h2 className="mt-3 text-xs font-semibold sm:text-base">Hitta uppdrag</h2><p className="mt-1 hidden text-sm text-muted-foreground sm:block">Läs brief och budget innan du låser upp kontakten.</p></Link>
-      <Link to="/dashboard/supplier/offerter" className="rounded-xl border bg-card p-3 transition-colors sm:p-4 hover:border-primary/50"><FileText className="h-5 w-5 text-primary" /><h2 className="mt-3 text-xs font-semibold sm:text-base">Mina offerter</h2><p className="mt-1 hidden text-sm text-muted-foreground sm:block">{loading || error ? 'Följ offerter och bekräfta avtal.' : accepted ? accepted + (accepted === 1 ? ' accepterad · ' : ' accepterade · ') + pending + ' inväntar beslut' : pending ? pending + ' inväntar beställarens beslut' : 'Dina skickade offerter och avtal samlas här.'}</p></Link>
-      <Link to="/dashboard/supplier/chatt" className="rounded-xl border bg-card p-3 transition-colors sm:p-4 hover:border-primary/50"><MessageCircle className="h-5 w-5 text-primary" /><h2 className="mt-3 text-xs font-semibold sm:text-base">Meddelanden</h2><p className="mt-1 hidden text-sm text-muted-foreground sm:block">Fortsätt dialogen med dina beställare.</p></Link>
+    <div className="grid sm:grid-cols-3 gap-4">
+      <Link to="/dashboard/supplier/uppdrag" className="rounded-xl border bg-card p-5 transition-colors hover:border-primary/50"><Search className="h-5 w-5 text-primary" /><h2 className="mt-3 text-base font-semibold">Hitta uppdrag</h2><p className="mt-1 hidden text-sm text-muted-foreground sm:block">Läs brief och budget innan du låser upp kontakten.</p></Link>
+      <Link to="/dashboard/supplier/offerter" className="rounded-xl border bg-card p-5 transition-colors hover:border-primary/50"><FileText className="h-5 w-5 text-primary" /><h2 className="mt-3 text-base font-semibold">Mina offerter</h2><p className="mt-1 hidden text-sm text-muted-foreground sm:block">{loading || error ? 'Följ offerter och bekräfta avtal.' : accepted ? accepted + (accepted === 1 ? ' accepterad · ' : ' accepterade · ') + pending + ' inväntar beslut' : pending ? pending + ' inväntar beställarens beslut' : 'Dina skickade offerter och avtal samlas här.'}</p></Link>
+      <Link to="/dashboard/supplier/chatt" className="rounded-xl border bg-card p-5 transition-colors hover:border-primary/50"><MessageCircle className="h-5 w-5 text-primary" /><h2 className="mt-3 text-base font-semibold">Meddelanden</h2><p className="mt-1 hidden text-sm text-muted-foreground sm:block">Fortsätt dialogen med dina beställare.</p></Link>
     </div>
     <section aria-labelledby="matched-heading">
       <div className="mb-3 flex items-center justify-between gap-3"><h2 id="matched-heading" className="font-display text-lg font-semibold">{categories ? 'Senaste inom era kategorier' : 'Senaste uppdragen'}</h2><Link to="/dashboard/supplier/uppdrag" className="shrink-0 text-sm font-medium text-primary hover:underline">Visa alla</Link></div>

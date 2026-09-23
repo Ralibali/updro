@@ -129,10 +129,10 @@ const SupplierLandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-background border-b border-border">
+        <section className="updro-page-heading relative overflow-hidden">
           <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary/5 blur-3xl" />
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-accent/5 blur-3xl" />
 
@@ -146,12 +146,12 @@ const SupplierLandingPage = () => {
               </motion.div>
 
               <motion.h1
-                className="mt-6 font-display text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-foreground leading-[1.08] [text-wrap:balance]"
+                className="mt-6 font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-[1.08] [text-wrap:balance]"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                Få fler relevanta uppdrag.{' '}
+                Välj relevanta uppdrag.{' '}
                 <span className="text-accent">Behåll hela projektvärdet.</span>
               </motion.h1>
 
@@ -172,7 +172,7 @@ const SupplierLandingPage = () => {
               >
                 <Link to="/registrera/byra" onClick={() => trackSignup('supplier_hero')}>
                   <Button size="lg" className="min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground w-full sm:w-auto rounded-xl border border-border px-6 sm:px-10 text-base font-semibold shadow-brand motion-safe:active:scale-[0.98]">
-                    Starta med {TRIAL_LEADS} gratis leads
+                    Skapa byråkonto
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -215,7 +215,7 @@ const SupplierLandingPage = () => {
           <div className="container max-w-6xl">
             <div className="max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Bättre lead-ekonomi</p>
-              <h2 className="mt-3 font-display text-3xl md:text-5xl font-bold tracking-tight">Betala för tillgången – inte en procent av er egen leverans.</h2>
+              <h2 className="mt-3 font-display text-3xl md:text-5xl font-bold tracking-tight">En tydlig kostnad för kontakten.</h2>
               <p className="mt-4 text-muted-foreground leading-relaxed">
                 Målet är enkelt: ni ska kunna bedöma relevansen innan ni spenderar en kredit, konkurrera mot ett begränsat antal byråer och behålla marginalen när ni faktiskt vinner affären.
               </p>
@@ -240,7 +240,7 @@ const SupplierLandingPage = () => {
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Så räknar ni</p>
-                <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold">Mät kostnad per vunnen affär – inte bara pris per lead.</h2>
+                <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold">Utvärdera vad uppdragen ger er.</h2>
                 <p className="mt-4 text-muted-foreground leading-relaxed">
                   Ett lead är bara värdefullt om det leder till rätt samtal. Börja med gratiskrediterna, följ hur många leads som blir möten och kunder och välj sedan den prismodell som passar er faktiska volym.
                 </p>

@@ -1,50 +1,51 @@
-import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger,
+  AccordionTrigger
 } from '@/components/ui/accordion'
 import { HOME_FAQ } from '@/lib/homeSeo'
-
-const faqs = HOME_FAQ
-
-const FAQSection = () => {
+export default function FAQSection() {
   return (
-    <section className="py-20">
-      <div className="container max-w-3xl">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="font-display text-3xl md:text-5xl text-foreground">Vanliga frågor</h2>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <Accordion type="single" collapsible>
-            {faqs.map((faq, index) => (
-              <AccordionItem key={faq.q} value={`faq-${index}`} className="rounded-2xl border border-border bg-card px-5 mb-3">
-                <AccordionTrigger className="text-left font-display text-base md:text-lg text-foreground hover:no-underline py-5">
-                  {faq.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </motion.div>
+    <section className="updro-section">
+      <div className="container grid lg:grid-cols-[.8fr_1.2fr] gap-10 lg:gap-20">
+        <div>
+          <p className="updro-eyebrow">Bra att veta</p>
+          <h2 className="updro-section-title">
+            Lite mer klarhet.
+            <br />
+            Redan från början.
+          </h2>
+          <p className="mt-5 text-muted-foreground">
+            Undrar du över något annat?
+            <br />
+            <Link
+              to="/support"
+              className="text-primary underline underline-offset-4"
+            >
+              Kontakta oss
+            </Link>{' '}
+            så hjälper vi dig.
+          </p>
+        </div>
+        <Accordion type="single" collapsible>
+          {HOME_FAQ.map((faq, index) => (
+            <AccordionItem
+              key={faq.q}
+              value={`faq-${index}`}
+              className="border-b first:border-t"
+            >
+              <AccordionTrigger className="text-left font-medium text-base hover:no-underline py-5">
+                {faq.q}
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-base leading-relaxed pb-5">
+                {faq.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
   )
 }
-
-export default FAQSection

@@ -43,7 +43,7 @@ export default function PortalBoard({
   const common = { revision: p.revision, busy: busy || !p.isOpen };
   return (
     <div className="space-y-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+      <header className="flex flex-wrap items-start justify-between gap-4 rounded-xl border bg-card p-5 sm:p-7">
         <div>
           <p className="text-sm text-muted-foreground">
             {p.agencyName} · {p.clientName}
@@ -78,7 +78,7 @@ export default function PortalBoard({
         </p>
       )}
       <Tabs defaultValue="deliveries">
-        <TabsList className="h-auto flex flex-wrap justify-start gap-1">
+        <TabsList className="h-auto flex flex-wrap justify-start gap-1 border bg-card p-2">
           <TabsTrigger value="deliveries">Leveranser</TabsTrigger>
           <TabsTrigger value="brief">Brief</TabsTrigger>
           <TabsTrigger value="extras">Tillägg ({p.extras.length})</TabsTrigger>

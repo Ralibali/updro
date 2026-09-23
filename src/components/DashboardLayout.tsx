@@ -3,7 +3,8 @@ import Navbar from '@/components/Navbar'
 import { cn } from '@/lib/utils'
 import { useNoindex } from '@/hooks/useNoindex'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet'
-import { MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal, HelpCircle, ArrowUpRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import type { LucideIcon } from 'lucide-react'
 
 interface NavItem {
@@ -34,12 +35,12 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
   const extraActive = extraMobileItems.some(item => item.href === activeHref)
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-workspace min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex-1 flex">
-        <aside className="hidden md:flex w-60 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex-col p-4 gap-1">
+      <div className="updro-workspace-body">
+        <aside className="updro-workspace-sidebar">
           <div className="px-3 py-3 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Min arbetsyta</span>
+            <p className="text-xs font-semibold uppercase tracking-[.12em] text-muted-foreground">Min arbetsyta</p><p className="mt-2 text-lg font-medium text-foreground">{location.pathname.startsWith('/dashboard/supplier') ? 'Byråkontot' : location.pathname.startsWith('/admin') ? 'Administration' : 'Dina projekt'}</p>
           </div>
           {navItems.map(item => {
             const active = item.href === activeHref
@@ -49,8 +50,8 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
                 to={item.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors',
-                  active ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground',
+                  'flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors',
+                  active ? 'bg-sidebar-accent text-sidebar-accent-foreground ' : 'text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground',
                 )}
               >
                 <item.icon className="h-4 w-4" />
@@ -61,16 +62,14 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
               </Link>
             )
           })}
-          {ctaButton && (
-            <Link to={ctaButton.href} className="mt-auto pt-4">
-              <button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-lg px-3 py-2.5 text-sm font-semibold transition-all">
-                {ctaButton.label}
-              </button>
-            </Link>
-          )}
+          <div className="mt-auto pt-8 space-y-4">
+            {ctaButton && <Button asChild className="w-full"><Link to={ctaButton.href}>{ctaButton.label}</Link></Button>}
+            <Link to="/support" className="flex items-center gap-2 px-3 text-sm text-muted-foreground hover:text-primary"><HelpCircle className="h-4 w-4" /> Hjälp och kontakt <ArrowUpRight className="ml-auto h-4 w-4" /></Link>
+            <p className="px-3 text-xs text-muted-foreground">Updro · Aurora Media AB</p>
+          </div>
         </aside>
 
-        <main className="min-w-0 flex-1 p-4 md:p-8 lg:p-10 pb-28 md:pb-8 bg-background">
+        <main className="updro-workspace-main">
           {children}
         </main>
       </div>
@@ -83,7 +82,7 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
               key={item.href}
               to={item.href}
               aria-current={active ? 'page' : undefined}
-              className={cn('flex flex-col items-center justify-center gap-1 rounded-xl text-[11px] px-1 py-2 min-h-12 min-w-14', active ? 'bg-accent/10 text-accent' : 'text-muted-foreground')}
+              className={cn('flex flex-col items-center justify-center gap-1 rounded-xl text-xs px-1 py-2 min-h-12 min-w-14', active ? 'bg-accent/10 text-accent' : 'text-muted-foreground')}
             >
               <item.icon className="h-5 w-5" />
               <span>{item.label.split(' ')[0]}</span>
@@ -97,7 +96,7 @@ const DashboardLayout = ({ children, navItems, ctaButton }: DashboardLayoutProps
         {extraMobileItems.length > 0 && (
           <Sheet>
             <SheetTrigger asChild>
-              <button className={cn('flex flex-col items-center justify-center gap-1 rounded-xl text-[11px] px-1 py-2 min-h-12 min-w-14', extraActive ? 'text-primary' : 'text-muted-foreground')}>
+              <button className={cn('flex flex-col items-center justify-center gap-1 rounded-xl text-xs px-1 py-2 min-h-12 min-w-14', extraActive ? 'text-primary' : 'text-muted-foreground')}>
                 <MoreHorizontal className="h-5 w-5" />
                 <span>Mer</span>
               </button>

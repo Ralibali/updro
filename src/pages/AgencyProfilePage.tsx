@@ -87,18 +87,18 @@ const AgencyProfilePage = () => {
   }, [agency, profile, slug])
 
   if (loading) return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></main>
       <Footer />
     </div>
   )
 
-  if (error) return <div className="min-h-screen flex flex-col"><Navbar /><main className="container flex-1 py-12"><DirectoryStatus loading={false} error retry={() => setAttempt(value => value + 1)} /></main><Footer /></div>
+  if (error) return <div className="updro-content-page min-h-screen flex flex-col"><Navbar /><main className="container flex-1 py-12"><DirectoryStatus loading={false} error retry={() => setAttempt(value => value + 1)} /></main><Footer /></div>
   if (!agency) return <NotFound />
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         {/* Cover */}
@@ -260,7 +260,7 @@ const AgencyProfilePage = () => {
                   </div>
 
                   {(agency.categories || []).some((cat: string) => CATEGORY_PRICE_MAP[cat]) && (
-                    <div className="bg-secondary/60 rounded-xl border-2 border-foreground p-5">
+                    <div className="bg-secondary/60 rounded-xl border border-border p-5">
                       <h3 className="font-semibold mb-1.5 text-sm">Vad kostar det?</h3>
                       <p className="text-xs text-muted-foreground mb-3">
                         Se marknadspriser innan du skickar din förfrågan:

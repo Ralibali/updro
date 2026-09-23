@@ -24,7 +24,7 @@ const ReportContentPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col"><Navbar /><main className="flex-1 py-16 px-4"><article className="max-w-3xl mx-auto">
+    <div className="updro-content-page min-h-screen flex flex-col"><Navbar /><main className="flex-1 py-16 px-4"><article className="max-w-3xl mx-auto">
       <h1 className="font-display text-3xl font-bold mb-2">Rapportera innehåll eller överklaga beslut</h1><p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-07-12</p>
       <div className="space-y-6 text-sm leading-relaxed text-foreground/80">
         <section><h2 className="font-display text-lg font-semibold text-foreground mb-2">Vad kan rapporteras?</h2><p>Anmäl innehåll som du anser är olagligt, gör intrång i rättigheter eller bryter mot Updros villkor, exempelvis bedrägeri, hot, diskriminering, personuppgiftsintrång, upphovsrättsintrång, falska omdömen eller vilseledande företagsuppgifter.</p></section>

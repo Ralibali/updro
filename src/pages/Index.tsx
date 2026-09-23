@@ -3,14 +3,12 @@ import PageErrorBoundary from '@/components/PageErrorBoundary'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/home/HeroSection'
-import TrustStripSection from '@/components/home/TrustStripSection'
 import MobileStickyCTA from '@/components/home/MobileStickyCTA'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { HOME_TITLE, HOME_DESCRIPTION, HOME_CANONICAL, HOME_FAQ } from '@/lib/homeSeo'
 
-const ExampleOffersSection = lazy(() => import('@/components/home/ExampleOffersSection'))
 const PriceCalculatorSection = lazy(() => import('@/components/home/PriceCalculatorSection'))
 const FAQSection = lazy(() => import('@/components/home/FAQSection'))
 const CTASection = lazy(() => import('@/components/home/CTASection'))
@@ -78,7 +76,6 @@ const websiteSchema = {
 const BelowFold = () => (
   <PageErrorBoundary embedded>
   <Suspense fallback={null}>
-    <ExampleOffersSection />
     <PriceCalculatorSection />
     <FAQSection />
     <CTASection />
@@ -109,11 +106,10 @@ const Index = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col pb-20 md:pb-0">
+    <div className="updro-home min-h-screen flex flex-col pb-20 md:pb-0">
       <Navbar />
       <main className="flex-1">
         <HeroSection />
-        <TrustStripSection />
         <CategoriesSection />
         <HowItWorksSection />
         <BelowFold />

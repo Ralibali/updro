@@ -33,7 +33,7 @@ const PillarPage = () => {
   if (!page) return <NotFound />
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <SchemaMarkup page={page} type="pillar" />
 

@@ -19,7 +19,7 @@ const CitiesIndex = () => {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
 
       <div className="container pt-6">

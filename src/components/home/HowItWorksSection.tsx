@@ -1,70 +1,74 @@
-import { motion } from 'framer-motion'
-
+import { Link } from 'react-router-dom'
+import { ArrowRight, ShieldCheck } from 'lucide-react'
 const steps = [
   {
     number: '01',
-    title: 'Beskriv ditt projekt',
-    description: 'Berätta vad du behöver hjälp med, ungefärlig budget och önskad start. Det tar cirka två minuter och kräver inget konto.',
-    align: 'left' as const,
+    title: 'Beskriv behovet',
+    description:
+      'Berätta vad ni vill uppnå, vilken budget ni har och när projektet behöver starta. Du behöver inte ha alla svar från början.'
   },
   {
     number: '02',
-    title: 'Vi granskar och matchar',
-    description: 'Updro granskar briefen innan den öppnas för relevanta byråer. Högst tre byråer kan lämna offert på samma uppdrag.',
-    align: 'right' as const,
+    title: 'Vi granskar underlaget',
+    description:
+      'Förfrågan granskas innan den öppnas. Högst tre relevanta byråer kan sedan välja att lämna offert.'
   },
   {
     number: '03',
-    title: 'Jämför i lugn och ro',
-    description: 'Jämför pris, upplägg och kompetens. Du väljer själv om du vill gå vidare och förbinder dig inte till något.',
-    align: 'left' as const,
-  },
+    title: 'Jämför och ta dialogen',
+    description:
+      'Gå igenom pris, omfattning och arbetssätt. Ställ frågor och välj själv om du vill gå vidare med någon av byråerna.'
+  }
 ]
-
-const HowItWorksSection = () => {
+export default function HowItWorksSection() {
   return (
-    <section className="py-20 bg-surface-alt" id="hur-det-fungerar">
+    <section
+      className="updro-section bg-surface-alt border-y"
+      id="hur-det-fungerar"
+    >
       <div className="container">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="font-display text-3xl md:text-5xl text-foreground">
-            Så enkelt fungerar Updro
-          </h2>
-          <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">
-            Färre men mer relevanta svar gör det lättare att faktiskt jämföra byråerna.
+        <div className="updro-section-heading">
+          <div>
+            <p className="updro-eyebrow">Från idé till rätt samarbete</p>
+            <h2>
+              Du har projektet.
+              <br />
+              Vi gör byråvalet enklare.
+            </h2>
+          </div>
+          <p>
+            En tydlig process för både beställare och byrå. Du behåller
+            kontrollen över nästa steg.
           </p>
-        </motion.div>
-
-        <div className="grid gap-5 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.number}
-              className="rounded-2xl border border-border bg-card p-6 md:p-7"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-secondary font-display text-sm font-bold text-accent">
-                {step.number}
-              </span>
-              <div className="pt-5">
-                <h3 className="font-display text-xl text-foreground mb-3">{step.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {step.description}
-                </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+          {steps.map((step) => (
+            <article key={step.number}>
+              <div className="flex items-center gap-5 text-sm text-primary">
+                <span>{step.number}</span>
+                <span className="h-px flex-1 bg-border" />
               </div>
-            </motion.div>
+              <h3 className="mt-6 text-xl font-semibold">{step.title}</h3>
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+                {step.description}
+              </p>
+            </article>
           ))}
+        </div>
+        <div className="mt-10 pt-6 border-t flex flex-wrap items-start gap-3">
+          <ShieldCheck className="h-5 w-5 text-primary shrink-0" />
+          <p className="text-sm text-muted-foreground flex-1 min-w-48">
+            Dina kontaktuppgifter visas inte öppet. En byrå behöver aktivt låsa
+            upp ditt uppdrag för att få tillgång till dem.
+          </p>
+          <Link
+            to="/metod"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary"
+          >
+            Läs om granskningen <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </div>
     </section>
   )
 }
-
-export default HowItWorksSection

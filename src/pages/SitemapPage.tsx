@@ -40,7 +40,7 @@ const SitemapPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <div className="container py-12 flex-1">
         <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6">
