@@ -1334,8 +1334,8 @@ export type Database = {
           description: string | null
           domain: string
           export_count: number
-          fit_score: number
           fit_reason: string | null
+          fit_score: number
           id: string
           industry: string | null
           last_exported_at: string | null
@@ -1370,8 +1370,8 @@ export type Database = {
           description?: string | null
           domain: string
           export_count?: number
-          fit_score?: number
           fit_reason?: string | null
+          fit_score?: number
           id?: string
           industry?: string | null
           last_exported_at?: string | null
@@ -1406,8 +1406,8 @@ export type Database = {
           description?: string | null
           domain?: string
           export_count?: number
-          fit_score?: number
           fit_reason?: string | null
+          fit_score?: number
           id?: string
           industry?: string | null
           last_exported_at?: string | null
@@ -1608,6 +1608,112 @@ export type Database = {
           },
         ]
       }
+      supplier_lead_alert_queue: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: string
+          last_error: string | null
+          project_id: string
+          sent_at: string | null
+          status: string
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          project_id: string
+          sent_at?: string | null
+          status?: string
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          project_id?: string
+          sent_at?: string | null
+          status?: string
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_lead_alert_queue_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_lead_alert_queue_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_agency_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_lead_alert_queue_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_supplier_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_lead_alert_queue_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          project_id: string | null
+          read_at: string | null
+          supplier_id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          read_at?: string | null
+          supplier_id: string
+          title: string
+          type?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          project_id?: string | null
+          read_at?: string | null
+          supplier_id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_notifications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supplier_profiles: {
         Row: {
           avg_rating: number | null
@@ -1628,6 +1734,7 @@ export type Database = {
           id: string
           is_featured: boolean | null
           is_verified: boolean | null
+          lead_alert_emails: boolean
           lead_credits: number | null
           logo_url: string | null
           org_number: string | null
@@ -1663,6 +1770,7 @@ export type Database = {
           id: string
           is_featured?: boolean | null
           is_verified?: boolean | null
+          lead_alert_emails?: boolean
           lead_credits?: number | null
           logo_url?: string | null
           org_number?: string | null
@@ -1698,6 +1806,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           is_verified?: boolean | null
+          lead_alert_emails?: boolean
           lead_credits?: number | null
           logo_url?: string | null
           org_number?: string | null
