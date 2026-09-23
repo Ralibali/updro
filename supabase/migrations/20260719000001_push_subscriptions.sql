@@ -27,8 +27,16 @@ with check (auth.uid() = user_id);
 
 create policy "Users can update their own push subscriptions"
 on public.push_subscriptions for update to authenticated
-using (auth.uid() = user_id);
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
 
 create policy "Users can delete their own push subscriptions"
 on public.push_subscriptions for delete to authenticated
 using (auth.uid() = user_id);
+
+-- Explicit grants keep TRUNCATE and other non-RLS privileges unavailable.
+revoke all on public.push_subscriptions from public, anon, authenticated;
+grant select, insert, delete on public.push_subscriptions to authenticated;
+grant update(user_id, endpoint, p256dh, auth, user_agent, updated_at)
+  on public.push_subscriptions to authenticated;
+grant all on public.push_subscriptions to service_role;
