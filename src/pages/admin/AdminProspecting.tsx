@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { Check, Download, ExternalLink, FileUp, RefreshCw, Search, Sparkles, X } from 'lucide-react'
-import { buildProspectingQuery, type ProspectingNeedType } from '@/lib/prospecting'
+import { buildProspectingQuery, type ProspectingNeedType, type ProspectingSignalFocus } from '@/lib/prospecting'
 import { domainFromWebsite, exportApprovedOutreachCsv, parseOpenOutreach, type ApprovedOutreachLead } from '@/lib/openOutreach'
 import { cn } from '@/lib/utils'
 
@@ -36,6 +36,7 @@ interface Lead {
   company_name: string
   domain: string
   website_url: string
+  source_url: string | null
   city: string | null
   industry: string | null
   fit_score: number
@@ -94,14 +95,15 @@ const AdminProspecting = () => {
   // Form
   const [name, setName] = useState('')
   const [needType, setNeedType] = useState<ProspectingNeedType>('valfritt')
+  const [signalFocus, setSignalFocus] = useState<ProspectingSignalFocus>('any')
   const [industry, setIndustry] = useState('')
   const [location, setLocation] = useState('Sweden')
   const [freeText, setFreeText] = useState('')
   const [limit, setLimit] = useState(10)
 
   const previewQuery = useMemo(
-    () => buildProspectingQuery({ freeText, needType, industry, location }),
-    [freeText, needType, industry, location],
+    () => buildProspectingQuery({ freeText, needType, signalFocus, industry, location }),
+    [freeText, needType, signalFocus, industry, location],
   )
   const filteredLeads = useMemo(() => leads.filter(lead =>
     (statusFilter === 'all' || lead.status === statusFilter) && lead.fit_score >= minScore,
@@ -147,6 +149,7 @@ const AdminProspecting = () => {
         query: previewQuery,
         location,
         needType,
+        signalFocus,
         industry: industry.trim() || undefined,
         limit,
       },
@@ -261,7 +264,7 @@ const AdminProspecting = () => {
             <Sparkles className="h-6 w-6" /> Prospektering
           </h1>
           <p className="text-sm text-muted-foreground">
-            Hitta företag via Firecrawl eller importera kvalificerade OpenOutreach-resultat.
+            Hitta företag med verifierbara köp-, tillväxt- och problemsignaler via Firecrawl eller importera kvalificerade OpenOutreach-resultat.
             Inget skickas från Updro; varje pitch måste granskas och godkännas före export.
           </p>
         </div>
@@ -294,6 +297,18 @@ const AdminProspecting = () => {
             </Select>
           </div>
           <div>
+            <Label>Varför nu-signal</Label>
+            <Select value={signalFocus} onValueChange={v => setSignalFocus(v as ProspectingSignalFocus)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Alla signaler</SelectItem>
+                <SelectItem value="buying">Köpsignal – söker hjälp/leverantör</SelectItem>
+                <SelectItem value="growth">Tillväxt – nyetablering/rekrytering</SelectItem>
+                <SelectItem value="pain">Problem – manuellt/tekniskt hinder</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
             <Label htmlFor="p-industry">Bransch (valfritt)</Label>
             <Input id="p-industry" value={industry} onChange={e => setIndustry(e.target.value)} placeholder="restaurang, VVS, ..." />
           </div>
@@ -322,7 +337,7 @@ const AdminProspecting = () => {
           </div>
           <Button onClick={runSearch} disabled={running || !previewQuery.trim()} className="w-full">
             <Search className={cn('h-4 w-4 mr-2', running && 'animate-pulse')} />
-            {running ? 'Söker...' : 'Hitta företag'}
+            {running ? 'Söker...' : 'Hitta signal-leads'}
           </Button>
           <p className="text-[11px] text-muted-foreground">
             Sökningen använder Firecrawl-krediter från din workspace-anslutning.
@@ -427,6 +442,11 @@ const AdminProspecting = () => {
                           <td className="py-2 pr-2 text-muted-foreground">{l.industry || '–'}</td>
                           <td className="py-2 pr-2 font-mono">{l.fit_score}</td>
                           <td className="py-2 pr-2 text-xs">
+                            {l.source_url && (
+                              <a href={l.source_url} target="_blank" rel="noopener noreferrer" className="mb-1 inline-flex items-center gap-1 text-primary hover:underline">
+                                Källbevis <ExternalLink className="h-3 w-3" />
+                              </a>
+                            )}
                             {l.fit_reason ? <p className="max-w-64 text-xs">{l.fit_reason}</p> : l.observed_signals.length === 0 ? (
                               <span className="text-muted-foreground">–</span>
                             ) : (
