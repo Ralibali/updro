@@ -64,6 +64,7 @@ function computeFitScore(input: {
   location?: string | null
   markdown?: string | null
   contactPageUrl?: string | null
+  publishedAt?: string | null
 }): { score: number; signals: string[] } {
   const signals: string[] = []
   let score = 30
@@ -95,6 +96,22 @@ function computeFitScore(input: {
   if (input.needType === 'webb' && /(gammal\s+hemsida|ny\s+hemsida|bygga\s+om\s+webbplats)/.test(md)) {
     score += 5; signals.push('Text om ny/gammal hemsida')
   }
+  if (/(söker\s+(?:en\s+)?(?:byrå|leverantör|partner)|behöver\s+hjälp|offertförfrågan|request\s+for\s+(?:proposal|quote)|upphandling)/.test(md)) {
+    score += 20; signals.push('Köpsignal: aktivt behov eller leverantörssökande omnämns')
+  }
+  if (/(öppnar\s+(?:ny|nytt)|expanderar|expansion|ny\s+(?:butik|lokal|kontor)|rekryterar|we\s+are\s+hiring)/.test(md)) {
+    score += 15; signals.push('Tillväxtsignal: expansion, nyetablering eller rekrytering omnämns')
+  }
+  if (/(manuellt\s+arbete|excel|tar\s+för\s+lång\s+tid|gammal\s+hemsida|under\s+ombyggnad|problem\s+med)/.test(md)) {
+    score += 12; signals.push('Problemsignal: ett konkret manuellt, tekniskt eller digitalt problem omnämns')
+  }
+  if (input.publishedAt) {
+    const published = new Date(input.publishedAt)
+    const ageMs = Date.now() - published.getTime()
+    if (Number.isFinite(ageMs) && ageMs >= 0 && ageMs <= 90 * 24 * 60 * 60 * 1000) {
+      score += 10; signals.push(`Färsk källa: ${published.toISOString().slice(0, 10)}`)
+    }
+  }
   if (md && !/(kontakta\s+oss|boka|offert|kom\s+igång|prova\s+gratis)/.test(md)) {
     score += 5; signals.push('Ingen tydlig CTA på den skannade sidan')
   }
@@ -118,6 +135,7 @@ interface RequestBody {
   query: string
   location?: string
   needType: 'webb' | 'ehandel' | 'ai' | 'valfritt'
+  signalFocus?: 'any' | 'buying' | 'growth' | 'pain'
   industry?: string
   limit?: number
 }
@@ -232,8 +250,10 @@ serve(async (req: Request) => {
         const links: string[] = Array.isArray(item?.links) ? item.links : []
 
         const contactPageUrl = pickContactPage(domain, links)
+        const publishedAt: string | null =
+          item?.publishedDate || item?.metadata?.publishedTime || item?.metadata?.publishedDate || item?.metadata?.date || null
         const { score, signals } = computeFitScore({
-          needType, industry, location, markdown, contactPageUrl,
+          needType, industry, location, markdown, contactPageUrl, publishedAt,
         })
         const companyIntelligence = buildCompanyIntelligence({
           markdown,
@@ -259,7 +279,7 @@ serve(async (req: Request) => {
             observed_signals: signals,
             contact_page_url: contactPageUrl,
             company_intelligence: companyIntelligence,
-            intelligence_source: 'firecrawl-search-v1',
+            intelligence_source: 'firecrawl-signal-search-v2',
             intelligence_updated_at: new Date().toISOString(),
           })
         if (!insErr) inserted++
