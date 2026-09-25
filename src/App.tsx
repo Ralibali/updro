@@ -104,6 +104,7 @@ const AdminFunctionLogs = lazy(() => import("./pages/admin/AdminFunctionLogs"));
 const AdminProspecting = lazy(() => import("./pages/admin/AdminProspecting"));
 const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter"));
 const AdminAdsAI = lazy(() => import("./pages/admin/AdminAdsAI"));
+const AdminAiVisibility = lazy(() => import("./pages/admin/AdminAiVisibility"));
 
 const queryClient = new QueryClient();
 const PageLoader = () => <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>;
@@ -207,6 +208,7 @@ const App = () => (
         <Route path="/admin/marketplace-health" element={<ProtectedRoute role="admin"><AdminMarketplaceHealth /></ProtectedRoute>} />
         <Route path="/admin/edge-funktioner" element={<ProtectedRoute role="admin"><AdminFunctionLogs /></ProtectedRoute>} />
         <Route path="/admin/ads-ai" element={<ProtectedRoute role="admin"><AdminAdsAI /></ProtectedRoute>} />
+        <Route path="/admin/ai-synlighet" element={<ProtectedRoute role="admin"><AdminAiVisibility /></ProtectedRoute>} />
         <Route path="/:category" element={<PillarPage />} />
         <Route path="/:category/:sub" element={<SubPage />} />
         <Route path="*" element={<NotFound />} />
