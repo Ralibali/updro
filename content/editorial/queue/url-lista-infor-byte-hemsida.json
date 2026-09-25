@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "writtenAt": "2026-09-25T10:06:46.303229+00:00",
+  "repository": "Ralibali/updro",
+  "publicationGate": "Earliest 2026-09-27, and only after a fresh previous-publication reader check, current main, complete published inventory and current primary-source review. Keep unpublished until all checks pass; assign actual publication dates at release.",
+  "sourceReview": {
+    "checkedAt": "2026-09-25T10:06:46.303229+00:00",
+    "publishedInventoryReviewed": 43,
+    "distinctIntent": "Beställarens inventering av befintliga URL:er och avsett innehåll inför ett webbbyte; skilt från designåterkoppling och teknisk omdirigeringsimplementation.",
+    "note": "Owned product entry reviewed; article is an original procedural template. No invented outcomes, prices or automatic product features. Fresh source review required before publication."
+  },
+  "article": {
+    "slug": "url-lista-infor-byte-hemsida",
+    "h1": "Gör en URL-lista inför bytet av hemsida",
+    "metaTitle": "Gör en URL-lista inför bytet av hemsida",
+    "metaDesc": "Gör en lista över dagens webbadresser inför en ny hemsida. Samla sidornas syfte, planerat innehåll och öppna frågor innan bytet ska genomföras.",
+    "category": "Webbutveckling",
+    "readTimeMinutes": 4,
+    "intro": "När en hemsida ska bytas ut behöver beställaren och byrån veta vad som finns på de gamla adresserna. En lista över rubriker räcker inte alltid: samma slags innehåll kan ligga på flera adresser och vissa sidor kan nås från länkar som inte syns i huvudmenyn. En URL-lista ger ett gemensamt underlag för beslut om varje gammal sida.\n",
+    "editorialNote": "AI-assisterad originalguide. Arbetsmallen är ett redaktionellt förslag.",
+    "sections": [
+      {
+        "heading": "Samla adresser från flera kända underlag",
+        "content": "Börja med den befintliga webbplatsen och de listor verksamheten redan har. Fråga byrån vilket tekniskt underlag den kan ta fram. Lägg också till adresser som används i nyhetsbrev, annonser, trycksaker eller kundinstruktioner. Anteckna varifrån varje uppgift kommer så att listans täckning går att bedöma.\n\nKalla inte listan komplett bara för att menyn är genomgången. Be ansvarig part beskriva hur den har kontrollerats och vilka delar som ännu saknas. En adress som inte längre visas i navigationen kan fortfarande förekomma i material som verksamheten använder."
+      },
+      {
+        "heading": "Beskriv vad besökaren behöver på sidan",
+        "content": "Skriv en kort mening om varje sidas syfte. Ska besökaren hitta en kontaktväg, läsa ett produktunderlag eller hämta en blankett? Beskriv behovet utan att redan bestämma hur den nya webbplatsen ska organiseras. Då kan byrån diskutera en lämplig destination med rätt person i verksamheten.\n\nMarkera när syftet är oklart. En gammal sida kan behöva sakgranskas innan ni vet om innehållet ska finnas kvar. Låt den som ansvarar för informationen lämna ett besked, i stället för att dra slutsatsen att en sida är oviktig för att den ser gammal ut."
+      },
+      {
+        "heading": "Använd en rad per gammal adress",
+        "content": "Kopiera följande fält till ert gemensamma underlag:\n\n- Gammal fullständig adress.\n- Sidans nuvarande rubrik och syfte.\n- Var adressen har hittats eller används.\n- Ansvarig för innehållsbeslutet.\n- Föreslagen plats på den nya webbplatsen.\n- Beslut, öppna frågor och ansvarig utförare.\n- Kontroll efter lansering och observerat resultat.\n\nHåll den föreslagna destinationen skild från det fattade beslutet. Om två gamla sidor föreslås få samma nya plats behöver ni gå igenom om båda besökarbehoven fortfarande får ett begripligt svar där."
+      },
+      {
+        "heading": "Låt byrån föreslå den tekniska hanteringen",
+        "content": "Be byrån beskriva hur de beslutade adresserna ska hanteras vid bytet och hur lösningen ska kontrolleras. URL-listan är ett beställarunderlag. Den ersätter inte den tekniska planeringen för webbplatsen eller en bedömning av vad som är rätt hantering för varje adress.\n\nSamordna innehållsfrågorna med [innehållslistan inför en ny hemsida](/artiklar/innehallslista-infor-ny-hemsida). Det hjälper er att se skillnaden mellan en sida som väntar på ny text och en adress vars framtida hantering ännu inte är bestämd."
+      },
+      {
+        "heading": "Bestäm kontrollen före lansering",
+        "content": "Välj vilka besökarvägar ni ska prova och vem som dokumenterar resultatet. Ta med konkreta gamla länkar från material som fortfarande används. Beskriv vad besökaren ska kunna hitta efter bytet, och låt en avvikelse ligga kvar tills ansvarig har lämnat ett besked.\n\nAnvänd [mallen för acceptanstest](/artiklar/acceptanstest-ny-hemsida-mall) för att hålla kontrollerna samlade. När du [beskriver ditt projekt på Updro](/publicera), ange att en befintlig webbplats ska ersättas och att gamla adresser behöver ingå i planeringen. AI-assisterad originalguide med en egen arbetsmall."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      },
+      {
+        "label": "Acceptanstest för ny hemsida",
+        "href": "/artiklar/acceptanstest-ny-hemsida-mall"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Updro – beskriv ditt projekt",
+        "href": "https://updro.se/publicera"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "searchIntent": "Beställarens inventering av befintliga URL:er och avsett innehåll inför ett webbbyte; skilt från designåterkoppling och teknisk omdirigeringsimplementation.",
+      "sourceUrls": [
+        "https://updro.se/publicera"
+      ],
+      "sourceCheckedAt": "2026-09-25T10:06:46.303229+00:00"
+    }
+  }
+}
