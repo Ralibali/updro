@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { supabase } from '@/integrations/supabase/client'
 import Navbar from '@/components/Navbar'
-import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal, Sparkles, Activity, Search, Mail } from 'lucide-react'
+import { Home, Users, ClipboardList, CreditCard, BarChart3, Settings, Bell, Building2, TrendingUp, BookOpen, Receipt, Shield, Eye, MoreHorizontal, Sparkles, Activity, Search, Mail, BrainCircuit } from 'lucide-react'
 import MarketplaceHealthPanel from '@/components/admin/MarketplaceHealthPanel'
 import { cn } from '@/lib/utils'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -25,6 +25,7 @@ const navItems = [
   { label: 'Artikelgenerator', href: '/admin/artikelgenerator', icon: Sparkles },
   { label: 'Innehållsplan', href: '/admin/innehallsplan', icon: ClipboardList },
   { label: 'Prospektering', href: '/admin/prospektering', icon: Search },
+  { label: 'AI-synlighet', href: '/admin/ai-synlighet', icon: BrainCircuit },
   { label: 'Nyhetsbrev', href: '/admin/nyhetsbrev', icon: Mail },
   { label: 'Stripe-logg', href: '/admin/stripe', icon: Receipt },
   { label: 'Audit-logg', href: '/admin/audit', icon: Shield },
