@@ -11,6 +11,7 @@ import SEOLeadCTA from './SEOLeadCTA'
 import NotFound from '@/pages/NotFound'
 import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 import { findCityServicePage } from '@/lib/seoCities'
+import { completeMetaDescription } from '@/lib/metaDescription'
 import { mergeDeep } from '@/lib/seoDeepEnrichment'
 
 const SubPage = () => {
@@ -24,14 +25,14 @@ const SubPage = () => {
     if (page && pillar) {
       setSEOMeta({
         title: page.title,
-        description: page.metaDesc,
+        description: completeMetaDescription(page.metaDesc || page.intro),
         canonical: `https://updro.se/${pillar.categorySlug}/${page.slug}`,
         ogImage: getOgImage(pillar.categorySlug),
       })
     } else if (cityPage) {
       setSEOMeta({
         title: cityPage.metaTitle,
-        description: cityPage.metaDesc,
+        description: completeMetaDescription(cityPage.metaDesc),
         canonical: `https://updro.se/${cityPage.serviceSlug}/${cityPage.citySlug}`,
         ogImage: getOgImage(cityPage.serviceSlug),
       })

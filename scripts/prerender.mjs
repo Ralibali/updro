@@ -18,9 +18,7 @@ const DIST = path.join(ROOT, 'dist')
 const { getAllStaticSeoRoutes, renderStaticHtml } = await import(
   path.join(ROOT, 'src/lib/seoStatic.ts')
 )
-const { PARTNA_FACTS, PARTNA_FAQS } = await import(
-  path.join(ROOT, 'src/lib/partnaComparison.ts')
-)
+const { LEGACY_REDIRECTS, renderLegacyRedirectHtml } = await import(path.join(ROOT, 'src/lib/seoRedirects.ts'))
 
 const templatePath = path.join(DIST, 'index.html')
 let template
@@ -31,18 +29,7 @@ try {
   process.exit(1)
 }
 
-const partnaSeoOverride = route => {
-  if (route.path !== '/partna-alternativ') return route
-  return {
-    ...route,
-    title: 'Partna pris 2026 & alternativ – Updro vs Partna',
-    description: `Jämför Partna och Updro: ${PARTNA_FACTS.payAsYouGo} kr per Partna-förfrågan, ${Math.round(PARTNA_FACTS.successFeeRate * 100)} % slagavgift vid vunnen affär, upp till ${PARTNA_FACTS.maxOffers} offerter – mot Updros 99 kr per valt lead och max tre byråer.`,
-    h1: 'Partna pris och alternativ – Updro vs Partna',
-    faq: PARTNA_FAQS.map(item => ({ q: item.q, a: item.a })),
-  }
-}
-
-const routes = getAllStaticSeoRoutes().map(partnaSeoOverride)
+const routes = getAllStaticSeoRoutes()
 let written = 0
 const errors = []
 
@@ -116,10 +103,24 @@ if (verifyPage('/404', notFoundHtml)) {
   }
 }
 
+// Static fallback for hosts that do not execute public/_redirects.
+const routePaths = new Set(routes.map(route => route.path))
+let redirectStubs = 0
+for (const redirect of LEGACY_REDIRECTS) {
+  if (routePaths.has(redirect.from) || !routePaths.has(redirect.to)) {
+    errors.push(`${redirect.from}: legacy-redirect krockar med en sida eller saknar målsida`)
+    continue
+  }
+  const outDir = path.join(DIST, redirect.from.replace(/^\/+/, ''))
+  await fs.mkdir(outDir, { recursive: true })
+  await fs.writeFile(path.join(outDir, 'index.html'), renderLegacyRedirectHtml(redirect.to), 'utf8')
+  redirectStubs++
+}
+
 if (errors.length) {
   console.error(`❌ prerender: ${errors.length} sidor med dubbletter/saknade taggar eller för få interna länkar:`)
   for (const error of errors) console.error(`   - ${error}`)
   process.exit(1)
 }
 
-console.log(`✅ prerender: wrote ${written} static HTML files to dist/ (${routes.length} routes + 404.html)`)
+console.log(`✅ prerender: wrote ${written} static HTML files to dist/ (${routes.length} routes + 404.html) and ${redirectStubs} legacy redirects`)

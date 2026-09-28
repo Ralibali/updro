@@ -36,6 +36,7 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
     links: [
       { label: 'Artiklar och guider', href: '/artiklar' },
       { label: 'Gratis verktyg', href: '/verktyg' },
+      { label: 'AI-synlighet – gratis testplan', href: '/ai-synlighet' },
       { label: 'Alla jämförelser', href: '/jamfor' },
       { label: 'Webbutveckling pris', href: '/webbutveckling/pris' },
       { label: 'SEO pris', href: '/seo/pris' },
