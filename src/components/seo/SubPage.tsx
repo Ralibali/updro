@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight } from 'lucide-react'
 import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
+import InlineBriefForm from '@/components/shared/InlineBriefForm'
+import { resolveWizardCategory } from '@/lib/wizardPrefill'
 import NotFound from '@/pages/NotFound'
 import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
 import { findCityServicePage } from '@/lib/seoCities'
@@ -58,9 +60,12 @@ const SubPage = () => {
           <div className="max-w-3xl">
             <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight">{cityPage.h1}</h1>
             <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{cityPage.intro}</p>
-            <div className="mt-6">
-              <Link to="/publicera"><Button size="lg" className="rounded-xl shadow-blue">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-            </div>
+            <InlineBriefForm
+              className="mt-8"
+              category={resolveWizardCategory(pillar.categorySlug) || undefined}
+              source={`city_service_hero:${pillar.categorySlug}`}
+              placeholder={`Beskriv ditt projekt – ${cityPage.h1.toLowerCase()}. Mål, bransch och ungefärlig budget…`}
+            />
           </div>
         </section>
         <div className="container pb-12">
@@ -126,9 +131,12 @@ const SubPage = () => {
         <div className="max-w-3xl">
           <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight">{page.h1}</h1>
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{page.intro}</p>
-          <div className="mt-6">
-            <Link to="/publicera"><Button size="lg" className="rounded-xl shadow-blue">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-          </div>
+          <InlineBriefForm
+            className="mt-8"
+            category={resolveWizardCategory(pillar.categorySlug) || undefined}
+            source={`sub_hero:${pillar.categorySlug}/${page.slug}`}
+            placeholder={`Beskriv ditt projekt inom ${page.h1.toLowerCase()} – mål, bransch och ungefärlig budget…`}
+          />
         </div>
       </section>
 

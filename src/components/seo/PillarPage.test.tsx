@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -14,23 +14,34 @@ vi.mock('@/lib/seoDeepEnrichment', () => ({
   mergeDeep: () => {},
 }))
 
+import { useLocation } from 'react-router-dom'
 import PillarPage from './PillarPage'
+
+vi.mock('@/lib/analytics', () => ({ trackLeadStarted: () => {} }))
+vi.mock('@/hooks/usePageTracking', () => ({ trackClick: () => {} }))
+
+const LocationProbe = () => {
+  const location = useLocation()
+  return <p data-testid="location">{location.pathname + location.search}</p>
+}
 
 const renderPillar = (path: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/:category" element={<PillarPage />} />
+        <Route path="/publicera" element={<LocationProbe />} />
       </Routes>
     </MemoryRouter>,
   )
 
 describe('PillarPage hero CTA', () => {
-  it('pekar /webbutveckling mot /publicera/webbutveckling', () => {
+  it('tar med briefen och kategorin från /webbutveckling in i wizarden', () => {
     renderPillar('/webbutveckling')
-    expect(screen.getByRole('link', { name: /Jämför offerter gratis/ })).toHaveAttribute(
-      'href',
-      '/publicera/webbutveckling',
+    fireEvent.change(screen.getByLabelText('Beskriv ditt projekt'), { target: { value: 'Ny hemsida för bageri' } })
+    fireEvent.click(screen.getByRole('button', { name: /Få offerter gratis/ }))
+    expect(screen.getByTestId('location')).toHaveTextContent(
+      '/publicera?kategori=Webbutveckling&beskrivning=Ny+hemsida+f%C3%B6r+bageri',
     )
   })
 })

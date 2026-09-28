@@ -50,3 +50,24 @@ export const PARTNA_FAQS = [
 
 export const estimatePartnaPaygWinnerCost = (projectValue: number) =>
   PARTNA_FACTS.payAsYouGo + projectValue * PARTNA_FACTS.successFeeRate
+
+export interface CostPerWinInput {
+  projectValue: number
+  /** Hur många leads byrån behöver låsa upp för att vinna en affär. */
+  leadsPerWin: number
+  updroLeadPrice: number
+}
+
+/**
+ * Kostnad för att vinna en affär på respektive plattform med publika listpriser:
+ * Updro = leads × leadpris, Partna Pay as you go = leads × förfrågningspris + slagavgift.
+ */
+export const compareCostPerWin = ({ projectValue, leadsPerWin, updroLeadPrice }: CostPerWinInput) => {
+  const leads = Math.max(1, Math.round(leadsPerWin))
+  const value = Math.max(0, projectValue)
+  const updro = leads * updroLeadPrice
+  const partnaLeads = leads * PARTNA_FACTS.payAsYouGo
+  const partnaFee = Math.round(value * PARTNA_FACTS.successFeeRate)
+  const partna = partnaLeads + partnaFee
+  return { updro, partna, partnaLeads, partnaFee, savings: Math.max(0, partna - updro) }
+}

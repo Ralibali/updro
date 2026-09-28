@@ -11,7 +11,6 @@ import {
   MessageCircle,
   RotateCcw,
   ShieldCheck,
-  Sparkles,
   UsersRound,
   Zap,
 } from 'lucide-react'
@@ -22,6 +21,7 @@ import { setBreadcrumb, setJsonLd, setSEOMeta } from '@/lib/seoHelpers'
 import { STRIPE_PRODUCTS, TRIAL_LEADS, TRIAL_DAYS } from '@/lib/constants'
 import { numWord } from '@/lib/numberWords'
 import { trackClick } from '@/hooks/usePageTracking'
+import AgencyCostCalculator from '@/components/supplier/AgencyCostCalculator'
 
 const benefits = [
   {
@@ -240,33 +240,16 @@ const SupplierLandingPage = () => {
             <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Så räknar ni</p>
-                <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold">Utvärdera vad uppdragen ger er.</h2>
+                <h2 className="mt-3 font-display text-3xl md:text-4xl font-bold">Vad kostar en vunnen kund?</h2>
                 <p className="mt-4 text-muted-foreground leading-relaxed">
-                  Ett lead är bara värdefullt om det leder till rätt samtal. Börja med gratiskrediterna, följ hur många leads som blir möten och kunder och välj sedan den prismodell som passar er faktiska volym.
+                  Dra i reglagen. På Updro betalar ni bara för kontakterna ni själva väljer – ingen procent av affären när ni vinner. Ju större projekt, desto mer behåller ni.
                 </p>
                 <Link to="/partna-alternativ" className="mt-5 inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4 hover:text-accent">
                   Jämför Updro och Partna sakligt <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
 
-              <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-md">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-xl border border-border p-5">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground">Pay per lead</p>
-                    <p className="mt-2 font-display text-4xl font-bold">{STRIPE_PRODUCTS.lead.price} kr</p>
-                    <p className="mt-2 text-sm text-muted-foreground">per kontakt ni själva väljer att låsa upp</p>
-                  </div>
-                  <div className="rounded-xl border border-border p-5">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground">När ni vinner</p>
-                    <p className="mt-2 font-display text-4xl font-bold">0 %</p>
-                    <p className="mt-2 text-sm text-muted-foreground">Updro tar ingen procent av ert projektvärde</p>
-                  </div>
-                </div>
-                <div className="mt-4 flex items-start gap-3 bg-muted/50 p-4 text-sm text-muted-foreground">
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                  <p>Leadvolym och konvertering varierar mellan kategori, budget och tidpunkt. Updro garanterar inte ett visst antal affärer.</p>
-                </div>
-              </div>
+              <AgencyCostCalculator onSignup={() => trackSignup('supplier_calculator')} />
             </div>
           </div>
         </section>
