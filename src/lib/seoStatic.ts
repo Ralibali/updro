@@ -49,6 +49,7 @@ export const shouldIndexCityService = (citySlug: string, serviceSlug: string) =>
 }
 
 const baseRoutes = (): StaticSeoRoute[] => [
+  { path: '/ai-synlighet', title: 'AI-synlighet – gratis svensk testplan | Updro', description: 'Skapa 30 frågor för att undersöka hur ditt företag syns i AI-svar. Följ upp källor och konkreta åtgärder med Aurora Media.', h1: 'Syns ditt företag i AI-svaren?', priority: 0.7, changefreq: 'monthly', intro: 'Skapa en gratis testplan utifrån tjänst och marknad. Detta är en testplan, inte en automatisk mätning av synlighet.', sections: [{ heading: 'Mät med verifierade stickprov', content: 'Spara fråga, datum, AI-tjänst, exakt svar och källor. Upprepa samma frågor för att följa förändringar. Ingen generell synlighetspoäng räknas ut utan observationer.' }] },
   {
     path: '/',
     title: HOME_TITLE,

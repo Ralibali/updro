@@ -69,6 +69,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
+    <Link to="/ai-synlighet" className="container block py-4 text-sm hover:underline">AI-synlighet – gratis testplan</Link>
     </footer>
   )
 }
