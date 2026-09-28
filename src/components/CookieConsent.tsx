@@ -47,7 +47,7 @@ const applyConsent = (state: Pick<CookieConsentState, 'analytics' | 'marketing'>
 
 const CookieConsent = () => {
   const { pathname } = useLocation()
-  const hasBottomNavigation = pathname === '/admin' || pathname.startsWith('/admin/') || pathname.startsWith('/dashboard/')
+  const hasBottomNavigation = pathname === '/admin' || pathname.startsWith('/admin/') || pathname.startsWith('/dashboard/') || pathname === '/'
   const [visible, setVisible] = useState(false)
   const [analytics, setAnalytics] = useState(false)
   const [marketing, setMarketing] = useState(false)
