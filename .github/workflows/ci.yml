@@ -39,6 +39,9 @@ jobs:
       - name: Run tests
         run: bun run test
 
+      - name: Verify AI visibility database permissions
+        run: bun run test:visibility-db
+
       - name: Verify Supabase schema contract
         run: bun run verify:schema
 

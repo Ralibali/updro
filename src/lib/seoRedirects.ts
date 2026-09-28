@@ -2,8 +2,8 @@
  * Single source of truth for legacy URL aliases/redirects on updro.se.
  *
  * Consumed by:
- * - `src/App.tsx` – client-side `<Navigate replace>` routes (the only layer
- *   that actually executes redirects on the current host).
+ * - `src/App.tsx` – client-side `<Navigate replace>` routes, including prefixes.
+ * - `scripts/prerender.mjs` – static redirects for the exact legacy paths.
  * - `public/_redirects` – static hosting rules. NOTE: verified 2026-08-29
  *   that the current host does NOT execute `_redirects`; the file is kept in
  *   sync with this module as documentation/config for a future host that
@@ -84,4 +84,26 @@ export const resolveLegacyRedirect = (pathname: string): string | null => {
   }
 
   return null
+}
+
+/** Static fallback; query parameters and fragments survive in JS-capable clients. */
+export const renderLegacyRedirectHtml = (to: string): string => {
+  if (!/^\/[a-z0-9]+(?:[/-][a-z0-9]+)*$/.test(to)) {
+    throw new Error(`Ogiltig målsökväg för legacy-redirect: ${to}`)
+  }
+  const target = `https://updro.se${to}`
+  return `<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sidan har flyttat | Updro</title>
+    <link rel="canonical" href="${target}" />
+    <meta http-equiv="refresh" content="0; url=${to}" />
+    <script>location.replace(${JSON.stringify(to)} + location.search + location.hash)</script>
+  </head>
+  <body>
+    <p>Sidan har flyttat till <a href="${to}">${target}</a>.</p>
+  </body>
+</html>
+`
 }

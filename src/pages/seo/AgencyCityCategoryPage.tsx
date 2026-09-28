@@ -7,6 +7,7 @@ import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { useAgencyDirectory } from '@/hooks/useAgencyDirectory'
 import DirectoryStatus from '@/components/shared/DirectoryStatus'
 import { seoLeadPath } from '@/lib/seoLeadPath'
+import { shouldIndexCityService } from '@/lib/seoCityIndexing'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import NotFound from '@/pages/NotFound'
@@ -34,7 +35,8 @@ const AgencyCityCategoryPage = () => {
       title: deep?.title ?? `${category.name}-byrå i ${city.name} – jämför offerter 2026 | Updro`,
       description: deep?.metaDesc ?? `Hitta ${category.name.toLowerCase()}-byrå i ${city.name}. Beskriv behovet gratis och jämför relevanta offerter. Högst tre byråer kan lämna offert.`,
       canonical: url,
-      noindex: !deep,
+      noindex: !shouldIndexCityService(city.slug, category.slug),
+      follow: true,
     })
     setBreadcrumb([
       { name: 'Hem', url: 'https://updro.se/' },
@@ -90,8 +92,8 @@ const AgencyCityCategoryPage = () => {
 
   const priceCopy = serviceData ? getPriceCopy(serviceData.slug, city.name) : null
   const projectExamples = serviceData ? getProjectExamples(serviceData.slug) : []
-  const nearby = getNearbyCities(city.slug, 6)
-  const otherCategories = SERVICE_CATEGORIES.filter(c => c.slug !== category.slug).slice(0, 9)
+  const nearby = getNearbyCities(city.slug, CITIES.length).filter(item => shouldIndexCityService(item.slug, category.slug)).slice(0, 6)
+  const otherCategories = SERVICE_CATEGORIES.filter(c => c.slug !== category.slug && shouldIndexCityService(city.slug, c.slug)).slice(0, 9)
   const faq = deep?.faq ?? buildFaq(city.name, category.name, kategori || '')
 
   return (

@@ -1,3 +1,6 @@
+import { supabase } from "@/integrations/supabase/client";
+import { createQuestions, normalizeDomain, safeSource, weeklyReport } from "@/features/visibility/planning";
+import { listWorkspaces, saveWorkspace, listMeasurements, type Measurement, type SavedWorkspace } from "@/features/visibility/storage";
 import { useEffect, useMemo, useState } from "react";
 import { BrainCircuit, CheckCircle2, Download, Plus, Trash2 } from "lucide-react";
 import { AdminLayout } from "./AdminDashboard";
@@ -77,6 +80,52 @@ const loadWorkspace = (): Workspace => {
 
 const AdminAiVisibility = () => {
   const [workspace, setWorkspace] = useState<Workspace>(loadWorkspace);
+  const [cloud, setCloud] = useState<SavedWorkspace[]>([]);
+  const [selected, setSelected] = useState<SavedWorkspace | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const [service, setService] = useState("");
+  const [market, setMarket] = useState("Sverige");
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  useEffect(() => {
+    let active = true;
+    setMeasurements([]);
+    if (selected?.id) listMeasurements(selected.id).then(rows => { if (active) setMeasurements(rows); }).catch(e => { if (active) setMessage(e.message); });
+    return () => { active = false; };
+  }, [selected?.id]);
+  const [evidenceAt, setEvidenceAt] = useState<string | null>(null);
+  const [answer, setAnswer] = useState("");
+  useEffect(() => { listWorkspaces().then(setCloud).catch(e => setMessage(e.message)); }, []);
+  const saveCloud = async () => {
+    setBusy(true);
+    try {
+      if (!workspace.brand.trim()) throw new Error("Ange kundens namn.");
+      const normalized = { ...workspace, domain: normalizeDomain(workspace.domain) };
+      const saved = await saveWorkspace(selected?.id ?? null, selected?.revision ?? 0, workspace.brand.trim(), normalized);
+      setSelected(saved); setWorkspace(normalized);
+      setCloud(current => [saved, ...current.filter(item => item.id !== saved.id)]);
+      setMessage("Sparat på servern.");
+    } catch (e) { setMessage(e instanceof Error ? e.message : "Kunde inte spara."); }
+    finally { setBusy(false); }
+  };
+  const measure = async () => {
+    if (!selected) return;
+    setBusy(true); setAnswer("");
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-visibility-check", { body: { workspaceId: selected.id, prompt: observation.query } });
+      if (error) {
+        const details = await error.context?.json?.().catch(() => null);
+        throw new Error(details?.error ?? "Mätningen kunde inte genomföras.");
+      }
+      if (data.error) throw new Error(data.error);
+      setMeasurements(await listMeasurements(selected.id));
+      setEvidenceAt(data.checkedAt);
+      setAnswer(data.answer);
+      setObservation(current => ({ ...current, provider: "Perplexity", sourceUrl: data.citations[0] ?? "", note: `Sonar API (${data.model}), ${data.checkedAt}\n${data.answer}\nKällor: ${data.citations.join(", ")}`, mentioned: false }));
+      setMessage("Granska svaret och markera om varumärket nämns innan du lägger till observationen. API-svar är inte samma sak som konsumenttjänstens svar.");
+    } catch (e) { setMessage(e instanceof Error ? e.message : "Mätningen misslyckades."); }
+    finally { setBusy(false); }
+  };
   const [saved, setSaved] = useState(false);
   const [observation, setObservation] = useState({
     provider: "ChatGPT" as Provider,
@@ -92,7 +141,7 @@ const AdminAiVisibility = () => {
   });
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace));
+    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(workspace)); } catch { setMessage("Lokalt sparande misslyckades. Exportera eller spara på servern."); return; }
     setSaved(true);
     const timeout = window.setTimeout(() => setSaved(false), 1200);
     return () => window.clearTimeout(timeout);
@@ -105,7 +154,7 @@ const AdminAiVisibility = () => {
     const open = workspace.actions.filter((item) => item.status === "open").length;
     return {
       total,
-      mentionRate: total ? Math.round((mentions / total) * 100) : 0,
+      mentionRate: total ? `${Math.round((mentions / total) * 100)}%` : "Ej mätt",
       providers,
       open,
     };
@@ -124,12 +173,13 @@ const AdminAiVisibility = () => {
           mentioned: observation.mentioned,
           sourceUrl: observation.sourceUrl.trim(),
           note: observation.note.trim(),
-          checkedAt: new Date().toISOString(),
+          checkedAt: evidenceAt ?? new Date().toISOString(),
         },
         ...current.observations,
       ],
     }));
     setObservation((current) => ({ ...current, query: "", sourceUrl: "", note: "" }));
+    setEvidenceAt(null); setAnswer("");
   };
 
   const addAction = () => {
@@ -164,6 +214,7 @@ const AdminAiVisibility = () => {
 
   return (
     <AdminLayout>
+      <fieldset disabled={busy} className="contents">
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -186,11 +237,40 @@ const AdminAiVisibility = () => {
           </div>
         </div>
 
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          Pilotlagret sparar arbetsytan i den här webbläsaren. Det gör att vi kan använda flödet direkt
-          utan att låtsas att ChatGPT, Google eller Perplexity är integrerade. Nästa steg är serverlagring
-          och provider-connector när vi har verifierat vilka flöden som används i praktiken.
-        </div>
+        <section className="space-y-3 rounded-xl border bg-card p-5">
+          <h2 className="font-semibold">Kundarbetsytor</h2>
+          <p className="text-sm text-muted-foreground">Ändringar sparas som lokalt utkast. Spara på servern för att dela med andra Updro-administratörer. Alla administratörer kan läsa kundarbetsytorna.</p>
+          <Label htmlFor="cloud-workspace">Sparad kund</Label>
+          <select id="cloud-workspace" className="w-full rounded border p-2" value={selected?.id ?? ""} disabled={busy} onChange={event => {
+            if (!window.confirm("Byta arbetsyta? Osparade ändringar i den nuvarande vyn ersätts.")) return;
+            const next = cloud.find(item => item.id === event.target.value) ?? null;
+            setSelected(next); setEvidenceAt(null); setWorkspace(next ? next.workspace as Workspace : { ...emptyWorkspace }); setAnswer("");
+          }}>
+            <option value="">Ny kund / lokalt utkast</option>
+            {cloud.map(item => <option value={item.id} key={item.id}>{item.name}</option>)}
+          </select>
+          <div className="flex flex-wrap gap-2">
+            <Button disabled={busy} onClick={saveCloud}>Spara kund på servern</Button>
+            <Button variant="outline" onClick={() => {
+              const url = URL.createObjectURL(new Blob([weeklyReport(workspace.brand, workspace.domain, workspace.observations)], { type: "text/markdown" }));
+              const a = document.createElement("a"); a.href = url; a.download = "ai-synlighet-veckorapport.md"; a.click(); URL.revokeObjectURL(url);
+            }}>Hämta veckorapport</Button>
+          </div>
+          {measurements.length > 0 && <details><summary>Mäthistorik ({measurements.length} senaste)</summary><ul className="space-y-2">{measurements.map(item => <li key={item.id} className="rounded border p-2 text-sm">
+            {new Date(item.created_at).toLocaleString("sv-SE")} · {item.prompt} · {item.status === "complete" ? "Klart" : item.status === "failed" ? "Misslyckades" : "Ej slutförd"}
+            {item.result && <Button variant="outline" size="sm" onClick={() => { const result = item.result!; setAnswer(result.answer); setEvidenceAt(result.checkedAt); setObservation({ provider: "Perplexity", query: item.prompt, mentioned: false, sourceUrl: result.citations[0] ?? "", note: `Sonar API (${result.model}), ${result.checkedAt}\n${result.answer}` }); }}>Granska svar</Button>}
+          </li>)}</ul></details>}
+          {message && <p role="status" className="text-sm">{message}</p>}
+          <div className="grid gap-3 md:grid-cols-2">
+            <div><Label htmlFor="visibility-service">Tjänst att undersöka</Label><Input id="visibility-service" value={service} onChange={e => setService(e.target.value)} placeholder="Webbutveckling" /></div>
+            <div><Label htmlFor="visibility-market">Marknad / ort</Label><Input id="visibility-market" value={market} onChange={e => setMarket(e.target.value)} /></div>
+          </div>
+          <Button variant="outline" disabled={!service.trim() || !market.trim()} onClick={() => {
+            if (workspace.questions && !window.confirm("Ersätta befintliga testfrågor med 30 nya förslag?")) return;
+            setWorkspace(current => ({ ...current, questions: createQuestions(service, market).join("\n") }));
+          }}>Skapa 30 svenska testfrågor</Button>
+          <p className="text-xs text-muted-foreground">Förslagen bygger på angiven tjänst och marknad, inte uppmätt sökvolym. Granska dem före mätning.</p>
+        </section>
 
         <section className="grid gap-4 rounded-xl border bg-card p-5 md:grid-cols-3">
           <div>
@@ -226,7 +306,7 @@ const AdminAiVisibility = () => {
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["Observationer", stats.total],
-            ["Omnämnandegrad", `${stats.mentionRate}%`],
+            ["Omnämnandegrad", stats.mentionRate],
             ["AI-tjänster testade", stats.providers],
             ["Öppna åtgärder", stats.open],
           ].map(([label, value]) => (
@@ -257,8 +337,12 @@ const AdminAiVisibility = () => {
               </div>
               <div>
                 <Label htmlFor="visibility-query">Fråga som testades</Label>
-                <Input id="visibility-query" value={observation.query} onChange={(event) => setObservation((current) => ({ ...current, query: event.target.value }))} />
+                <datalist id="visibility-prompts">{workspace.questions.split("\n").filter(Boolean).map((q, i) => <option key={i} value={q} />)}</datalist>
+                <Input list="visibility-prompts" id="visibility-query" value={observation.query} onChange={(event) => setObservation((current) => ({ ...current, query: event.target.value }))} />
               </div>
+              <Button variant="outline" disabled={busy || !selected || !observation.query.trim()} onClick={measure}>{busy ? "Arbetar…" : "Mät frågan med Sonar API"}</Button>
+              <p className="text-xs text-muted-foreground">Kräver aktiverad serveranslutning. En fråga per anrop, högst ett försök per sparad fråga och dag. Kostnad kan tillkomma hos leverantören.</p>
+              {answer && <pre className="whitespace-pre-wrap rounded border p-3 text-sm">{answer}</pre>}
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={observation.mentioned} onChange={(event) => setObservation((current) => ({ ...current, mentioned: event.target.checked }))} />
                 Varumärket nämndes i svaret
@@ -293,7 +377,7 @@ const AdminAiVisibility = () => {
                   </div>
                   <p className="mt-2 text-sm font-medium">{item.query}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{item.mentioned ? "Nämnd" : "Inte nämnd"}{item.note ? ` · ${item.note}` : ""}</p>
-                  {item.sourceUrl ? <a className="mt-2 block break-all text-xs text-primary underline" href={item.sourceUrl} target="_blank" rel="noreferrer">{item.sourceUrl}</a> : null}
+                  {item.sourceUrl ? <a className="mt-2 block break-all text-xs text-primary underline" href={safeSource(item.sourceUrl)} target="_blank" rel="noreferrer">{item.sourceUrl}</a> : null}
                 </article>
               ))}
               {workspace.observations.length === 0 ? <p className="text-sm text-muted-foreground">Inga observationer ännu.</p> : null}
@@ -369,6 +453,7 @@ const AdminAiVisibility = () => {
           </section>
         </div>
       </div>
+      </fieldset>
     </AdminLayout>
   );
 };

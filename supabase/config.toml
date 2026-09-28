@@ -49,3 +49,6 @@ project_id = "opgjoevvlwhsddscqmpe"
     verify_jwt = false
   [functions.send-push]
     verify_jwt = false
+
+[functions.ai-visibility-check]
+verify_jwt = true
