@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, FileSearch, ShieldCheck, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -41,6 +41,7 @@ const AdsLandingPage = () => {
   const matched = findAdService(searchParams.get('tjanst'))
   const term = sanitizePrefill(searchParams.get('utm_term')).text.slice(0, 80)
   const initialDescription = term ? `Jag söker hjälp med ${term}. ` : ''
+  const [description, setDescription] = useState(initialDescription)
 
   useEffect(() => {
     setSEOMeta({
@@ -54,7 +55,7 @@ const AdsLandingPage = () => {
   const buildProjectUrl = (category = matched?.category) => {
     const params = new URLSearchParams()
     if (category) params.set('kategori', category)
-    if (initialDescription) params.set('beskrivning', initialDescription.trim())
+    if (description.trim()) params.set('beskrivning', description.trim().slice(0, 2000))
     const query = params.toString()
     return query ? `/publicera?${query}` : '/publicera'
   }
@@ -90,7 +91,8 @@ const AdsLandingPage = () => {
                 </p>
                 <InlineBriefForm
                   category={matched?.category}
-                  initialDescription={initialDescription}
+                  description={description}
+                  onDescriptionChange={setDescription}
                   source={`google_ads_hero${matched ? `:${matched.slug}` : ''}`}
                   placeholder="T.ex. Vi är ett bageri i Uppsala och behöver en ny hemsida med beställningsformulär. Budget runt 40 000 kr."
                 />

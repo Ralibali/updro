@@ -42,4 +42,25 @@ describe('AdsLandingPage', () => {
     renderAt('/jamfor-offerter?utm_term=wordpress%20hemsida')
     expect(screen.getByLabelText('Beskriv ditt projekt')).toHaveValue('Jag söker hjälp med wordpress hemsida. ')
   })
+
+  it.each(['Kom igång', 'Beskriv ditt projekt gratis', 'Jämför offerter gratis'])(
+    'behåller den redigerade briefen via länken %s', label => {
+      renderAt('/jamfor-offerter?tjanst=webbshop&utm_term=shopify')
+      fireEvent.change(screen.getByLabelText('Beskriv ditt projekt'), { target: { value: '  Shopify för vår klädbutik, med svensk checkout.  ' } })
+      fireEvent.click(screen.getByRole('link', { name: label }))
+      const url = new URL(screen.getByTestId('location').textContent!, 'https://updro.se')
+      expect(url.pathname).toBe('/publicera')
+      expect(url.searchParams.get('kategori')).toBe('E-handel')
+      expect(url.searchParams.get('beskrivning')).toBe('Shopify för vår klädbutik, med svensk checkout.')
+    },
+  )
+
+  it('behåller den redigerade briefen när besökaren väljer ett annat område', () => {
+    renderAt('/jamfor-offerter?tjanst=webbshop&utm_term=shopify')
+    fireEvent.change(screen.getByLabelText('Beskriv ditt projekt'), { target: { value: 'Vi behöver bättre Google-synlighet för webbshoppen.' } })
+    fireEvent.click(screen.getByRole('link', { name: /^SEO Bättre synlighet/ }))
+    const url = new URL(screen.getByTestId('location').textContent!, 'https://updro.se')
+    expect(url.searchParams.get('kategori')).toBe('SEO')
+    expect(url.searchParams.get('beskrivning')).toBe('Vi behöver bättre Google-synlighet för webbshoppen.')
+  })
 })

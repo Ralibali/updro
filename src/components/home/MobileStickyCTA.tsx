@@ -1,6 +1,5 @@
 import { ArrowRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { trackClick } from '@/hooks/usePageTracking'
 
@@ -26,13 +25,14 @@ const MobileStickyCTA = () => {
         <div className="min-w-0 flex-1">
           <p className="pt-1 font-display text-xs font-bold text-foreground">Gratis · max tre offerter</p>
         </div>
-        <Link
-          to="/publicera"
+        <button
+          type="submit"
+          form="homepage-project-form"
           onClick={() => trackClick('mobile_sticky_cta', 'Starta gratis', { placement: 'homepage_sticky' })}
           className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-accent px-5 font-display text-sm font-bold text-accent-foreground shadow-sm motion-safe:active:scale-[0.98]"
         >
           Starta gratis <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        </button>
       </div>
     </div>
   )

@@ -42,28 +42,10 @@ const supplierPlans = [
     cta: 'Prova gratis först',
     highlighted: true,
   },
-  {
-    id: 'yearly',
-    name: 'Årskort',
-    price: STRIPE_PRODUCTS.yearly.price,
-    per: 'per år',
-    description: 'För byråer som vill ha Updro som fast kanal och sänka kostnaden per månad.',
-    features: [
-      'Allt som ingår i Månadskortet',
-      'Betala för tio månader – få tolv',
-      'Låst pris i tolv månader',
-      '0 % provision på projektvärdet när ni vinner',
-      'Hanteras via Stripe Billing Portal',
-    ],
-    cta: 'Prova gratis först',
-    highlighted: false,
-  },
 ]
 
 /** Antal leads per månad där månadskortet blir billigare än pay per lead. */
 const MONTHLY_BREAK_EVEN_LEADS = Math.floor(STRIPE_PRODUCTS.monthly.price / STRIPE_PRODUCTS.lead.price) + 1
-const YEARLY_PER_MONTH = Math.round(STRIPE_PRODUCTS.yearly.price / 12)
-const YEARLY_MONTHS_FREE = Math.round(12 - STRIPE_PRODUCTS.yearly.price / STRIPE_PRODUCTS.monthly.price)
 
 const PricingPage = () => {
   const [tab, setTab] = useState<'supplier' | 'buyer'>('supplier')
@@ -111,11 +93,10 @@ const PricingPage = () => {
             </section>
 
             <section className="container mb-16">
-              <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {supplierPlans.map(plan => (
                   <article key={plan.id} className={`bg-card rounded-2xl border p-7 relative flex flex-col ${plan.highlighted ? 'border-primary shadow-lg ring-2 ring-primary/20' : ''}`}>
                     {plan.highlighted && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">För högre volym</span>}
-                    {plan.id === 'yearly' && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground text-xs font-bold rounded-full px-3 py-1 whitespace-nowrap">{YEARLY_MONTHS_FREE} månader gratis</span>}
                     <h2 className="font-display font-bold text-xl">{plan.name}</h2>
                     <p className="mt-2 text-sm text-muted-foreground min-h-[42px]">{plan.description}</p>
                     <div className="mt-5 mb-5">
@@ -123,7 +104,6 @@ const PricingPage = () => {
                       <span className="text-muted-foreground ml-1">kr {plan.per}</span>
                     </div>
                     {plan.id === 'monthly' && <p className="text-sm text-muted-foreground mb-4 -mt-2">Lönar sig från {MONTHLY_BREAK_EVEN_LEADS} leads i månaden jämfört med pay per lead. Tillgänglig leadvolym varierar mellan kategorier.</p>}
-                    {plan.id === 'yearly' && <p className="text-sm text-muted-foreground mb-4 -mt-2">Motsvarar {YEARLY_PER_MONTH.toLocaleString('sv-SE')} kr/mån – {YEARLY_MONTHS_FREE} månader utan kostnad jämfört med månadskortet.</p>}
                     <ul className="space-y-2.5 mb-7 flex-1">
                       {plan.features.map(feature => (
                         <li key={feature} className="flex items-start gap-2 text-sm"><Check className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" /><span>{feature}</span></li>
@@ -158,7 +138,6 @@ const PricingPage = () => {
                   ['Hur fungerar pay per lead?', `Ni betalar ${STRIPE_PRODUCTS.lead.price} kr för varje lead ni själva väljer att låsa upp. Brief, kategori, budget och tidsram visas innan beslutet.`],
                   ['Vad händer om kontaktuppgifterna är fel?', 'Ni kan skicka in en begäran om kreditprövning vid ogiltig kontakt, falsk förfrågan, dubblett eller tydligt felaktigt scope. Updro granskar ärendet innan krediten återförs.'],
                   ['Hur fungerar de kostnadsfria krediterna?', `Ett nytt byråkonto får ${TRIAL_LEADS} lead-krediter som kan användas under den ${TRIAL_DAYS} dagar långa provperioden.`],
-                  ['Vad är skillnaden mellan månadskort och årskort?', `Båda ger obegränsade upplåsningar. Årskortet kostar ${STRIPE_PRODUCTS.yearly.price.toLocaleString('sv-SE')} kr/år, vilket motsvarar ${YEARLY_MONTHS_FREE} månader utan kostnad jämfört med månadskortet.`],
                   ['Kan abonnemanget avslutas?', 'Ja. Månadskortet kan hanteras och avslutas via Stripe Billing Portal och har ingen uppsägningstid.'],
                 ].map(([question, answer]) => (
                   <AccordionItem key={question} value={question} className="bg-card rounded-xl border px-4">

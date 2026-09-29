@@ -14,6 +14,8 @@ interface InlineBriefFormProps {
   className?: string
   /** Förifylld text, t.ex. från annonsens sökord. */
   initialDescription?: string
+  description?: string
+  onDescriptionChange?: (description: string) => void
 }
 
 /**
@@ -27,10 +29,13 @@ const InlineBriefForm = ({
   submitLabel = 'Få offerter gratis',
   className = '',
   initialDescription = '',
+  description: controlledDescription,
+  onDescriptionChange,
 }: InlineBriefFormProps) => {
   const navigate = useNavigate()
   const id = useId()
-  const [description, setDescription] = useState(initialDescription)
+  const [draft, setDraft] = useState(initialDescription)
+  const description = controlledDescription ?? draft
 
   const submit = (event?: FormEvent) => {
     event?.preventDefault()
@@ -60,7 +65,10 @@ const InlineBriefForm = ({
         rows={3}
         maxLength={2000}
         value={description}
-        onChange={e => setDescription(e.target.value)}
+        onChange={e => {
+          if (controlledDescription === undefined) setDraft(e.target.value)
+          onDescriptionChange?.(e.target.value)
+        }}
         onKeyDown={onKeyDown}
         placeholder={placeholder}
         className="block w-full resize-none bg-transparent px-5 pt-4 pb-2 text-base leading-relaxed text-foreground placeholder:text-muted-foreground/80 outline-none"
