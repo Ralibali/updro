@@ -12,6 +12,8 @@ interface InlineBriefFormProps {
   source: string
   submitLabel?: string
   className?: string
+  /** Förifylld text, t.ex. från annonsens sökord. */
+  initialDescription?: string
 }
 
 /**
@@ -24,10 +26,11 @@ const InlineBriefForm = ({
   source,
   submitLabel = 'Få offerter gratis',
   className = '',
+  initialDescription = '',
 }: InlineBriefFormProps) => {
   const navigate = useNavigate()
   const id = useId()
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState(initialDescription)
 
   const submit = (event?: FormEvent) => {
     event?.preventDefault()

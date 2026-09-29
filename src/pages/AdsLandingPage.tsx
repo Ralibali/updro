@@ -1,17 +1,26 @@
 import { useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, Clock, FileSearch, ShieldCheck, Users } from 'lucide-react'
+import { ArrowRight, CheckCircle2, FileSearch, ShieldCheck, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { setSEOMeta } from '@/lib/seoHelpers'
 import { trackLeadStarted } from '@/lib/analytics'
+import { sanitizePrefill } from '@/lib/prefill'
+import InlineBriefForm from '@/components/shared/InlineBriefForm'
+import Logo from '@/components/Logo'
 
+/**
+ * Annonsgrupper länkar hit med ?tjanst=<slug> så att rubriken matchar annonsen.
+ * Utan parameter visas den generella rubriken.
+ */
 const services = [
-  { label: 'Ny hemsida', category: 'Webbutveckling', description: 'Företagssajt, redesign eller helt ny webbplats.' },
-  { label: 'Webbshop', category: 'E-handel', description: 'Shopify, WooCommerce eller annan e-handel.' },
-  { label: 'SEO', category: 'SEO', description: 'Bättre synlighet och fler relevanta besökare.' },
-  { label: 'Marknadsföring', category: 'Digital marknadsföring', description: 'Google Ads, Meta Ads och löpande annonsering.' },
+  { slug: 'hemsida', label: 'Ny hemsida', category: 'Webbutveckling', description: 'Företagssajt, redesign eller helt ny webbplats.', headline: 'Jämför offerter på ny hemsida', agencyWord: 'webbyråer' },
+  { slug: 'webbshop', label: 'Webbshop', category: 'E-handel', description: 'Shopify, WooCommerce eller annan e-handel.', headline: 'Jämför offerter på webbshop', agencyWord: 'e-handelsbyråer' },
+  { slug: 'seo', label: 'SEO', category: 'SEO', description: 'Bättre synlighet och fler relevanta besökare.', headline: 'Jämför offerter från SEO-byråer', agencyWord: 'SEO-byråer' },
+  { slug: 'marknadsforing', label: 'Marknadsföring', category: 'Digital marknadsföring', description: 'Google Ads, Meta Ads och löpande annonsering.', headline: 'Jämför offerter på digital marknadsföring', agencyWord: 'marknadsföringsbyråer' },
 ]
+
+const findAdService = (slug?: string | null) => services.find(service => service.slug === slug?.trim().toLowerCase())
 
 const steps: [string, string, string][] = [
   ['1', 'Beskriv behovet', 'Några meningar om projektet, budgetspannet och när du vill komma igång.'],
@@ -29,6 +38,9 @@ const faqs: [string, string][] = [
 
 const AdsLandingPage = () => {
   const [searchParams] = useSearchParams()
+  const matched = findAdService(searchParams.get('tjanst'))
+  const term = sanitizePrefill(searchParams.get('utm_term')).text.slice(0, 80)
+  const initialDescription = term ? `Jag söker hjälp med ${term}. ` : ''
 
   useEffect(() => {
     setSEOMeta({
@@ -39,11 +51,10 @@ const AdsLandingPage = () => {
     })
   }, [])
 
-  const buildProjectUrl = (category?: string) => {
+  const buildProjectUrl = (category = matched?.category) => {
     const params = new URLSearchParams()
     if (category) params.set('kategori', category)
-    const term = searchParams.get('utm_term')
-    if (term) params.set('beskrivning', `Jag söker hjälp med ${term}.`)
+    if (initialDescription) params.set('beskrivning', initialDescription.trim())
     const query = params.toString()
     return query ? `/publicera?${query}` : '/publicera'
   }
@@ -54,7 +65,7 @@ const AdsLandingPage = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
         <div className="container mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-          <Link to="/" className="font-display text-xl font-bold tracking-tight" aria-label="Updro – till startsidan">Updro</Link>
+          <Logo size="sm" />
           <span className="hidden sm:inline text-sm text-muted-foreground">Gratis för beställare</span>
           <Button asChild size="sm" className="sm:hidden rounded-lg font-semibold">
             <Link to={buildProjectUrl()} onClick={() => trackCta('google_ads_header')}>Kom igång</Link>
@@ -72,24 +83,22 @@ const AdsLandingPage = () => {
                   <ShieldCheck className="h-4 w-4 text-accent" /> Gratis och utan förpliktelser
                 </span>
                 <h1 className="font-display text-[2rem] leading-[1.06] sm:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
-                  Jämför offerter från rätt webbyråer
+                  {matched?.headline ?? 'Jämför offerter från rätt webbyråer'}
                 </h1>
                 <p className="text-base sm:text-lg text-muted-foreground max-w-xl mb-6 leading-relaxed">
-                  Beskriv projektet på två minuter. Vi granskar uppdraget och låter högst tre relevanta svenska byråer lämna offert.
+                  Skriv några meningar om projektet. Vi granskar uppdraget och låter högst tre relevanta svenska {matched?.agencyWord ?? 'byråer'} lämna offert.
                 </p>
-                <Button asChild size="lg" className="w-full sm:w-auto rounded-xl px-7 py-6 text-base font-semibold">
-                  <Link to={buildProjectUrl()} onClick={() => trackCta('google_ads_hero')}>
-                    Beskriv ditt projekt gratis <ArrowRight className="ml-2 h-5 w-5" />
-                  </Link>
-                </Button>
+                <InlineBriefForm
+                  category={matched?.category}
+                  initialDescription={initialDescription}
+                  source={`google_ads_hero${matched ? `:${matched.slug}` : ''}`}
+                  placeholder="T.ex. Vi är ett bageri i Uppsala och behöver en ny hemsida med beställningsformulär. Budget runt 40 000 kr."
+                />
                 <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
                   {['Ingen registrering', 'Högst tre offerter', 'Inget köpkrav'].map(item => (
                     <span key={item} className="inline-flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-accent" />{item}</span>
                   ))}
                 </div>
-                <p className="mt-4 inline-flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" /> Tar ungefär två minuter
-                </p>
               </div>
 
               <div className="border border-border bg-card p-5 sm:p-6 shadow-sm">
