@@ -8,7 +8,7 @@ Updro ska vara den enklaste vägen för svenska företag att hitta rätt digital
 
 Kärnbudskap:
 
-> Beskriv ditt projekt och få upp till fem offerter från kvalitetssäkrade digitala byråer. Gratis och utan förpliktelser.
+> Beskriv ditt projekt och jämför högst tre offerter från relevanta digitala byråer. Gratis och utan förpliktelser.
 
 Undvik att prata för mycket om plattformen. Prata om resultatet för kunden:
 
@@ -184,7 +184,7 @@ Lägg in på viktiga sidor:
 - lead-publicering med låg friktion
 - byråregistrering
 - lead score
-- max 5 offerter
+- max 3 offerter
 - notiser till byråer
 - tydlig köpväg när krediter saknas
 - adminvy för supply/demand-gap

@@ -6,7 +6,7 @@
 
 export const HOME_TITLE = 'Jämför digitala byråer och offerter – max tre svar | Updro'
 export const HOME_DESCRIPTION = 'Beskriv projektet en gång och jämför högst tre relevanta offerter från svenska digitala byråer. Briefen granskas och tjänsten är gratis för beställare.'
-export const HOME_H1 = 'Jämför rätt byrå – utan att jaga offerter'
+export const HOME_H1 = 'Beskriv projektet. Få tre offerter från rätt byrå.'
 export const HOME_CANONICAL = 'https://updro.se/'
 
 export interface HomeFaqItem {

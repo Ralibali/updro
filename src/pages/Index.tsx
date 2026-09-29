@@ -6,6 +6,7 @@ import HeroSection from '@/components/home/HeroSection'
 import MobileStickyCTA from '@/components/home/MobileStickyCTA'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
+import ComparisonSection from '@/components/home/ComparisonSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { HOME_TITLE, HOME_DESCRIPTION, HOME_CANONICAL, HOME_FAQ } from '@/lib/homeSeo'
 
@@ -112,6 +113,7 @@ const Index = () => {
         <HeroSection />
         <CategoriesSection />
         <HowItWorksSection />
+        <ComparisonSection />
         <BelowFold />
       </main>
       <Footer />

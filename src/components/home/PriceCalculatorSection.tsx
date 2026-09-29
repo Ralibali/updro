@@ -27,7 +27,7 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
   const publishUrl = `/publicera?kategori=${encodeURIComponent(projectType.category)}&beskrivning=${encodeURIComponent(briefSeed)}`
 
   return (
-    <section className="py-16 md:py-20 bg-surface-alt border-b border-border" aria-labelledby="priskalkylator-rubrik">
+    <section id="prisindikator" className="py-16 md:py-20 bg-surface-alt border-b border-border" aria-labelledby="priskalkylator-rubrik">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Prisindikator</p>
