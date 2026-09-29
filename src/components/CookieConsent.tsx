@@ -1,4 +1,4 @@
-import { setAnalyticsConsent } from '@/lib/ga4Runtime';
+import { cleanAnalyticsUrl, setAnalyticsConsent } from '@/lib/ga4Runtime';
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -42,7 +42,10 @@ const applyConsent = (state: Pick<CookieConsentState, 'analytics' | 'marketing'>
   if (!state.marketing) return
   injectGtagScript()
   gtag('js', new Date())
-  if (state.marketing) gtag('config', ADS_ID)
+  if (state.marketing) gtag('config', ADS_ID, {
+    send_page_view: false,
+    page_location: cleanAnalyticsUrl(window.location.href) || window.location.origin + '/internal',
+  })
 }
 
 const CookieConsent = () => {
