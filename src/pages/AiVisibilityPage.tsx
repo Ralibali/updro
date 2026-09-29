@@ -31,7 +31,7 @@ export default function AiVisibilityPage() {
       <ol className="list-decimal space-y-2 pl-6">{questions.map(q => <li key={q}>{q}</li>)}</ol>
       <h2 className="text-2xl font-semibold">Vill du ha hjälp med analys och åtgärder?</h2>
       <p>Aurora Media kan hjälpa dig att granska svaren, prioritera faktasidor och följa upp förändringar. Omfattning och pris bestäms efter genomgång.</p>
-      <Button asChild><a href="https://auroramedia.se/kontakt">Prata med Aurora Media</a></Button>
+      <div className="flex flex-wrap gap-3"><Button asChild><a href="https://auroramedia.se/kontakt">Prata med Aurora Media</a></Button><Button asChild variant="outline"><a href="/lokal-synlighet">Testa lokal synlighet</a></Button></div>
     </section>}
   </main><Footer /></>;
 }
