@@ -15,7 +15,7 @@ import { LEGACY_REDIRECTS, resolveLegacyRedirect } from "./lib/seoRedirects";
 
 import Index from "./pages/Index";
 
-const AiVisibilityPage = lazy(() => import("./pages/AiVisibilityPage"));
+const AiVisibilityPage = lazy(() => import("./pages/AiVisibilityPage"));\nconst LocalVisibilityPage = lazy(() => import("./pages/LocalVisibilityPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const RegisterSupplierPage = lazy(() => import("./pages/RegisterSupplierPage"));
@@ -138,7 +138,7 @@ const App = () => (
     <TooltipProvider><Toaster /><Sonner /><BrowserRouter><AuthProvider><MotionConfig reducedMotion="user">
       <a href="#main-content" className="skip-link">Hoppa till innehåll</a><PageTracker /><NoindexGuard />
       <Suspense fallback={<PageLoader />}><div id="main-content"><Routes>
-        <Route path="/ai-synlighet" element={<AiVisibilityPage />} />
+        <Route path="/ai-synlighet" element={<AiVisibilityPage />} />\n        <Route path="/lokal-synlighet" element={<LocalVisibilityPage />} />
         <Route path="/" element={<Index />} />
         <Route path="/kundportal" element={<ClientPortal />} />
         <Route path="/publicera" element={<ProjectWizard />} />
