@@ -2,13 +2,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { createQuestions, normalizeDomain, safeSource, weeklyReport } from "@/features/visibility/planning";
 import { listWorkspaces, saveWorkspace, listMeasurements, type Measurement, type SavedWorkspace } from "@/features/visibility/storage";
 import { useEffect, useMemo, useState } from "react";
-import { BrainCircuit, CheckCircle2, Download, Plus, Trash2 } from "lucide-react";
+import { BrainCircuit, CalendarClock, CheckCircle2, Download, Plus, Trash2 } from "lucide-react";
 import { AdminLayout } from "./AdminDashboard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { VISIBILITY_PLANS, formatVisibilityCadence, nextVisibilityRun, normalizeVisibilityPlanKey, type VisibilityPlanKey } from "@/features/visibility/plans";
 
 type Provider = "ChatGPT" | "Perplexity" | "Google AI" | "Copilot" | "Claude";
 type ActionKind = "faktasida" | "schema" | "intern_lank" | "kallfix" | "content_brief";
@@ -38,6 +39,9 @@ type Workspace = {
   questions: string;
   observations: Observation[];
   actions: VisibilityAction[];
+  planKey: VisibilityPlanKey;
+  lastRunAt: string | null;
+  nextRunAt: string | null;
 };
 
 const STORAGE_KEY = "updro:ai-visibility:v1";
@@ -48,6 +52,9 @@ const emptyWorkspace: Workspace = {
   questions: "",
   observations: [],
   actions: [],
+  planKey: "monitor",
+  lastRunAt: null,
+  nextRunAt: null,
 };
 
 const providerOptions: Provider[] = ["ChatGPT", "Perplexity", "Google AI", "Copilot", "Claude"];
@@ -60,19 +67,25 @@ const actionLabels: Record<ActionKind, string> = {
   content_brief: "Content brief",
 };
 
+const normalizeWorkspace = (value: unknown): Workspace => {
+  const parsed = (value && typeof value === "object" ? value : {}) as Partial<Workspace>;
+  return {
+    brand: typeof parsed.brand === "string" ? parsed.brand : "",
+    domain: typeof parsed.domain === "string" ? parsed.domain : "",
+    questions: typeof parsed.questions === "string" ? parsed.questions : "",
+    observations: Array.isArray(parsed.observations) ? parsed.observations : [],
+    actions: Array.isArray(parsed.actions) ? parsed.actions : [],
+    planKey: normalizeVisibilityPlanKey(parsed.planKey),
+    lastRunAt: typeof parsed.lastRunAt === "string" ? parsed.lastRunAt : null,
+    nextRunAt: typeof parsed.nextRunAt === "string" ? parsed.nextRunAt : null,
+  };
+};
+
 const loadWorkspace = (): Workspace => {
   if (typeof window === "undefined") return emptyWorkspace;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyWorkspace;
-    const parsed = JSON.parse(raw) as Partial<Workspace>;
-    return {
-      brand: typeof parsed.brand === "string" ? parsed.brand : "",
-      domain: typeof parsed.domain === "string" ? parsed.domain : "",
-      questions: typeof parsed.questions === "string" ? parsed.questions : "",
-      observations: Array.isArray(parsed.observations) ? parsed.observations : [],
-      actions: Array.isArray(parsed.actions) ? parsed.actions : [],
-    };
+    return raw ? normalizeWorkspace(JSON.parse(raw)) : emptyWorkspace;
   } catch {
     return emptyWorkspace;
   }
@@ -95,6 +108,7 @@ const AdminAiVisibility = () => {
   }, [selected?.id]);
   const [evidenceAt, setEvidenceAt] = useState<string | null>(null);
   const [answer, setAnswer] = useState("");
+  const selectedPlan = VISIBILITY_PLANS[workspace.planKey];
   useEffect(() => { listWorkspaces().then(setCloud).catch(e => setMessage(e.message)); }, []);
   const saveCloud = async () => {
     setBusy(true);
@@ -159,6 +173,21 @@ const AdminAiVisibility = () => {
       open,
     };
   }, [workspace.actions, workspace.observations]);
+
+  const scheduleNextRun = (completed = false) => {
+    const now = new Date();
+    const next = nextVisibilityRun(selectedPlan.cadence, now).toISOString();
+    setWorkspace((current) => ({
+      ...current,
+      lastRunAt: completed ? now.toISOString() : current.lastRunAt,
+      nextRunAt: next,
+    }));
+    setMessage(
+      completed
+        ? `Kontrollen markerades klar. Nästa uppföljning är planerad ${new Date(next).toLocaleDateString("sv-SE")}.`
+        : `Nästa uppföljning är planerad ${new Date(next).toLocaleDateString("sv-SE")}.`,
+    );
+  };
 
   const addObservation = () => {
     const query = observation.query.trim();
@@ -244,7 +273,7 @@ const AdminAiVisibility = () => {
           <select id="cloud-workspace" className="w-full rounded border p-2" value={selected?.id ?? ""} disabled={busy} onChange={event => {
             if (!window.confirm("Byta arbetsyta? Osparade ändringar i den nuvarande vyn ersätts.")) return;
             const next = cloud.find(item => item.id === event.target.value) ?? null;
-            setSelected(next); setEvidenceAt(null); setWorkspace(next ? next.workspace as Workspace : { ...emptyWorkspace }); setAnswer("");
+            setSelected(next); setEvidenceAt(null); setWorkspace(next ? normalizeWorkspace(next.workspace) : { ...emptyWorkspace }); setAnswer("");
           }}>
             <option value="">Ny kund / lokalt utkast</option>
             {cloud.map(item => <option value={item.id} key={item.id}>{item.name}</option>)}
@@ -270,6 +299,70 @@ const AdminAiVisibility = () => {
             setWorkspace(current => ({ ...current, questions: createQuestions(service, market).join("\n") }));
           }}>Skapa 30 svenska testfrågor</Button>
           <p className="text-xs text-muted-foreground">Förslagen bygger på angiven tjänst och marknad, inte uppmätt sökvolym. Granska dem före mätning.</p>
+        </section>
+
+        <section className="rounded-xl border bg-card p-5">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                Visibility Cloud · kommersiell arbetsyta
+              </p>
+              <h2 className="mt-1 font-display text-xl font-semibold">Plan och uppföljningsrytm</h2>
+              <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
+                Detta planerar arbetet i kundarbetsytan. Det startar inget dolt cron-jobb och gör inga
+                externa mätningar automatiskt.
+              </p>
+            </div>
+            <Badge variant="secondary">{selectedPlan.priceSek.toLocaleString("sv-SE")} kr/mån</Badge>
+          </div>
+
+          <div className="mt-4 grid gap-4 md:grid-cols-4">
+            <div>
+              <Label htmlFor="visibility-plan">Paket</Label>
+              <select
+                id="visibility-plan"
+                className="mt-1 h-10 w-full rounded-md border bg-background px-3 text-sm"
+                value={workspace.planKey}
+                onChange={(event) => {
+                  const planKey = normalizeVisibilityPlanKey(event.target.value);
+                  setWorkspace((current) => ({ ...current, planKey, nextRunAt: null }));
+                }}
+              >
+                {Object.values(VISIBILITY_PLANS).map((plan) => (
+                  <option key={plan.key} value={plan.key}>{plan.name} · {plan.priceSek} kr/mån</option>
+                ))}
+              </select>
+            </div>
+            <div className="rounded-lg border p-3">
+              <p className="text-xs text-muted-foreground">Rytm</p>
+              <p className="mt-1 font-semibold">{formatVisibilityCadence(selectedPlan.cadence)}</p>
+            </div>
+            <div className="rounded-lg border p-3">
+              <p className="text-xs text-muted-foreground">Frågor i paket</p>
+              <p className="mt-1 font-semibold">{selectedPlan.trackedQueryLimit.toLocaleString("sv-SE")}</p>
+            </div>
+            <div className="rounded-lg border p-3">
+              <p className="text-xs text-muted-foreground">Arbetsytor</p>
+              <p className="mt-1 font-semibold">{selectedPlan.workspaceLimit}</p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <Button type="button" variant="outline" onClick={() => scheduleNextRun(false)}>
+              <CalendarClock className="mr-2 h-4 w-4" /> Planera nästa kontroll
+            </Button>
+            <Button type="button" onClick={() => scheduleNextRun(true)}>
+              <CheckCircle2 className="mr-2 h-4 w-4" /> Markera kontroll klar
+            </Button>
+            <span className="text-xs text-muted-foreground">
+              {workspace.nextRunAt
+                ? `Nästa: ${new Date(workspace.nextRunAt).toLocaleDateString("sv-SE")}`
+                : "Ingen nästa kontroll planerad"}
+              {workspace.lastRunAt
+                ? ` · Senast klar: ${new Date(workspace.lastRunAt).toLocaleDateString("sv-SE")}`
+                : ""}
+            </span>
+          </div>
         </section>
 
         <section className="grid gap-4 rounded-xl border bg-card p-5 md:grid-cols-3">
