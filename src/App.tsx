@@ -17,6 +17,7 @@ import Index from "./pages/Index";
 
 const AiVisibilityPage = lazy(() => import("./pages/AiVisibilityPage"));
 const LocalVisibilityPage = lazy(() => import("./pages/LocalVisibilityPage"));
+const VisibilityCloudPage = lazy(() => import("./pages/VisibilityCloudPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const RegisterSupplierPage = lazy(() => import("./pages/RegisterSupplierPage"));
@@ -141,6 +142,7 @@ const App = () => (
       <Suspense fallback={<PageLoader />}><div id="main-content"><Routes>
         <Route path="/ai-synlighet" element={<AiVisibilityPage />} />
         <Route path="/lokal-synlighet" element={<LocalVisibilityPage />} />
+        <Route path="/visibility-cloud" element={<VisibilityCloudPage />} />
         <Route path="/" element={<Index />} />
         <Route path="/kundportal" element={<ClientPortal />} />
         <Route path="/publicera" element={<ProjectWizard />} />
