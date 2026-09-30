@@ -1,5 +1,6 @@
 import { setSEOMeta } from "@/lib/seoHelpers";
 import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,7 @@ export default function AiVisibilityPage() {
       <ol className="list-decimal space-y-2 pl-6">{questions.map(q => <li key={q}>{q}</li>)}</ol>
       <h2 className="text-2xl font-semibold">Vill du ha hjälp med analys och åtgärder?</h2>
       <p>Aurora Media kan hjälpa dig att granska svaren, prioritera faktasidor och följa upp förändringar. Omfattning och pris bestäms efter genomgång.</p>
-      <div className="flex flex-wrap gap-3"><Button asChild><a href="https://auroramedia.se/kontakt">Prata med Aurora Media</a></Button><Button asChild variant="outline"><a href="/lokal-synlighet">Testa lokal synlighet</a></Button></div>
+      <div className="flex flex-wrap gap-3"><Button asChild><a href="https://auroramedia.se/kontakt">Prata med Aurora Media</a></Button><Button asChild variant="outline"><a href="/lokal-synlighet">Testa lokal synlighet</a></Button><Button asChild variant="outline"><Link to="/visibility-cloud">Se Visibility Cloud</Link></Button></div>
     </section>}
   </main><Footer /></>;
 }
