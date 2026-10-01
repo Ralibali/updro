@@ -1,3 +1,4 @@
+import { COOKIE_CONSENT_KEY, createConsentState } from '../cookieConsent'
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   buildTouch,
@@ -47,7 +48,7 @@ describe('buildTouch', () => {
       origin: 'https://updro.se',
     })
     expect(result?.source).toBe('referral')
-    expect(result?.referrer).toBe('https://news.example.com/article')
+    expect(result?.referrer).toBe('https://news.example.com')
   })
 })
 
@@ -80,7 +81,28 @@ describe('touchesDiffer', () => {
 describe('captureFromLocation + serialization', () => {
   beforeEach(() => {
     localStorage.clear()
+    localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(createConsentState(false, true)))
     Object.defineProperty(document, 'referrer', { value: '', configurable: true })
+  })
+  it('blocks capture and submission before consent or after withdrawal', () => {
+    localStorage.removeItem(COOKIE_CONSENT_KEY)
+    expect(captureFromLocation({ search: '?utm_source=google', pathname: '/publicera' })).toEqual({ first: null, latest: null })
+    expect(localStorage.getItem(FIRST_TOUCH_KEY)).toBeNull()
+    localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(createConsentState(false, true)))
+    const captured = captureFromLocation({ search: '?utm_source=google', pathname: '/publicera' })
+    localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(createConsentState(true, false)))
+    expect(attributionPayload(captured)).toEqual({ first_touch: null, latest_touch: null })
+    captureFromLocation({ search: '', pathname: '/' })
+    expect(localStorage.getItem(FIRST_TOUCH_KEY)).toBeNull()
+  })
+  it('drops referrer queries and unsafe campaign values', () => {
+    const result = buildTouch({ search: '?utm_source=google&utm_campaign=private%40example.test', pathname: '/', referrer: 'https://news.test/read?email=private@example.test', origin: 'https://updro.se' })
+    expect(result?.referrer).toBe('https://news.test')
+    expect(result?.campaign).toBeNull()
+  })
+  it('replaces expired attribution', () => {
+    localStorage.setItem(FIRST_TOUCH_KEY, JSON.stringify(t({ timestamp: '2020-01-01T00:00:00Z' })))
+    expect(captureFromLocation({ search: '?utm_source=new', pathname: '/' }).first?.source).toBe('new')
   })
   it('persists first-touch across sessions and refreshes latest', () => {
     Object.defineProperty(document, 'referrer', { value: '', configurable: true })

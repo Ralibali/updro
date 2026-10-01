@@ -1,7 +1,9 @@
+import { COOKIE_CONSENT_KEY, parseCookieConsent } from './cookieConsent'
+
 /**
  * First-touch and latest-touch attribution capture.
  *
- * - First-touch is stored in localStorage on the very first qualifying page
+ * - Capture starts only after marketing consent. First-touch is stored on the first qualifying page
  *   view and is NEVER overwritten (survives sessions).
  * - Latest-touch is updated whenever the visitor arrives with UTM parameters
  *   or from a new external referrer host.
@@ -28,11 +30,24 @@ export type Attribution = {
 
 export const FIRST_TOUCH_KEY = 'updro:attribution:first'
 export const LATEST_TOUCH_KEY = 'updro:attribution:latest'
+const TOUCH_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000
+
+export const clearAttribution = (): void => {
+  try {
+    localStorage.removeItem(FIRST_TOUCH_KEY)
+    localStorage.removeItem(LATEST_TOUCH_KEY)
+  } catch { /* Unavailable browser storage fails closed. */ }
+}
+
+const hasMarketingConsent = (): boolean => {
+  try { return parseCookieConsent(localStorage.getItem(COOKIE_CONSENT_KEY))?.marketing === true }
+  catch { return false }
+}
 
 const clean = (value: string | null | undefined, max = 200): string | null => {
   if (!value) return null
-  const trimmed = value.trim().slice(0, max)
-  return trimmed.length ? trimmed : null
+  const trimmed = value.trim().slice(0, Math.min(max, 80))
+  return /^[\p{L}\p{N} _.-]+$/u.test(trimmed) ? trimmed : null
 }
 
 const sameOrigin = (referrer: string, origin: string): boolean => {
@@ -69,7 +84,8 @@ export const buildTouch = ({ search, pathname, referrer, origin, now }: BuildTou
   const campaign = clean(params.get('utm_campaign'))
   const term = clean(params.get('utm_term'))
   const content = clean(params.get('utm_content'))
-  const externalReferrer = referrer && !sameOrigin(referrer, origin) ? clean(referrer, 500) : null
+  let externalReferrer: string | null = null
+  try { if (referrer && !sameOrigin(referrer, origin)) externalReferrer = new URL(referrer).origin } catch { /* malformed URLs are ignored */ }
   if (!source && !medium && !campaign && !term && !content && !externalReferrer) return null
 
   return {
@@ -78,7 +94,7 @@ export const buildTouch = ({ search, pathname, referrer, origin, now }: BuildTou
     campaign,
     term,
     content,
-    landing_path: clean(pathname, 300),
+    landing_path: pathname.split(/[?#]/)[0].replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, ':id').slice(0, 300),
     referrer: externalReferrer,
     timestamp: (now ?? new Date()).toISOString(),
   }
@@ -106,14 +122,16 @@ export const parseStoredTouch = (raw: string | null): Touch | null => {
     const str = (v: unknown): string | null => (typeof v === 'string' ? v : null)
     const timestamp = str(t.timestamp)
     if (!timestamp) return null
+    const capturedAt = Date.parse(timestamp)
+    if (!Number.isFinite(capturedAt) || capturedAt > Date.now() || Date.now() - capturedAt >= TOUCH_MAX_AGE_MS) return null
     return {
-      source: str(t.source),
-      medium: str(t.medium),
-      campaign: str(t.campaign),
-      term: str(t.term),
-      content: str(t.content),
-      landing_path: str(t.landing_path),
-      referrer: str(t.referrer),
+      source: clean(str(t.source)),
+      medium: clean(str(t.medium)),
+      campaign: clean(str(t.campaign)),
+      term: clean(str(t.term)),
+      content: clean(str(t.content)),
+      landing_path: str(t.landing_path)?.split(/[?#]/)[0].replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, ":id").slice(0, 300) ?? null,
+      referrer: (() => { try { return typeof t.referrer === "string" ? new URL(t.referrer).origin : null } catch { return null } })(),
       timestamp,
     }
   } catch {
@@ -149,6 +167,8 @@ export const reduceAttribution = (stored: Attribution, incoming: Touch | null): 
 
 export const captureFromLocation = (location: { search: string; pathname: string }): Attribution => {
   if (typeof window === 'undefined') return { first: null, latest: null }
+  if (!hasMarketingConsent()) { clearAttribution(); return { first: null, latest: null } }
+  if (/^\/(admin|dashboard|login|auth|registrera)(\/|$)/.test(location.pathname)) return getStoredAttribution()
 
   const touch = buildTouch({
     search: location.search,
@@ -168,16 +188,22 @@ export const captureFromLocation = (location: { search: string; pathname: string
   return next
 }
 
-export const getStoredAttribution = (): Attribution => ({
-  first: readStored(FIRST_TOUCH_KEY),
-  latest: readStored(LATEST_TOUCH_KEY),
-})
+export const getStoredAttribution = (): Attribution => {
+  if (!hasMarketingConsent()) { clearAttribution(); return { first: null, latest: null } }
+  const first = readStored(FIRST_TOUCH_KEY)
+  const latest = readStored(LATEST_TOUCH_KEY)
+  try {
+    if (!first) localStorage.removeItem(FIRST_TOUCH_KEY)
+    if (!latest) localStorage.removeItem(LATEST_TOUCH_KEY)
+  } catch { /* no storage */ }
+  return { first, latest }
+}
 
 /** Serialize both touches into the payload sent when a project is submitted. */
-export const attributionPayload = (attribution: Attribution = getStoredAttribution()) => ({
-  first_touch: attribution.first,
-  latest_touch: attribution.latest,
-})
+export const attributionPayload = (attribution: Attribution = getStoredAttribution()) => {
+  const allowed = hasMarketingConsent()
+  return { first_touch: allowed ? attribution.first : null, latest_touch: allowed ? attribution.latest : null }
+}
 
 /** Idempotent init — called once from main.tsx at app boot. Safe under SSR. */
 export const initAttribution = (): Attribution => {

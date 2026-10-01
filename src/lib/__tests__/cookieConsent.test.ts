@@ -1,26 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { COOKIE_CONSENT_VERSION, createConsentState, parseCookieConsent, serializeCookieConsent } from '../cookieConsent'
-
+const now = Date.parse('2026-09-30T10:00:00Z')
 describe('cookie consent', () => {
-  it('migrates legacy all consent', () => {
-    expect(parseCookieConsent(JSON.stringify({ level: 'all', date: '2026-01-01T00:00:00.000Z' }))).toEqual({ necessary: true, analytics: true, marketing: true, date: '2026-01-01T00:00:00.000Z', version: COOKIE_CONSENT_VERSION })
-  })
-  it('migrates legacy necessary consent', () => {
-    const state = parseCookieConsent(JSON.stringify({ level: 'necessary' }))
-    expect(state?.analytics).toBe(false)
-    expect(state?.marketing).toBe(false)
+  it('requires new category choices for old bundled approval', () => {
+    expect(parseCookieConsent(JSON.stringify({ level: 'all', date: '2026-01-01T00:00:00.000Z' }), now)).toBeNull()
   })
   it('keeps categories separate', () => {
-    const state = parseCookieConsent(JSON.stringify({ necessary: true, analytics: true, marketing: false, date: '2026-07-12', version: COOKIE_CONSENT_VERSION }))
-    expect(state?.analytics).toBe(true)
-    expect(state?.marketing).toBe(false)
+    expect(parseCookieConsent(serializeCookieConsent(createConsentState(true, false, '2026-09-30T09:00:00Z')), now)).toMatchObject({ analytics: true, marketing: false })
   })
-  it('rejects invalid data', () => {
-    expect(parseCookieConsent(null)).toBeNull()
-    expect(parseCookieConsent('{bad')).toBeNull()
-    expect(parseCookieConsent(JSON.stringify({ analytics: 'yes' }))).toBeNull()
+  it('rejects malformed, expired, future and unknown-version choices', () => {
+    for (const raw of [null, '{bad', JSON.stringify({ analytics: 'yes' }), serializeCookieConsent(createConsentState(true, true, '2025-09-30')), serializeCookieConsent(createConsentState(true, true, '2027-09-30')), JSON.stringify({ ...createConsentState(true, true, '2026-09-30'), version: 'unknown' })]) expect(parseCookieConsent(raw, now)).toBeNull()
   })
-  it('serializes current version', () => {
-    expect(JSON.parse(serializeCookieConsent(createConsentState(false, true, '2026-07-12')))).toEqual({ necessary: true, analytics: false, marketing: true, date: '2026-07-12', version: COOKIE_CONSENT_VERSION })
-  })
+  it('serializes current version', () => { expect(JSON.parse(serializeCookieConsent(createConsentState(false, true, '2026-07-12')))).toEqual({ necessary: true, analytics: false, marketing: true, date: '2026-07-12', version: COOKIE_CONSENT_VERSION }) })
 })

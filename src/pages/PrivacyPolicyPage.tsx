@@ -19,7 +19,7 @@ const PrivacyPolicyPage = () => {
       <main className="flex-1 py-16 px-4">
         <article className="max-w-3xl mx-auto prose prose-slate">
           <h1 className="font-display text-3xl font-bold mb-2">Integritetspolicy</h1>
-          <p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-07-12</p>
+          <p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-10-01</p>
 
           <section className="space-y-6 text-sm leading-relaxed text-foreground/80">
             <div>
@@ -86,21 +86,21 @@ const PrivacyPolicyPage = () => {
                 <li><strong>Lovable och hosting-/driftleverantörer:</strong> utveckling, publicering och teknisk drift.</li>
                 <li><strong>Myndigheter och rådgivare:</strong> när lag kräver det eller för rättsliga anspråk.</li>
               </ul>
-              <p className="mt-2">Vi säljer inte personuppgifter.</p>
+              <p className="mt-2">Kontaktuppgifter kan göras tillgängliga för byråer inom tjänstens matchnings- och offertflöde. Byråer kan betala för åtkomst enligt tjänstens villkor; uppgifter delas för den förfrågan du har lämnat.</p>
             </div>
 
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">8. Överföringar utanför EU/EES</h2>
-              <p>Vissa leverantörer kan behandla uppgifter utanför EU/EES. Då används ett giltigt överföringsstöd, exempelvis beslut om adekvat skyddsnivå eller EU-kommissionens standardavtalsklausuler, med kompletterande skydd där det behövs.</p>
+              <p>Vissa leverantörer kan behandla uppgifter utanför EU/EES. En sådan överföring kräver rättsligt stöd, exempelvis beslut om adekvat skyddsnivå eller EU-kommissionens standardavtalsklausuler, och ytterligare skyddsåtgärder där det behövs. Kontakta oss för information om aktuella behandlingsländer och dokumenterade skyddsåtgärder.</p>
             </div>
 
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">9. Lagringstider</h2>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Konto, uppdrag, offerter och meddelanden:</strong> så länge tjänsten används och normalt högst 24 månader efter avslut, om inte längre lagring behövs för tvist, säkerhet eller lagkrav.</li>
+                <li><strong>Konto, uppdrag, offerter och meddelanden:</strong> lagringstiden bedöms utifrån om konto eller uppdrag fortfarande används, om support eller tvistlösning pågår och om uppgifter behöver bevaras enligt lag. Uppgifter ska inte behållas längre än dessa ändamål kräver.</li>
                 <li><strong>Betalnings- och bokföringsunderlag:</strong> så länge tillämplig bokförings- och skattelagstiftning kräver.</li>
-                <li><strong>Säkerhets- och funktionsloggar:</strong> normalt högst 12 månader, längre vid pågående incident.</li>
-                <li><strong>Prospekteringsdata:</strong> högst 12 månader efter senaste research eller kontakt, om uppgifterna inte tidigare raderas eller behövs för en pågående affärsdialog.</li>
+                <li><strong>Säkerhets- och funktionsloggar:</strong> lagringstiden beror på felsökning, missbruksbekämpning och eventuell pågående incident. Identifierande uppgifter ska begränsas till vad som behövs för det aktuella ändamålet.</li>
+                <li><strong>Prospekteringsdata:</strong> behovet bedöms utifrån om uppgifterna fortfarande är aktuella och om en relevant affärsdialog pågår. Uppgifter ska raderas när de inte längre behövs för detta ändamål.</li>
                 <li><strong>Kontakta-ej-markering:</strong> så länge det behövs för att respektera invändningen.</li>
                 <li><strong>Cookieval:</strong> högst 12 månader eller tills du ändrar valet.</li>
               </ul>

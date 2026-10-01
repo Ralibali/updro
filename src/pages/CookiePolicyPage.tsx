@@ -21,7 +21,7 @@ const CookiePolicyPage = () => {
       <main className="flex-1 py-16 px-4">
         <article className="max-w-4xl mx-auto prose prose-slate">
           <h1 className="font-display text-3xl font-bold mb-2">Cookiepolicy</h1>
-          <p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-07-12</p>
+          <p className="text-muted-foreground text-sm mb-8">Senast uppdaterad: 2026-10-01</p>
 
           <section className="space-y-6 text-sm leading-relaxed text-foreground/80">
             <div>
@@ -58,10 +58,10 @@ const CookiePolicyPage = () => {
                   <thead><tr className="border-b"><th className="text-left p-2">Namn/teknik</th><th className="text-left p-2">Leverantör</th><th className="text-left p-2">Ändamål</th><th className="text-left p-2">Normal lagring</th></tr></thead>
                   <tbody>
                     <tr className="border-b align-top"><td className="p-2"><code>updro_cookie_consent</code></td><td className="p-2">Updro</td><td className="p-2">Nödvändig localStorage som sparar separata val, version och datum.</td><td className="p-2">Högst 12 månader eller tills valet ändras.</td></tr>
-                    <tr className="border-b align-top"><td className="p-2">Supabase auth/session</td><td className="p-2">Supabase</td><td className="p-2">Nödvändig inloggning, session, tokenförnyelse och säkerhet.</td><td className="p-2">Under sessionen eller så länge inloggningen är giltig.</td></tr>
-                    <tr className="border-b align-top"><td className="p-2">First/latest-touch attribution</td><td className="p-2">Updro</td><td className="p-2">Förstapartsinformation om kampanj och hänvisning i publiceringsflödet. Användning för annonsmätning följer marknadsföringsvalet.</td><td className="p-2">Normalt högst 90 dagar.</td></tr>
-                    <tr className="border-b align-top"><td className="p-2"><code>_ga</code>, <code>_ga_*</code></td><td className="p-2">Google Analytics</td><td className="p-2">Statistik efter samtycke.</td><td className="p-2">Normalt upp till 24 månader, beroende på konfiguration.</td></tr>
-                    <tr className="border-b align-top"><td className="p-2"><code>_gcl_*</code> och konverteringslagring</td><td className="p-2">Google Ads</td><td className="p-2">Konverteringsmätning och annonsanalys efter samtycke.</td><td className="p-2">Enligt konfiguration, normalt högst 90 dagar där lagringen används.</td></tr>
+                    <tr className="border-b align-top"><td className="p-2"><code>sb-*-auth-token</code></td><td className="p-2">Supabase</td><td className="p-2">Nödvändig localStorage med inloggningssession och tokenförnyelse.</td><td className="p-2">Tills du loggar ut, sessionen upphör eller lagringen rensas.</td></tr>
+                    <tr className="border-b align-top"><td className="p-2"><code>updro:attribution:first</code>, <code>updro:attribution:latest</code></td><td className="p-2">Updro</td><td className="p-2">Kampanjvärden, hänvisande domän och landningssida i localStorage, endast efter marknadsföringssamtycke. Raderas vid återkallat val.</td><td className="p-2">Högst 90 dagar.</td></tr>
+                    <tr className="border-b align-top"><td className="p-2"><code>_ga</code>, <code>_ga_*</code></td><td className="p-2">Google Analytics</td><td className="p-2">Pseudonyma besöks- och sessionsidentifierare för statistik efter statistikval.</td><td className="p-2">Googles standard är två år; inställningar och webbläsaren kan begränsa tiden.</td></tr>
+                    <tr className="border-b align-top"><td className="p-2"><code>_gcl_*</code> och konverteringslagring</td><td className="p-2">Google Ads</td><td className="p-2">Annonsklick och konverteringsidentifierare efter marknadsföringsval.</td><td className="p-2">Normalt 90 dagar enligt Google; inställningar och webbläsaren kan begränsa tiden.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -75,7 +75,7 @@ const CookiePolicyPage = () => {
 
             <div>
               <h2 className="font-display text-lg font-semibold text-foreground mb-2">7. Tredje parter och överföringar</h2>
-              <p>Google kan efter samtycke behandla IP-adress, enhetsinformation, sidvisningar, händelser och kampanjdata. Supabase och Stripe kan använda tekniskt nödvändig lagring för inloggning respektive betalning. Överföringar utanför EU/EES skyddas enligt integritetspolicyn.</p>
+              <p>Google kan efter samtycke behandla IP-adress, enhetsinformation, sidvisningar, händelser och kampanjdata. Supabase och Stripe kan använda tekniskt nödvändig lagring för inloggning respektive betalning. Information om överföringar utanför EU/EES och hur du kontaktar oss om skyddsåtgärder finns i integritetspolicyn.</p>
             </div>
 
             <div>

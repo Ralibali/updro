@@ -18,8 +18,7 @@ window.addEventListener("vite:preloadError", event => {
   if (reloadOnceForNewDeploy()) event.preventDefault();
 });
 
-// Capture first/latest-touch as early as possible so the very first landing
-// is recorded even before the React router mounts.
+// Restore attribution only when a valid marketing choice already exists.
 initAttribution();
 
 const rootEl = document.getElementById("root")!;

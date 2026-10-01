@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { COOKIE_CONSENT_KEY, createConsentState, parseCookieConsent, serializeCookieConsent, type CookieConsentState } from '@/lib/cookieConsent'
 import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from '@/lib/browserStorage'
+import { clearAttribution, initAttribution } from '@/lib/attribution'
 
 // Ads-kontot kan bytas via VITE_GOOGLE_ADS_ID utan kodändring (fallback = nuvarande konto)
 const ADS_ID = (import.meta.env.VITE_GOOGLE_ADS_ID as string | undefined)?.trim() || 'AW-10941540384'
@@ -39,6 +40,15 @@ const applyConsent = (state: Pick<CookieConsentState, 'analytics' | 'marketing'>
     ad_personalization: state.marketing ? 'granted' : 'denied',
   })
   setAnalyticsConsent(state.analytics)
+  if (state.marketing) initAttribution()
+  else {
+    clearAttribution()
+    for (const cookie of document.cookie.split(';')) {
+      const name = cookie.split('=')[0].trim()
+      if (!/^_gcl_|^_gac_/.test(name)) continue
+      for (const domain of ['', window.location.hostname, '.updro.se']) document.cookie = `${name}=; Max-Age=0; Path=/${domain ? `; Domain=${domain}` : ''}; SameSite=Lax`
+    }
+  }
   if (!state.marketing) return
   injectGtagScript()
   gtag('js', new Date())
@@ -57,8 +67,21 @@ const CookieConsent = () => {
   const [showDetails, setShowDetails] = useState(false)
 
   useEffect(() => {
+    const syncConsent = (event: StorageEvent) => {
+      if (event.key !== COOKIE_CONSENT_KEY && event.key !== null) return
+      const stored = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
+      setAnalytics(stored?.analytics ?? false)
+      setMarketing(stored?.marketing ?? false)
+      applyConsent(stored ?? createConsentState(false, false))
+      if (!stored) setVisible(true)
+    }
+    window.addEventListener('storage', syncConsent)
+    return () => window.removeEventListener('storage', syncConsent)
+  }, [])
+
+  useEffect(() => {
     const stored = parseCookieConsent(readBrowserStorage('localStorage', COOKIE_CONSENT_KEY))
-    if (!stored) { removeBrowserStorage('localStorage', COOKIE_CONSENT_KEY); setVisible(true); return }
+    if (!stored) { removeBrowserStorage('localStorage', COOKIE_CONSENT_KEY); applyConsent(createConsentState(false, false)); setVisible(true); return }
     setAnalytics(stored.analytics)
     setMarketing(stored.marketing)
     writeBrowserStorage('localStorage', COOKIE_CONSENT_KEY, serializeCookieConsent(stored))

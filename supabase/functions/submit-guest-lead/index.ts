@@ -251,7 +251,7 @@ Deno.serve(async request => {
       emailSent = customerResponse.ok
       if (!customerResponse.ok) console.error('Confirmation email failed', await customerResponse.text())
 
-      const adminEmail = Deno.env.get('UPDRO_ADMIN_EMAIL') || 'info@auroramedia.se'
+      const adminEmail = 'info@auroramedia.se'
       const adminProjectUrl = `${siteUrl}/admin/uppdrag`
       const safeCompany = escapeHtml(companyName || 'Privatperson')
       const safeEmail = escapeHtml(email)
