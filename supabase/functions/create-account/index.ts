@@ -4,15 +4,26 @@ import { existingAccountMessage, signupAuthErrorMessage } from "./auth-errors.ts
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 const CATEGORIES = new Set([
-  "Webbutveckling", "E-handel", "Digital marknadsföring",
-  "Grafisk design/UX", "SEO", "App-utveckling",
-  "IT-konsult", "Sociala medier", "Mjukvaruutveckling",
-  "Video & foto", "Varumärke & PR", "UX/Webbdesign",
-  "Underhåll/IT Support", "Affärsutveckling", "AI-utveckling",
+  "Webbutveckling",
+  "E-handel",
+  "Digital marknadsföring",
+  "Grafisk design/UX",
+  "SEO",
+  "App-utveckling",
+  "IT-konsult",
+  "Sociala medier",
+  "Mjukvaruutveckling",
+  "Video & foto",
+  "Varumärke & PR",
+  "UX/Webbdesign",
+  "Underhåll/IT Support",
+  "Affärsutveckling",
+  "AI-utveckling",
 ]);
 
 const TRIAL_LEADS = 5;
@@ -73,11 +84,20 @@ function slugify(input: string, suffix: string) {
 // Deterministisk värvningskod per användare (8 hextecken från SHA-256).
 async function referralCodeFor(userId: string) {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${userId}-updro-ref`));
-  return Array.from(new Uint8Array(digest)).slice(0, 4).map(byte => byte.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(digest))
+    .slice(0, 4)
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 const normalizeCode = (value: unknown) =>
-  typeof value === "string" ? value.trim().toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 32) : "";
+  typeof value === "string"
+    ? value
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 32)
+    : "";
 
 const safeOrigin = (rawOrigin: string | null) => {
   if (!rawOrigin) return "https://updro.se";
@@ -97,13 +117,16 @@ async function hashIp(ip: string) {
   try {
     const salt = Deno.env.get("RATE_LIMIT_SALT") || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "updro";
     const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${salt}:${ip}`));
-    return Array.from(new Uint8Array(digest)).slice(0, 12).map(byte => byte.toString(16).padStart(2, "0")).join("");
+    return Array.from(new Uint8Array(digest))
+      .slice(0, 12)
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
   } catch {
     return "unknown";
   }
 }
 
-serve(async req => {
+serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Metoden stöds inte." }, 405);
 
@@ -127,7 +150,7 @@ serve(async req => {
     const phone = cleanText(body.phone, 40);
     const orgNumber = cleanText(body.org_number, 32);
     const categories = Array.isArray(body.categories)
-      ? body.categories.filter(category => typeof category === "string" && CATEGORIES.has(category)).slice(0, 10)
+      ? body.categories.filter((category) => typeof category === "string" && CATEGORIES.has(category)).slice(0, 10)
       : [];
 
     if (!/^\S+@\S+\.\S+$/.test(email)) return userError("Ange en giltig e-postadress.");
@@ -174,7 +197,6 @@ serve(async req => {
       return userError(signupAuthErrorMessage(authError));
     }
 
-
     const user = authData.user;
     if (!user?.id) return json({ error: "Kunde inte skapa konto." }, 500);
 
@@ -196,9 +218,7 @@ serve(async req => {
 
     if (profileError) {
       if (profileError.code !== "23505") await adminClient.auth.admin.deleteUser(user.id);
-      const message = profileError.code === "23505"
-        ? existingAccountMessage
-        : "Kunde inte skapa profil. Försök igen.";
+      const message = profileError.code === "23505" ? existingAccountMessage : "Kunde inte skapa profil. Försök igen.";
       console.error("create-account profile error", profileError);
       return userError(message);
     }
