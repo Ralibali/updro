@@ -177,6 +177,7 @@ const ProjectWizardV2 = () => {
           status: 'pending',
         }).select('id').maybeSingle()
         if (error) throw error
+        if (!inserted?.id) throw new Error('Vi kunde inte bekräfta att uppdraget sparades. Försök igen eller kontakta support.')
         const newProjectId = String(inserted?.id || '')
         if (newProjectId && (attribution.first || attribution.latest)) {
           const { error: attrError } = await supabase.rpc('save_project_attribution', {

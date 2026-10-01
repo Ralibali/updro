@@ -3,20 +3,20 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { PROJECT_DESCRIPTION_EXAMPLE } from '@/lib/wizardPrefill'
 
-const { trackLeadSubmitted, trackUppdragDetailsCompleted, invokeMock } = vi.hoisted(() => ({
+const { trackLeadSubmitted, trackUppdragDetailsCompleted, invokeMock, maybeSingleMock, authState } = vi.hoisted(() => ({
   trackLeadSubmitted: vi.fn(),
   trackUppdragDetailsCompleted: vi.fn(),
   invokeMock: vi.fn(),
+  maybeSingleMock: vi.fn(),
+  authState: { user: null as null | { id: string; email: string }, isAuthenticated: false },
 }))
 
 vi.mock('@/hooks/useAuth', () => ({
   useAuth: () => ({
-    user: null,
     session: null,
     profile: null,
     supplierProfile: null,
     loading: false,
-    isAuthenticated: false,
     isBuyer: false,
     isSupplier: false,
     isAdmin: false,
@@ -30,6 +30,7 @@ vi.mock('@/hooks/useAuth', () => ({
     signUp: async () => ({ error: null }),
     signOut: async () => {},
     refreshProfile: async () => {},
+    ...authState,
   }),
 }))
 
@@ -48,13 +49,19 @@ vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     functions: { invoke: invokeMock },
     from: () => ({
-      insert: () => ({ select: () => ({ maybeSingle: async () => ({ data: null, error: null }) }) }),
+      insert: () => ({ select: () => ({ maybeSingle: maybeSingleMock }) }),
     }),
     rpc: async () => ({ error: null }),
   },
 }))
 
 import ProjectWizardV2 from './ProjectWizardV2'
+
+beforeEach(() => {
+  authState.user = null
+  authState.isAuthenticated = false
+  maybeSingleMock.mockReset().mockResolvedValue({ data: null, error: null })
+})
 
 afterEach(() => vi.restoreAllMocks())
 
@@ -369,5 +376,40 @@ describe('ProjectWizardV2 recovery and mobile navigation', () => {
     fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
     expect(await screen.findByRole('alert')).toHaveTextContent('kunde inte bekräfta')
     expect(trackLeadSubmitted).not.toHaveBeenCalled()
+  })
+})
+
+describe('ProjectWizardV2 buyer lead confirmation', () => {
+  beforeEach(() => {
+    authState.user = { id: 'buyer-1', email: 'buyer@example.com' }
+    authState.isAuthenticated = true
+    trackLeadSubmitted.mockReset()
+    localStorage.clear()
+  })
+
+  const submitBuyer = () => {
+    renderWizard('/publicera/webbutveckling')
+    goToStep2()
+    fireEvent.click(screen.getByRole('button', { name: /Skicka/ }))
+  }
+
+  it('does not confirm or count a buyer lead when the saved project is missing', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    submitBuyer()
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('kunde inte bekräfta')
+    expect(screen.queryByText('Ditt uppdrag är mottaget')).not.toBeInTheDocument()
+    expect(trackLeadSubmitted).not.toHaveBeenCalled()
+  })
+
+  it('counts one confirmed buyer lead after the persisted project is returned', async () => {
+    maybeSingleMock.mockResolvedValueOnce({ data: { id: 'saved-buyer-project' }, error: null })
+    submitBuyer()
+
+    expect(await screen.findByText('Ditt uppdrag är mottaget')).toBeInTheDocument()
+    expect(trackLeadSubmitted).toHaveBeenCalledTimes(1)
+    expect(trackLeadSubmitted).toHaveBeenCalledWith({
+      source: 'publicera', category: 'Webbutveckling', userType: 'buyer', budgetRange: 'unknown',
+    })
   })
 })
