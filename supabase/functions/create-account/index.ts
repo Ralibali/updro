@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
+import { existingAccountMessage, signupAuthErrorMessage } from "./auth-errors.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -165,19 +166,23 @@ serve(async req => {
     });
 
     if (authError) {
-      const raw = authError.message.toLowerCase();
-      const message = raw.includes("already")
-        ? "Det finns redan ett konto med den e-postadressen. Logga in istället."
-        : raw.includes("weak") || raw.includes("pwned") || raw.includes("easy to guess")
-          ? "Lösenordet är för enkelt och förekommer i kända läckor. Välj ett starkare lösenord."
-          : "Kunde inte skapa kontot. Kontrollera uppgifterna och försök igen.";
-      console.error("create-account auth error", authError.message);
-      return userError(message);
+      console.error("create-account auth error", {
+        code: authError.code,
+        name: authError.name,
+        status: authError.status,
+      });
+      return userError(signupAuthErrorMessage(authError));
     }
 
 
     const user = authData.user;
     if (!user?.id) return json({ error: "Kunde inte skapa konto." }, 500);
+
+    // Auth may return an obfuscated user for an existing confirmed account.
+    // It is not a newly created user: never insert profiles or run cleanup for it.
+    if (Array.isArray(user.identities) && user.identities.length === 0) {
+      return userError(existingAccountMessage);
+    }
 
     const { error: profileError } = await adminClient.from("profiles").insert({
       id: user.id,
@@ -192,7 +197,7 @@ serve(async req => {
     if (profileError) {
       if (profileError.code !== "23505") await adminClient.auth.admin.deleteUser(user.id);
       const message = profileError.code === "23505"
-        ? "Det finns redan ett konto med den e-postadressen. Logga in istället."
+        ? existingAccountMessage
         : "Kunde inte skapa profil. Försök igen.";
       console.error("create-account profile error", profileError);
       return userError(message);
