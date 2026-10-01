@@ -23,12 +23,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-webhook-secret",
 };
 
-const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
-  status,
-  headers: { ...corsHeaders, "Content-Type": "application/json" },
-});
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 
-Deno.serve(async req => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
@@ -76,7 +77,7 @@ Deno.serve(async req => {
     const staleIds: string[] = [];
 
     await Promise.all(
-      subs.map(async sub => {
+      subs.map(async (sub) => {
         try {
           await webpush.sendNotification(
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
