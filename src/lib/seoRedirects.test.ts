@@ -18,7 +18,8 @@ describe('LEGACY_REDIRECTS map integrity', () => {
       expect(from.startsWith('/')).toBe(true)
       expect(to.startsWith('/')).toBe(true)
       expect(from.endsWith('/')).toBe(false)
-      expect(to.endsWith('/')).toBe(false)
+      // Root `/` is a valid canonical target and is the only allowed trailing slash.
+      if (to !== '/') expect(to.endsWith('/')).toBe(false)
     }
   })
 
@@ -38,6 +39,7 @@ describe('resolveLegacyRedirect', () => {
 
   it('covers the known legacy aliases', () => {
     expect(resolveLegacyRedirect('/landing/byra')).toBe('/for-byraer')
+    expect(resolveLegacyRedirect('/jamfor-offerter')).toBe('/')
     expect(resolveLegacyRedirect('/guider')).toBe('/artiklar')
     expect(resolveLegacyRedirect('/kunskapsbank')).toBe('/artiklar')
     expect(resolveLegacyRedirect('/updro-vs-partna')).toBe('/partna-alternativ')
