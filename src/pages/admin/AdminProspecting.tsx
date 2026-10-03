@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Check, Download, ExternalLink, FileUp, RefreshCw, Search, Sparkles, X } from 'lucide-react'
+import { CalendarClock, Check, CircleDollarSign, Download, ExternalLink, FileUp, RefreshCw, Search, ShieldCheck, Sparkles, X } from 'lucide-react'
 import { buildProspectingQuery, type ProspectingNeedType, type ProspectingSignalFocus } from '@/lib/prospecting'
+import { buildProspectingPipelineMetrics, isFollowUpDue, normalizeCompanyIntelligence, toLocalDateTimeInput, type CompanyIntelligence } from '@/lib/prospectingPipeline'
 import { domainFromWebsite, exportApprovedOutreachCsv, parseOpenOutreach, type ApprovedOutreachLead } from '@/lib/openOutreach'
 import { cn } from '@/lib/utils'
 
@@ -34,6 +35,9 @@ interface Lead {
   id: string
   campaign_id: string
   company_name: string
+  company_intelligence: CompanyIntelligence | null
+  intelligence_source: string | null
+  intelligence_updated_at: string | null
   domain: string
   website_url: string
   source_url: string | null
@@ -56,6 +60,9 @@ interface Lead {
   outreach_body: string | null
   approval_status: 'not_ready' | 'draft' | 'approved' | 'changes_requested' | 'cancelled'
   export_count: number
+  next_action: string | null
+  next_action_at: string | null
+  deal_value_sek: number | null
   reply_note: string | null
   created_at: string
 }
@@ -63,7 +70,10 @@ interface Lead {
 type ReviewDraft = {
   contact_first_name: string; contact_last_name: string; contact_title: string; contact_email: string;
   fit_reason: string; outreach_subject: string; outreach_body: string; reply_note: string;
+  next_action: string; next_action_at: string; deal_value_sek: string;
 }
+
+type FollowUpFilter = 'all' | 'due' | 'scheduled' | 'missing'
 
 const STATUS_OPTIONS: { value: LeadStatus; label: string }[] = [
   { value: 'new', label: 'Ny' },
@@ -86,6 +96,7 @@ const AdminProspecting = () => {
   const [running, setRunning] = useState(false)
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all')
   const [minScore, setMinScore] = useState(0)
+  const [followUpFilter, setFollowUpFilter] = useState<FollowUpFilter>('all')
   const [importRaw, setImportRaw] = useState('')
   const [importName, setImportName] = useState('OpenOutreach Sverige')
   const [importing, setImporting] = useState(false)
@@ -105,9 +116,19 @@ const AdminProspecting = () => {
     () => buildProspectingQuery({ freeText, needType, signalFocus, industry, location }),
     [freeText, needType, signalFocus, industry, location],
   )
-  const filteredLeads = useMemo(() => leads.filter(lead =>
+  const baseFilteredLeads = useMemo(() => leads.filter(lead =>
     (statusFilter === 'all' || lead.status === statusFilter) && lead.fit_score >= minScore,
   ), [leads, minScore, statusFilter])
+  const filteredLeads = useMemo(() => {
+    const now = Date.now()
+    return baseFilteredLeads.filter(lead => {
+      if (followUpFilter === 'all') return true
+      if (followUpFilter === 'due') return !['converted', 'rejected', 'do_not_contact'].includes(lead.status) && isFollowUpDue(lead.next_action_at, now)
+      if (followUpFilter === 'scheduled') return Boolean(lead.next_action_at) && !isFollowUpDue(lead.next_action_at, now)
+      return !lead.next_action_at
+    })
+  }, [baseFilteredLeads, followUpFilter])
+  const pipelineMetrics = useMemo(() => buildProspectingPipelineMetrics(baseFilteredLeads), [baseFilteredLeads])
 
   const loadCampaigns = useCallback(async () => {
     setLoadingCampaigns(true)
@@ -130,6 +151,7 @@ const AdminProspecting = () => {
     setLeads((data ?? []).map(l => ({
       ...l,
       observed_signals: Array.isArray(l.observed_signals) ? l.observed_signals as string[] : [],
+      company_intelligence: normalizeCompanyIntelligence(l.company_intelligence),
     })) as Lead[])
     setLoadingLeads(false)
   }, [])
@@ -186,6 +208,8 @@ const AdminProspecting = () => {
       contact_first_name: lead.contact_first_name ?? '', contact_last_name: lead.contact_last_name ?? '',
       contact_title: lead.contact_title ?? '', contact_email: lead.contact_email ?? '', fit_reason: lead.fit_reason ?? '',
       outreach_subject: lead.outreach_subject ?? '', outreach_body: lead.outreach_body ?? '', reply_note: lead.reply_note ?? '',
+      next_action: lead.next_action ?? '', next_action_at: toLocalDateTimeInput(lead.next_action_at),
+      deal_value_sek: lead.deal_value_sek == null ? '' : String(lead.deal_value_sek),
     })
   }
 
@@ -195,17 +219,29 @@ const AdminProspecting = () => {
       toast({ title: 'E-post, ämne och meddelande krävs före godkännande', variant: 'destructive' })
       return
     }
+    const dealValue = review.deal_value_sek.trim() === '' ? null : Number(review.deal_value_sek)
+    if (dealValue != null && (!Number.isFinite(dealValue) || dealValue < 0 || dealValue > 100000000)) {
+      toast({ title: 'Affärsvärdet måste vara mellan 0 och 100 000 000 kr', variant: 'destructive' })
+      return
+    }
     const { data: userData } = await supabase.auth.getUser()
     const patch = {
       ...review,
       contact_email: review.contact_email.trim().toLowerCase() || null,
+      next_action: review.next_action.trim() || null,
+      next_action_at: review.next_action_at ? new Date(review.next_action_at).toISOString() : null,
+      deal_value_sek: dealValue == null ? null : Math.round(dealValue),
       approval_status: approvalStatus,
       approved_at: approvalStatus === 'approved' ? new Date().toISOString() : null,
       approved_by: approvalStatus === 'approved' ? userData.user?.id ?? null : null,
     }
     const { data: saved, error } = await supabase.from('prospecting_leads').update(patch).eq('id', lead.id).select('*').single()
     if (error) { toast({ title: 'Kunde inte spara granskningen', description: error.message, variant: 'destructive' }); return }
-    setLeads(current => current.map(item => item.id === lead.id ? { ...item, ...saved } as Lead : item))
+    setLeads(current => current.map(item => item.id === lead.id ? {
+      ...item,
+      ...saved,
+      company_intelligence: normalizeCompanyIntelligence(saved.company_intelligence),
+    } as Lead : item))
     toast({ title: approvalStatus === 'approved' ? 'Godkänd för export' : 'Utkast sparat' })
   }
 
@@ -388,6 +424,12 @@ const AdminProspecting = () => {
 
           {selectedId && (
             <div className="bg-card rounded-xl border p-4">
+              <div className="mb-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded-lg border bg-muted/20 p-3"><p className="text-xs text-muted-foreground">Leads i urval</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.total}</p></div>
+                <div className="rounded-lg border bg-muted/20 p-3"><p className="flex items-center gap-1 text-xs text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />Stark evidence ≥60</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.strongEvidence}</p></div>
+                <div className="rounded-lg border bg-muted/20 p-3"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CalendarClock className="h-3.5 w-3.5" />Förfallen uppföljning</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.dueFollowUps}</p></div>
+                <div className="rounded-lg border bg-muted/20 p-3"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CircleDollarSign className="h-3.5 w-3.5" />Öppet affärsvärde</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.openPipelineValueSek.toLocaleString('sv-SE')} kr</p></div>
+              </div>
               <div className="flex items-center gap-2 flex-wrap mb-3">
                 <h2 className="font-semibold mr-auto">Träffar</h2>
                 <Select value={statusFilter} onValueChange={v => setStatusFilter(v as LeadStatus | 'all')}>
@@ -406,6 +448,15 @@ const AdminProspecting = () => {
                     <SelectItem value="80">≥ 80</SelectItem>
                   </SelectContent>
                 </Select>
+                <Select value={followUpFilter} onValueChange={v => setFollowUpFilter(v as FollowUpFilter)}>
+                  <SelectTrigger className="w-44"><SelectValue placeholder="Uppföljning" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Alla uppföljningar</SelectItem>
+                    <SelectItem value="due">Förfallna</SelectItem>
+                    <SelectItem value="scheduled">Kommande</SelectItem>
+                    <SelectItem value="missing">Saknar nästa steg</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {loadingLeads ? (
@@ -422,7 +473,7 @@ const AdminProspecting = () => {
                         <th className="py-2 pr-2">Ort</th>
                         <th className="py-2 pr-2">Bransch</th>
                         <th className="py-2 pr-2">Score</th>
-                        <th className="py-2 pr-2">Signaler</th>
+                        <th className="py-2 pr-2">Evidence</th>
                         <th className="py-2 pr-2">Kontaktsida</th>
                         <th className="py-2 pr-2">Outreach</th>
                         <th className="py-2">Status</th>
@@ -447,11 +498,17 @@ const AdminProspecting = () => {
                                 Källbevis <ExternalLink className="h-3 w-3" />
                               </a>
                             )}
-                            {l.fit_reason ? <p className="max-w-64 text-xs">{l.fit_reason}</p> : l.observed_signals.length === 0 ? (
+                            {l.company_intelligence ? (
+                              <div className="max-w-72 space-y-1">
+                                <div className="flex items-center gap-1.5"><Badge variant={l.company_intelligence.confidence >= 60 ? 'default' : 'secondary'}>{l.company_intelligence.confidence}%</Badge><span className="text-[11px] text-muted-foreground">evidence confidence</span></div>
+                                <p>{l.company_intelligence.summary}</p>
+                                {l.fit_reason && <p className="text-muted-foreground">{l.fit_reason}</p>}
+                              </div>
+                            ) : l.fit_reason ? <p className="max-w-64 text-xs">{l.fit_reason}</p> : l.observed_signals.length === 0 ? (
                               <span className="text-muted-foreground">–</span>
                             ) : (
                               <ul className="list-disc pl-4 space-y-0.5">
-                                {l.observed_signals.map((s, i) => <li key={i}>{s}</li>)}
+                                {l.observed_signals.map((signal, i) => <li key={i}>{signal}</li>)}
                               </ul>
                             )}
                           </td>
@@ -473,10 +530,23 @@ const AdminProspecting = () => {
                                 {STATUS_OPTIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
                               </SelectContent>
                             </Select>
+                            {l.next_action_at && <p className={cn('mt-1 text-[10px]', isFollowUpDue(l.next_action_at) && !['converted', 'rejected', 'do_not_contact'].includes(l.status) ? 'font-semibold text-destructive' : 'text-muted-foreground')}>{new Date(l.next_action_at).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' })}</p>}
+                            {l.deal_value_sek != null && <p className="text-[10px] text-muted-foreground">{l.deal_value_sek.toLocaleString('sv-SE')} kr</p>}
                           </td>
                         </tr>
                         {expandedId === l.id && review && <tr className="border-b bg-muted/30"><td colSpan={9} className="p-4">
-                          <div className="grid gap-4 lg:grid-cols-2">
+                          {l.company_intelligence && <div className="mb-4 rounded-xl border bg-background p-4">
+                            <div className="flex flex-wrap items-center gap-2"><h3 className="font-semibold">Evidence Engine</h3><Badge variant={l.company_intelligence.confidence >= 60 ? 'default' : 'secondary'}>{l.company_intelligence.confidence}% confidence</Badge>{l.intelligence_source && <span className="text-[11px] text-muted-foreground">{l.intelligence_source}</span>}</div>
+                            <p className="mt-2 text-sm">{l.company_intelligence.summary}</p>
+                            <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                              <div><p className="text-xs font-semibold">Teknik</p><div className="mt-1 flex flex-wrap gap-1">{l.company_intelligence.technology_signals.length ? l.company_intelligence.technology_signals.map(item => <Badge key={item} variant="outline">{item}</Badge>) : <span className="text-xs text-muted-foreground">Ingen tydlig signal</span>}</div></div>
+                              <div><p className="text-xs font-semibold">Kommersiellt</p><div className="mt-1 flex flex-wrap gap-1">{l.company_intelligence.commercial_signals.length ? l.company_intelligence.commercial_signals.map(item => <Badge key={item} variant="outline">{item}</Badge>) : <span className="text-xs text-muted-foreground">Ingen tydlig signal</span>}</div></div>
+                              <div><p className="text-xs font-semibold">Tillväxt</p><div className="mt-1 flex flex-wrap gap-1">{l.company_intelligence.growth_signals.length ? l.company_intelligence.growth_signals.map(item => <Badge key={item} variant="outline">{item}</Badge>) : <span className="text-xs text-muted-foreground">Ingen tydlig signal</span>}</div></div>
+                              <div><p className="text-xs font-semibold">Risk / möjlighet</p><div className="mt-1 flex flex-wrap gap-1">{l.company_intelligence.risk_signals.length ? l.company_intelligence.risk_signals.map(item => <Badge key={item} variant="outline">{item}</Badge>) : <span className="text-xs text-muted-foreground">Ingen tydlig signal</span>}</div></div>
+                            </div>
+                            {l.company_intelligence.evidence.length > 0 && <details className="mt-3"><summary className="cursor-pointer text-xs font-semibold">Visa källsignaler ({l.company_intelligence.evidence.length})</summary><ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">{l.company_intelligence.evidence.map((item, index) => <li key={`${item}-${index}`}>{item}</li>)}</ul></details>}
+                          </div>}
+                          <div className="grid gap-4 lg:grid-cols-3">
                             <div className="space-y-3">
                               <h3 className="font-semibold">Kontakt och kvalificering</h3>
                               <div className="grid grid-cols-2 gap-2"><Input aria-label="Förnamn" placeholder="Förnamn" value={review.contact_first_name} onChange={event => setReview(current => current && ({ ...current, contact_first_name: event.target.value }))} /><Input aria-label="Efternamn" placeholder="Efternamn" value={review.contact_last_name} onChange={event => setReview(current => current && ({ ...current, contact_last_name: event.target.value }))} /></div>
@@ -489,6 +559,13 @@ const AdminProspecting = () => {
                               <Input aria-label="Ämnesrad" placeholder="Ämnesrad" value={review.outreach_subject} onChange={event => setReview(current => current && ({ ...current, outreach_subject: event.target.value }))} />
                               <Textarea aria-label="Meddelande" rows={6} placeholder="Personligt meddelande. Kontrollera varje påstående." value={review.outreach_body} onChange={event => setReview(current => current && ({ ...current, outreach_body: event.target.value }))} />
                               <Textarea aria-label="Svarsnotering" rows={2} placeholder="Svar / nästa steg (valfritt)" value={review.reply_note} onChange={event => setReview(current => current && ({ ...current, reply_note: event.target.value }))} />
+                            </div>
+                            <div className="space-y-3">
+                              <h3 className="font-semibold">Nästa steg</h3>
+                              <Input aria-label="Nästa åtgärd" placeholder="t.ex. Ring efter offertgenomgång" value={review.next_action} onChange={event => setReview(current => current && ({ ...current, next_action: event.target.value }))} />
+                              <div><Label htmlFor={`next-action-${l.id}`}>Följ upp</Label><Input id={`next-action-${l.id}`} type="datetime-local" value={review.next_action_at} onChange={event => setReview(current => current && ({ ...current, next_action_at: event.target.value }))} /></div>
+                              <div><Label htmlFor={`deal-value-${l.id}`}>Uppskattat affärsvärde (kr)</Label><Input id={`deal-value-${l.id}`} type="number" min="0" max="100000000" step="1" placeholder="15000" value={review.deal_value_sek} onChange={event => setReview(current => current && ({ ...current, deal_value_sek: event.target.value }))} /></div>
+                              <p className="text-[11px] text-muted-foreground">Detta är interna planeringsfält. Inget skickas automatiskt.</p>
                             </div>
                           </div>
                           <div className="mt-4 flex gap-2 flex-wrap">
