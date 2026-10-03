@@ -46,7 +46,7 @@ describe('supplier sales pipeline', () => {
       pendingValueSek: 20000,
       wonValueSek: 25000,
       dueFollowUps: 1,
-      missingNextStep: 1,
+      missingNextStep: 2,
     })
   })
 })
