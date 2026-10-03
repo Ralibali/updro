@@ -155,8 +155,8 @@ const SupplierOffers = () => {
       {loading ? <p role="status" className="rounded-xl border p-6 text-sm text-muted-foreground">Laddar dina offerter…</p> : error ? <div role="alert" className="rounded-xl border p-6"><p>Offerterna kunde inte läsas.</p><Button variant="outline" onClick={load} className="mt-3">Försök igen</Button></div> : <>
 
       <section aria-label="Säljpipeline" className="mb-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CircleDollarSign className="h-3.5 w-3.5" />Öppet offertvärde</p><p className="mt-1 text-xl font-semibold">{formatPrice(pipelineMetrics.pendingValueSek)}</p></div>
-        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><Trophy className="h-3.5 w-3.5" />Vunnet värde</p><p className="mt-1 text-xl font-semibold">{formatPrice(pipelineMetrics.wonValueSek)}</p></div>
+        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CircleDollarSign className="h-3.5 w-3.5" />Öppet fastprisvärde</p><p className="mt-1 text-xl font-semibold">{formatPrice(pipelineMetrics.pendingValueSek)}</p></div>
+        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><Trophy className="h-3.5 w-3.5" />Vunnet fastprisvärde</p><p className="mt-1 text-xl font-semibold">{formatPrice(pipelineMetrics.wonValueSek)}</p></div>
         <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CalendarClock className="h-3.5 w-3.5" />Följ upp nu</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.dueFollowUps}</p></div>
         <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><ListChecks className="h-3.5 w-3.5" />Saknar nästa steg</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.missingNextStep}</p></div>
       </section>
