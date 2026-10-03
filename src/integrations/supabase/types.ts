@@ -1324,6 +1324,7 @@ export type Database = {
           campaign_id: string
           city: string | null
           company_name: string
+          company_intelligence: Json
           contact_email: string | null
           contact_first_name: string | null
           contact_last_name: string | null
@@ -1331,6 +1332,7 @@ export type Database = {
           contact_title: string | null
           contacted_at: string | null
           created_at: string
+          deal_value_sek: number | null
           description: string | null
           domain: string
           export_count: number
@@ -1338,8 +1340,12 @@ export type Database = {
           fit_score: number
           id: string
           industry: string | null
+          intelligence_source: string | null
+          intelligence_updated_at: string | null
           last_exported_at: string | null
           linkedin_url: string | null
+          next_action: string | null
+          next_action_at: string | null
           observed_signals: Json
           outreach_body: string | null
           outreach_note: string | null
@@ -1360,6 +1366,7 @@ export type Database = {
           campaign_id: string
           city?: string | null
           company_name: string
+          company_intelligence?: Json
           contact_email?: string | null
           contact_first_name?: string | null
           contact_last_name?: string | null
@@ -1367,6 +1374,7 @@ export type Database = {
           contact_title?: string | null
           contacted_at?: string | null
           created_at?: string
+          deal_value_sek?: number | null
           description?: string | null
           domain: string
           export_count?: number
@@ -1374,8 +1382,12 @@ export type Database = {
           fit_score?: number
           id?: string
           industry?: string | null
+          intelligence_source?: string | null
+          intelligence_updated_at?: string | null
           last_exported_at?: string | null
           linkedin_url?: string | null
+          next_action?: string | null
+          next_action_at?: string | null
           observed_signals?: Json
           outreach_body?: string | null
           outreach_note?: string | null
@@ -1396,6 +1408,7 @@ export type Database = {
           campaign_id?: string
           city?: string | null
           company_name?: string
+          company_intelligence?: Json
           contact_email?: string | null
           contact_first_name?: string | null
           contact_last_name?: string | null
@@ -1403,6 +1416,7 @@ export type Database = {
           contact_title?: string | null
           contacted_at?: string | null
           created_at?: string
+          deal_value_sek?: number | null
           description?: string | null
           domain?: string
           export_count?: number
@@ -1410,8 +1424,12 @@ export type Database = {
           fit_score?: number
           id?: string
           industry?: string | null
+          intelligence_source?: string | null
+          intelligence_updated_at?: string | null
           last_exported_at?: string | null
           linkedin_url?: string | null
+          next_action?: string | null
+          next_action_at?: string | null
           observed_signals?: Json
           outreach_body?: string | null
           outreach_note?: string | null
