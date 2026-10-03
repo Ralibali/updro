@@ -12,6 +12,7 @@ export type SupplierPipelineOffer = {
   id: string
   status: string | null
   price: number
+  payment_plan?: string | null
 }
 
 const ACTIVE_STATUSES = new Set(['pending', 'accepted'])
@@ -37,8 +38,9 @@ export function buildSupplierPipelineMetrics(
 
   for (const offer of offers) {
     const price = Number.isFinite(offer.price) && offer.price > 0 ? offer.price : 0
-    if (offer.status === 'pending') pendingValueSek += price
-    if (offer.status === 'accepted') wonValueSek += price
+    const canSumAsProjectValue = offer.payment_plan !== 'hourly'
+    if (offer.status === 'pending' && canSumAsProjectValue) pendingValueSek += price
+    if (offer.status === 'accepted' && canSumAsProjectValue) wonValueSek += price
     if (!offer.status || !ACTIVE_STATUSES.has(offer.status)) continue
 
     const followUp = followUps[offer.id]
