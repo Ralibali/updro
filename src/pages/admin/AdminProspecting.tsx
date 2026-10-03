@@ -237,7 +237,11 @@ const AdminProspecting = () => {
     }
     const { data: saved, error } = await supabase.from('prospecting_leads').update(patch).eq('id', lead.id).select('*').single()
     if (error) { toast({ title: 'Kunde inte spara granskningen', description: error.message, variant: 'destructive' }); return }
-    setLeads(current => current.map(item => item.id === lead.id ? { ...item, ...saved } as Lead : item))
+    setLeads(current => current.map(item => item.id === lead.id ? {
+      ...item,
+      ...saved,
+      company_intelligence: normalizeCompanyIntelligence(saved.company_intelligence),
+    } as Lead : item))
     toast({ title: approvalStatus === 'approved' ? 'Godkänd för export' : 'Utkast sparat' })
   }
 
