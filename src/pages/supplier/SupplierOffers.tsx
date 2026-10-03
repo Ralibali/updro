@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { CalendarClock, CircleDollarSign, ListChecks, Trophy } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
 import { CATEGORY_STYLES } from '@/lib/constants'
@@ -8,10 +9,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import OfferAttachment from '@/components/shared/OfferAttachment'
+import OfferFollowUpEditor from '@/components/supplier/OfferFollowUpEditor'
 import { PAYMENT_PLAN_LABELS } from '@/lib/agreements'
 import StartPortalButton from '@/components/portal/StartPortalButton'
 import AgreementPanel from '@/components/agreements/AgreementPanel'
-
+import {
+  buildSupplierPipelineMetrics,
+  isSupplierFollowUpDue,
+  type SupplierOfferFollowUp,
+} from '@/lib/supplierSalesPipeline'
 
 function groupByMonth(offers: any[]) {
   const groups: Record<string, any[]> = {}
@@ -27,7 +33,14 @@ function groupByMonth(offers: any[]) {
     .map(([key, items]) => ({ key, label: items[0].monthLabel, items }))
 }
 
-export const OfferCard = ({ o }: { o: any }) => (
+type OfferCardProps = {
+  o: any
+  supplierId?: string
+  followUp?: SupplierOfferFollowUp
+  onFollowUpSaved?: (followUp: SupplierOfferFollowUp | null) => void
+}
+
+export const OfferCard = ({ o, supplierId, followUp, onFollowUpSaved }: OfferCardProps) => (
   <article className={`rounded-2xl border bg-card p-4 sm:p-5 ${o.status === 'accepted' ? 'border-emerald-300' : ''}`}>
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div className="min-w-0 flex-1 basis-48">
@@ -57,6 +70,14 @@ export const OfferCard = ({ o }: { o: any }) => (
       <Button asChild variant="outline" size="sm"><Link to={`/dashboard/supplier/uppdrag/${o.project_id}`}>Uppdrag och kontakt</Link></Button>
       {o.projects?.buyer_id && (o.status === 'accepted' || o.status === 'pending') && <Button asChild variant="outline" size="sm"><Link to={`/dashboard/supplier/chatt?project=${o.project_id}&user=${o.projects.buyer_id}`}>Chatta med beställaren</Link></Button>}
     </div>
+    {(o.status === 'pending' || o.status === 'accepted') && supplierId && onFollowUpSaved && (
+      <OfferFollowUpEditor
+        offerId={o.id}
+        supplierId={supplierId}
+        followUp={followUp}
+        onSaved={onFollowUpSaved}
+      />
+    )}
     {o.status === 'accepted' && o.project_id && <AgreementPanel projectId={o.project_id} offerId={o.id} role="supplier" />}
   </article>
 )
@@ -64,26 +85,45 @@ export const OfferCard = ({ o }: { o: any }) => (
 const SupplierOffers = () => {
   const { user } = useAuth()
   const [offers, setOffers] = useState<any[]>([])
+  const [followUps, setFollowUps] = useState<Record<string, SupplierOfferFollowUp>>({})
   const [search, setSearch] = useState('')
-
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+
   const load = useCallback(async () => {
     if (!user) return
     setLoading(true)
     setError(false)
     try {
-      const result = await supabase.from('offers').select('*, projects(title, category, city, buyer_id)')
-        .eq('supplier_id', user.id).order('created_at', { ascending: false })
-      if (result.error) throw result.error
-      setOffers(result.data || [])
-    } catch { setError(true) }
-    finally { setLoading(false) }
+      const [offerResult, followUpResult] = await Promise.all([
+        supabase.from('offers').select('*, projects(title, category, city, buyer_id)')
+          .eq('supplier_id', user.id).order('created_at', { ascending: false }),
+        supabase.from('supplier_offer_followups').select('*')
+          .eq('supplier_id', user.id),
+      ])
+      if (offerResult.error) throw offerResult.error
+      if (followUpResult.error) throw followUpResult.error
+
+      setOffers(offerResult.data || [])
+      setFollowUps(Object.fromEntries((followUpResult.data || []).map(item => [item.offer_id, item])))
+    } catch {
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
   }, [user])
+
   useEffect(() => { void load() }, [load])
 
-  const activeOffers = offers.filter(o => o.status === 'pending' || o.status === 'accepted')
+  const activeOffers = useMemo(() => offers
+    .filter(o => o.status === 'pending' || o.status === 'accepted')
+    .sort((a, b) => Number(isSupplierFollowUpDue(followUps[b.id]?.follow_up_at)) - Number(isSupplierFollowUpDue(followUps[a.id]?.follow_up_at))),
+  [offers, followUps])
   const lostOffers = offers.filter(o => o.status === 'declined' || o.status === 'withdrawn')
+  const pipelineMetrics = useMemo(
+    () => buildSupplierPipelineMetrics(offers, followUps),
+    [offers, followUps],
+  )
 
   const filteredLost = useMemo(() => {
     if (!search.trim()) return lostOffers
@@ -97,13 +137,29 @@ const SupplierOffers = () => {
 
   const lostByMonth = groupByMonth(filteredLost)
 
+  const updateFollowUp = (offerId: string, followUp: SupplierOfferFollowUp | null) => {
+    setFollowUps(current => {
+      const next = { ...current }
+      if (followUp) next[offerId] = followUp
+      else delete next[offerId]
+      return next
+    })
+  }
+
   return (
     <div className="max-w-4xl">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
-        <div><h1 className="font-display text-2xl font-bold">Mina offerter</h1><p className="mt-1 text-sm text-muted-foreground">Följ dina förslag, håll kontakten och bekräfta era avtal.</p></div>
+        <div><h1 className="font-display text-2xl font-bold">Mina offerter</h1><p className="mt-1 text-sm text-muted-foreground">Följ dina förslag, håll kontakten och planera nästa steg privat.</p></div>
         <Button asChild><Link to="/dashboard/supplier/uppdrag">Hitta uppdrag</Link></Button>
       </div>
       {loading ? <p role="status" className="rounded-xl border p-6 text-sm text-muted-foreground">Laddar dina offerter…</p> : error ? <div role="alert" className="rounded-xl border p-6"><p>Offerterna kunde inte läsas.</p><Button variant="outline" onClick={load} className="mt-3">Försök igen</Button></div> : <>
+
+      <section aria-label="Säljpipeline" className="mb-5 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CircleDollarSign className="h-3.5 w-3.5" />Öppet offertvärde</p><p className="mt-1 text-xl font-semibold">{formatPrice(pipelineMetrics.pendingValueSek)}</p></div>
+        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><Trophy className="h-3.5 w-3.5" />Vunnet värde</p><p className="mt-1 text-xl font-semibold">{formatPrice(pipelineMetrics.wonValueSek)}</p></div>
+        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><CalendarClock className="h-3.5 w-3.5" />Följ upp nu</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.dueFollowUps}</p></div>
+        <div className="rounded-xl border bg-card p-4"><p className="flex items-center gap-1 text-xs text-muted-foreground"><ListChecks className="h-3.5 w-3.5" />Saknar nästa steg</p><p className="mt-1 text-xl font-semibold">{pipelineMetrics.missingNextStep}</p></div>
+      </section>
 
       <Tabs defaultValue="active">
         <TabsList className="mb-4">
@@ -118,7 +174,15 @@ const SupplierOffers = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {activeOffers.map(o => <OfferCard key={o.id} o={o} />)}
+              {activeOffers.map(o => (
+                <OfferCard
+                  key={o.id}
+                  o={o}
+                  supplierId={user?.id}
+                  followUp={followUps[o.id]}
+                  onFollowUpSaved={followUp => updateFollowUp(o.id, followUp)}
+                />
+              ))}
             </div>
           )}
         </TabsContent>
