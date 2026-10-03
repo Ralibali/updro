@@ -1732,6 +1732,58 @@ export type Database = {
           },
         ]
       }
+      supplier_offer_followups: {
+        Row: {
+          created_at: string
+          follow_up_at: string | null
+          next_action: string | null
+          offer_id: string
+          private_note: string | null
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          follow_up_at?: string | null
+          next_action?: string | null
+          offer_id: string
+          private_note?: string | null
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          follow_up_at?: string | null
+          next_action?: string | null
+          offer_id?: string
+          private_note?: string | null
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_offer_followups_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: true
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_offer_followups_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_offer_followups_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supplier_profiles: {
         Row: {
           avg_rating: number | null
