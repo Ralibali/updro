@@ -32,10 +32,11 @@ describe('supplier sales pipeline', () => {
     const now = Date.parse('2026-10-03T12:00:00Z')
 
     const metrics = buildSupplierPipelineMetrics([
-      { id: firstId, status: 'pending', price: 12000 },
-      { id: secondId, status: 'accepted', price: 25000 },
-      { id: thirdId, status: 'pending', price: 8000 },
-      { id: '55555555-5555-4555-8555-555555555555', status: 'declined', price: 50000 },
+      { id: firstId, status: 'pending', price: 12000, payment_plan: 'fixed' },
+      { id: secondId, status: 'accepted', price: 25000, payment_plan: 'fixed' },
+      { id: thirdId, status: 'pending', price: 8000, payment_plan: 'fixed' },
+      { id: '55555555-5555-4555-8555-555555555555', status: 'declined', price: 50000, payment_plan: 'fixed' },
+      { id: '66666666-6666-4666-8666-666666666666', status: 'pending', price: 1500, payment_plan: 'hourly' },
     ], {
       [firstId]: followUp({ offer_id: firstId }),
       [secondId]: followUp({ offer_id: secondId, follow_up_at: '2026-10-04T10:00:00Z' }),
