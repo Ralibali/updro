@@ -17,6 +17,8 @@ import Index from "./pages/Index";
 
 const AiVisibilityPage = lazy(() => import("./pages/AiVisibilityPage"));
 const LocalVisibilityPage = lazy(() => import("./pages/LocalVisibilityPage"));
+const SupportPage = lazy(() => import("./pages/SupportPage"));
+const ConfirmEmailPage = lazy(() => import("./pages/ConfirmEmailPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const RegisterSupplierPage = lazy(() => import("./pages/RegisterSupplierPage"));
@@ -48,7 +50,7 @@ const PriceGuidePage = lazy(() => import("./pages/PriceGuidePage"));
 // src/lib/seoRedirects.ts (single source of truth, mirrored in public/_redirects).
 const LegacyAliasRedirect = () => {
   const location = useLocation();
-  return <Navigate to={resolveLegacyRedirect(location.pathname) ?? '/'} replace />;
+  return <Navigate to={`${resolveLegacyRedirect(location.pathname) ?? '/'}${location.search}${location.hash}`} replace />;
 };
 
 
@@ -150,7 +152,8 @@ const App = () => (
         <Route path="/priser" element={<PricingPage />} />
         <Route path="/priser/:slug" element={<PriceGuidePage />} />
         <Route path="/om-oss" element={<AboutPage />} />
-        <Route path="/support" element={<PlaceholderPage title="Support" />} />
+        <Route path="/support" element={<SupportPage />} />
+        <Route path="/bekrafta-epost" element={<ConfirmEmailPage />} />
         <Route path="/integritetspolicy" element={<PrivacyPolicyPage />} />
         <Route path="/integritet/prospektering" element={<ProspectingPrivacyNoticePage />} />
         <Route path="/villkor" element={<TermsPage />} />

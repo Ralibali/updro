@@ -7,7 +7,7 @@ type SignupAuthError = {
 };
 
 export const existingAccountMessage =
-  "Det finns redan ett konto med den e-postadressen. Logga in istället. Om du inte har bekräftat e-postadressen, öppna bekräftelselänken i din inkorg.";
+  "Det finns redan ett konto med den e-postadressen. Logga in eller skicka bekräftelsen igen om e-postadressen inte är bekräftad.";
 
 // Supabase's human-readable messages can change. Codes and password reasons are
 // the API contract; a length number is only used to make the advice more precise.

@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
@@ -57,7 +58,7 @@ const BuyerProjects = () => {
             <div key={p.id} className="bg-card rounded-xl border p-4 hover:shadow-md transition-all">
               <div className="flex items-start justify-between gap-2">
                 <Link to={`/dashboard/buyer/uppdrag/${p.id}`} className="flex-1 min-w-0">
-                  <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[p.category] || ''}`}>{p.category}</span>
+                  <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[p.category] || ''}`}>{categoryLabel(p.category)}</span>
                   <h3 className="font-semibold">{p.title}</h3>
                   <p className="text-sm text-muted-foreground mt-1">{BUDGET_LABELS[p.budget_range] || ''} · {p.city} · {timeAgo(p.created_at)}</p>
                   <div className="flex items-center gap-3 mt-2 flex-wrap">

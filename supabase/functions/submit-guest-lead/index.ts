@@ -1,22 +1,7 @@
+import { CATEGORY_VALUES as allowedCategories } from '../_shared/categories.ts';
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
 
-const allowedCategories = new Set([
-  "Webbutveckling",
-  "E-handel",
-  "Digital marknadsföring",
-  "Grafisk design/UX",
-  "SEO",
-  "App-utveckling",
-  "IT-konsult",
-  "Sociala medier",
-  "Mjukvaruutveckling",
-  "Video & foto",
-  "Varumärke & PR",
-  "UX/Webbdesign",
-  "Underhåll/IT Support",
-  "Affärsutveckling",
-  "AI-utveckling",
-]);
+
 const allowedBudgets = new Set(["under_10k", "10k_50k", "50k_150k", "over_150k", "unknown"]);
 const allowedStarts = new Set(["asap", "within_month", "within_3months", "flexible"]);
 const gatewayUrl = "https://connector-gateway.lovable.dev/resend";

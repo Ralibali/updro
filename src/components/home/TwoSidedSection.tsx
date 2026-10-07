@@ -13,7 +13,7 @@ const buyerBullets = [
 const supplierBullets = [
   'Max tre byråer per uppdrag',
   'Välj själv vilka leads ni låser upp',
-  'Fem kostnadsfria lead-krediter vid start',
+  '5 gratis leads vid start',
   '0 % provision på projektet när ni vinner',
 ]
 

@@ -1,3 +1,6 @@
+import type { Category } from '../../supabase/functions/_shared/categories'
+export type { Category } from '../../supabase/functions/_shared/categories'
+
 export type UserRole = 'buyer' | 'supplier' | 'admin'
 export type ProjectStatus = 'draft' | 'active' | 'closed' | 'completed'
 export type OfferStatus = 'pending' | 'accepted' | 'declined' | 'withdrawn'
@@ -5,12 +8,7 @@ export type SupplierPlan = 'none' | 'trial' | 'payg' | 'standard' | 'premium' | 
 export type BudgetRange = 'under_10k' | '10k_50k' | '50k_150k' | 'over_150k' | 'unknown'
 export type StartTime = 'asap' | 'within_month' | 'within_3months' | 'flexible'
 export type PaymentPlan = 'fixed' | 'hourly' | 'milestone'
-export type Category =
-  | 'Webbutveckling' | 'E-handel' | 'Digital marknadsföring'
-  | 'Grafisk design/UX' | 'SEO' | 'App-utveckling'
-  | 'IT-konsult' | 'Sociala medier'
-  | 'Mjukvaruutveckling' | 'Video & foto' | 'Varumärke & PR'
-  | 'UX/Webbdesign' | 'Underhåll/IT Support' | 'Affärsutveckling' | 'AI-utveckling'
+
 
 export interface Profile {
   id: string

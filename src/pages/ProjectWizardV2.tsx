@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
@@ -301,7 +302,7 @@ const ProjectWizardV2 = () => {
                   {CATEGORIES.map(category => (
                     <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
                       <span className="text-2xl" aria-hidden="true">{CATEGORY_ICONS[category]}</span>
-                      <span className="text-xs text-center">{category}</span>
+                      <span className="text-xs text-center">{categoryLabel(category)}</span>
                       {form.category === category && <Check className="h-3 w-3" />}
                     </button>
                   ))}
@@ -355,7 +356,7 @@ const ProjectWizardV2 = () => {
                       <Field label="Telefon (valfritt)" id="phone" type="tel" value={form.phone} onChange={value => setForm(previous => ({ ...previous, phone: value }))} autoComplete="tel" />
                     </div>
                   </div>
-                  <div className="absolute -left-[9999px]" aria-hidden="true">
+                  <div hidden aria-hidden="true">
                     <Label htmlFor="website">Webbplats</Label>
                     <Input id="website" name="website" tabIndex={-1} autoComplete="off" value={website} onChange={event => setWebsite(event.target.value)} />
                   </div>

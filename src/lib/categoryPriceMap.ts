@@ -9,6 +9,7 @@ export const CATEGORY_PRICE_MAP: Record<string, { matrixKey: keyof typeof PRICE_
   'Webbutveckling': { matrixKey: 'hemsida', guideSlug: 'hemsida', guideLabel: 'hemsida' },
   'E-handel': { matrixKey: 'ehandel', guideSlug: 'e-handel', guideLabel: 'e-handel' },
   'SEO': { matrixKey: 'seo', guideSlug: 'seo', guideLabel: 'SEO' },
+  'Google Ads': { matrixKey: 'ads', guideSlug: 'google-ads', guideLabel: 'Google Ads' },
   'Digital marknadsföring': { matrixKey: 'ads', guideSlug: 'google-ads', guideLabel: 'Google Ads' },
   'App-utveckling': { matrixKey: 'app', guideSlug: 'apputveckling', guideLabel: 'apputveckling' },
   'Grafisk design/UX': { matrixKey: 'design', guideSlug: 'grafisk-design', guideLabel: 'design' },

@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '@/components/Navbar'
@@ -80,7 +81,7 @@ const BrowseAgenciesPage = () => {
                 <SelectTrigger aria-label="Filtrera byråer efter kategori" className="w-full sm:w-56 rounded-xl"><SelectValue placeholder="Alla kategorier" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Alla kategorier</SelectItem>
-                  {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                  {CATEGORIES.map(c => <SelectItem key={c} value={c}>{categoryLabel(c)}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -116,7 +117,7 @@ const BrowseAgenciesPage = () => {
 
                         <div className="flex flex-wrap gap-1 mb-3">
                           {(a.categories || []).slice(0, 3).map((cat: string) => (
-                            <span key={cat} className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{cat}</span>
+                            <span key={cat} className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{categoryLabel(cat)}</span>
                           ))}
                         </div>
 

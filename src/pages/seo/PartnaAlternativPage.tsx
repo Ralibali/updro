@@ -24,7 +24,7 @@ const comparisonRows = [
   ['Månadsplan', `${STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån för obegränsade upplåsningar under aktiv månad.`, `${PARTNA_FACTS.standardMonthly.toLocaleString('sv-SE')} kr/mån inklusive ${PARTNA_FACTS.standardIncludedLeads} uppdragsförfrågningar, därefter ordinarie pris.`],
   ['Avgift när affären vinns', 'Ingen procentuell slagavgift på projektvärdet i Updros publicerade prismodell.', `Partna anger ${Math.round(PARTNA_FACTS.successFeeRate * 100)} % slagavgift av offertens värde exkl. moms när leverantören blir vald.`],
   ['Brief och prisunderlag', 'AI-stöd för brief, prisspann före publicering och öppna prisguider.', 'Partna beskriver AI-matchning mellan uppdrag och leverantör. Updro skiljer ut sig med prisunderlag före publicering.'],
-  ['Provstart', 'Fem lead-krediter under sju dagar utan kortuppgifter.', 'Kontrollera aktuellt introduktionserbjudande direkt hos Partna.'],
+  ['Provstart', '5 gratis leads under sju dagar utan kortuppgifter.', 'Kontrollera aktuellt introduktionserbjudande direkt hos Partna.'],
   ['Beställare', 'Gratis, granskad brief och låsta kontaktuppgifter.', 'Gratis offertförfrågan. Partna erbjuder BankID/SMS-verifiering och företagskontroller enligt sin publika information.'],
   ['Marknadsläge', 'Nylanserad tjänst där leadvolymen fortfarande byggs upp.', 'Etablerad aktör med större befintligt nätverk och publicerad historik.'],
 ]
@@ -214,7 +214,7 @@ const PartnaAlternativPage = () => {
         <section className="container pb-20">
           <div className="rounded-xl bg-foreground p-8 text-background md:p-12">
             <h2 className="font-display text-3xl font-bold md:text-4xl">Mät Updro med riktiga leads – innan du betalar</h2>
-            <p className="mt-3 max-w-2xl text-background/75">Nya byråer får fem kostnadsfria lead-krediter under sju dagar utan kortuppgifter. Jämför faktisk kvalitet, svar och möten med dina andra kanaler.</p>
+            <p className="mt-3 max-w-2xl text-background/75">Nya byråer får 5 gratis leads under sju dagar utan kortuppgifter. Jämför faktisk kvalitet, svar och möten med dina andra kanaler.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link to="/registrera/byra"><Button size="lg" variant="secondary" className="rounded-xl px-7">Testa 5 leads gratis</Button></Link>
               <Link to="/priser"><Button size="lg" variant="outline" className="rounded-xl border-background text-background hover:bg-background hover:text-foreground">Se alla Updro-priser</Button></Link>

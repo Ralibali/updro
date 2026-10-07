@@ -1,3 +1,4 @@
+import { CATEGORIES } from '../_shared/categories.ts';
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
 
@@ -7,13 +8,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const CATEGORIES = [
-  "Webbutveckling", "E-handel", "Digital marknadsföring",
-  "Grafisk design/UX", "SEO", "App-utveckling",
-  "IT-konsult", "Sociala medier",
-  "Mjukvaruutveckling", "Video & foto", "Varumärke & PR",
-  "UX/Webbdesign", "Underhåll/IT Support", "Affärsutveckling", "AI-utveckling",
-];
+
 
 const BUDGETS = ["under_10k", "10k_50k", "50k_150k", "over_150k", "unknown"];
 const STARTS = ["asap", "within_month", "within_3months", "flexible"];

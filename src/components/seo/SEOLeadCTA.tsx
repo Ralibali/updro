@@ -10,7 +10,7 @@ const SEOLeadCTA = ({ categoryName, category }: { categoryName: string; category
       <div className="container py-12 md:py-16">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="font-display text-2xl md:text-3xl font-medium">
-            Jämför offerter för {categoryName.toLowerCase()} – kostnadsfritt
+            Jämför offerter för {categoryName} – kostnadsfritt
           </h2>
           <p className="mt-3 text-muted-foreground text-lg">
             Beskriv behovet en gång. Updro granskar briefen och högst tre relevanta byråer kan lämna offert. Du väljer själv om du vill gå vidare.
@@ -19,7 +19,7 @@ const SEOLeadCTA = ({ categoryName, category }: { categoryName: string; category
             className="mt-6"
             category={resolveSeoLeadCategory(category || categoryName)}
             source={`seo_cta:${pathname}`}
-            placeholder={`Beskriv ditt behov inom ${categoryName.toLowerCase()} – mål, bransch och ungefärlig budget…`}
+            placeholder={`Beskriv ditt behov inom ${categoryName} – mål, bransch och ungefärlig budget…`}
           />
           <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5"><FileCheck className="h-4 w-4 text-primary" /> Briefen granskas</span>

@@ -413,3 +413,23 @@ describe('ProjectWizardV2 buyer lead confirmation', () => {
     })
   })
 })
+
+describe('Google Ads lead regression', () => {
+  it('keeps the category and brief through back/next and sends Google Ads to the server', async () => {
+    localStorage.clear()
+    invokeMock.mockReset().mockResolvedValue({ data: { success: true, project_id: 'google-ads-project', email_sent: true }, error: null })
+    renderWizard('/publicera?kategori=Google%20Ads&beskrivning=Vi%20beh%C3%B6ver%20Google%20Ads')
+    expect(screen.getByRole('button', { name: /Google Ads/ })).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
+    expect(screen.getByLabelText('Webbplats')).not.toBeVisible()
+    expect(screen.getByRole('link', { name: /Läs om oss/ })).toHaveAttribute('target', '_blank')
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'lead@example.test' } })
+    fireEvent.click(screen.getByRole('button', { name: /Tillbaka/ }))
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('Vi behöver Google Ads')
+    expect(screen.getByRole('button', { name: /Google Ads/ })).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
+    expect(screen.getByLabelText(/E-post/)).toHaveValue('lead@example.test')
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+    await waitFor(() => expect(invokeMock).toHaveBeenCalledWith('submit-guest-lead', { body: expect.objectContaining({ category: 'Google Ads', description: 'Vi behöver Google Ads', title: 'Vi behöver Google Ads' }) }))
+  })
+})

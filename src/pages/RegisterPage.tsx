@@ -1,3 +1,4 @@
+import ResendConfirmation from '@/components/ResendConfirmation'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Building2, User } from 'lucide-react'
@@ -20,6 +21,7 @@ const RegisterPage = () => {
   const prefilledEmail = searchParams.get('email')?.trim().toLowerCase() || ''
   const linkedProject = searchParams.get('project') || ''
   const [loading, setLoading] = useState(false)
+  const [registrationError, setRegistrationError] = useState('')
   const [form, setForm] = useState({
     full_name: '',
     email: prefilledEmail,
@@ -46,6 +48,7 @@ const RegisterPage = () => {
     }
 
     const email = form.email.trim().toLowerCase()
+    setRegistrationError('')
     setLoading(true)
     const { error } = await signUp({
       email,
@@ -56,6 +59,7 @@ const RegisterPage = () => {
 
     if (error) {
       setLoading(false)
+      setRegistrationError(error.message || 'Registreringen kunde inte slutföras.')
       toast.error(error.message || 'Något gick fel.')
       return
     }
@@ -75,7 +79,7 @@ const RegisterPage = () => {
     toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
       duration: 8000,
     })
-    navigate('/')
+    navigate(`/logga-in?${new URLSearchParams({ email, check_email: 'true' })}`)
   }
 
   return (
@@ -97,7 +101,7 @@ const RegisterPage = () => {
             <Link to="/registrera/byra" className="bg-card rounded-2xl border p-5 text-center hover:border-brand-blue transition-colors">
               <Building2 className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
               <h2 className="font-display font-semibold text-sm">Byrå</h2>
-              <p className="text-xs text-muted-foreground mt-1">Få fem gratis leads</p>
+              <p className="text-xs text-muted-foreground mt-1">Få 5 gratis leads</p>
             </Link>
           </div>
 
@@ -143,6 +147,7 @@ const RegisterPage = () => {
                 {loading ? 'Skapar konto...' : 'Skapa beställarkonto'}
               </Button>
             </form>
+            {registrationError && <div className="mt-4"><p role="alert" className="text-sm text-destructive">{registrationError}</p><ResendConfirmation email={form.email} /></div>}
           </div>
 
           <p className="text-center text-sm text-muted-foreground mt-6">

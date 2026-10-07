@@ -1,3 +1,4 @@
+import { CATEGORIES, categoryLabel } from '@/lib/constants'
 import { useState, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
@@ -19,6 +20,7 @@ const ProfilePage = () => {
     city: profile?.city || '',
     phone: profile?.phone || '',
     bio: supplierProfile?.bio || '',
+    categories: supplierProfile?.categories || [] as string[],
     website_url: supplierProfile?.website_url || '',
     contact_name: supplierProfile?.contact_name || '',
     contact_email: supplierProfile?.contact_email || '',
@@ -65,30 +67,40 @@ const ProfilePage = () => {
   }
 
   const handleSave = async () => {
-    if (!user) return
-    setLoading(true)
-
-    await supabase.from('profiles').update({
-      full_name: form.full_name,
-      company_name: form.company_name,
-      city: form.city,
-      phone: form.phone,
-    }).eq('id', user.id)
-
-    if (!isBuyer && supplierProfile) {
-      await supabase.from('supplier_profiles').update({
-        bio: form.bio,
-        website_url: form.website_url,
-        contact_name: form.contact_name || null,
-        contact_email: form.contact_email || null,
-        contact_phone: form.contact_phone || null,
-        org_number: form.org_number || null,
-      }).eq('id', user.id)
+    if (!user || loading) return
+    if (!isBuyer && supplierProfile && form.categories.length === 0) {
+      toast.error('Välj minst en kategori.')
+      return
     }
+    setLoading(true)
+    try {
+      const { error: profileError } = await supabase.from('profiles').update({
+        full_name: form.full_name,
+        company_name: form.company_name,
+        city: form.city,
+        phone: form.phone,
+      }).eq('id', user.id)
+      if (profileError) throw profileError
 
-    await refreshProfile()
-    setLoading(false)
-    toast.success('Profil uppdaterad!')
+      if (!isBuyer && supplierProfile) {
+        const { error: supplierError } = await supabase.from('supplier_profiles').update({
+          bio: form.bio,
+          categories: form.categories,
+          website_url: form.website_url,
+          contact_name: form.contact_name || null,
+          contact_email: form.contact_email || null,
+          contact_phone: form.contact_phone || null,
+          org_number: form.org_number || null,
+        }).eq('id', user.id)
+        if (supplierError) throw supplierError
+      }
+      await refreshProfile()
+      toast.success('Profil uppdaterad!')
+    } catch {
+      toast.error('Alla profiluppgifter kunde inte sparas. Kontrollera anslutningen och försök igen.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -154,6 +166,17 @@ const ProfilePage = () => {
 
           {!isBuyer && (
             <>
+              <fieldset>
+                <legend className="text-sm font-medium">Kategorier (välj minst en)</legend>
+                <p className="mt-1 text-sm text-muted-foreground">Välj tjänsterna ni erbjuder så att ni kan matchas med rätt uppdrag.</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {CATEGORIES.map(category => (
+                    <Button key={category} type="button" size="sm" variant={form.categories.includes(category) ? 'default' : 'outline'} aria-pressed={form.categories.includes(category)} onClick={() => setForm(previous => ({ ...previous, categories: previous.categories.includes(category) ? previous.categories.filter(value => value !== category) : [...previous.categories, category] }))}>
+                      {categoryLabel(category)}
+                    </Button>
+                  ))}
+                </div>
+              </fieldset>
               <div>
                 <Label>Beskrivning av företaget</Label>
                 <p className="text-xs text-muted-foreground mt-0.5 mb-1">Berätta om er byrå – vad ni gör, er erfarenhet och vad som gör er unika.</p>

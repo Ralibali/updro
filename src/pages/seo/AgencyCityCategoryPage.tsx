@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getCityBySlug, getCategoryBySlug, getPriorityCombo, SEO_AGENCY_CATEGORIES, PRIMARY_CATEGORY_SLUGS } from '@/lib/seoAgencyData'
@@ -249,7 +250,7 @@ const AgencyCityCategoryPage = () => {
                 {a.categories && a.categories.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-3">
                     {a.categories.slice(0, 3).map((c: string) => (
-                      <span key={c} className="text-[10px] px-2 py-0.5 rounded-full bg-muted">{c}</span>
+                      <span key={c} className="text-[10px] px-2 py-0.5 rounded-full bg-muted">{categoryLabel(c)}</span>
                     ))}
                   </div>
                 )}

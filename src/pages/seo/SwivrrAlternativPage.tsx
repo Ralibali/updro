@@ -152,7 +152,7 @@ const SwivrrAlternativPage = () => {
         <section className="container pb-20">
           <div className="rounded-xl bg-foreground p-8 text-background md:p-12">
             <h2 className="font-display text-3xl font-bold md:text-4xl">Bedöm Updro med riktiga uppdrag</h2>
-            <p className="mt-3 max-w-2xl text-background/75">Beställare använder tjänsten gratis. Byråer kan börja med fem kostnadsfria lead-krediter och utvärdera faktisk kvalitet innan de betalar.</p>
+            <p className="mt-3 max-w-2xl text-background/75">Beställare använder tjänsten gratis. Byråer kan börja med 5 gratis leads och utvärdera faktisk kvalitet innan de betalar.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link to="/publicera"><Button size="lg" variant="secondary" className="rounded-xl px-7">Beskriv ditt projekt</Button></Link>
               <Link to="/registrera/byra"><Button size="lg" variant="outline" className="rounded-xl border-background text-background hover:bg-background hover:text-foreground">Skapa byråkonto</Button></Link>

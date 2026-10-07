@@ -1,3 +1,5 @@
+import ResendConfirmation from '@/components/ResendConfirmation'
+import { loginErrorMessage } from '@/lib/authMessages'
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
@@ -14,9 +16,10 @@ const LoginPage = () => {
   const { signIn, profile } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(searchParams.get('email') || '')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loginError, setLoginError] = useState('')
 
   useEffect(() => {
     setSEOMeta({
@@ -39,15 +42,15 @@ const LoginPage = () => {
     event.preventDefault()
     if (loading) return
     setLoading(true)
-    const { error } = await signIn(email.trim().toLowerCase(), password)
-    setLoading(false)
-
-    if (error) {
-      toast.error(
-        'Kunde inte logga in. Kontrollera uppgifterna och att e-postadressen är bekräftad.'
-      )
-    } else {
-      toast.success('Inloggad!')
+    setLoginError('')
+    try {
+      const { error } = await signIn(email.trim().toLowerCase(), password)
+      if (error) setLoginError(loginErrorMessage(error))
+      else toast.success('Inloggad!')
+    } catch {
+      setLoginError('Inloggningstjänsten kunde inte nås. Kontrollera anslutningen och försök igen.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -105,6 +108,7 @@ const LoginPage = () => {
               </p>
             </div>
 
+            {searchParams.get('check_email') === 'true' && <p role="status" className="mb-5 rounded-xl border bg-muted/30 p-4 text-sm">Konto skapat. Öppna mejlet från Updro och bekräfta din e-postadress. Kontrollera även skräpposten.</p>}
             <div className="bg-card">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -148,7 +152,9 @@ const LoginPage = () => {
                 >
                   {loading ? 'Loggar in...' : 'Logga in'}
                 </Button>
+                {loginError && <p role="alert" className="text-sm text-destructive">{loginError}</p>}
               </form>
+              <ResendConfirmation email={email} />
 
               <div className="mt-4 text-center text-sm">
                 <Link

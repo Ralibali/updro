@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useCallback, useEffect, useState, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
@@ -122,7 +123,7 @@ const ProjectDetail = () => {
             <div className="mb-6">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+                  <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[project.category] || ''}`}>{categoryLabel(project.category)}</span>
                   <h1 className="font-display text-2xl font-bold">{project.title}</h1>
                 </div>
                 <button

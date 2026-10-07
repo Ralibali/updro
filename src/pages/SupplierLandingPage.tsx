@@ -26,7 +26,7 @@ import AgencyCostCalculator from '@/components/supplier/AgencyCostCalculator'
 const benefits = [
   {
     icon: Gift,
-    title: `${numWord(TRIAL_LEADS)} kostnadsfria lead-krediter`,
+    title: `${TRIAL_LEADS} gratis leads`,
     description: `Testa plattformen under de första ${TRIAL_DAYS} dagarna utan kortuppgifter eller bindningstid.`,
   },
   {
@@ -98,8 +98,8 @@ const SupplierLandingPage = () => {
         ? 'Få fler kunder som webbyrå – digitala leads utan provision | Updro'
         : 'Få digitala uppdrag med mindre konkurrens | Updro',
       description: isOrganicPage
-        ? `Få digitala leads till din webbyrå eller digitalbyrå. ${TRIAL_LEADS} gratis lead-krediter, max tre byråer per uppdrag, brief före köp och 0 % provision på vunna projekt.`
-        : `Registrera din byrå och få ${numWord(TRIAL_LEADS)} kostnadsfria lead-krediter. Se briefen före upplåsning, max tre byråer per uppdrag och ingen bindningstid.`,
+        ? `Få digitala leads till din webbyrå eller digitalbyrå. ${TRIAL_LEADS} gratis leads, max tre byråer per uppdrag, brief före köp och 0 % provision på vunna projekt.`
+        : `Registrera din byrå och få ${TRIAL_LEADS} gratis leads. Se briefen före upplåsning, max tre byråer per uppdrag och ingen bindningstid.`,
       canonical,
       noindex: !isOrganicPage,
     })
@@ -141,7 +141,7 @@ const SupplierLandingPage = () => {
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
                 <span className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-foreground">
                   <Zap className="h-3.5 w-3.5 text-accent" />
-                  {TRIAL_LEADS} kostnadsfria lead-krediter · inget kort krävs
+                  {TRIAL_LEADS} gratis leads · inget kort krävs
                 </span>
               </motion.div>
 
@@ -197,7 +197,7 @@ const SupplierLandingPage = () => {
           <div className="container py-6 md:py-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
               {[
-                [`${TRIAL_LEADS}`, 'gratis lead-krediter'],
+                [`${TRIAL_LEADS}`, 'gratis leads'],
                 ['3', 'byråer per uppdrag som mest'],
                 [`${STRIPE_PRODUCTS.lead.price} kr`, 'per valt lead'],
                 ['0 %', 'provision på vunnet projekt'],

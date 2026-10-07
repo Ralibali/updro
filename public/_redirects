@@ -1,3 +1,4 @@
+/ux-webbdesign /webbdesign 301
 # =====================================================================
 # Legacy-alias redirects – källa till sanning: src/lib/seoRedirects.ts
 # (LEGACY_REDIRECTS + LEGACY_PREFIX_REDIRECTS). Håll denna fil i synk med
