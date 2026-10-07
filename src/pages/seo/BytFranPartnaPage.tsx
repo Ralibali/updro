@@ -74,8 +74,8 @@ const BytFranPartnaPage = () => {
               Updro är nylanserat och lovar inte samma volym som en etablerad aktör. Erbjudandet är i stället lägre konkurrens per uppdrag, transparent brief före upplåsning och lägre pris per valt lead. Börja kostnadsfritt och jämför faktisk kostnad per möte och kund.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to="/registrera/byra"><Button size="lg" className="rounded-xl px-7">Få {TRIAL_LEADS} gratis krediter <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-              <Link to="/partna-alternativ"><Button size="lg" variant="outline" className="rounded-xl px-7">Se saklig jämförelse</Button></Link>
+              <Button size="lg" className="rounded-xl px-7" asChild><Link to="/registrera/byra">Få {TRIAL_LEADS} gratis krediter <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+              <Button size="lg" variant="outline" className="rounded-xl px-7" asChild><Link to="/partna-alternativ">Se saklig jämförelse</Link></Button>
             </div>
           </div>
         </section>
@@ -157,7 +157,7 @@ const BytFranPartnaPage = () => {
           <div className="rounded-xl bg-foreground p-8 text-background md:p-12">
             <h2 className="font-display text-3xl font-bold md:text-4xl">Låt resultatet avgöra</h2>
             <p className="mt-3 max-w-2xl text-background/75">Registrera byrån, använd de kostnadsfria krediterna och följ samma mätetal som för era andra leadkanaler.</p>
-            <Link to="/registrera/byra" className="mt-7 inline-block"><Button size="lg" variant="secondary" className="rounded-xl px-7">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
+            <Button size="lg" variant="secondary" className="rounded-xl px-7" asChild><Link to="/registrera/byra" className="mt-7 inline-block">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
         </section>
       </main>

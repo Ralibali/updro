@@ -12,7 +12,7 @@ import { CATEGORY_NAV_LINKS } from '@/lib/categoryNavLinks'
 
 const categoryLinks = CATEGORY_NAV_LINKS
 
-const Navbar = () => {
+const Navbar = ({ projectHref = '/publicera' }: { projectHref?: string }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { isAuthenticated, profile, isBuyer, isSupplier, isAdmin, signOut, isOnTrial, trialLeadsLeft } = useAuth()
 
@@ -103,8 +103,8 @@ const Navbar = () => {
             ) : (
               <>
                 <Button asChild variant="ghost" size="sm" className="min-h-11"><Link to="/logga-in">Logga in</Link></Button>
-                <Button asChild size="sm" className="min-h-11 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl px-5 shadow-brand">
-                  <Link to="/publicera">Beskriv ditt projekt</Link>
+                <Button asChild size="sm" className="min-h-11 bg-blue-700 hover:bg-blue-800 text-white rounded-xl px-5 shadow-brand">
+                  <Link to={projectHref}>Beskriv ditt projekt</Link>
                 </Button>
               </>
             )}
@@ -167,8 +167,8 @@ const Navbar = () => {
                   <Button asChild variant="outline" className="w-full min-h-12 rounded-xl">
                     <Link to="/logga-in" onClick={closeMobile}>Logga in</Link>
                   </Button>
-                  <Button asChild className="w-full min-h-12 rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground">
-                    <Link to="/publicera" onClick={closeMobile}>Beskriv ditt projekt</Link>
+                  <Button asChild className="w-full min-h-12 rounded-xl bg-blue-700 hover:bg-blue-800 text-white">
+                    <Link to={projectHref} onClick={closeMobile}>Beskriv ditt projekt</Link>
                   </Button>
                 </>
               )}

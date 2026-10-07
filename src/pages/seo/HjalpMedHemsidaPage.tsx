@@ -104,16 +104,12 @@ const HjalpMedHemsidaPage = () => {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to={publishUrl}>
-              <Button size="lg" className="rounded-xl px-8 py-6 text-base">
+            <Button size="lg" className="rounded-xl px-8 py-6 text-base" asChild><Link to={publishUrl}>
                 Beskriv ditt projekt gratis <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/webbutveckling/pris">
-              <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base">
+              </Link></Button>
+            <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base" asChild><Link to="/webbutveckling/pris">
                 Se vad en hemsida kostar
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
 
           <section className="mt-16">
@@ -230,11 +226,9 @@ const HjalpMedHemsidaPage = () => {
               Beskriv hemsidan du behöver – även om du är osäker på detaljerna – och låt högst tre byråer visa hur de
               skulle lösa det.
             </p>
-            <Link to={publishUrl} className="mt-7 inline-block">
-              <Button size="lg" variant="secondary" className="rounded-xl px-8">
+            <Button size="lg" variant="secondary" className="rounded-xl px-8" asChild><Link to={publishUrl} className="mt-7 inline-block">
                 Starta förfrågan <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
 
           <nav className="mt-12 flex flex-wrap gap-3 text-sm">

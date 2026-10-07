@@ -200,12 +200,10 @@ const GuidePage = () => {
             <p className="text-sm text-muted-foreground mb-5">
               Publicera ditt uppdrag gratis och få upp till tre offerter från verifierade byråer.
             </p>
-            <Link to="/publicera">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-5 text-base font-semibold">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-5 text-base font-semibold" asChild><Link to="/publicera">
                 Publicera uppdrag – gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
 
           {/* Related guides */}

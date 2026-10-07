@@ -23,7 +23,7 @@ const AgencyCityPage = () => {
   const city = getCityBySlug(stad || '')
   const cityData = CITIES.find(c => c.slug === stad)
   const deep = getCityDeep(stad || '')
-  const { agencies, loading, error, retry } = useAgencyDirectory({ city: city?.name})
+  const { agencies, loading, error, retry } = useAgencyDirectory()
   const [search, setSearch] = useState('')
 
   useEffect(() => {
@@ -68,11 +68,11 @@ const AgencyCityPage = () => {
 
   if (!city) return <NotFound />
 
-  const filtered = search
-    ? agencies.filter(a => (a.profiles?.company_name || '').toLowerCase().includes(search.toLowerCase()))
-    : agencies
+  const localAgencies = agencies.filter(a => a.profiles?.city?.toLocaleLowerCase('sv') === city.name.toLocaleLowerCase('sv'))
+  const filtered = localAgencies.filter(a => (a.profiles?.company_name || '').toLocaleLowerCase('sv').includes(search.toLocaleLowerCase('sv')))
 
   const nearby = getNearbyCities(city.slug, 8)
+  const nearbyWithAgencies = nearby.filter(c => agencies.some(a => a.profiles?.city?.toLocaleLowerCase('sv') === c.name.toLocaleLowerCase('sv')))
 
   return (
     <div className="updro-content-page min-h-screen flex flex-col">
@@ -99,16 +99,12 @@ const AgencyCityPage = () => {
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">
             Digitala byråer i {city.name} – jämför offerter 2026
           </h1>
-          <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-            {deep?.intro || `${cityData?.techDescription || city.description} Via Updro jämför du offerter från kvalitetssäkrade byråer i ${city.name} – kostnadsfritt och utan förpliktelser.`}
-          </p>
+
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to="/publicera">
-              <Button size="lg" className="rounded-xl shadow-blue">
+            <Button size="lg" className="rounded-xl shadow-blue" asChild><Link to="/publicera">
                 Publicera uppdrag i {city.name} <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
@@ -116,27 +112,6 @@ const AgencyCityPage = () => {
             <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Gratis offertjämförelse</span>
             <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-accent" /> Upp till 3 offerter</span>
           </div>
-        </div>
-      </section>
-
-      {/* Service category links – primary 10 with rich names */}
-      <section className="container pb-12">
-        <h2 className="font-display text-2xl font-bold mb-6">Tjänster i {city.name}</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {SERVICE_CATEGORIES.filter(cat => shouldIndexCityService(city.slug, cat.slug)).map(cat => (
-            <Link key={cat.slug} to={`/byraer/${city.slug}/${cat.slug}`}
-              className="group bg-card border rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all">
-              <h3 className="font-display font-semibold group-hover:text-primary transition-colors">
-                {cat.name} i {city.name}
-              </h3>
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                {cat.shortName.charAt(0).toUpperCase() + cat.shortName.slice(1)} i {city.name} – jämför offerter
-              </p>
-              <span className="text-xs text-primary mt-2 inline-flex items-center gap-1">
-                Se byråer <ArrowRight className="h-3 w-3" />
-              </span>
-            </Link>
-          ))}
         </div>
       </section>
 
@@ -158,11 +133,13 @@ const AgencyCityPage = () => {
           <div className="bg-surface-alt border rounded-xl p-8 max-w-2xl">
             <p className="text-muted-foreground">
               {search ? 'Ingen byråprofil matchar din sökning.' : `Just nu visas inga verifierade byråprofiler med ${city.name} som ort.`}
-              Publicera ditt uppdrag så matchar vi dig med rätt byrå – ofta även byråer från {nearby[0]?.name || 'närliggande städer'} som levererar på distans.
+              Byråer i andra delar av Sverige kan också hjälpa dig på distans.
             </p>
-            <Link to="/publicera" className="inline-block mt-4">
-              <Button className="rounded-xl">Publicera uppdrag <ArrowRight className="ml-2 h-4 w-4" /></Button>
-            </Link>
+            <Button className="rounded-xl" asChild><Link to="/publicera" className="inline-block mt-4">Publicera uppdrag <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+            <div className="mt-5 flex flex-wrap gap-4">
+              {nearbyWithAgencies.map(c => <Link key={c.slug} to={`/byraer/${c.slug}`} className="text-primary underline">Byråer i {c.name}</Link>)}
+              <Link to="/byraer" className="text-primary underline">Se byråer i hela Sverige</Link>
+            </div>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -185,6 +162,32 @@ const AgencyCityPage = () => {
           </div>
         )}
       </section>
+      <section className="container pb-10 max-w-3xl">          <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
+            {deep?.intro || `${cityData?.techDescription || city.description} Via Updro jämför du offerter från kvalitetssäkrade byråer i ${city.name} – kostnadsfritt och utan förpliktelser.`}
+          </p>
+      </section>
+      {/* Service category links – primary 10 with rich names */}
+      <section className="container pb-12">
+        <h2 className="font-display text-2xl font-bold mb-6">Tjänster i {city.name}</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {SERVICE_CATEGORIES.filter(cat => shouldIndexCityService(city.slug, cat.slug)).map(cat => (
+            <Link key={cat.slug} to={`/byraer/${city.slug}/${cat.slug}`}
+              className="group bg-card border rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all">
+              <h3 className="font-display font-semibold group-hover:text-primary transition-colors">
+                {cat.name} i {city.name}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                {cat.shortName.charAt(0).toUpperCase() + cat.shortName.slice(1)} i {city.name} – jämför offerter
+              </p>
+              <span className="text-xs text-primary mt-2 inline-flex items-center gap-1">
+                Se byråer <ArrowRight className="h-3 w-3" />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+
 
       {/* Djupinnehåll om stadens byråmarknad */}
       {deep && (

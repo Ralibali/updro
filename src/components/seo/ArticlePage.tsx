@@ -1,3 +1,4 @@
+import ContentToc from '@/components/ContentToc'
 import React, { useEffect, useState } from 'react'
 import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
@@ -197,7 +198,9 @@ const ArticlePage = () => {
         </div>
       </section>
 
-      <div className="container pb-12">
+      <div className="container grid gap-8 lg:grid-cols-[minmax(0,1fr)_17rem]">
+      <div id="article-content" className="min-w-0">
+      <div className="pb-12">
         <div className="max-w-3xl space-y-10">
           {page.sections.map((section, i) => (
             <React.Fragment key={i}>
@@ -287,6 +290,7 @@ const ArticlePage = () => {
         </div>
       </section>
 
+      </div><ContentToc target="#article-content" /></div>
       <Footer />
     </div>
   )

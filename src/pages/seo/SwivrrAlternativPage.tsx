@@ -79,8 +79,8 @@ const SwivrrAlternativPage = () => {
               Både Updro och Swivrr hjälper företag att hitta digitala byråer – och båda satsar på AI-stödda briefar med prisuppskattning. Updro skiljer sig med högst tre byråer per uppdrag, ett publicerat och förutsägbart byråpris, öppna prisguider och publika byråprofiler.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to="/publicera"><Button size="lg" className="rounded-xl px-7">Beskriv ett projekt <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-              <Link to="/registrera/byra"><Button size="lg" variant="outline" className="rounded-xl px-7">Testa Updro som byrå</Button></Link>
+              <Button size="lg" className="rounded-xl px-7" asChild><Link to="/publicera">Beskriv ett projekt <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+              <Button size="lg" variant="outline" className="rounded-xl px-7" asChild><Link to="/registrera/byra">Testa Updro som byrå</Link></Button>
             </div>
           </div>
         </section>
@@ -154,8 +154,8 @@ const SwivrrAlternativPage = () => {
             <h2 className="font-display text-3xl font-bold md:text-4xl">Bedöm Updro med riktiga uppdrag</h2>
             <p className="mt-3 max-w-2xl text-background/75">Beställare använder tjänsten gratis. Byråer kan börja med 5 gratis leads och utvärdera faktisk kvalitet innan de betalar.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link to="/publicera"><Button size="lg" variant="secondary" className="rounded-xl px-7">Beskriv ditt projekt</Button></Link>
-              <Link to="/registrera/byra"><Button size="lg" variant="outline" className="rounded-xl border-background text-background hover:bg-background hover:text-foreground">Skapa byråkonto</Button></Link>
+              <Button size="lg" variant="secondary" className="rounded-xl px-7" asChild><Link to="/publicera">Beskriv ditt projekt</Link></Button>
+              <Button size="lg" variant="outline" className="rounded-xl border-background text-background hover:bg-background hover:text-foreground" asChild><Link to="/registrera/byra">Skapa byråkonto</Link></Button>
             </div>
           </div>
         </section>

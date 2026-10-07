@@ -1,10 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, MemoryRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/lib/seoHelpers', () => ({ setSEOMeta: () => {} }))
 vi.mock('@/lib/analytics', () => ({ trackLeadStarted: () => {} }))
 vi.mock('@/hooks/usePageTracking', () => ({ trackClick: () => {} }))
+
+vi.mock('@/components/Navbar', () => ({ default: ({ projectHref }: { projectHref: string }) => <nav><Link to={projectHref}>Beskriv ditt projekt</Link></nav> }))
+vi.mock('@/components/Footer', () => ({ default: () => <footer>Updro</footer> }))
 
 import AdsLandingPage from './AdsLandingPage'
 
@@ -43,7 +46,7 @@ describe('AdsLandingPage', () => {
     expect(screen.getByLabelText('Beskriv ditt projekt')).toHaveValue('Jag söker hjälp med wordpress hemsida. ')
   })
 
-  it.each(['Kom igång', 'Beskriv ditt projekt gratis', 'Jämför offerter gratis'])(
+  it.each(['Beskriv ditt projekt', 'Beskriv ditt projekt gratis', 'Jämför offerter gratis'])(
     'behåller den redigerade briefen via länken %s', label => {
       renderAt('/jamfor-offerter?tjanst=webbshop&utm_term=shopify')
       fireEvent.change(screen.getByLabelText('Beskriv ditt projekt'), { target: { value: '  Shopify för vår klädbutik, med svensk checkout.  ' } })

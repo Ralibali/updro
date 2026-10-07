@@ -46,9 +46,7 @@ const BrowseAgenciesPage = () => {
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent mb-3">DITT NÄSTA BYRÅSAMARBETE</p>
                 <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight max-w-xl">Hitta byrån som passar ditt projekt.</h1>
                 <p className="text-muted-foreground mt-5 text-lg max-w-xl">Jämför kompetens och arbetsprover i byråprofilerna. Eller beskriv ditt projekt en gång och jämför upp till tre offerter, helt gratis.</p>
-                <Link to={seoLeadPath(filterCat === 'all' ? undefined : filterCat)} className="inline-block mt-6">
-                  <Button size="lg" className="rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 shadow-brand">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Button>
-                </Link>
+                <Button size="lg" className="rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 shadow-brand" asChild><Link to={seoLeadPath(filterCat === 'all' ? undefined : filterCat)} className="inline-block mt-6">Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
                 <p className="text-sm text-muted-foreground mt-3">Inget konto krävs för att börja · Ingen köpplikt</p>
               </div>
               <aside className="hidden lg:block rounded-xl border bg-card p-6 md:p-8 shadow-md">

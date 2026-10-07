@@ -19,6 +19,7 @@ afterEach(() => vi.unstubAllGlobals())
 
 describe('homepage mobile sticky CTA', () => {
   it('submits the hero draft and selected category after scrolling past the form', () => {
+    vi.stubGlobal('innerWidth', 390)
     let scrollPastHero = () => {}
     vi.stubGlobal('IntersectionObserver', class {
       constructor(callback: IntersectionObserverCallback) {

@@ -126,14 +126,10 @@ const AgencyCityCategoryPage = () => {
           <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{intro}</p>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link to={seoLeadPath(category.slug)}>
-              <Button size="lg" className="rounded-xl shadow-blue">
+            <Button size="lg" className="rounded-xl shadow-blue" asChild><Link to={seoLeadPath(category.slug)}>
                 Jämför offerter i {city.name} <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to={`/byraer/${city.slug}`}>
-              <Button size="lg" variant="outline" className="rounded-xl">Alla byråer i {city.name}</Button>
-            </Link>
+              </Link></Button>
+            <Button size="lg" variant="outline" className="rounded-xl" asChild><Link to={`/byraer/${city.slug}`}>Alla byråer i {city.name}</Link></Button>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
@@ -234,9 +230,7 @@ const AgencyCityCategoryPage = () => {
               Just nu visas inga verifierade byråprofiler inom {category.name.toLowerCase()} i {city.name}.
               Beskriv gärna om distanssamarbete fungerar, så kan relevanta byråer även från andra orter övervägas.
             </p>
-            <Link to={seoLeadPath(category.slug)} className="inline-block mt-4">
-              <Button className="rounded-xl">Publicera uppdrag <ArrowRight className="ml-2 h-4 w-4" /></Button>
-            </Link>
+            <Button className="rounded-xl" asChild><Link to={seoLeadPath(category.slug)} className="inline-block mt-4">Publicera uppdrag <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">

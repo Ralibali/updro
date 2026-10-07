@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('@/components/Navbar', () => ({ default: () => <nav>Nav</nav> }))
 vi.mock('@/components/Footer', () => ({ default: () => <footer>Footer</footer> }))
+vi.mock('@/hooks/useAgencyDirectory', () => ({ useAgencyDirectory: () => ({ agencies: [], loading: false, error: null, retry: () => {} }) }))
 vi.mock('./SchemaMarkup', () => ({ default: () => null }))
 vi.mock('./SEOLeadCTA', () => ({ default: () => null }))
 vi.mock('@/lib/seoHelpers', () => ({
@@ -35,8 +36,8 @@ const renderPillar = (path: string) =>
     </MemoryRouter>,
   )
 
-describe('PillarPage hero CTA', () => {
-  it('tar med briefen och kategorin från /webbutveckling in i wizarden', () => {
+describe('PillarPage directory fallback', () => {
+  it('tar med briefen och kategorin från en tom byrålista in i wizarden', () => {
     renderPillar('/webbutveckling')
     fireEvent.change(screen.getByLabelText('Beskriv ditt projekt'), { target: { value: 'Ny hemsida för bageri' } })
     fireEvent.click(screen.getByRole('button', { name: /Få offerter gratis/ }))

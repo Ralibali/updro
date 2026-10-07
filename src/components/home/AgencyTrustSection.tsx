@@ -70,14 +70,10 @@ const AgencyTrustSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <Link to="/publicera">
-            <Button className="rounded-xl">
+          <Button className="rounded-xl" asChild><Link to="/publicera">
               Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-          <Link to="/for-byraer">
-            <Button variant="outline" className="rounded-xl">För digitala byråer</Button>
-          </Link>
+            </Link></Button>
+          <Button variant="outline" className="rounded-xl" asChild><Link to="/for-byraer">För digitala byråer</Link></Button>
         </motion.div>
       </div>
     </section>
