@@ -1323,8 +1323,8 @@ export type Database = {
           approved_by: string | null
           campaign_id: string
           city: string | null
-          company_name: string
           company_intelligence: Json
+          company_name: string
           contact_email: string | null
           contact_first_name: string | null
           contact_last_name: string | null
@@ -1365,8 +1365,8 @@ export type Database = {
           approved_by?: string | null
           campaign_id: string
           city?: string | null
-          company_name: string
           company_intelligence?: Json
+          company_name: string
           contact_email?: string | null
           contact_first_name?: string | null
           contact_last_name?: string | null
@@ -1407,8 +1407,8 @@ export type Database = {
           approved_by?: string | null
           campaign_id?: string
           city?: string | null
-          company_name?: string
           company_intelligence?: Json
+          company_name?: string
           contact_email?: string | null
           contact_first_name?: string | null
           contact_last_name?: string | null
@@ -1452,6 +1452,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       referrals: {
         Row: {
