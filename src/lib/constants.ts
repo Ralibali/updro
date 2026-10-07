@@ -1,53 +1,7 @@
-export const CATEGORIES = [
-  'Webbutveckling', 'E-handel', 'Digital marknadsföring',
-  'Grafisk design/UX', 'SEO', 'App-utveckling',
-  'IT-konsult', 'Sociala medier',
-  'Mjukvaruutveckling', 'Video & foto', 'Varumärke & PR',
-  'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling',
-] as const
+import { CATEGORIES } from '../../supabase/functions/_shared/categories'
+export { CATEGORIES, CATEGORY_DEFINITIONS, CATEGORY_BY_SLUG, CATEGORY_ICONS, categoryLabel, resolveCategory } from '../../supabase/functions/_shared/categories'
 
-export const NEW_CATEGORIES = new Set([
-  'Mjukvaruutveckling', 'Video & foto', 'Varumärke & PR',
-  'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling',
-])
-
-/**
- * Slug → kategorinamn. Används av /publicera/:kategori så att interna länkar
- * kan vara statiska sökvägar i stället för dynamiska query-parametrar.
- */
-export const CATEGORY_BY_SLUG: Record<string, string> = {
-  'webbutveckling': 'Webbutveckling',
-  'ehandel': 'E-handel',
-  'e-handel': 'E-handel',
-  'seo': 'SEO',
-  'digital-marknadsforing': 'Digital marknadsföring',
-  'google-ads': 'Digital marknadsföring',
-  'e-postmarknadsforing': 'Digital marknadsföring',
-  'analys-data': 'Digital marknadsföring',
-  'apputveckling': 'App-utveckling',
-  'app-utveckling': 'App-utveckling',
-  'grafisk-design': 'Grafisk design/UX',
-  'ux-ui-design': 'Grafisk design/UX',
-  'ai-utveckling': 'AI-utveckling',
-}
-
-export const CATEGORY_ICONS: Record<string, string> = {
-  'Webbutveckling': '🌐',
-  'E-handel': '🛒',
-  'Digital marknadsföring': '📈',
-  'Grafisk design/UX': '🎨',
-  'SEO': '🔍',
-  'App-utveckling': '📱',
-  'IT-konsult': '💻',
-  'Sociala medier': '📣',
-  'Mjukvaruutveckling': '⚙️',
-  'Video & foto': '🎬',
-  'Varumärke & PR': '📰',
-  'UX/Webbdesign': '✏️',
-  'Underhåll/IT Support': '🛠️',
-  'Affärsutveckling': '🚀',
-  'AI-utveckling': '🤖',
-}
+export const NEW_CATEGORIES = new Set<string>(['Mjukvaruutveckling', 'Video & foto', 'Varumärke & PR', 'UX/Webbdesign', 'Underhåll/IT Support', 'Affärsutveckling', 'AI-utveckling', 'Google Ads'])
 
 export const CATEGORY_STYLES: Record<string, string> = Object.fromEntries(
   CATEGORIES.map(category => [category, 'bg-secondary text-secondary-foreground border border-border'])
@@ -223,7 +177,7 @@ export const PROJECT_TEMPLATES: Record<string, { id: string; name: string; icon:
       budget_hint: '10k_50k',
     },
   ],
-  'Digital marknadsföring': [
+  'Google Ads': [
     {
       id: 'marketing_google',
       name: 'Google Ads-kampanj',
@@ -232,6 +186,8 @@ export const PROJECT_TEMPLATES: Record<string, { id: string; name: string; icon:
       description: `Vi vill köra Google Ads för att generera fler leads.\n\nMål:\n- Generera leads via kontaktformulär\n- Öka försäljning\n- Driva trafik till specifik landningssida`,
       budget_hint: '10k_50k',
     },
+  ],
+  'Digital marknadsföring': [
     {
       id: 'marketing_social',
       name: 'Social media-strategi',

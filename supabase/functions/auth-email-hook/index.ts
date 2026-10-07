@@ -1,3 +1,4 @@
+import { signupConfirmationLink } from '../_shared/confirmation-link.ts'
 import * as React from 'npm:react@18.3.1'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { WebhookError, verifyWebhookRequest } from 'npm:@lovable.dev/webhooks-js'
@@ -231,7 +232,9 @@ async function handleWebhook(req: Request): Promise<Response> {
     siteName: SITE_NAME,
     siteUrl: `https://${ROOT_DOMAIN}`,
     recipient: payload.data.email,
-    confirmationUrl: payload.data.url,
+    confirmationUrl: emailType === 'signup'
+      ? signupConfirmationLink(payload.data.url, Deno.env.get('SUPABASE_URL') || '')
+      : payload.data.url,
     token: payload.data.token,
     email: payload.data.email,
     newEmail: payload.data.new_email,

@@ -25,6 +25,7 @@ export interface LegacyRedirect {
 
 /** Exact-path legacy aliases. Order matters only for readability. */
 export const LEGACY_REDIRECTS: readonly LegacyRedirect[] = [
+  { from: '/ux-webbdesign', to: '/webbdesign', reason: 'tidigare namn för webbdesign' },
   // Duplicate landing page: rendered the same component as /for-byraer.
   { from: '/landing/byra', to: '/for-byraer', reason: 'dubblett av /for-byraer (samma komponent)' },
 

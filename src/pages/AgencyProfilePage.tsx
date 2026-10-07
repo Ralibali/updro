@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '@/components/Navbar'
@@ -149,7 +150,7 @@ const AgencyProfilePage = () => {
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-6">
             {(agency.categories || []).map((cat: string) => (
-              <span key={cat} className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{cat}</span>
+              <span key={cat} className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{categoryLabel(cat)}</span>
             ))}
           </div>
 

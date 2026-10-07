@@ -1,3 +1,4 @@
+import { CATEGORY_BY_SLUG, categoryLabel } from './constants'
 // SEO data for /byraer routes, /leveranser, and /kunskapsbank
 
 export interface SEOCity {
@@ -61,24 +62,24 @@ export const SEO_CITIES: SEOCity[] = [
 // ─── CATEGORIES for /byraer routes (10 primary + legacy) ───
 // Synced with SERVICE_CATEGORIES in seoCities.ts so /byraer/:stad/:kategori works for the same slugs.
 export const SEO_AGENCY_CATEGORIES: SEOCategory[] = [
-  { slug: 'webbutveckling', name: 'Webbutveckling', description: 'Webbbyråer som bygger moderna, snabba och konverterande webbplatser.', dbCategory: 'Webbutveckling' },
-  { slug: 'seo', name: 'SEO', description: 'SEO-byråer som hjälper dig ranka högre i Google.', dbCategory: 'SEO' },
-  { slug: 'ehandel', name: 'E-handel', description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: 'E-handel' },
-  { slug: 'digital-marknadsforing', name: 'Digital marknadsföring', description: 'Byråer inom digital marknadsföring, annonsering och tillväxt.', dbCategory: 'Digital marknadsföring' },
-  { slug: 'apputveckling', name: 'Apputveckling', description: 'Byråer som bygger mobilappar för iOS och Android, nativt eller cross-platform.', dbCategory: 'App-utveckling' },
-  { slug: 'grafisk-design', name: 'Grafisk design', description: 'Byråer specialiserade på grafisk formgivning, varumärke och visuell identitet.', dbCategory: 'Grafisk design/UX' },
-  { slug: 'google-ads', name: 'Google Ads', description: 'Byråer som arbetar med annonsering i Google Sök, Display, YouTube och Shopping.', dbCategory: 'Digital marknadsföring' },
-  { slug: 'e-postmarknadsforing', name: 'E-postmarknadsföring', description: 'Byråer som arbetar med Klaviyo, Mailchimp och Apsis för automation och kampanjer.', dbCategory: 'Digital marknadsföring' },
-  { slug: 'analys-data', name: 'Analys & data', description: 'Byråer som hjälper med GA4, GTM, server-side tracking och dashboards.', dbCategory: 'Digital marknadsföring' },
-  { slug: 'ux-ui-design', name: 'UX/UI-design', description: 'UX-byråer som arbetar med användarforskning, prototyper och designsystem.', dbCategory: 'Grafisk design/UX' },
+  { slug: 'webbutveckling', name: categoryLabel(CATEGORY_BY_SLUG['webbutveckling']), description: 'Webbbyråer som bygger moderna, snabba och konverterande webbplatser.', dbCategory: CATEGORY_BY_SLUG['webbutveckling'] },
+  { slug: 'seo', name: categoryLabel(CATEGORY_BY_SLUG['seo']), description: 'SEO-byråer som hjälper dig ranka högre i Google.', dbCategory: CATEGORY_BY_SLUG['seo'] },
+  { slug: 'ehandel', name: categoryLabel(CATEGORY_BY_SLUG['ehandel']), description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: CATEGORY_BY_SLUG['ehandel'] },
+  { slug: 'digital-marknadsforing', name: categoryLabel(CATEGORY_BY_SLUG['digital-marknadsforing']), description: 'Byråer inom digital marknadsföring, annonsering och tillväxt.', dbCategory: CATEGORY_BY_SLUG['digital-marknadsforing'] },
+  { slug: 'apputveckling', name: categoryLabel(CATEGORY_BY_SLUG['apputveckling']), description: 'Byråer som bygger mobilappar för iOS och Android, nativt eller cross-platform.', dbCategory: CATEGORY_BY_SLUG['apputveckling'] },
+  { slug: 'grafisk-design', name: categoryLabel(CATEGORY_BY_SLUG['grafisk-design']), description: 'Byråer specialiserade på grafisk formgivning, varumärke och visuell identitet.', dbCategory: CATEGORY_BY_SLUG['grafisk-design'] },
+  { slug: 'google-ads', name: categoryLabel(CATEGORY_BY_SLUG['google-ads']), description: 'Byråer som arbetar med annonsering i Google Sök, Display, YouTube och Shopping.', dbCategory: CATEGORY_BY_SLUG['google-ads'] },
+  { slug: 'e-postmarknadsforing', name: 'E-postmarknadsföring', description: 'Byråer som arbetar med Klaviyo, Mailchimp och Apsis för automation och kampanjer.', dbCategory: CATEGORY_BY_SLUG['e-postmarknadsforing'] },
+  { slug: 'analys-data', name: 'Analys & data', description: 'Byråer som hjälper med GA4, GTM, server-side tracking och dashboards.', dbCategory: CATEGORY_BY_SLUG['analys-data'] },
+  { slug: 'ux-ui-design', name: 'UX/UI-design', description: 'UX-byråer som arbetar med användarforskning, prototyper och designsystem.', dbCategory: CATEGORY_BY_SLUG['ux-ui-design'] },
   // Legacy categories – behåll bakåtkompatibilitet med befintliga URL:er och DB-data
-  { slug: 'design', name: 'Design', description: 'Designbyråer som arbetar med UX, UI, varumärke och visuell kommunikation.', dbCategory: 'Grafisk design/UX' },
-  { slug: 'reklam', name: 'Reklam', description: 'Reklambyråer som skapar kampanjer och varumärkesstrategier.', dbCategory: 'Digital marknadsföring' },
-  { slug: 'media', name: 'Media', description: 'Mediabyråer inom video, foto, sociala medier och innehållsproduktion.', dbCategory: 'Sociala medier' },
-  { slug: 'kommunikation', name: 'Kommunikation', description: 'Kommunikationsbyråer som arbetar med PR, storytelling och intern kommunikation.', dbCategory: 'Varumärke & PR' },
-  { slug: 'tryck', name: 'Tryck', description: 'Tryckerier och byråer som arbetar med tryckt material och förpackningsdesign.', dbCategory: 'Grafisk design/UX' },
-  { slug: 'fotografering', name: 'Fotografering', description: 'Fotografer och fotobyråer för produktfoto, porträtt och eventfotografering.', dbCategory: 'Video & foto' },
-  { slug: 'e-handel', name: 'E-handel (legacy)', description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: 'E-handel' },
+  { slug: 'design', name: 'Design', description: 'Designbyråer som arbetar med UX, UI, varumärke och visuell kommunikation.', dbCategory: CATEGORY_BY_SLUG['design'] },
+  { slug: 'reklam', name: 'Reklam', description: 'Reklambyråer som skapar kampanjer och varumärkesstrategier.', dbCategory: CATEGORY_BY_SLUG['reklam'] },
+  { slug: 'media', name: 'Media', description: 'Mediabyråer inom video, foto, sociala medier och innehållsproduktion.', dbCategory: CATEGORY_BY_SLUG['media'] },
+  { slug: 'kommunikation', name: 'Kommunikation', description: 'Kommunikationsbyråer som arbetar med PR, storytelling och intern kommunikation.', dbCategory: CATEGORY_BY_SLUG['kommunikation'] },
+  { slug: 'tryck', name: 'Tryck', description: 'Tryckerier och byråer som arbetar med tryckt material och förpackningsdesign.', dbCategory: CATEGORY_BY_SLUG['tryck'] },
+  { slug: 'fotografering', name: 'Fotografering', description: 'Fotografer och fotobyråer för produktfoto, porträtt och eventfotografering.', dbCategory: CATEGORY_BY_SLUG['fotografering'] },
+  { slug: 'e-handel', name: 'E-handel (legacy)', description: 'E-handelsbyråer som bygger, optimerar och driver webbutiker.', dbCategory: CATEGORY_BY_SLUG['e-handel'] },
   { slug: 'pr', name: 'PR', description: 'PR-byråer som arbetar med medierelationer och opinionsbildning.', dbCategory: 'Varumärke & PR' },
   { slug: 'webb', name: 'Webb', description: 'Webbbyråer som bygger moderna, snabba och konverterande webbplatser.', dbCategory: 'Webbutveckling' },
 ]

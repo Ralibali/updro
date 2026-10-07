@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Building2, CreditCard, Gauge, Loader2, Lock, Mail, Paperclip, Phone, Sparkles, Unlock, User, X } from 'lucide-react'
@@ -312,7 +313,7 @@ const ProjectUnlock = () => {
     <div className="max-w-3xl">
       <div className="bg-card rounded-xl border p-5 mb-6">
         <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
-          <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[project.category] || ''}`}>{project.category}</span>
+          <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${CATEGORY_STYLES[project.category] || ''}`}>{categoryLabel(project.category)}</span>
           <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${leadScore.tone}`}>
             <Gauge className="h-3.5 w-3.5" /> {leadScore.label} · {leadScore.score}/100
           </span>

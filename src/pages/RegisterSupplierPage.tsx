@@ -1,3 +1,5 @@
+import ResendConfirmation from '@/components/ResendConfirmation'
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowRight, Check, FileSignature, Gift, MessageCircle, ShieldCheck, Sparkles, Star, TrendingUp, Users } from 'lucide-react'
@@ -22,6 +24,7 @@ const RegisterSupplierPage = () => {
   const presetCampaignCode = normalizeCampaignCode(searchParams.get('kod'))
   const referralCode = normalizeReferralCode(searchParams.get('ref'))
   const [loading, setLoading] = useState(false)
+  const [registrationError, setRegistrationError] = useState('')
   const [form, setForm] = useState({
     company_name: '',
     full_name: '',
@@ -38,7 +41,7 @@ const RegisterSupplierPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Registrera din byrå – Skapa byråkonto | Updro',
-      description: 'Registrera din byrå på Updro: fem gratis leads, högst tre byråer per uppdrag och leadgaranti. 99 kr per lead eller 1 995 kr/mån.',
+      description: 'Registrera din byrå på Updro: 5 gratis leads, högst tre byråer per uppdrag och leadgaranti. 99 kr per lead eller 1 995 kr/mån.',
       canonical: 'https://updro.se/registrera/byra',
       noindex: true,
     })
@@ -68,6 +71,7 @@ const RegisterSupplierPage = () => {
 
     const email = form.email.trim().toLowerCase()
     const campaignCode = normalizeCampaignCode(form.campaign_code)
+    setRegistrationError('')
     setLoading(true)
     const { error, campaign, campaignInvalid, referralApplied } = await signUp({
       email,
@@ -84,6 +88,7 @@ const RegisterSupplierPage = () => {
 
     if (error) {
       setLoading(false)
+      setRegistrationError(error.message || 'Registreringen kunde inte slutföras.')
       toast.error(error.message || 'Något gick fel vid registrering.')
       return
     }
@@ -117,7 +122,7 @@ const RegisterSupplierPage = () => {
     toast.success('Konto skapat! Kolla din inkorg (och skräpposten) för att bekräfta din e-post.', {
       duration: 8000,
     })
-    navigate('/')
+    navigate(`/logga-in?${new URLSearchParams({ email, check_email: 'true' })}`)
   }
 
   const benefits = [
@@ -186,7 +191,7 @@ const RegisterSupplierPage = () => {
           <div className="p-6 sm:p-8 lg:p-16 flex items-center">
             <div className="w-full max-w-lg mx-auto">
               <h2 className="font-display text-2xl font-bold mb-2">Skapa byråkonto</h2>
-              <p className="text-sm text-muted-foreground mb-6">Fyll i företagsuppgifter och välj era kompetensområden. Ett nytt konto får kostnadsfria lead-krediter enligt provperiodens villkor.</p>
+              <p className="text-sm text-muted-foreground mb-6">Fyll i företagsuppgifter och välj era kompetensområden. Ett nytt konto får 5 gratis leads under provperioden på 7 dagar.</p>
 
               {presetCampaignCode && (
                 <div className="mb-6 rounded-xl border-2 border-accent bg-accent/10 p-4 flex items-start gap-3">
@@ -244,7 +249,7 @@ const RegisterSupplierPage = () => {
                       return (
                         <button key={category} type="button" aria-pressed={selected} onClick={() => toggleCategory(category)} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border transition-all ${selected ? 'bg-brand-blue text-primary-foreground border-brand-blue' : 'bg-card text-foreground/70 border-border hover:border-brand-blue/50'}`}>
                           <span aria-hidden="true">{CATEGORY_ICONS[category]}</span>
-                          {category}
+                          {categoryLabel(category)}
                           {selected && <Check className="h-3 w-3" />}
                         </button>
                       )
@@ -268,6 +273,7 @@ const RegisterSupplierPage = () => {
                   {loading ? 'Skapar konto...' : <>Skapa konto och få {TRIAL_LEADS} gratis leads<ArrowRight className="ml-2 h-4 w-4" /></>}
                 </Button>
               </form>
+              {registrationError && <div className="mt-4"><p role="alert" className="text-sm text-destructive">{registrationError}</p><ResendConfirmation email={form.email} /></div>}
 
               <p className="text-center text-xs text-muted-foreground mt-4">🔒 Säker registrering · Inga kortuppgifter · Leadgaranti ingår · Ingen bindningstid</p>
               <p className="text-center text-sm text-muted-foreground mt-5">Har ni redan konto? <Link to="/logga-in" className="text-primary hover:underline font-medium">Logga in</Link></p>

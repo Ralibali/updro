@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, FileText, MessageCircle, Search } from 'lucide-react'
@@ -59,7 +60,7 @@ const SupplierDashboard = () => {
     <section aria-labelledby="matched-heading">
       <div className="mb-3 flex items-center justify-between gap-3"><h2 id="matched-heading" className="font-display text-lg font-semibold">{categories ? 'Senaste inom era kategorier' : 'Senaste uppdragen'}</h2><Link to="/dashboard/supplier/uppdrag" className="shrink-0 text-sm font-medium text-primary hover:underline">Visa alla</Link></div>
       {loading ? <p role="status" className="rounded-xl border p-6 text-sm text-muted-foreground">Hämtar uppdrag…</p> : error ? <div role="alert" className="rounded-xl border p-5"><p className="text-sm">Översikten kunde inte uppdateras.</p><Button variant="outline" size="sm" className="mt-3" onClick={() => setReload(n => n + 1)}>Försök igen</Button></div> : projects.length ? <div className="space-y-3">{projects.map(p => <Link key={p.id} to={'/dashboard/supplier/uppdrag/' + p.id} className="block rounded-xl border bg-card p-4 transition-colors hover:border-primary/50">
-        <span className={'inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ' + (CATEGORY_STYLES[p.category] || '')}>{p.category}</span>
+        <span className={'inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ' + (CATEGORY_STYLES[p.category] || '')}>{categoryLabel(p.category)}</span>
         <h3 className="mt-2 font-semibold break-words">{p.title}</h3><p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.description}</p><div className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-muted-foreground"><span>{BUDGET_LABELS[p.budget_range] || 'Budget diskuteras'} · {p.city || 'Sverige'} · {timeAgo(p.created_at)}</span><span className="font-medium text-primary">Visa uppdrag →</span></div>
       </Link>)}</div> : <div className="rounded-xl border bg-card p-5"><h3 className="font-semibold">Inga nya uppdrag{categories ? ' inom era kategorier' : ''} just nu</h3><p className="mt-1 hidden text-sm text-muted-foreground sm:block">{categories ? 'Du kan se alla uppdrag eller ändra vilka kategorier byrån arbetar med.' : 'Ange byråns kategorier så blir kommande matchningar mer relevanta.'}</p><div className="mt-3 flex flex-wrap gap-3"><Link to="/dashboard/supplier/uppdrag" className="text-sm font-medium text-primary hover:underline">Se alla uppdrag</Link><Link to="/dashboard/supplier/profil" className="text-sm font-medium text-primary hover:underline">Ändra byråprofil</Link></div></div>}
     </section>

@@ -48,8 +48,8 @@ async function registrationHandler(authResult: unknown, profileError: unknown = 
   await import(/* @vite-ignore */ `data:text/javascript;base64,${compiledHandler}#${Math.random()}`);
   return {
     client, insert, deleteUser, from,
-    submit: () => serve(new Request("https://local.invalid/create-account", {
-      method: "POST", headers: { "Content-Type": "application/json", origin: "https://updro.se" }, body: JSON.stringify(signup),
+    submit: (overrides: Partial<typeof signup> = {}) => serve(new Request("https://local.invalid/create-account", {
+      method: "POST", headers: { "Content-Type": "application/json", origin: "https://updro.se" }, body: JSON.stringify({ ...signup, ...overrides }),
     })),
   };
 }
@@ -81,8 +81,8 @@ describe("registration auth errors", () => {
     ["captcha_failed", "Säkerhetskontrollen"],
     ["hook_timeout", "tog för lång tid"],
     ["request_timeout", "tog för lång tid"],
-    ["user_already_exists", "Logga in istället"],
-    ["email_exists", "Logga in istället"],
+    ["user_already_exists", "Logga in eller"],
+    ["email_exists", "Logga in eller"],
   ])("provides actionable advice for %s without matching the English message", (code, expected) => {
     expect(signupAuthErrorMessage({ code, message: "changed upstream wording" })).toContain(expected);
   });
@@ -128,5 +128,12 @@ describe("create-account handler", () => {
     expect(handler.from.mock.calls.map(([table]) => table)).toEqual(["profiles", "supplier_profiles"]);
     expect(handler.insert).toHaveBeenLastCalledWith(expect.objectContaining({ id: "new-supplier", plan: "trial", lead_credits: 5 }));
     expect(handler.deleteUser).not.toHaveBeenCalled();
+  });
+
+  it("stores Google Ads as its own supplier category for lead matching", async () => {
+    const handler = await registrationHandler({ data: { user: { id: "ads-supplier", identities: [{ id: "identity" }] }, session: null }, error: null });
+    const response = await handler.submit({ categories: ["Google Ads"] });
+    expect(response.status).toBe(200);
+    expect(handler.insert).toHaveBeenLastCalledWith(expect.objectContaining({ categories: ["Google Ads"] }));
   });
 });

@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, MapPin, Search, Unlock } from 'lucide-react'
@@ -76,7 +77,7 @@ const MatchedProjectsPage = () => {
     </div>
     <div className="grid grid-cols-2 items-end gap-3 rounded-xl border bg-card p-4 sm:grid-cols-[1fr_180px_160px]">
       <div className="col-span-2 sm:col-span-1"><Label htmlFor="project-search">Sök uppdrag</Label><div className="relative mt-1"><Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" /><Input id="project-search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Tjänst, titel eller ort" className="pl-9" /></div></div>
-      <div><Label htmlFor="project-category">Kategori</Label><Select value={filterCat} onValueChange={setFilterCat}><SelectTrigger id="project-category" className="mt-1"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Alla kategorier</SelectItem>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select></div>
+      <div><Label htmlFor="project-category">Kategori</Label><Select value={filterCat} onValueChange={setFilterCat}><SelectTrigger id="project-category" className="mt-1"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">Alla kategorier</SelectItem>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{categoryLabel(c)}</SelectItem>)}</SelectContent></Select></div>
       <div><Label htmlFor="project-sort">Sortera</Label><Select value={sort} onValueChange={setSort}><SelectTrigger id="project-sort" className="mt-1"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="newest">Senaste först</SelectItem><SelectItem value="match">Bäst matchning</SelectItem></SelectContent></Select></div>
     </div>
     {loading ? <p role="status" className="rounded-xl border p-8 text-sm text-muted-foreground">Hämtar uppdrag…</p> : error ? <div role="alert" className="rounded-xl border p-6"><p>Uppdragen kunde inte hämtas.</p><Button variant="outline" onClick={() => setReload(n => n + 1)} className="mt-3">Försök igen</Button></div> : <>
@@ -86,7 +87,7 @@ const MatchedProjectsPage = () => {
         <p className="mt-2 text-sm text-muted-foreground">{view === 'matched' && !categorySet.size ? 'Lägg till kategorier i byråprofilen för att få ett relevant urval.' : 'Prova en annan kategori eller se alla tillgängliga uppdrag.'}</p>
         <div className="mt-4 flex flex-wrap gap-3"><Button variant="outline" onClick={resetFilters}>Visa alla uppdrag</Button><Button asChild variant="ghost"><Link to="/dashboard/supplier/profil">Ändra byråprofil</Link></Button></div>
       </div> : <div className="space-y-3">{visible.map(({project:p,match}) => <article key={p.id} className="rounded-2xl border bg-card p-4 transition-colors hover:border-primary/40 sm:p-5">
-        <div className="flex flex-wrap items-center justify-between gap-2"><span className={'rounded-full px-2.5 py-0.5 text-xs font-semibold ' + (CATEGORY_STYLES[p.category] || '')}>{p.category}</span><span className="text-xs text-muted-foreground">{timeAgo(p.created_at)}</span></div>
+        <div className="flex flex-wrap items-center justify-between gap-2"><span className={'rounded-full px-2.5 py-0.5 text-xs font-semibold ' + (CATEGORY_STYLES[p.category] || '')}>{categoryLabel(p.category)}</span><span className="text-xs text-muted-foreground">{timeAgo(p.created_at)}</span></div>
         <h2 className="mt-3 font-display text-lg font-semibold break-words"><Link to={'/dashboard/supplier/uppdrag/' + p.id} className="hover:text-primary">{p.title}</Link></h2>
         <p className="mt-2 line-clamp-3 whitespace-pre-wrap break-words text-sm text-muted-foreground">{p.description}</p>
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm"><span className="font-semibold">{BUDGET_LABELS[p.budget_range] || 'Budget diskuteras'}</span><span className="inline-flex items-center gap-1.5 text-muted-foreground"><MapPin className="h-4 w-4" />{p.city || 'Sverige'}</span><span className="text-muted-foreground">{p.status !== 'active' || !remaining(p) ? 'Tar inte emot fler offerter' : remaining(p) + (remaining(p) === 1 ? ' offertplats kvar' : ' offertplatser kvar')}</span></div>

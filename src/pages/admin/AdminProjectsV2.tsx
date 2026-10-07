@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useSearchParams } from 'react-router-dom'
 import { Fragment, useEffect, useState } from 'react'
 import { Building2, CheckCircle, ChevronDown, ChevronUp, Download, Mail, Phone, Search, Trash2, User, XCircle } from 'lucide-react'
@@ -183,7 +184,7 @@ const AdminProjectsV2 = () => {
                 <tr className={cn('border-b hover:bg-muted/30 cursor-pointer', project.status === 'pending' && 'bg-yellow-50/30')} onClick={() => setExpanded(expanded === project.id ? null : project.id)}>
                   <td className="p-3">{expanded === project.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}</td>
                   <td className="p-3 font-medium max-w-56 truncate">{project.title}</td>
-                  <td className="p-3"><span className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', CATEGORY_STYLES[project.category] || '')}>{project.category}</span></td>
+                  <td className="p-3"><span className={cn('rounded-full px-2 py-0.5 text-[10px] font-semibold', CATEGORY_STYLES[project.category] || '')}>{categoryLabel(project.category)}</span></td>
                   <td className="p-3"><div>{buyer?.company_name || buyer?.full_name || '–'}</div>{project.guest_lead_id && <span className="text-[10px] text-primary">Gästlead</span>}</td>
                   <td className="p-3"><span className={cn('rounded-full px-2 py-0.5 text-xs font-semibold', statusClass(project.status))}>{project.status}</span></td>
                   <td className="p-3">{project.offer_count || 0}</td><td className="p-3 text-muted-foreground">{timeAgo(project.created_at)}</td>

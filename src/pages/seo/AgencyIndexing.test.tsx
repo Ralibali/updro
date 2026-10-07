@@ -29,7 +29,7 @@ describe('React directory indexability', () => {
     expect(links.filter(link => noindex.has(link))).toEqual([])
   })
   it('keeps a thin combination noindex, follow after React renders', () => {
-    const path = routes.find(route => route.noindex)!.path
+    const path = routes.find(route => route.noindex && route.path.startsWith('/byraer/'))!.path
     render(<MemoryRouter initialEntries={[path]}><Routes>
       <Route path="/byraer/:stad/:kategori" element={<AgencyCityCategoryPage />} />
     </Routes></MemoryRouter>)

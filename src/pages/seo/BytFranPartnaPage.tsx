@@ -37,7 +37,7 @@ const BytFranPartnaPage = () => {
     const canonical = 'https://updro.se/for-byraer/byt-fran-partna'
     setSEOMeta({
       title: 'Testa Updro som alternativ till Partna – för digitala byråer',
-      description: 'Jämför pris, konkurrens per uppdrag och produktflöde. Börja med fem kostnadsfria lead-krediter och mät faktisk kostnad per vunnen affär.',
+      description: 'Jämför pris, konkurrens per uppdrag och produktflöde. Börja med 5 gratis leads och mät faktisk kostnad per vunnen affär.',
       canonical,
     })
     setBreadcrumb([

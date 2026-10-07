@@ -45,6 +45,7 @@ export function usePageTracking() {
 
   useEffect(() => {
     const path = location.pathname
+    if (path === '/bekrafta-epost') return
     // Capture first/latest-touch attribution on every navigation. Runs even for
     // admin/dashboard routes so that a link from an ad landing in a signed-in
     // area still records the touch, and skips writes when no UTM/referrer signal.

@@ -53,7 +53,7 @@ const PricingPage = () => {
   useEffect(() => {
     setSEOMeta({
       title: 'Priser – Updro | Pay per lead eller månadskort',
-      description: `Updro kostar ${STRIPE_PRODUCTS.lead.price} kr per valt lead eller ${STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån. ${TRIAL_LEADS} gratis lead-krediter och 0 % provision på vunna projekt.`,
+      description: `Updro kostar ${STRIPE_PRODUCTS.lead.price} kr per valt lead eller ${STRIPE_PRODUCTS.monthly.price.toLocaleString('sv-SE')} kr/mån. ${TRIAL_LEADS} gratis leads och 0 % provision på vunna projekt.`,
       canonical: 'https://updro.se/priser',
     })
   }, [])
@@ -85,7 +85,7 @@ const PricingPage = () => {
                   <Gift className="h-5 w-5 text-accent" />
                   <span className="font-display font-bold text-lg">Testa innan ni betalar</span>
                 </div>
-                <p className="text-muted-foreground mb-4">Nya byråer får {TRIAL_LEADS} kostnadsfria lead-krediter under {TRIAL_DAYS} dagar. Inget kreditkort krävs.</p>
+                <p className="text-muted-foreground mb-4">Nya byråer får {TRIAL_LEADS} gratis leads under {TRIAL_DAYS} dagar. Inget kreditkort krävs.</p>
                 <Link to="/registrera/byra">
                   <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Button>
                 </Link>

@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
@@ -183,7 +184,7 @@ const MarketplaceLiquidityPanel = () => {
                               </Link>
                               <p className="text-[10px] text-muted-foreground uppercase">{p.status}</p>
                             </td>
-                            <td className="py-2 pr-3 text-muted-foreground">{p.category}</td>
+                            <td className="py-2 pr-3 text-muted-foreground">{categoryLabel(p.category)}</td>
                             <td className="py-2 pr-3 text-muted-foreground">{p.ageHours} h</td>
                             <td className="py-2 pr-3">{p.unlocks}</td>
                             <td className="py-2 pr-3">{p.offers} / {p.maxOffers || 3}</td>

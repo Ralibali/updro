@@ -93,7 +93,7 @@ export const PROJECT_TYPES = [
   { id: 'hemsida', category: 'Webbutveckling', label: 'Ny hemsida', query: 'Ny hemsida', guideSlug: 'hemsida' },
   { id: 'ehandel', category: 'E-handel', label: 'E-handel', query: 'E-handel', guideSlug: 'e-handel' },
   { id: 'seo', category: 'SEO', label: 'SEO', query: 'SEO', guideSlug: 'seo' },
-  { id: 'ads', category: 'Digital marknadsföring', label: 'Google Ads', query: 'Google Ads', guideSlug: 'google-ads' },
+  { id: 'ads', category: 'Google Ads', label: 'Google Ads', query: 'Google Ads', guideSlug: 'google-ads' },
   { id: 'app', category: 'App-utveckling', label: 'Apputveckling', query: 'Apputveckling', guideSlug: 'apputveckling' },
   { id: 'design', category: 'Grafisk design/UX', label: 'Design & varumärke', query: 'Design & varumärke', guideSlug: 'design' },
   { id: 'ai', category: 'AI-utveckling', label: 'AI-utveckling', query: 'AI-utveckling', guideSlug: 'ai-utveckling' },

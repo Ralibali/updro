@@ -22,11 +22,12 @@ export interface BriefSuggestion {
 }
 
 const CATEGORY_KEYWORDS: Array<{ cat: Category; words: string[] }> = [
+  { cat: 'Google Ads', words: ['google ads', 'adwords', 'google-annonser', 'performance max'] },
   { cat: 'SEO', words: ['seo', 'ranking', 'sökord', 'google sök', 'organisk', 'sökmotor'] },
   { cat: 'E-handel', words: ['shopify', 'webbutik', 'klarna', 'checkout', 'e-handel', 'woocommerce', 'butik online'] },
   { cat: 'App-utveckling', words: ['app', 'ios', 'android', 'mobilapp', 'react native', 'flutter'] },
   { cat: 'AI-utveckling', words: ['ai ', 'chatbot', 'chattbot', 'automation', 'maskininlärning', 'gpt', 'llm'] },
-  { cat: 'Digital marknadsföring', words: ['annonser', 'google ads', 'meta ads', 'facebook ads', 'kampanj', 'ppc'] },
+  { cat: 'Digital marknadsföring', words: ['annonser', 'meta ads', 'facebook ads', 'kampanj', 'ppc'] },
   { cat: 'Grafisk design/UX', words: ['logga', 'logotyp', 'grafisk profil', 'figma', 'ux', 'ui design', 'designsystem'] },
   { cat: 'Sociala medier', words: ['instagram', 'tiktok', 'linkedin', 'sociala medier', 'social media'] },
   { cat: 'Video & foto', words: ['video', 'film', 'foto', 'fotografering', 'reklamfilm'] },
@@ -70,6 +71,7 @@ const buildRequirements = (category: Category): string[] => {
     'SEO': ['Teknisk SEO-revision', 'Sökordsanalys', 'On-page optimering', 'Månatlig rapportering'],
     'App-utveckling': ['Stöd för iOS och Android', 'Push-notiser', 'Offline-läge', 'Onboarding-flöde'],
     'AI-utveckling': ['Integrationer mot befintliga system', 'Säker datahantering', 'Modellval & prompts', 'Loggning av användning'],
+    'Google Ads': ['Konverteringsspårning', 'Sökordsanalys', 'Kampanjstruktur', 'Månadsrapport'],
     'Digital marknadsföring': ['Mätbart ROAS-mål', 'Konverteringsspårning', 'A/B-tester', 'Månadsrapport'],
     'Grafisk design/UX': ['Visuell identitet', 'Logotyp i flera format', 'Designsystem', 'UX-prototyp'],
     'Sociala medier': ['Innehållskalender', 'Community management', 'Statistikrapport', 'Story/Reels-produktion'],

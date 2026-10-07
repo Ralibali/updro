@@ -11,7 +11,7 @@ describe('SEO entry points', () => {
     }
   })
   it('maps service aliases and leaves unknown labels unselected', () => {
-    expect(seoLeadPath('Google Ads')).toBe('/publicera?kategori=Digital%20marknadsf%C3%B6ring')
+    expect(seoLeadPath('Google Ads')).toBe('/publicera?kategori=Google%20Ads')
     expect(seoLeadPath('Apputveckling')).toBe('/publicera?kategori=App-utveckling')
     expect(seoLeadPath('seo')).toBe('/publicera?kategori=SEO')
     expect(seoLeadPath('digitala tjänster i Uppsala')).toBe('/publicera')

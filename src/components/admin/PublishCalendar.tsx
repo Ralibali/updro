@@ -1,3 +1,4 @@
+import { categoryLabel } from '@/lib/constants'
 import { useMemo, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -132,7 +133,7 @@ export const PublishCalendar = ({
                           className="flex items-center justify-between p-2 rounded-md bg-primary/5 hover:bg-primary/10 text-sm"
                         >
                           <span className="truncate flex-1">{p.h1}</span>
-                          <Badge variant="outline" className="ml-2">{p.category}</Badge>
+                          <Badge variant="outline" className="ml-2">{categoryLabel(p.category)}</Badge>
                         </a>
                       ))}
                     </div>

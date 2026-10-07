@@ -1,3 +1,4 @@
+import { CATEGORY_BY_SLUG, categoryLabel } from './constants'
 export interface SEOSubPage {
   slug: string
   title: string
@@ -26,7 +27,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── WEBBUTVECKLING ───
   {
     categorySlug: 'webbutveckling',
-    categoryName: 'Webbutveckling',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['webbutveckling']),
     metaTitle: 'Webbutveckling – Hitta rätt webbyrå | Updro',
     metaDesc: 'Jämför offerter från de bästa webbbyråerna i Sverige. Få skräddarsydd webbutveckling till rätt pris – kostnadsfritt och utan förpliktelser.',
     h1: 'Webbutveckling – Hitta rätt byrå för ditt projekt',
@@ -168,7 +169,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
     relatedCategories: [
       { label: 'Hjälp med hemsida', href: '/hjalp-med-hemsida' },
       { label: 'SEO', href: '/seo' },
-      { label: 'UX / Webbdesign', href: '/webbdesign' },
+      { label: categoryLabel(CATEGORY_BY_SLUG['webbdesign']), href: '/webbdesign' },
       { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
     ]
   },
@@ -176,7 +177,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── E-HANDEL ───
   {
     categorySlug: 'ehandel',
-    categoryName: 'E-handel',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['ehandel']),
     metaTitle: 'E-handel – Bygg din webbutik | Updro',
     metaDesc: 'Jämför offerter från e-handelsbyråer i Sverige. Shopify, WooCommerce, custom – hitta rätt lösning för din webbutik.',
     h1: 'E-handel – Bygg en webbutik som säljer',
@@ -251,7 +252,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── DIGITAL MARKNADSFÖRING ───
   {
     categorySlug: 'digital-marknadsforing',
-    categoryName: 'Digital marknadsföring',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['digital-marknadsforing']),
     metaTitle: 'Digital marknadsföring – Hitta byrå | Updro',
     metaDesc: 'Jämför offerter från de bästa marknadsföringsbyråerna i Sverige. Google Ads, sociala medier, content – hitta rätt byrå.',
     h1: 'Digital marknadsföring – Nå rätt kunder online',
@@ -304,7 +305,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── SEO ───
   {
     categorySlug: 'seo',
-    categoryName: 'SEO',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['seo']),
     metaTitle: 'SEO – Sökmotoroptimering | Hitta SEO-byrå | Updro',
     metaDesc: 'Jämför offerter från SEO-byråer i Sverige. Teknisk SEO, innehållsoptimering, länkbyggande – hitta rätt SEO-partner.',
     h1: 'SEO – Sökmotoroptimering som ger resultat',
@@ -352,14 +353,14 @@ export const SEO_PAGES: SEOPillarPage[] = [
     relatedCategories: [
       { label: 'Webbutveckling', href: '/webbutveckling' },
       { label: 'Digital marknadsföring', href: '/digital-marknadsforing' },
-      { label: 'UX / Webbdesign', href: '/webbdesign' },
+      { label: categoryLabel(CATEGORY_BY_SLUG['webbdesign']), href: '/webbdesign' },
     ]
   },
 
   // ─── GRAFISK DESIGN ───
   {
     categorySlug: 'grafisk-design',
-    categoryName: 'Grafisk design & UX',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['grafisk-design']),
     metaTitle: 'Grafisk design – Hitta designbyrå | Updro',
     metaDesc: 'Jämför offerter från designbyråer i Sverige. Logotyp, grafisk profil, UX-design – hitta rätt byrå.',
     h1: 'Grafisk design – Skapa ett visuellt starkt varumärke',
@@ -379,7 +380,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
       { slug: 'pris', title: 'Grafisk design pris 2026 | Updro', h1: 'Vad kostar grafisk design?', metaDesc: 'Prisguide för grafisk design i Sverige 2026.', intro: 'Priserna för grafisk design varierar. Här ger vi dig en översikt.', sections: [{ heading: 'Prisöversikt', content: '| Tjänst | Pris |\n|---|---|\n| Logotyp | 5 000 – 30 000 kr |\n| Grafisk profil | 15 000 – 60 000 kr |\n| Visitkort | 1 000 – 3 000 kr |\n| Broschyr | 3 000 – 10 000 kr |' }], faq: [{ q: 'Kan jag designa själv?', a: 'Med verktyg som Canva kan du göra enklare material, men professionell design ger ett helt annat resultat.' }], relatedLinks: [{ label: 'Webbutveckling pris', href: '/webbutveckling/pris' }] },
     ],
     relatedCategories: [
-      { label: 'UX / Webbdesign', href: '/webbdesign' },
+      { label: categoryLabel(CATEGORY_BY_SLUG['webbdesign']), href: '/webbdesign' },
       { label: 'Webbutveckling', href: '/webbutveckling' },
       { label: 'Varumärke & PR', href: '/varumarke-pr' },
     ]
@@ -388,7 +389,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── WEBBDESIGN ───
   {
     categorySlug: 'webbdesign',
-    categoryName: 'UX / Webbdesign',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['webbdesign']),
     metaTitle: 'Webbdesign – Hitta webbdesigner | Updro',
     metaDesc: 'Jämför offerter från webbdesigners i Sverige. UX/UI-design, responsiv design – hitta rätt byrå.',
     h1: 'Webbdesign – Skapa en webbplats som engagerar',
@@ -416,7 +417,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── APP-UTVECKLING ───
   {
     categorySlug: 'app-utveckling',
-    categoryName: 'App-utveckling',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['app-utveckling']),
     metaTitle: 'App-utveckling – Hitta apputvecklare | Updro',
     metaDesc: 'Jämför offerter från apputvecklare i Sverige. iOS, Android, cross-platform – hitta rätt byrå.',
     h1: 'App-utveckling – Bygg din mobilapp',
@@ -445,7 +446,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── MJUKVARUUTVECKLING ───
   {
     categorySlug: 'mjukvaruutveckling',
-    categoryName: 'Mjukvaruutveckling',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['mjukvaruutveckling']),
     metaTitle: 'Mjukvaruutveckling – Hitta utvecklare | Updro',
     metaDesc: 'Jämför offerter från mjukvaruutvecklare. SaaS, enterprise, systemutveckling – hitta rätt partner.',
     h1: 'Mjukvaruutveckling – Skräddarsydda lösningar',
@@ -472,7 +473,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── AI-UTVECKLING ───
   {
     categorySlug: 'ai-utveckling',
-    categoryName: 'AI-utveckling',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['ai-utveckling']),
     metaTitle: 'AI-utveckling – Hitta AI-byrå | Updro',
     metaDesc: 'Jämför offerter för AI-utveckling. Chatbots, automation, maskininlärning – hitta rätt AI-partner.',
     h1: 'AI-utveckling – Automatisera och effektivisera',
@@ -499,7 +500,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── IT-KONSULT ───
   {
     categorySlug: 'it-konsult',
-    categoryName: 'IT-konsult',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['it-konsult']),
     metaTitle: 'IT-konsult – Hitta konsultbolag | Updro',
     metaDesc: 'Jämför offerter från IT-konsulter i Sverige. Systemarkitektur, molnmigrering, säkerhet.',
     h1: 'IT-konsult – Expert hjälp för dina IT-behov',
@@ -526,7 +527,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── IT-SUPPORT ───
   {
     categorySlug: 'it-support',
-    categoryName: 'IT-support / Underhåll',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['it-support']),
     metaTitle: 'IT-support – Hitta supportpartner | Updro',
     metaDesc: 'Jämför offerter för IT-support och underhåll. Drift, säkerhet, helpdesk – hitta rätt partner.',
     h1: 'IT-support & underhåll – Trygg drift av dina system',
@@ -553,7 +554,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── SOCIALA MEDIER ───
   {
     categorySlug: 'sociala-medier',
-    categoryName: 'Sociala medier',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['sociala-medier']),
     metaTitle: 'Sociala medier – Hitta byrå | Updro',
     metaDesc: 'Jämför offerter för hantering av sociala medier. Annonsering, strategi, innehåll – hitta rätt byrå.',
     h1: 'Sociala medier – Öka din närvaro online',
@@ -580,7 +581,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── VIDEO & FOTO ───
   {
     categorySlug: 'video-foto',
-    categoryName: 'Video & Foto',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['video-foto']),
     metaTitle: 'Video & Foto – Hitta produktionsbolag | Updro',
     metaDesc: 'Jämför offerter för videoproduktion och företagsfotografering. Reklamfilm, profilbilder, produktfoto.',
     h1: 'Video & Foto – Professionellt visuellt innehåll',
@@ -606,7 +607,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── VARUMÄRKE & PR ───
   {
     categorySlug: 'varumarke-pr',
-    categoryName: 'Varumärke & PR',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['varumarke-pr']),
     metaTitle: 'Varumärke & PR – Hitta PR-byrå | Updro',
     metaDesc: 'Jämför offerter för varumärkesstrategi och PR. Bygga varumärke, pressmaterial, kommunikation.',
     h1: 'Varumärke & PR – Bygg ett starkt varumärke',
@@ -633,7 +634,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── AFFÄRSUTVECKLING ───
   {
     categorySlug: 'affarsutveckling',
-    categoryName: 'Affärsutveckling',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['affarsutveckling']),
     metaTitle: 'Affärsutveckling – Hitta konsult | Updro',
     metaDesc: 'Jämför offerter för affärsutveckling. Strategi, digitalisering, tillväxt – hitta rätt rådgivare.',
     h1: 'Affärsutveckling – Accelerera din tillväxt',
@@ -659,7 +660,7 @@ export const SEO_PAGES: SEOPillarPage[] = [
   // ─── GOOGLE ADS ───
   {
     categorySlug: 'google-ads',
-    categoryName: 'Google Ads',
+    categoryName: categoryLabel(CATEGORY_BY_SLUG['google-ads']),
     metaTitle: 'Google Ads-byrå – Hitta rätt byrå för Google Ads | Updro',
     metaDesc: 'Jämför offerter från certifierade Google Ads-byråer i Sverige. Sök-, display- och Shopping-annonser – hitta rätt partner gratis.',
     h1: 'Google Ads – Hitta rätt byrå för din annonsering',
