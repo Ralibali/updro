@@ -28,8 +28,8 @@ export function renderMarkdown(text: string): React.ReactNode[] {
       const bodyRows = dataRows.slice(1)
 
       return (
-        <div key={i} className="overflow-x-auto mb-4">
-          <table className="w-full text-sm border-collapse">
+        <div key={i} className="table-scroll mb-4" tabIndex={0} role="region" aria-label="Tabell – rulla i sidled för fler kolumner">
+          <table className="w-full min-w-[640px] text-sm border-collapse">
             <thead>
               <tr className="border-b border-border">
                 {headerRow.map((cell, j) => (

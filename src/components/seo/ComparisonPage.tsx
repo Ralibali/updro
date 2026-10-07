@@ -89,11 +89,9 @@ const ComparisonPage = () => {
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{page.intro}</p>
           {page.reviewedAt && <p className="mt-4 text-sm text-muted-foreground">Uppdaterad {page.reviewedAt} · Updros redaktion · Köpguide</p>}
           <div className="mt-6">
-            <Link to={seoLeadPath(page.category)}>
-              <Button size="lg" className="rounded-xl shadow-blue">
+            <Button size="lg" className="rounded-xl shadow-blue" asChild><Link to={seoLeadPath(page.category)}>
                 Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
         </div>
       </section>

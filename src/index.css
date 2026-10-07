@@ -11,31 +11,31 @@
     --card-foreground: 207 57% 16%;
     --popover: 0 0% 100%;
     --popover-foreground: 207 57% 16%;
-    --primary: 220 84% 53%;
+    --primary: 220 78% 43%;
     --primary-foreground: 0 0% 100%;
     --secondary: 214 40% 96%;
     --secondary-foreground: 211 47% 24%;
     --muted: 214 30% 96%;
     --muted-foreground: 213 17% 40%;
-    --accent: 220 84% 53%;
+    --accent: 220 78% 43%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 66% 43%;
     --destructive-foreground: 0 0% 100%;
     --border: 214 27% 88%;
     --input: 214 22% 69%;
-    --ring: 220 84% 53%;
+    --ring: 220 78% 43%;
     --radius: 0.625rem;
     --brand-dark: 207 57% 16%;
-    --brand-mint: 220 84% 53%;
+    --brand-mint: 220 78% 43%;
     --brand-mint-hover: 218 76% 38%;
-    --brand-amber: 220 84% 53%;
+    --brand-amber: 220 78% 43%;
     --brand-amber-glow: 214 70% 94%;
-    --brand-blue: 220 84% 53%;
+    --brand-blue: 220 78% 43%;
     --brand-blue-hover: 218 76% 38%;
-    --brand-indigo: 220 84% 53%;
-    --brand-orange: 220 84% 53%;
+    --brand-indigo: 220 78% 43%;
+    --brand-orange: 220 78% 43%;
     --brand-orange-hover: 218 76% 38%;
-    --brand-coral: 220 84% 53%;
+    --brand-coral: 220 78% 43%;
     --surface-alt: 214 40% 97%;
     --surface-2: 214 36% 95%;
     --surface-3: 214 30% 91%;
@@ -44,15 +44,15 @@
     --shadow-sm: 0 2px 5px -2px hsl(207 57% 16% / 0.06);
     --shadow-md: 0 8px 24px -12px hsl(207 57% 16% / 0.12);
     --shadow-lg: 0 20px 60px -24px hsl(207 57% 16% / 0.18);
-    --shadow-brand: 0 5px 14px -6px hsl(220 84% 53% / 0.22);
+    --shadow-brand: 0 5px 14px -6px hsl(220 78% 43% / 0.22);
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 213 23% 37%;
-    --sidebar-primary: 220 84% 53%;
+    --sidebar-primary: 220 78% 43%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 215 68% 95%;
     --sidebar-accent-foreground: 218 76% 38%;
     --sidebar-border: 214 27% 90%;
-    --sidebar-ring: 220 84% 53%;
+    --sidebar-ring: 220 78% 43%;
   }
   .dark {
     color-scheme: dark;
@@ -320,3 +320,9 @@
   .updro-workspace-main :is(.rounded-2xl.border,.rounded-xl.border) { border-radius: var(--radius); }
   .updro-workspace-main .text-2xl.font-bold { @apply font-semibold; }
 }
+
+/* Fixed banners must never obscure the last controls or footer. */
+body { padding-bottom: calc(var(--cookie-banner-height, 0px) + var(--promo-banner-height, 0px)); }
+html { scroll-padding-top: 7rem; }
+.table-scroll { max-width: 100%; overflow-x: auto; background: linear-gradient(to right, hsl(var(--background)) 30%, transparent), linear-gradient(to left, hsl(var(--background)) 30%, transparent), linear-gradient(to right, rgb(0 0 0 / .15), transparent), linear-gradient(to left, rgb(0 0 0 / .15), transparent); background-position: left center, right center, left center, right center; background-size: 40px 100%, 40px 100%, 12px 100%, 12px 100%; background-repeat: no-repeat; background-attachment: local, local, scroll, scroll; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }

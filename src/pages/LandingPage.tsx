@@ -112,14 +112,10 @@ const LandingPage = () => {
                 transition={{ delay: 0.15 }}
                 className="mt-8 flex flex-col gap-3 sm:flex-row"
               >
-                <Link to={publishUrl} onClick={() => trackStart('hero')}>
-                  <Button size="lg" className="rounded-xl px-8 py-6 text-base">
+                <Button size="lg" className="rounded-xl px-8 py-6 text-base" asChild><Link to={publishUrl} onClick={() => trackStart('hero')}>
                     Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <a href="#sa-fungerar-det">
-                  <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base">Se hur det fungerar</Button>
-                </a>
+                  </Link></Button>
+                <Button size="lg" variant="outline" className="rounded-xl px-8 py-6 text-base" asChild><a href="#sa-fungerar-det">Se hur det fungerar</a></Button>
               </motion.div>
               <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
                 <span className="flex items-center gap-2"><Check className="h-4 w-4 text-accent" />Ingen registrering för att börja</span>
@@ -181,11 +177,9 @@ const LandingPage = () => {
             ))}
           </Accordion>
           <div className="mt-10 text-center">
-            <Link to={publishUrl} onClick={() => trackStart('bottom_cta')}>
-              <Button size="lg" className="rounded-xl px-8 py-6 text-base">
+            <Button size="lg" className="rounded-xl px-8 py-6 text-base" asChild><Link to={publishUrl} onClick={() => trackStart('bottom_cta')}>
                 Starta gratis <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
         </section>
       </main>

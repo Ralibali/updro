@@ -7,7 +7,8 @@ import { setSEOMeta } from '@/lib/seoHelpers'
 import { trackLeadStarted } from '@/lib/analytics'
 import { sanitizePrefill } from '@/lib/prefill'
 import InlineBriefForm from '@/components/shared/InlineBriefForm'
-import Logo from '@/components/Logo'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 /**
  * Annonsgrupper länkar hit med ?tjanst=<slug> så att rubriken matchar annonsen.
@@ -64,17 +65,9 @@ const AdsLandingPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
-        <div className="container mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
-          <Logo size="sm" />
-          <span className="hidden sm:inline text-sm text-muted-foreground">Gratis för beställare</span>
-          <Button asChild size="sm" className="sm:hidden rounded-lg font-semibold">
-            <Link to={buildProjectUrl()} onClick={() => trackCta('google_ads_header')}>Kom igång</Link>
-          </Button>
-        </div>
-      </header>
+      <Navbar projectHref={buildProjectUrl()} />
 
-      <main className="flex-1 pb-24 sm:pb-0">
+      <main className="flex-1">
         {/* Hero */}
         <section className="border-b bg-secondary/40">
           <div className="container mx-auto px-4 py-10 sm:py-16 max-w-5xl">
@@ -184,7 +177,7 @@ const AdsLandingPage = () => {
       </main>
 
       {/* Sticky mobil-CTA */}
-      <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 border-t bg-background/95 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <div className="sm:hidden border-t bg-background/95 backdrop-blur px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
         <Button asChild size="lg" className="w-full rounded-xl py-6 text-base font-semibold">
           <Link to={buildProjectUrl()} onClick={() => trackCta('google_ads_sticky')}>
             Beskriv ditt projekt gratis <ArrowRight className="ml-2 h-5 w-5" />
@@ -193,12 +186,7 @@ const AdsLandingPage = () => {
         <p className="mt-1.5 text-center text-[11px] text-muted-foreground">Gratis · Inget köpkrav · Två minuter</p>
       </div>
 
-      <footer className="border-t py-6">
-        <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <span>© {new Date().getFullYear()} Updro</span>
-          <div className="flex gap-4"><Link to="/integritetspolicy" className="hover:underline">Integritetspolicy</Link><Link to="/villkor" className="hover:underline">Villkor</Link></div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

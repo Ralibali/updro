@@ -80,8 +80,8 @@ const PartnaAlternativPage = () => {
             </p>
             <p className="mt-3 text-sm text-muted-foreground">Källor kontrollerade {PARTNA_VERIFIED_DATE}. Priser och villkor kan ändras.</p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link to="/registrera/byra"><Button size="lg" className="rounded-xl px-7">Testa 5 leads gratis <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-              <Link to="/publicera"><Button size="lg" variant="outline" className="rounded-xl px-7">Jag söker en byrå</Button></Link>
+              <Button size="lg" className="rounded-xl px-7" asChild><Link to="/registrera/byra">Testa 5 leads gratis <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+              <Button size="lg" variant="outline" className="rounded-xl px-7" asChild><Link to="/publicera">Jag söker en byrå</Link></Button>
             </div>
           </div>
         </section>
@@ -216,8 +216,8 @@ const PartnaAlternativPage = () => {
             <h2 className="font-display text-3xl font-bold md:text-4xl">Mät Updro med riktiga leads – innan du betalar</h2>
             <p className="mt-3 max-w-2xl text-background/75">Nya byråer får 5 gratis leads under sju dagar utan kortuppgifter. Jämför faktisk kvalitet, svar och möten med dina andra kanaler.</p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link to="/registrera/byra"><Button size="lg" variant="secondary" className="rounded-xl px-7">Testa 5 leads gratis</Button></Link>
-              <Link to="/priser"><Button size="lg" variant="outline" className="rounded-xl border-background text-background hover:bg-background hover:text-foreground">Se alla Updro-priser</Button></Link>
+              <Button size="lg" variant="secondary" className="rounded-xl px-7" asChild><Link to="/registrera/byra">Testa 5 leads gratis</Link></Button>
+              <Button size="lg" variant="outline" className="rounded-xl border-background text-background hover:bg-background hover:text-foreground" asChild><Link to="/priser">Se alla Updro-priser</Link></Button>
             </div>
           </div>
         </section>

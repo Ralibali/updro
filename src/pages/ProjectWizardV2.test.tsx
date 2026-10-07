@@ -237,14 +237,14 @@ describe('ProjectWizardV2 step 2 budget/start defaults', () => {
   })
 })
 
-describe('ProjectWizardV2 step 2 submit gate', () => {
+describe('ProjectWizardV2 review gate', () => {
   beforeEach(() => {
     trackLeadSubmitted.mockReset()
     invokeMock.mockReset()
     localStorage.clear()
   })
 
-  const submitButton = () => screen.getByRole('button', { name: /Skicka uppdrag gratis/ })
+  const reviewButton = () => screen.getByRole('button', { name: /Granska uppdraget/ })
 
   it('håller namnfältet synligt men valfritt', () => {
     renderWizard('/publicera')
@@ -262,11 +262,11 @@ describe('ProjectWizardV2 step 2 submit gate', () => {
     goToStep2()
 
     expect(screen.getByLabelText(/Namn/)).toHaveValue('')
-    expect(submitButton()).toBeDisabled()
+    expect(reviewButton()).toBeDisabled()
     expect(screen.getByText(/Fyll i giltig e-post för att skicka/)).toBeInTheDocument()
 
     fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'inte-en-epost' } })
-    expect(submitButton()).toBeDisabled()
+    expect(reviewButton()).toBeDisabled()
     expect(screen.getByText(/Fyll i giltig e-post för att skicka/)).toBeInTheDocument()
   })
 
@@ -278,7 +278,7 @@ describe('ProjectWizardV2 step 2 submit gate', () => {
     fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
 
     expect(screen.getByLabelText(/Namn/)).toHaveValue('')
-    expect(submitButton()).toBeEnabled()
+    expect(reviewButton()).toBeEnabled()
     expect(screen.queryByText(/Fyll i giltig e-post för att skicka/)).not.toBeInTheDocument()
   })
 
@@ -290,7 +290,10 @@ describe('ProjectWizardV2 step 2 submit gate', () => {
     renderWizard('/publicera')
     goToStep2()
     fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
-    fireEvent.click(submitButton())
+    fireEvent.click(reviewButton())
+    expect(invokeMock).not.toHaveBeenCalled()
+    expect(screen.getByRole('heading', { name: /Granska/ })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
 
     await waitFor(() => {
       expect(invokeMock).toHaveBeenCalledWith('submit-guest-lead', expect.objectContaining({
@@ -322,6 +325,7 @@ describe('ProjectWizardV2 recovery and mobile navigation', () => {
     renderWizard('/publicera/webbutveckling')
     goToStep2()
     fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
+    fireEvent.click(screen.getByRole('button', { name: /Granska uppdraget/ }))
   }
 
   it('accepts exactly ten trimmed characters and focuses each step heading', () => {
@@ -361,7 +365,7 @@ describe('ProjectWizardV2 recovery and mobile navigation', () => {
     prepareSubmission()
     fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
     expect(await screen.findByRole('alert')).toHaveTextContent('Tillfälligt fel')
-    expect(screen.getByLabelText(/E-post/)).toHaveValue('anna@example.com')
+    expect(screen.getByText('anna@example.com')).toBeInTheDocument()
     expect(trackLeadSubmitted).not.toHaveBeenCalled()
     invokeMock.mockResolvedValueOnce({ data: { success: true, project_id: 'retry-123', email_sent: true }, error: null })
     fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
@@ -390,6 +394,7 @@ describe('ProjectWizardV2 buyer lead confirmation', () => {
   const submitBuyer = () => {
     renderWizard('/publicera/webbutveckling')
     goToStep2()
+    fireEvent.click(screen.getByRole('button', { name: /Granska uppdraget/ }))
     fireEvent.click(screen.getByRole('button', { name: /Skicka/ }))
   }
 
@@ -429,6 +434,7 @@ describe('Google Ads lead regression', () => {
     expect(screen.getByRole('button', { name: /Google Ads/ })).toHaveAttribute('aria-pressed', 'true')
     fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
     expect(screen.getByLabelText(/E-post/)).toHaveValue('lead@example.test')
+    fireEvent.click(screen.getByRole('button', { name: /Granska uppdraget/ }))
     fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
     await waitFor(() => expect(invokeMock).toHaveBeenCalledWith('submit-guest-lead', { body: expect.objectContaining({ category: 'Google Ads', description: 'Vi behöver Google Ads', title: 'Vi behöver Google Ads' }) }))
   })

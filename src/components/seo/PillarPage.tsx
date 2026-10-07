@@ -1,3 +1,4 @@
+import CategoryAgencies from '@/components/shared/CategoryAgencies'
 import { useEffect } from 'react'
 import { renderMarkdown } from '@/lib/renderMarkdown'
 import { Link, useParams } from 'react-router-dom'
@@ -8,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, ChevronRight } from 'lucide-react'
 import SchemaMarkup from './SchemaMarkup'
 import SEOLeadCTA from './SEOLeadCTA'
-import InlineBriefForm from '@/components/shared/InlineBriefForm'
 import { resolveWizardCategory } from '@/lib/wizardPrefill'
 import NotFound from '@/pages/NotFound'
 import { setSEOMeta, getOgImage } from '@/lib/seoHelpers'
@@ -54,14 +54,10 @@ const PillarPage = () => {
         <div className="max-w-3xl">
           <h1 className="font-display text-3xl md:text-5xl font-bold tracking-tight">{page.h1}</h1>
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{page.intro}</p>
-          <InlineBriefForm
-            className="mt-8"
-            category={resolveWizardCategory(page.categorySlug) || undefined}
-            source={`pillar_hero:${page.categorySlug}`}
-            placeholder={`Beskriv ditt projekt inom ${page.categoryName.toLowerCase()} – mål, bransch och ungefärlig budget…`}
-          />
         </div>
       </section>
+
+      <CategoryAgencies category={resolveWizardCategory(page.categorySlug) || undefined} label={page.categoryName} />
 
       {/* Content sections */}
       <div className="container pb-12">

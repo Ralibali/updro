@@ -66,14 +66,10 @@ const SEOLandingPage = ({
           <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">{intro}</p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to={publishUrl} className="w-full sm:w-auto">
-              <Button size="lg" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90 shadow-brand">
+            <Button size="lg" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto bg-accent text-accent-foreground hover:bg-accent/90 shadow-brand" asChild><Link to={publishUrl} className="w-full sm:w-auto">
                 Beskriv ditt projekt gratis <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-            <Link to="/#hur-det-fungerar">
-              <Button size="lg" variant="outline" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto">Så fungerar Updro</Button>
-            </Link>
+              </Link></Button>
+            <Button size="lg" variant="outline" className="w-full rounded-xl px-5 py-6 text-base sm:w-auto" asChild><Link to="/#hur-det-fungerar">Så fungerar Updro</Link></Button>
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-2 sm:gap-4">
@@ -128,11 +124,9 @@ const SEOLandingPage = ({
           <div className="mt-14 rounded-xl bg-foreground p-8 text-background md:p-10">
             <h2 className="font-display text-3xl font-bold">Få ett bättre beslutsunderlag</h2>
             <p className="mt-3 max-w-2xl text-background/75">Beskriv projektet en gång och låt högst tre relevanta byråer visa hur de skulle lösa det.</p>
-            <Link to={publishUrl} className="mt-7 inline-block">
-              <Button size="lg" variant="secondary" className="rounded-xl px-8">
+            <Button size="lg" variant="secondary" className="rounded-xl px-8" asChild><Link to={publishUrl} className="mt-7 inline-block">
                 Starta förfrågan <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
           {relatedLinks.length > 0 && (
             <nav className="mt-12 flex flex-wrap gap-3 text-sm">

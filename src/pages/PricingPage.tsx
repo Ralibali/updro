@@ -14,7 +14,7 @@ const supplierPlans = [
     id: 'lead',
     name: 'Pay per lead',
     price: STRIPE_PRODUCTS.lead.price,
-    per: 'per upplåst lead',
+    per: '/lead',
     description: 'För byråer som vill välja enstaka uppdrag och bara betala när ett lead är relevant.',
     features: [
       'Se projektbrief, budget och tidsram före köp',
@@ -30,7 +30,7 @@ const supplierPlans = [
     id: 'monthly',
     name: 'Månadskort',
     price: STRIPE_PRODUCTS.monthly.price,
-    per: 'per månad',
+    per: '/mån',
     description: 'För byråer som vill kunna låsa upp alla relevanta uppdrag som finns i deras kategorier.',
     features: [
       'Obegränsade upplåsningar under aktiv månad',
@@ -48,6 +48,7 @@ const supplierPlans = [
 const MONTHLY_BREAK_EVEN_LEADS = Math.floor(STRIPE_PRODUCTS.monthly.price / STRIPE_PRODUCTS.lead.price) + 1
 
 const PricingPage = () => {
+  const [allGuides, setAllGuides] = useState(false)
   const [tab, setTab] = useState<'supplier' | 'buyer'>('supplier')
 
   useEffect(() => {
@@ -86,9 +87,7 @@ const PricingPage = () => {
                   <span className="font-display font-bold text-lg">Testa innan ni betalar</span>
                 </div>
                 <p className="text-muted-foreground mb-4">Nya byråer får {TRIAL_LEADS} gratis leads under {TRIAL_DAYS} dagar. Inget kreditkort krävs.</p>
-                <Link to="/registrera/byra">
-                  <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Button>
-                </Link>
+                <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6" asChild><Link to="/registrera/byra">Skapa byråkonto <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
               </div>
             </section>
 
@@ -96,12 +95,12 @@ const PricingPage = () => {
               <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {supplierPlans.map(plan => (
                   <article key={plan.id} className={`bg-card rounded-2xl border p-7 relative flex flex-col ${plan.highlighted ? 'border-primary shadow-lg ring-2 ring-primary/20' : ''}`}>
-                    {plan.highlighted && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">För högre volym</span>}
+                    {plan.highlighted && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold rounded-full px-3 py-1">Rekommenderad</span>}
                     <h2 className="font-display font-bold text-xl">{plan.name}</h2>
                     <p className="mt-2 text-sm text-muted-foreground min-h-[42px]">{plan.description}</p>
                     <div className="mt-5 mb-5">
                       <span className="text-4xl font-bold">{plan.price.toLocaleString('sv-SE')}</span>
-                      <span className="text-muted-foreground ml-1">kr {plan.per}</span>
+                      <span className="text-muted-foreground ml-1">kr{plan.per}</span>
                     </div>
                     {plan.id === 'monthly' && <p className="text-sm text-muted-foreground mb-4 -mt-2">Lönar sig från {MONTHLY_BREAK_EVEN_LEADS} leads i månaden jämfört med pay per lead. Tillgänglig leadvolym varierar mellan kategorier.</p>}
                     <ul className="space-y-2.5 mb-7 flex-1">
@@ -109,9 +108,7 @@ const PricingPage = () => {
                         <li key={feature} className="flex items-start gap-2 text-sm"><Check className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" /><span>{feature}</span></li>
                       ))}
                     </ul>
-                    <Link to="/registrera/byra" className="mt-auto">
-                      <Button className="w-full rounded-xl" variant={plan.highlighted ? 'default' : 'outline'}>{plan.cta}</Button>
-                    </Link>
+                    <Button className="w-full rounded-xl" variant={plan.highlighted ? 'default' : 'outline'} asChild><Link to="/registrera/byra" className="mt-auto">{plan.cta}</Link></Button>
                   </article>
                 ))}
               </div>
@@ -158,26 +155,25 @@ const PricingPage = () => {
                   <li key={feature} className="flex items-center gap-2 text-sm"><Check className="h-4 w-4 text-accent" /> {feature}</li>
                 ))}
               </ul>
-              <Link to="/publicera">
-                <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6">Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" /></Button>
-              </Link>
+              <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-full px-6" asChild><Link to="/publicera">Beskriv ditt projekt <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
             </div>
 
             <div className="max-w-3xl mx-auto mt-10">
               <h3 className="font-display text-xl font-bold mb-2">Vad bör projektet kosta?</h3>
               <p className="text-sm text-muted-foreground mb-5">Våra prisguider visar vad svenska byråer faktiskt tar – innan du skickar din förfrågan.</p>
               <div className="grid sm:grid-cols-2 gap-3 text-left">
-                {PRICE_GUIDES.map(guide => (
+                {(allGuides ? PRICE_GUIDES : PRICE_GUIDES.slice(0, 6)).map(guide => (
                   <Link
                     key={guide.slug}
                     to={`/priser/${guide.slug}`}
-                    className="group flex items-center justify-between gap-2 bg-card rounded-xl border px-4 py-3 text-sm font-medium hover:border-accent transition-colors"
+                    className="group flex items-center justify-between gap-2 bg-card rounded-xl border px-5 py-6 text-base font-medium hover:border-accent transition-colors"
                   >
                     <span>{guide.h1}</span>
                     <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-accent transition-colors" />
                   </Link>
                 ))}
               </div>
+              <Button variant="outline" className="mt-5" aria-expanded={allGuides} onClick={() => setAllGuides(!allGuides)}>{allGuides ? 'Visa färre prisguider' : 'Se alla prisguider'}</Button>
             </div>
           </section>
         )}

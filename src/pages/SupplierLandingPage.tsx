@@ -170,15 +170,11 @@ const SupplierLandingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
               >
-                <Link to="/registrera/byra" onClick={() => trackSignup('supplier_hero')}>
-                  <Button size="lg" className="min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground w-full sm:w-auto rounded-xl border border-border px-6 sm:px-10 text-base font-semibold shadow-brand motion-safe:active:scale-[0.98]">
+                <Button size="lg" className="min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground w-full sm:w-auto rounded-xl border border-border px-6 sm:px-10 text-base font-semibold shadow-brand motion-safe:active:scale-[0.98]" asChild><Link to="/registrera/byra" onClick={() => trackSignup('supplier_hero')}>
                     Skapa byråkonto
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link to="/priser">
-                  <Button size="lg" variant="outline" className="min-h-14 rounded-xl border border-border px-8 text-base font-bold">Se priser och villkor</Button>
-                </Link>
+                  </Link></Button>
+                <Button size="lg" variant="outline" className="min-h-14 rounded-xl border border-border px-8 text-base font-bold" asChild><Link to="/priser">Se priser och villkor</Link></Button>
               </motion.div>
 
               <motion.p
@@ -292,12 +288,10 @@ const SupplierLandingPage = () => {
               <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-accent" /> {TRIAL_DAYS} dagars provperiod</span>
               <span className="flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-accent" /> 0 % projektprovision</span>
             </div>
-            <Link to="/registrera/byra" onClick={() => trackSignup('supplier_bottom_cta')}>
-              <Button size="lg" className="mt-8 min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl border border-transparent px-10 text-base font-bold">
+            <Button size="lg" className="mt-8 min-h-14 bg-accent hover:bg-accent/90 text-accent-foreground rounded-xl border border-transparent px-10 text-base font-bold" asChild><Link to="/registrera/byra" onClick={() => trackSignup('supplier_bottom_cta')}>
                 Skapa byråkonto gratis
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
             <p className="mt-4 text-xs text-background/60 flex items-center justify-center gap-2">
               <CreditCard className="h-3.5 w-3.5" /> Inget kreditkort krävs för att starta
             </p>

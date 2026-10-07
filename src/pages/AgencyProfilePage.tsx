@@ -98,17 +98,24 @@ const AgencyProfilePage = () => {
   if (error) return <div className="updro-content-page min-h-screen flex flex-col"><Navbar /><main className="container flex-1 py-12"><DirectoryStatus loading={false} error retry={() => setAttempt(value => value + 1)} /></main><Footer /></div>
   if (!agency) return <NotFound />
 
+  const services = [...new Set<string>([...(agency.categories || []).map(categoryLabel), ...(agency.services || [])])]
+  const stats = [
+    ...(agency.review_count > 0 && agency.avg_rating > 0 ? [{ label: 'Betyg', value: `${Number(agency.avg_rating).toFixed(1)} / 5` }, { label: 'Omdömen', value: agency.review_count }] : []),
+    ...(agency.completed_projects > 0 ? [{ label: 'Uppdrag via Updro', value: agency.completed_projects }] : []),
+    ...(agency.created_at ? [{ label: 'På Updro sedan', value: new Date(agency.created_at).getFullYear() }] : []),
+  ]
+
   return (
     <div className="updro-content-page min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
         {/* Cover */}
-        <div className="h-48 md:h-60 bg-hero-gradient" />
+        <div className="h-20 bg-primary" />
 
-        <div className="container -mt-12 mb-16">
+        <div className="container pt-5 mb-16">
           {/* Header */}
-          <div className="flex items-end gap-4 mb-6">
-            <div className="h-24 w-24 rounded-full bg-card border-4 border-card shadow-lg flex items-center justify-center text-3xl font-bold text-primary overflow-hidden">
+          <div className="mb-6 grid grid-cols-[80px_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[96px_minmax(0,1fr)] lg:grid-cols-[96px_minmax(0,1fr)_auto]">
+            <div className="h-20 w-20 sm:h-24 sm:w-24 shrink-0 rounded-full bg-card border-4 border-card shadow-lg flex items-center justify-center text-3xl font-bold text-primary overflow-hidden">
               {agency.logo_url ? (
                 <img src={agency.logo_url} alt={profile?.company_name ? `${profile.company_name} logotyp` : ''} className="h-full w-full object-contain" />
               ) : (
@@ -118,7 +125,7 @@ const AgencyProfilePage = () => {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <h1 className="font-display text-2xl font-bold break-words">{profile?.company_name || profile?.full_name}</h1>
-                {agency.is_verified && <CheckCircle className="h-5 w-5 text-primary" />}
+                {agency.is_verified && <CheckCircle className="h-5 w-5 shrink-0 text-primary" />}
               </div>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                   <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {profile?.city || 'Sverige'}</span>
@@ -133,50 +140,25 @@ const AgencyProfilePage = () => {
                   completedProjects={agency.completed_projects}
                 />
             </div>
-            <div className="flex gap-2">
-              <Link to={`/publicera?kategori=${(agency.categories || [])[0] || ''}`}>
-                <Button className="bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl">
+            <div className="col-span-2 flex flex-wrap gap-2 lg:col-span-1">
+              <Button className="min-h-11 bg-accent hover:bg-brand-mint-hover text-accent-foreground rounded-xl" asChild><Link to={`/publicera?kategori=${(agency.categories || [])[0] || ''}`}>
                   Skicka förfrågan <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+                </Link></Button>
               {agency.website_url && (
-                <a href={agency.website_url} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="rounded-xl"><Globe className="mr-1 h-4 w-4" /> Hemsida</Button>
-                </a>
+                <Button variant="outline" className="min-h-11 rounded-xl" asChild><a href={agency.website_url} target="_blank" rel="noopener noreferrer"><Globe className="mr-1 h-4 w-4" /> Hemsida</a></Button>
               )}
             </div>
           </div>
 
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {(agency.categories || []).map((cat: string) => (
-              <span key={cat} className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_STYLES[cat] || ''}`}>{categoryLabel(cat)}</span>
+            {services.map((cat: string) => (
+              <span key={cat} className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_STYLES[cat] || 'bg-muted text-foreground'}`}>{categoryLabel(cat)}</span>
             ))}
           </div>
 
           {/* Stats strip */}
-          <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-            <div className="rounded-xl border bg-card p-3.5 text-center">
-              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Betyg</dt>
-              <dd className="mt-1 font-display text-xl font-bold">
-                {agency.review_count > 0 ? `${Number(agency.avg_rating).toFixed(1)} / 5` : '–'}
-              </dd>
-            </div>
-            <div className="rounded-xl border bg-card p-3.5 text-center">
-              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Omdömen</dt>
-              <dd className="mt-1 font-display text-xl font-bold">{agency.review_count || 0}</dd>
-            </div>
-            <div className="rounded-xl border bg-card p-3.5 text-center">
-              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Uppdrag via Updro</dt>
-              <dd className="mt-1 font-display text-xl font-bold">{agency.completed_projects || 0}</dd>
-            </div>
-            <div className="rounded-xl border bg-card p-3.5 text-center">
-              <dt className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">På Updro sedan</dt>
-              <dd className="mt-1 font-display text-xl font-bold">
-                {agency.created_at ? new Date(agency.created_at).getFullYear() : '–'}
-              </dd>
-            </div>
-          </dl>
+          {stats.length > 0 && <dl className="flex flex-wrap gap-3 mb-8">{stats.map(stat => <div key={stat.label} className="min-w-36 rounded-xl border bg-card p-4 text-center"><dt className="text-xs text-muted-foreground">{stat.label}</dt><dd className="mt-1 font-display text-xl font-bold">{stat.value}</dd></div>)}</dl>}
 
           {/* Tabs */}
           <Tabs defaultValue="overview">
@@ -194,11 +176,11 @@ const AgencyProfilePage = () => {
                       <p className="text-sm text-muted-foreground whitespace-pre-wrap">{agency.bio}</p>
                     </div>
                   )}
-                  {(agency.services || []).length > 0 && (
+                  {services.length > 0 && (
                     <div className="bg-card rounded-xl border p-5">
                       <h3 className="font-semibold mb-2">Tjänster</h3>
                       <div className="flex flex-wrap gap-2">
-                        {agency.services.map((s: string) => (
+                        {services.map((s: string) => (
                           <span key={s} className="bg-muted rounded-full px-3 py-1 text-xs">{s}</span>
                         ))}
                       </div>

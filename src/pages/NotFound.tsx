@@ -1,3 +1,5 @@
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
@@ -37,7 +39,7 @@ const NotFound = () => {
   }
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center bg-surface-alt px-6 py-16">
+    <><Navbar /><main className="flex min-h-[70vh] items-center justify-center bg-surface-alt px-6 py-16">
       <div className="max-w-xl w-full text-left">
         <h1 className="font-display text-5xl md:text-7xl text-foreground leading-[1.05] tracking-tight [text-wrap:balance]">
           404 – sidan hittades inte
@@ -66,7 +68,7 @@ const NotFound = () => {
           <Link to="/publicera" className="text-foreground font-semibold underline underline-offset-4 hover:decoration-2">Publicera uppdrag</Link>
         </div>
       </div>
-    </div>
+    </main><Footer /></>
   );
 };
 

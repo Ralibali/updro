@@ -1,7 +1,7 @@
 import { categoryLabel } from '@/lib/constants'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2, Code2, Search, ShoppingCart, Megaphone, Palette, Smartphone, Monitor, Camera, ChartNoAxesCombined, Bot, Wrench } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -22,7 +22,7 @@ import { setSEOMeta } from '@/lib/seoHelpers'
 import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
-import { BUDGET_OPTIONS, CATEGORIES, CATEGORY_ICONS, START_TIME_OPTIONS } from '@/lib/constants'
+import { BUDGET_OPTIONS, CATEGORIES, START_TIME_OPTIONS } from '@/lib/constants'
 import type { BudgetRange, Category, StartTime } from '@/types'
 
 const inferTitle = (description: string) => {
@@ -32,6 +32,7 @@ const inferTitle = (description: string) => {
 }
 
 const validEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+const categoryIcons = [Code2, ShoppingCart, Megaphone, Palette, Search, Smartphone, Monitor, Megaphone, Code2, Camera, Megaphone, Palette, Wrench, ChartNoAxesCombined, Bot, Search]
 const SUBMISSION_KEY = 'updro:last_guest_lead_submission'
 
 const ProjectWizardV2 = () => {
@@ -48,6 +49,8 @@ const ProjectWizardV2 = () => {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
+  const [aiSuggestion, setAiSuggestion] = useState('')
+  const [emailTouched, setEmailTouched] = useState(false)
   const [website, setWebsite] = useState('')
   const [confirmationEmailSent, setConfirmationEmailSent] = useState(false)
   const [submittedProjectId, setSubmittedProjectId] = useState('')
@@ -88,7 +91,7 @@ const ProjectWizardV2 = () => {
     })
   }, [])
 
-  const totalSteps = 2
+  const totalSteps = 3
   useEffect(() => {
     if (previousStep.current === step) return
     previousStep.current = step
@@ -111,8 +114,7 @@ const ProjectWizardV2 = () => {
       })
       if (error) throw error
       if (!data?.improved) throw new Error(data?.error || 'Kunde inte förbättra beskrivningen.')
-      setForm(previous => ({ ...previous, description: data.improved }))
-      toast.success('Beskrivningen har förbättrats! ✨')
+      setAiSuggestion(String(data.improved).slice(0, 5000))
     } catch (error: any) {
       console.error(error)
       toast.error(error?.message || 'Kunde inte förbättra beskrivningen just nu.')
@@ -150,7 +152,7 @@ const ProjectWizardV2 = () => {
   })()
 
   const publish = async () => {
-    if (submissionInFlight.current) return
+    if (submissionInFlight.current || step !== 3) return
     if (!canSubmit) {
       toast.error(submitBlockReason || 'Fyll i alla obligatoriska fält.')
       return
@@ -198,7 +200,7 @@ const ProjectWizardV2 = () => {
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
         setConfirmationEmailSent(false)
         setSubmittedProjectId(newProjectId)
-        setStep(3)
+        setStep(4)
         return
       }
 
@@ -233,7 +235,7 @@ const ProjectWizardV2 = () => {
       setSubmittedProjectId(String(data?.project_id || ''))
       trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'guest', budgetRange: form.budget_range || undefined })
       trackClick('lead_submitted', 'Skicka uppdrag gratis', { category: form.category, user_type: 'guest' })
-      setStep(3)
+      setStep(4)
     } catch (error: any) {
       console.error('Lead submission error:', error)
       const message = error?.message || 'Kunde inte skicka in uppdraget. Försök igen.'
@@ -267,7 +269,7 @@ const ProjectWizardV2 = () => {
                 <span>Steg {step} av {totalSteps}</span>
                 <span>Gratis · ingen bindning</span>
               </div>
-              <Progress value={(step / totalSteps) * 100} className="mb-8 h-2" />
+              <Progress aria-label="Steg i publiceringen" value={(step / totalSteps) * 100} className="mb-8 h-2" />
             </>
           )}
 
@@ -299,9 +301,9 @@ const ProjectWizardV2 = () => {
               <div>
                 <Label>Kategori *</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                  {CATEGORIES.map(category => (
-                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
-                      <span className="text-2xl" aria-hidden="true">{CATEGORY_ICONS[category]}</span>
+                  {CATEGORIES.map((category, index) => (
+                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 min-h-11 min-w-11 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
+                      {(() => { const Icon = categoryIcons[index] || Code2; return <Icon className="h-6 w-6" aria-hidden="true" /> })()}
                       <span className="text-xs text-center">{categoryLabel(category)}</span>
                       {form.category === category && <Check className="h-3 w-3" />}
                     </button>
@@ -330,6 +332,9 @@ const ProjectWizardV2 = () => {
                 </Button>
               )}
 
+              <p className="text-xs text-muted-foreground">AI-hjälpen är valfri och gratis. Du granskar förslaget innan det sparas i din beskrivning.</p>
+              {aiSuggestion && <div className="rounded-xl border p-4 space-y-3"><Label htmlFor="ai-suggestion">Granska AI-förslaget</Label><Textarea id="ai-suggestion" value={aiSuggestion} onChange={e => setAiSuggestion(e.target.value)} maxLength={5000} className="min-h-40" /><div className="flex flex-wrap gap-2"><Button type="button" onClick={() => { setForm(previous => ({ ...previous, description: aiSuggestion })); setAiSuggestion('') }}>Använd förslaget</Button><Button type="button" variant="outline" onClick={() => setAiSuggestion('')}>Behåll min text</Button></div></div>}
+
               <ChoiceGrid label="Budget *" options={BUDGET_OPTIONS} value={form.budget_range} onSelect={value => setForm(previous => ({ ...previous, budget_range: value as BudgetRange }))} />
               <ChoiceGrid label="Önskad start *" options={START_TIME_OPTIONS} value={form.start_time} onSelect={value => setForm(previous => ({ ...previous, start_time: value as StartTime }))} twoColumns />
 
@@ -352,7 +357,7 @@ const ProjectWizardV2 = () => {
                     <p className="text-sm leading-relaxed text-muted-foreground mb-4">Byråer som öppnar kontaktuppgifterna till ditt uppdrag kan kontakta dig här. Telefon är valfritt. Inget lösenord eller konto krävs.</p>
                     <div className="space-y-4">
                       <Field label="Namn (valfritt)" id="full-name" value={form.full_name} onChange={value => setForm(previous => ({ ...previous, full_name: value }))} autoComplete="name" />
-                      <Field label="E-post *" id="email" type="email" value={form.email} onChange={value => setForm(previous => ({ ...previous, email: value }))} autoComplete="email" />
+                      <Field label="E-post *" id="email" type="email" value={form.email} onChange={value => { setEmailTouched(true); setForm(previous => ({ ...previous, email: value })) }} error={emailTouched && !validEmail(form.email) ? 'Ange en giltig e-postadress, till exempel namn@foretag.se.' : undefined} autoComplete="email" />
                       <Field label="Telefon (valfritt)" id="phone" type="tel" value={form.phone} onChange={value => setForm(previous => ({ ...previous, phone: value }))} autoComplete="tel" />
                     </div>
                   </div>
@@ -381,16 +386,30 @@ const ProjectWizardV2 = () => {
                 {submissionError && <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{submissionError} Dina uppgifter finns kvar här.</p>}
                 <div className="flex gap-3">
                   <Button type="button" variant="outline" onClick={() => setStep(1)}><ArrowLeft className="mr-2 h-4 w-4" />Tillbaka</Button>
-                  <Button type="button" onClick={publish} disabled={loading || !canSubmit} className="flex-1 bg-accent hover:bg-brand-mint-hover text-accent-foreground">
-                    {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Skickar...</> : <>{isAuthenticated ? 'Skicka in gratis' : 'Skicka uppdrag gratis'}<Sparkles className="ml-2 h-4 w-4" /></>}
-                  </Button>
+                  <Button type="button" onClick={() => { setEmailTouched(true); if (canSubmit) setStep(3) }} disabled={!canSubmit} className="flex-1">Granska uppdraget <ArrowRight className="ml-2 h-4 w-4" /></Button>
                 </div>
                 {submitBlockReason && !loading && <p className="text-xs text-muted-foreground text-center" aria-live="polite">{submitBlockReason}</p>}
               </div>
             </div>
           )}
 
-          {step === 3 && (
+          {step === 3 && <div className="space-y-6">
+            <h1 ref={stepHeading} tabIndex={-1} className="font-display text-2xl font-bold scroll-mt-24 outline-none">Granska ditt uppdrag</h1>
+            <p className="text-sm text-muted-foreground">Kontrollera uppgifterna. Uppdraget skickas först när du bekräftar nedan.</p>
+            <section className="rounded-xl border p-4 space-y-3"><div className="flex justify-between gap-3"><h2 className="font-semibold">Beskrivning och kategori</h2><button type="button" className="min-h-11 text-primary underline" onClick={() => setStep(1)} aria-label="Redigera beskrivning och kategori">Redigera</button></div><p className="font-semibold">{form.title || inferTitle(form.description)}</p><p className="whitespace-pre-wrap break-words">{form.description}</p><p className="text-sm text-muted-foreground">{categoryLabel(form.category)}</p></section>
+            <section className="rounded-xl border p-4 space-y-3"><div className="flex justify-between gap-3"><h2 className="font-semibold">Budget, start och kontakt</h2><button type="button" className="min-h-11 text-primary underline" onClick={() => setStep(2)} aria-label="Redigera budget, start och kontakt">Redigera</button></div><dl className="space-y-2 text-sm">
+              <div><dt className="text-muted-foreground">Budget</dt><dd>{BUDGET_OPTIONS.find(option => option.value === form.budget_range)?.label}</dd></div>
+              <div><dt className="text-muted-foreground">Önskad start</dt><dd>{START_TIME_OPTIONS.find(option => option.value === form.start_time)?.label}</dd></div>
+              <div><dt className="text-muted-foreground">Beställare</dt><dd>{form.is_company ? form.company_name || 'Företag' : 'Privatperson'}{form.full_name && ` · ${form.full_name}`}</dd></div>
+              <div><dt className="text-muted-foreground">E-post</dt><dd className="break-all">{isAuthenticated ? user?.email : form.email}</dd></div>
+              {form.phone && <div><dt className="text-muted-foreground">Telefon</dt><dd>{form.phone}</dd></div>}
+              <div><dt className="text-muted-foreground">Nyheter och tips</dt><dd>{form.newsletter_opt_in ? 'Ja' : 'Nej'}</dd></div>
+            </dl></section>
+            {submissionError && <p role="alert" className="rounded-xl border border-destructive p-3 text-sm text-destructive">{submissionError} Dina uppgifter finns kvar här.</p>}
+            <div className="flex flex-wrap gap-3"><Button type="button" variant="outline" disabled={loading} onClick={() => setStep(2)}>Tillbaka</Button><Button type="button" onClick={publish} disabled={loading || !canSubmit} className="flex-1">{loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Skickar...</> : <>{isAuthenticated ? 'Skicka in gratis' : 'Skicka uppdrag gratis'}<Sparkles className="ml-2 h-4 w-4" /></>}</Button></div>
+          </div>}
+
+          {step === 4 && (
             <div className="space-y-6 py-8" aria-live="polite">
               <div className="text-center">
                 <div className="mx-auto w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center"><CheckCircle2 className="h-8 w-8 text-emerald-600" /></div>
@@ -441,7 +460,7 @@ const ProjectWizardV2 = () => {
                 <div className="rounded-xl bg-muted/40 p-4 max-w-md mx-auto text-left">
                   <p className="text-sm font-semibold mb-2">Följ offerterna på ett ställe</p>
                   <p className="text-sm text-muted-foreground mb-3">Skapa ett gratis konto med samma e-postadress. Kopplingen sker säkert efter att e-postadressen har bekräftats.</p>
-                  <Link to={registerLink}><Button className="w-full">Skapa gratis konto</Button></Link>
+                  <Button className="w-full" asChild><Link to={registerLink}>Skapa gratis konto</Link></Button>
                 </div>
               )}
             </div>
@@ -481,10 +500,11 @@ const TypeButton = ({ active, onClick, icon, label }: { active: boolean; onClick
   </button>
 )
 
-const Field = ({ label, id, type = 'text', value, onChange, autoComplete }: { label: string; id: string; type?: string; value: string; onChange: (value: string) => void; autoComplete?: string }) => (
+const Field = ({ label, id, type = 'text', value, onChange, autoComplete, error }: { label: string; id: string; type?: string; value: string; onChange: (value: string) => void; autoComplete?: string; error?: string }) => (
   <div>
     <Label htmlFor={id}>{label}</Label>
-    <Input id={id} type={type} value={value} onChange={event => onChange(event.target.value)} autoComplete={autoComplete} maxLength={type === 'email' ? 254 : 120} className="rounded-xl mt-1" />
+    <Input id={id} type={type} value={value} onChange={event => onChange(event.target.value)} autoComplete={autoComplete} maxLength={type === 'email' ? 254 : 120} aria-invalid={Boolean(error)} aria-describedby={error ? `${id}-error` : undefined} className={`rounded-xl mt-1 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`} />
+    {error && <p id={`${id}-error`} role="alert" className="mt-1 text-sm text-destructive">{error}</p>}
   </div>
 )
 

@@ -58,11 +58,9 @@ const ToolPage = () => {
             <h2 className="font-display text-xl font-bold mb-2">Verktyget laddas snart</h2>
             <p className="text-muted-foreground mb-6">{page.description}</p>
             <p className="text-sm text-muted-foreground mb-6">Under tiden kan du jämföra riktiga offerter kostnadsfritt via Updro.</p>
-            <Link to="/publicera">
-              <Button size="lg" className="rounded-xl shadow-blue">
+            <Button size="lg" className="rounded-xl shadow-blue" asChild><Link to="/publicera">
                 Jämför offerter gratis <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
+              </Link></Button>
           </div>
         )}
       </section>

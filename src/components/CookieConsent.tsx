@@ -1,3 +1,4 @@
+import { useBottomInset } from '@/hooks/useBottomInset'
 import { cleanAnalyticsUrl, setAnalyticsConsent } from '@/lib/ga4Runtime';
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -65,6 +66,7 @@ const CookieConsent = () => {
   const [analytics, setAnalytics] = useState(false)
   const [marketing, setMarketing] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
+  const bannerRef = useBottomInset(visible)
 
   useEffect(() => {
     const syncConsent = (event: StorageEvent) => {
@@ -106,21 +108,21 @@ const CookieConsent = () => {
     setAnalytics(nextAnalytics); setMarketing(nextMarketing); applyConsent(state); setVisible(false); setShowDetails(false)
   }
 
-  if (!visible) return <button type="button" onClick={() => { setShowDetails(true); setVisible(true) }} className={`fixed ${hasBottomNavigation ? 'bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-3' : 'bottom-3'} left-3 z-40 rounded-full border bg-background/95 px-3 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur hover:text-foreground`} aria-label="Ändra cookieinställningar">Cookieinställningar</button>
+  if (!visible) return <button type="button" onClick={() => { setShowDetails(true); setVisible(true) }} className={`hidden md:block fixed ${hasBottomNavigation ? 'bottom-[calc(5rem+env(safe-area-inset-bottom))] md:bottom-3' : 'bottom-3'} left-3 z-40 rounded-full border bg-background/95 px-3 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur hover:text-foreground`} aria-label="Ändra cookieinställningar">Cookieinställningar</button>
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-2 sm:p-3" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title">
+    <div ref={bannerRef} data-cookie-consent-banner className="fixed bottom-0 inset-x-0 z-50 p-2 sm:p-3" role="dialog" aria-modal="false" aria-labelledby="cookie-consent-title">
       <div className="max-w-4xl mx-auto bg-card/95 backdrop-blur border rounded-2xl shadow-lg p-3 sm:px-4 flex flex-col gap-3">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <p className="text-xs sm:text-sm text-foreground/80 flex-1">
             <span id="cookie-consent-title" className="font-semibold text-foreground">Cookies: </span>
             nödvändiga för inloggning och säkerhet. Statistik och marknadsföring är frivilliga.{' '}
-            <Link to="/cookies" className="text-primary hover:underline">Läs mer</Link>
+            <Link to="/cookies" className="text-primary underline">Läs mer</Link>
           </p>
           <div className="grid grid-cols-3 gap-2 sm:flex sm:shrink-0">
-            <Button variant="ghost" size="sm" className="rounded-xl" onClick={() => setShowDetails(v => !v)} aria-expanded={showDetails}>Anpassa</Button>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => persist(false, false)}>Neka alla</Button>
-            <Button variant="outline" size="sm" className="rounded-xl" onClick={() => persist(true, true)}>Acceptera alla</Button>
+            <Button variant="ghost" size="sm" className="min-h-11 h-auto whitespace-normal rounded-xl px-2 py-2" onClick={() => setShowDetails(v => !v)} aria-expanded={showDetails}>Anpassa</Button>
+            <Button variant="outline" size="sm" className="min-h-11 h-auto whitespace-normal rounded-xl px-2 py-2" onClick={() => persist(false, false)}>Neka alla</Button>
+            <Button variant="outline" size="sm" className="min-h-11 h-auto whitespace-normal rounded-xl px-2 py-2" onClick={() => persist(true, true)}>Acceptera alla</Button>
           </div>
         </div>
         {showDetails && (
@@ -131,7 +133,7 @@ const CookieConsent = () => {
             <Button size="sm" className="rounded-xl sm:h-auto" onClick={() => persist(analytics, marketing)}>Spara val</Button>
           </div>
         )}
-        {showDetails && <p className="text-xs text-muted-foreground">Läs vår <Link to="/integritetspolicy" className="text-primary hover:underline">integritetspolicy</Link> och <Link to="/cookies" className="text-primary hover:underline">cookiepolicy</Link>.</p>}
+        {showDetails && <p className="text-xs text-muted-foreground">Läs vår <Link to="/integritetspolicy" className="text-primary underline">integritetspolicy</Link> och <Link to="/cookies" className="text-primary underline">cookiepolicy</Link>.</p>}
       </div>
     </div>
   )
