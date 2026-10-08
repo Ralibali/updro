@@ -19,6 +19,7 @@ import { trackCategorySelected, trackLeadStarted, trackLeadSubmitted, trackOnceI
 import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { sanitizePrefill } from '@/lib/prefill'
 import { setSEOMeta } from '@/lib/seoHelpers'
+import { projectPublishMeta } from '@/lib/projectPublishMeta'
 import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
@@ -76,11 +77,12 @@ const ProjectWizardV2 = () => {
 
   useEffect(() => {
     setSEOMeta({
-      title: 'Publicera uppdrag – få offerter från digitala byråer | Updro',
-      description: 'Beskriv ditt digitala projekt. Updro granskar briefen före matchning med högst tre relevanta byråer. Du väljer själv om du vill gå vidare.',
+      ...projectPublishMeta(pathKategori),
       canonical: `https://updro.se${pathname}`,
+      noindex: pathname.startsWith('/publicera/'),
+      follow: true,
     })
-  }, [pathname])
+  }, [pathname, pathKategori])
 
   // Fire `lead_landing_viewed` at most once per session when the wizard opens.
   useEffect(() => {
@@ -276,7 +278,7 @@ const ProjectWizardV2 = () => {
           {step === 1 && (
             <div className="space-y-6">
               <div>
-                <h1 ref={stepHeading} tabIndex={-1} className="font-display text-2xl font-bold scroll-mt-24 outline-none">Vad behöver du hjälp med?</h1>
+                <h1 ref={stepHeading} tabIndex={-1} className="font-display text-2xl font-bold scroll-mt-24 outline-none">{projectPublishMeta(pathKategori).h1}</h1>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{initialCategory === 'Webbutveckling' ? 'Beskriv ditt webbprojekt och jämför upp till tre offerter.' : 'Beskriv behovet med egna ord och jämför upp till tre offerter.'} Gratis för dig som beställare. Ingen registrering krävs.</p>
                 <a href="#forfragan-hjalp" className="mt-2 inline-block text-sm text-primary underline underline-offset-4 lg:hidden">Så fungerar det och kontakt</a>
               </div>

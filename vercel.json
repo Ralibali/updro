@@ -1,0 +1,229 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.updro.se"
+        }
+      ],
+      "destination": "https://updro.se/:path*",
+      "statusCode": 301
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ux-webbdesign",
+      "destination": "/webbdesign",
+      "statusCode": 301
+    },
+    {
+      "source": "/landing/byra",
+      "destination": "/for-byraer",
+      "statusCode": 301
+    },
+    {
+      "source": "/guider",
+      "destination": "/artiklar",
+      "statusCode": 301
+    },
+    {
+      "source": "/kunskapsbank",
+      "destination": "/artiklar",
+      "statusCode": 301
+    },
+    {
+      "source": "/updro-vs-partna",
+      "destination": "/partna-alternativ",
+      "statusCode": 301
+    },
+    {
+      "source": "/jamfor-partna",
+      "destination": "/partna-alternativ",
+      "statusCode": 301
+    },
+    {
+      "source": "/alternativ-till-partna",
+      "destination": "/partna-alternativ",
+      "statusCode": 301
+    },
+    {
+      "source": "/updro-vs-swivrr",
+      "destination": "/swivrr-alternativ",
+      "statusCode": 301
+    },
+    {
+      "source": "/hemsida-pris-kalkylator",
+      "destination": "/verktyg/hemsida-pris-kalkylator",
+      "statusCode": 301
+    },
+    {
+      "source": "/vad-kostar-en-hemsida-kalkylator",
+      "destination": "/verktyg/hemsida-pris-kalkylator",
+      "statusCode": 301
+    },
+    {
+      "source": "/webbyra-stockholm",
+      "destination": "/byraer/stockholm",
+      "statusCode": 301
+    },
+    {
+      "source": "/webbyra-goteborg",
+      "destination": "/byraer/goteborg",
+      "statusCode": 301
+    },
+    {
+      "source": "/webbyra-malmo",
+      "destination": "/byraer/malmo",
+      "statusCode": 301
+    },
+    {
+      "source": "/seo-byra-stockholm",
+      "destination": "/seo/stockholm",
+      "statusCode": 301
+    },
+    {
+      "source": "/seo-byra-goteborg",
+      "destination": "/seo/goteborg",
+      "statusCode": 301
+    },
+    {
+      "source": "/seo-byra-malmo",
+      "destination": "/seo/malmo",
+      "statusCode": 301
+    },
+    {
+      "source": "/guider/:slug",
+      "destination": "/artiklar/:slug",
+      "statusCode": 301
+    },
+    {
+      "source": "/kunskapsbank/:slug",
+      "destination": "/artiklar/:slug",
+      "statusCode": 301
+    },
+    {
+      "source": "/stader/:slug",
+      "destination": "/byraer/:slug",
+      "statusCode": 301
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/admin/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/dashboard/:path*",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/kundportal",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/byra/:slug",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/logga-in",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/registrera",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/registrera/byra",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/aterstall-losenord",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/byraer/:slug",
+      "destination": "/app.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/admin/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/dashboard/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/kundportal",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/byra/:slug",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/logga-in",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/registrera",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/registrera/byra",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/aterstall-losenord",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    }
+  ]
+}
