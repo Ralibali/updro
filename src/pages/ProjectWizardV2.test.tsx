@@ -82,7 +82,10 @@ const fillDescription = () => {
 }
 
 describe('ProjectWizardV2 page metadata', () => {
-  it.each(['/publicera', '/publicera/seo'])('replaces inherited article metadata on %s', (path) => {
+  it.each([
+    ['/publicera', 'Publicera uppdrag – få offerter från digitala byråer | Updro', 'index'],
+    ['/publicera/seo', 'Publicera uppdrag inom SEO | Updro', 'noindex'],
+  ])('replaces inherited article metadata on %s', (path, title, indexDirective) => {
     document.title = 'En tidigare artikel'
     document.head.querySelectorAll('link[rel="canonical"]').forEach(element => element.remove())
     const previousCanonical = document.createElement('link')
@@ -92,7 +95,9 @@ describe('ProjectWizardV2 page metadata', () => {
 
     renderWizard(path)
 
-    expect(document.title).toBe('Publicera uppdrag – få offerter från digitala byråer | Updro')
+    expect(document.title).toBe(title)
+    const robots = document.head.querySelector('meta[name="robots"]')?.getAttribute('content')?.split(',').map(value => value.trim())
+    expect(robots).toEqual(expect.arrayContaining([indexDirective, 'follow']))
     expect(document.head.querySelectorAll('link[rel="canonical"]')).toHaveLength(1)
     expect(document.head.querySelector('link[rel="canonical"]')).toHaveAttribute('href', `https://updro.se${path}`)
     expect(document.head.querySelector('meta[property="og:type"]')).toHaveAttribute('content', 'website')
@@ -335,7 +340,7 @@ describe('ProjectWizardV2 recovery and mobile navigation', () => {
     fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
     expect(screen.getByRole('heading', { name: 'Sista detaljerna' })).toHaveFocus()
     fireEvent.click(screen.getByRole('button', { name: /Tillbaka/ }))
-    expect(screen.getByRole('heading', { name: 'Vad behöver du hjälp med?' })).toHaveFocus()
+    expect(screen.getByRole('heading', { name: 'Vad behöver du hjälp med inom Webbutveckling?' })).toHaveFocus()
     expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('  Ny hemsida  ')
   })
 
