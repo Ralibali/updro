@@ -7,6 +7,7 @@
  * Requires bun (already the project's packageManager) so we can import
  * the TypeScript module directly without an extra build step.
  */
+import { writeHostingPages } from './hosting-pages.mjs';
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -29,6 +30,7 @@ try {
   process.exit(1)
 }
 
+writeHostingPages(template, 'Updro')
 const routes = getAllStaticSeoRoutes()
 let written = 0
 const errors = []

@@ -11,6 +11,8 @@ import {
 } from './seoStatic'
 import { FOOTER_CITY_LINKS, FOOTER_COLUMNS, FOOTER_LEGAL_LINKS } from './footerLinks'
 import { HOME_H1, HOME_TITLE } from './homeSeo'
+import { SEO_PAGES } from './seoData'
+import { projectPublishMeta } from './projectPublishMeta'
 
 const TEMPLATE = `<!doctype html>
 <html lang="sv">
@@ -66,6 +68,15 @@ describe('substantive crawlable content', () => {
 })
 
 describe('seoStatic routes', () => {
+  it('renders every category form link with shared metadata and excludes it from the sitemap', () => {
+    const sitemap = generateSitemapXml()
+    for (const category of SEO_PAGES) {
+      const path = `/publicera/${category.categorySlug}`
+      expect(route(path)).toMatchObject({ ...projectPublishMeta(category.categorySlug), noindex: true })
+      expect(render(path)).toContain('noindex, follow')
+      expect(sitemap).not.toContain(`<loc>${SITE_URL}${path}</loc>`)
+    }
+  })
   it('har unika paths', () => {
     const paths = routes.map(candidate => candidate.path)
     expect(new Set(paths).size).toBe(paths.length)
