@@ -58,6 +58,8 @@ vi.mock('@/integrations/supabase/client', () => ({
 import ProjectWizardV2 from './ProjectWizardV2'
 
 beforeEach(() => {
+  // Unsent briefs persist on the device; each test starts without one.
+  localStorage.clear()
   authState.user = null
   authState.isAuthenticated = false
   maybeSingleMock.mockReset().mockResolvedValue({ data: null, error: null })
@@ -437,5 +439,76 @@ describe('Google Ads lead regression', () => {
     fireEvent.click(screen.getByRole('button', { name: /Granska uppdraget/ }))
     fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
     await waitFor(() => expect(invokeMock).toHaveBeenCalledWith('submit-guest-lead', { body: expect.objectContaining({ category: 'Google Ads', description: 'Vi behöver Google Ads', title: 'Vi behöver Google Ads' }) }))
+  })
+})
+
+describe('ProjectWizardV2 category icons', () => {
+  it('visar en ikon per kategori oavsett ordning', () => {
+    renderWizard('/publicera')
+    for (const name of [/^SEO$/, /Google Ads/, /IT-konsult/, /Video & foto/]) {
+      expect(screen.getByRole('button', { name }).querySelector('svg')).not.toBeNull()
+    }
+    expect(screen.getByRole('button', { name: /^SEO$/ }).querySelector('svg')).toHaveClass('lucide-search')
+    expect(screen.getByRole('button', { name: /Google Ads/ }).querySelector('svg')).toHaveClass('lucide-target')
+    expect(screen.getByRole('button', { name: /IT-konsult/ }).querySelector('svg')).toHaveClass('lucide-monitor')
+  })
+})
+
+describe('ProjectWizardV2 unsent draft', () => {
+  it('återställer briefen efter omladdning utan att spara kontaktuppgifter', () => {
+    const first = renderWizard('/publicera')
+    fillDescription()
+    fireEvent.click(screen.getByRole('button', { name: /Webbutveckling/ }))
+    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
+    fireEvent.click(screen.getByRole('button', { name: /Under 10 000 kr/ }))
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
+    first.unmount()
+
+    expect(localStorage.getItem('updro:project-draft:v1')).not.toContain('anna@example.com')
+
+    renderWizard('/publicera')
+    expect(screen.getByText(/återställt ditt utkast/)).toBeInTheDocument()
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('Ny hemsida med bokning.')
+    expect(screen.getByRole('button', { name: /Webbutveckling/ })).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(screen.getByRole('button', { name: /Nästa/ }))
+    expect(screen.getByRole('button', { name: /Under 10 000 kr/ })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByLabelText(/E-post/)).toHaveValue('')
+  })
+
+  it('låter besökaren börja om och glömmer utkastet', () => {
+    const first = renderWizard('/publicera')
+    fillDescription()
+    first.unmount()
+
+    renderWizard('/publicera')
+    fireEvent.click(screen.getByRole('button', { name: 'Börja om' }))
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('')
+    expect(screen.queryByText(/återställt ditt utkast/)).not.toBeInTheDocument()
+    expect(localStorage.getItem('updro:project-draft:v1')).toBeNull()
+  })
+
+  it('låter förifylld beskrivning och kategori i länken vinna över ett äldre utkast', () => {
+    const first = renderWizard('/publicera')
+    fillDescription()
+    fireEvent.click(screen.getByRole('button', { name: /Webbutveckling/ }))
+    first.unmount()
+
+    renderWizard('/publicera?kategori=SEO&beskrivning=Vi%20beh%C3%B6ver%20SEO')
+    expect(screen.queryByText(/återställt ditt utkast/)).not.toBeInTheDocument()
+    expect(screen.getByLabelText(/Beskriv uppdraget/)).toHaveValue('Vi behöver SEO')
+    expect(screen.getByRole('button', { name: /^SEO$/ })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('rensar utkastet när uppdraget har skickats', async () => {
+    invokeMock.mockReset().mockResolvedValueOnce({ data: { success: true, project_id: 'draft-done', email_sent: true }, error: null })
+    renderWizard('/publicera/webbutveckling')
+    goToStep2()
+    fireEvent.change(screen.getByLabelText(/E-post/), { target: { value: 'anna@example.com' } })
+    fireEvent.click(screen.getByRole('button', { name: /Granska uppdraget/ }))
+    expect(localStorage.getItem('updro:project-draft:v1')).not.toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /Skicka uppdrag gratis/ }))
+
+    expect(await screen.findByText('Ditt uppdrag är mottaget')).toBeInTheDocument()
+    expect(localStorage.getItem('updro:project-draft:v1')).toBeNull()
   })
 })

@@ -1,7 +1,7 @@
 import { categoryLabel } from '@/lib/constants'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, Loader2, Sparkles, User, Wand2, Code2, Search, ShoppingCart, Megaphone, Palette, Smartphone, Monitor, Camera, ChartNoAxesCombined, Bot, Wrench } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, History, Loader2, Sparkles, User, Wand2, Code2, Search, ShoppingCart, Megaphone, Palette, Smartphone, Monitor, Camera, ChartNoAxesCombined, Bot, Wrench, Globe, PenTool, Newspaper, Rocket, Target, type LucideIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -20,6 +20,7 @@ import { attributionPayload, getStoredAttribution } from '@/lib/attribution'
 import { sanitizePrefill } from '@/lib/prefill'
 import { setSEOMeta } from '@/lib/seoHelpers'
 import { readBrowserStorage, writeBrowserStorage } from '@/lib/browserStorage'
+import { clearProjectDraft, readProjectDraft, saveProjectDraft } from '@/lib/projectDrafts'
 import { descriptionHelpMessage, PROJECT_DESCRIPTION_EXAMPLE, resolveWizardCategory } from '@/lib/wizardPrefill'
 import type { Json } from '@/integrations/supabase/types'
 import { BUDGET_OPTIONS, CATEGORIES, START_TIME_OPTIONS } from '@/lib/constants'
@@ -32,7 +33,25 @@ const inferTitle = (description: string) => {
 }
 
 const validEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
-const categoryIcons = [Code2, ShoppingCart, Megaphone, Palette, Search, Smartphone, Monitor, Megaphone, Code2, Camera, Megaphone, Palette, Wrench, ChartNoAxesCombined, Bot, Search]
+// Keyed by stored category value so the icon cannot drift when categories are added or reordered.
+const CATEGORY_ICON_COMPONENTS: Record<Category, LucideIcon> = {
+  'Webbutveckling': Globe,
+  'E-handel': ShoppingCart,
+  'Digital marknadsföring': ChartNoAxesCombined,
+  'SEO': Search,
+  'Grafisk design/UX': Palette,
+  'UX/Webbdesign': PenTool,
+  'App-utveckling': Smartphone,
+  'Mjukvaruutveckling': Code2,
+  'AI-utveckling': Bot,
+  'IT-konsult': Monitor,
+  'Underhåll/IT Support': Wrench,
+  'Sociala medier': Megaphone,
+  'Video & foto': Camera,
+  'Varumärke & PR': Newspaper,
+  'Affärsutveckling': Rocket,
+  'Google Ads': Target,
+}
 const SUBMISSION_KEY = 'updro:last_guest_lead_submission'
 
 const ProjectWizardV2 = () => {
@@ -59,14 +78,17 @@ const ProjectWizardV2 = () => {
   const submissionInFlight = useRef(false)
   const lastSubmissionAt = useRef(0)
   const [submissionError, setSubmissionError] = useState('')
+  // A brief from the URL (ads, SEO pages) wins over an older unsent draft.
+  const [restoredDraft, setRestoredDraft] = useState(() => (prefill.text ? null : readProjectDraft()))
   const [form, setForm] = useState({
-    category: initialCategory as Category | '',
+    // A category in the URL reflects the CTA the visitor just clicked.
+    category: (initialCategory || restoredDraft?.category || '') as Category | '',
     // Hoppa över auto-titeln när förifyllnaden kom från en olöst platshållare
-    title: prefill.hadPlaceholder ? '' : inferTitle(initialDescription),
-    description: initialDescription,
-    budget_range: 'unknown' as BudgetRange,
-    start_time: 'flexible' as StartTime,
-    is_company: true,
+    title: restoredDraft ? restoredDraft.title : prefill.hadPlaceholder ? '' : inferTitle(initialDescription),
+    description: restoredDraft?.description ?? initialDescription,
+    budget_range: restoredDraft?.budget_range ?? 'unknown' as BudgetRange,
+    start_time: restoredDraft?.start_time ?? 'flexible' as StartTime,
+    is_company: restoredDraft?.is_company ?? true,
     company_name: '',
     full_name: '',
     email: '',
@@ -92,6 +114,35 @@ const ProjectWizardV2 = () => {
   }, [])
 
   const totalSteps = 3
+
+  // Keep the unsent brief on this device. Untouched URL prefill is not a draft.
+  const draftChanged = Boolean(restoredDraft) || form.description !== initialDescription
+  useEffect(() => {
+    if (step > totalSteps || !draftChanged) return
+    saveProjectDraft({
+      title: form.title,
+      description: form.description,
+      category: form.category,
+      budget_range: form.budget_range,
+      start_time: form.start_time,
+      is_company: form.is_company,
+    })
+  }, [step, draftChanged, form.title, form.description, form.category, form.budget_range, form.start_time, form.is_company])
+
+  const discardDraft = () => {
+    clearProjectDraft()
+    setRestoredDraft(null)
+    setAiSuggestion('')
+    setForm(previous => ({
+      ...previous,
+      category: initialCategory as Category | '',
+      title: prefill.hadPlaceholder ? '' : inferTitle(initialDescription),
+      description: initialDescription,
+      budget_range: 'unknown' as BudgetRange,
+      start_time: 'flexible' as StartTime,
+      is_company: true,
+    }))
+  }
   useEffect(() => {
     if (previousStep.current === step) return
     previousStep.current = step
@@ -196,6 +247,7 @@ const ProjectWizardV2 = () => {
             .insert({ email: user.email.toLowerCase(), source: 'publicera' })
           if (newsletterError && newsletterError.code !== '23505' && import.meta.env.DEV) console.warn('Newsletter opt-in failed', newsletterError)
         }
+        clearProjectDraft()
         trackLeadSubmitted({ source: 'publicera', category: form.category as string, userType: 'buyer', budgetRange: form.budget_range || undefined })
         trackClick('lead_submitted', 'Skicka in uppdrag', { category: form.category, user_type: 'buyer' })
         setConfirmationEmailSent(false)
@@ -230,6 +282,7 @@ const ProjectWizardV2 = () => {
 
       // The server's rate limit remains authoritative when storage is unavailable.
       lastSubmissionAt.current = Date.now()
+      clearProjectDraft()
       writeBrowserStorage('localStorage', SUBMISSION_KEY, String(lastSubmissionAt.current))
       setConfirmationEmailSent(Boolean(data?.email_sent))
       setSubmittedProjectId(String(data?.project_id || ''))
@@ -280,6 +333,12 @@ const ProjectWizardV2 = () => {
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{initialCategory === 'Webbutveckling' ? 'Beskriv ditt webbprojekt och jämför upp till tre offerter.' : 'Beskriv behovet med egna ord och jämför upp till tre offerter.'} Gratis för dig som beställare. Ingen registrering krävs.</p>
                 <a href="#forfragan-hjalp" className="mt-2 inline-block text-sm text-primary underline underline-offset-4 lg:hidden">Så fungerar det och kontakt</a>
               </div>
+              {restoredDraft && (
+                <div role="status" className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm">
+                  <span className="flex items-center gap-2"><History className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />Vi har återställt ditt utkast från förra gången.</span>
+                  <button type="button" onClick={discardDraft} className="min-h-11 font-medium text-primary underline underline-offset-4">Börja om</button>
+                </div>
+              )}
               <div>
                 <Label htmlFor="project-description">Beskriv uppdraget *</Label>
                 <Textarea
@@ -301,9 +360,9 @@ const ProjectWizardV2 = () => {
               <div>
                 <Label>Kategori *</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
-                  {CATEGORIES.map((category, index) => (
+                  {CATEGORIES.map(category => (
                     <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 min-h-11 min-w-11 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
-                      {(() => { const Icon = categoryIcons[index] || Code2; return <Icon className="h-6 w-6" aria-hidden="true" /> })()}
+                      {(() => { const Icon = CATEGORY_ICON_COMPONENTS[category] || Code2; return <Icon className="h-6 w-6" aria-hidden="true" /> })()}
                       <span className="text-xs text-center">{categoryLabel(category)}</span>
                       {form.category === category && <Check className="h-3 w-3" />}
                     </button>
