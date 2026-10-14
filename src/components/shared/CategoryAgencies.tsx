@@ -15,7 +15,7 @@ export default function CategoryAgencies({ category, label }: { category?: strin
     <h2 id="category-agencies-heading" className="font-display text-2xl font-bold mb-5">Byråer inom {label}</h2>
     <div className="mb-6 flex flex-col sm:flex-row gap-3 max-w-2xl">
       <Input aria-label="Sök byrå" placeholder="Sök byrå eller kompetens" value={query} onChange={e => setQuery(e.target.value)} />
-      <select aria-label="Filtrera på ort" className="h-11 rounded-lg border border-input bg-background px-3 text-sm" value={city} onChange={e => setCity(e.target.value)}><option value="">Alla orter</option>{cities.map(value => <option key={value}>{value}</option>)}</select>
+      <select aria-label="Filtrera på ort" className="updro-select h-11 rounded-lg border border-input bg-background pl-3 pr-9 text-sm" value={city} onChange={e => setCity(e.target.value)}><option value="">Alla orter</option>{cities.map(value => <option key={value}>{value}</option>)}</select>
     </div>
     {loading || error ? <DirectoryStatus loading={loading} error={error} retry={retry} /> : visible.length ? <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{visible.map(a => <Link key={a.id} to={`/byra/${a.slug}`} className="rounded-xl border bg-card p-5 hover:border-primary focus-visible:ring-2 focus-visible:ring-ring">
       <h3 className="font-display text-lg font-semibold">{a.profiles?.company_name || 'Byrå'}</h3><p className="mt-1 text-sm text-muted-foreground">{a.profiles?.city || 'Sverige'}</p><p className="mt-3 text-sm line-clamp-3">{a.bio}</p><span className="mt-4 inline-block text-primary font-semibold text-sm">Se byråprofil →</span>

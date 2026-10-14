@@ -16,7 +16,7 @@ export default function Footer() {
               Ett tydligare sätt att hitta och samarbeta med digitala byråer.
             </p>
             <div className="mt-6 space-y-1.5 text-xs text-muted-foreground">
-              <p>Updro drivs av Aurora Media AB · Org.nr 559272-0220</p>
+              <p>Updro drivs av Aurora Media AB · <span className="whitespace-nowrap">Org.nr 559272-0220</span></p>
               <a
                 href="mailto:info@auroramedia.se"
                 className="inline-block text-sm text-primary hover:underline"
@@ -54,15 +54,15 @@ export default function Footer() {
             Alla städer
           </Link>
         </div>
-        <div className="mt-6 pt-6 border-t flex flex-col md:flex-row justify-between gap-4 text-xs text-muted-foreground">
+        <div className="mt-6 pt-4 border-t flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span>© {new Date().getFullYear()} Updro · Aurora Media AB</span>
-          <div className="flex flex-wrap gap-x-5 gap-y-3">
-            <button type="button" className="min-h-11 text-left hover:text-primary" onClick={() => window.dispatchEvent(new Event('updro:open-cookie-settings'))}>Cookieinställningar</button>
+          <div className="flex flex-wrap items-center gap-x-5">
+            <button type="button" className="inline-flex min-h-11 items-center text-left hover:text-primary" onClick={() => window.dispatchEvent(new Event('updro:open-cookie-settings'))}>Cookieinställningar</button>
             {FOOTER_LEGAL_LINKS.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
-                className="hover:text-primary"
+                className="inline-flex min-h-11 items-center hover:text-primary"
               >
                 {link.label}
               </Link>

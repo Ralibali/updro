@@ -203,7 +203,7 @@ const ArticlesIndex = () => {
               <select
                 value={sort}
                 onChange={e => setSort(e.target.value as 'newest' | 'oldest')}
-                className="bg-background border rounded-md px-2 py-1.5 text-xs"
+                className="updro-select bg-background border rounded-md pl-2 pr-8 py-1.5 text-xs"
               >
                 <option value="newest">Nyast först</option>
                 <option value="oldest">Äldst först</option>

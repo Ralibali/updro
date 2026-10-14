@@ -46,7 +46,7 @@ export default function ExampleOffersSection() {
         <div className="comparison-intro">
           <div className="eyebrow">Färre offerter. Bättre överblick.</div>
           <h2>
-            Tre perspektiv.
+            Tre perspektiv.{" "}
             <br />
             Ditt beslut.
           </h2>

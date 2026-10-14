@@ -7,6 +7,7 @@ import MobileStickyCTA from '@/components/home/MobileStickyCTA'
 import CategoriesSection from '@/components/home/CategoriesSection'
 import HowItWorksSection from '@/components/home/HowItWorksSection'
 import ComparisonSection from '@/components/home/ComparisonSection'
+import AgencyShowcaseSection from '@/components/home/AgencyShowcaseSection'
 import { setSEOMeta, setJsonLd, setBreadcrumb } from '@/lib/seoHelpers'
 import { HOME_TITLE, HOME_DESCRIPTION, HOME_CANONICAL, HOME_FAQ } from '@/lib/homeSeo'
 
@@ -112,6 +113,7 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <CategoriesSection />
+        <AgencyShowcaseSection />
         <HowItWorksSection />
         <ComparisonSection />
         <BelowFold />

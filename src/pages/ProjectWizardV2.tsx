@@ -361,10 +361,10 @@ const ProjectWizardV2 = () => {
                 <Label>Kategori *</Label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-2">
                   {CATEGORIES.map(category => (
-                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`flex flex-col items-center gap-1.5 min-h-11 min-w-11 p-3 rounded-xl border text-sm font-medium ${form.category === category ? 'border-primary bg-primary/5 text-primary' : 'border-border hover:border-primary/30'}`}>
+                    <button key={category} type="button" aria-pressed={form.category === category} onClick={() => { setForm(previous => ({ ...previous, category })); trackCategorySelected(category) }} className={`relative flex flex-col items-center gap-1.5 min-h-11 min-w-11 p-3 rounded-xl border text-sm font-medium transition-colors ${form.category === category ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary' : 'border-border hover:border-primary/40'}`}>
                       {(() => { const Icon = CATEGORY_ICON_COMPONENTS[category] || Code2; return <Icon className="h-6 w-6" aria-hidden="true" /> })()}
                       <span className="text-xs text-center">{categoryLabel(category)}</span>
-                      {form.category === category && <Check className="h-3 w-3" />}
+                      {form.category === category && <Check className="absolute right-2 top-2 h-3.5 w-3.5" aria-hidden="true" />}
                     </button>
                   ))}
                 </div>
@@ -540,13 +540,13 @@ const DescriptionHelp = ({ length }: { length: number }) => {
   return <p id="project-description-help" className={`text-xs mt-1 ${tone}`}>{message} · {length}/5000</p>
 }
 
-const ChoiceGrid = ({ label, options, value, onSelect, twoColumns = false }: { label: string; options: readonly { value: string; label: string; icon: string }[]; value: string; onSelect: (value: string) => void; twoColumns?: boolean }) => (
+const ChoiceGrid = ({ label, options, value, onSelect, twoColumns = false }: { label: string; options: readonly { value: string; label: string }[]; value: string; onSelect: (value: string) => void; twoColumns?: boolean }) => (
   <div>
     <Label>{label}</Label>
     <div className={`grid gap-2 mt-2 ${twoColumns ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2'}`}>
       {options.map(option => (
-        <button key={option.value} type="button" aria-pressed={value === option.value} onClick={() => onSelect(option.value)} className={`flex items-center gap-2 p-3 rounded-xl border text-sm font-medium ${value === option.value ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/30'}`}>
-          <span aria-hidden="true">{option.icon}</span>{option.label}
+        <button key={option.value} type="button" aria-pressed={value === option.value} onClick={() => onSelect(option.value)} className={`flex min-h-12 items-center gap-3 px-4 py-3 rounded-xl border text-left text-sm font-medium transition-colors ${value === option.value ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary' : 'border-border hover:border-primary/40'}`}>
+          <span aria-hidden="true" className={`grid h-4 w-4 shrink-0 place-items-center rounded-full border ${value === option.value ? 'border-primary' : 'border-input'}`}>{value === option.value && <span className="h-2 w-2 rounded-full bg-primary" />}</span>{option.label}
         </button>
       ))}
     </div>
@@ -554,7 +554,7 @@ const ChoiceGrid = ({ label, options, value, onSelect, twoColumns = false }: { l
 )
 
 const TypeButton = ({ active, onClick, icon, label }: { active: boolean; onClick: () => void; icon: React.ReactNode; label: string }) => (
-  <button type="button" aria-pressed={active} onClick={onClick} className={`flex flex-col items-center gap-2 p-4 rounded-xl border ${active ? 'border-primary bg-primary/5' : 'border-border'}`}>
+  <button type="button" aria-pressed={active} onClick={onClick} className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-colors ${active ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary' : 'border-border hover:border-primary/40'}`}>
     {icon}<span className="text-sm font-medium">{label}</span>
   </button>
 )

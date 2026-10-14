@@ -44,7 +44,7 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
             <p className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">1. Vad behöver du?</p>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Välj projekttyp">
               {PROJECT_TYPES.map(type => (
-                <button key={type.id} type="button" aria-pressed={typeId === type.id} onClick={() => setTypeId(type.id)} className={`px-4 py-2 text-sm font-semibold rounded-xl border border-border transition-colors ${typeId === type.id ? 'bg-foreground text-background' : 'bg-background hover:bg-secondary'}`}>
+                <button key={type.id} type="button" aria-pressed={typeId === type.id} onClick={() => setTypeId(type.id)} className={`min-h-10 px-4 py-2 text-sm font-semibold rounded-xl border transition-colors ${typeId === type.id ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary' : 'border-border bg-background text-foreground hover:border-primary/40'}`}>
                   {type.label}
                 </button>
               ))}
@@ -53,8 +53,8 @@ const PriceCalculatorSection = ({ defaultTypeId }: PriceCalculatorSectionProps) 
             <p className="mt-6 mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">2. Vilken nivå passar?</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2" role="group" aria-label="Välj omfattning">
               {LEVELS.map(levelKey => (
-                <button key={levelKey} type="button" aria-pressed={level === levelKey} onClick={() => setLevel(levelKey)} className={`px-4 py-3 text-left rounded-xl border border-border transition-colors ${level === levelKey ? 'bg-accent text-accent-foreground' : 'bg-background hover:bg-secondary'}`}>
-                  <span className="block font-display font-bold text-sm uppercase tracking-wide">{LEVEL_LABELS[levelKey]}</span>
+                <button key={levelKey} type="button" aria-pressed={level === levelKey} onClick={() => setLevel(levelKey)} className={`px-4 py-3 text-left rounded-xl border transition-colors ${level === levelKey ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary' : 'border-border bg-background text-foreground hover:border-primary/40'}`}>
+                  <span className="block font-display font-semibold text-sm">{LEVEL_LABELS[levelKey]}</span>
                 </button>
               ))}
             </div>

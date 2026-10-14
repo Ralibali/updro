@@ -1,7 +1,7 @@
 .updro-home {
   --ink: #122c42;
   --muted: #526273;
-  --blue: #1d4ed8;
+  --blue: hsl(var(--primary));
   --line: #e2e9ef;
   --pale: #f3f7fc;
   --font: "DM Sans", Arial, sans-serif;
@@ -216,15 +216,12 @@
   line-height: 1;
   color: var(--blue);
 }
-.updro-home h1,
-.updro-home h2,
-.updro-home h3,
-.updro-home p {
+/* The home type scale belongs to the page sections, not the shared footer.
+   :where() keeps these resets below Tailwind spacing utilities such as mt-6. */
+:where(.updro-home main) :is(h1, h2, h3, p) {
   margin: 0;
 }
-.updro-home h1,
-.updro-home h2,
-.updro-home h3 {
+:where(.updro-home main) :is(h1, h2, h3) {
   font-family: var(--heading);
 }
 .updro-home h1 {
@@ -232,8 +229,12 @@
   font-weight: 550;
   letter-spacing: -4px;
   line-height: 1.13;
+  text-wrap: balance;
 }
 .updro-home h1 em {
+  /* inline-block lets the second line balance on its own instead of leaving one orphaned word. */
+  display: inline-block;
+  text-wrap: balance;
   font-style: normal;
   color: var(--blue);
   background: linear-gradient(90deg, #173d60, #286def 78%);
@@ -559,7 +560,7 @@
   gap: 35px;
   margin-bottom: 35px;
 }
-.updro-home h2 {
+.updro-home main h2 {
   font-size: clamp(30px, 3.2vw, 44px);
   font-weight: 550;
   line-height: 1.21;
@@ -1103,6 +1104,11 @@
   .updro-home .offer-identity h3 {
     font-size: 15px;
   }
+  .updro-home .offer-identity span {
+    display: block;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
   .updro-home .offer-price {
     font-size: 25px;
     margin: 0;
@@ -1114,6 +1120,7 @@
   .updro-home .offer-time {
     font-size: 11px;
     text-align: right;
+    white-space: nowrap;
   }
   .updro-home .offer-divider {
     grid-column: 1/-1;
@@ -1150,7 +1157,7 @@
     font-size: 10px;
     letter-spacing: 1.5px;
   }
-  .updro-home h2 {
+  .updro-home main h2 {
     font-size: 32px;
     letter-spacing: -1.4px;
   }
@@ -1718,4 +1725,107 @@
   .updro-home .compare-intro .button {
     width: 100%;
   }
+}
+
+/* Verified agencies (social proof) */
+.updro-home .agency-showcase {
+  padding-block: 0 88px;
+}
+.updro-home .agency-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.updro-home .agency-showcase-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.updro-home .agency-showcase-card:hover {
+  border-color: #abc6f3;
+  background: #f8fbff;
+}
+.updro-home .agency-showcase-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--pale);
+  color: var(--blue);
+  font-family: var(--heading);
+  font-size: 15px;
+  font-weight: 650;
+}
+.updro-home .agency-showcase-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+.updro-home .agency-showcase-body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.updro-home .agency-showcase-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.updro-home .agency-showcase-name svg {
+  width: 16px;
+  height: 16px;
+  color: var(--blue);
+}
+.updro-home .agency-showcase-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.updro-home .agency-showcase-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.updro-home .agency-showcase-meta svg {
+  width: 12px;
+  height: 12px;
+}
+@media (max-width: 1080px) {
+  .updro-home .agency-showcase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .updro-home .agency-showcase {
+    padding-block: 0 60px;
+  }
+  .updro-home .agency-showcase-grid li:nth-child(n + 5) {
+    display: none;
+  }
+  .updro-home .agency-showcase-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.dark .updro-home .agency-showcase-card:hover {
+  background: #1b2a3f;
 }

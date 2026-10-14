@@ -69,7 +69,7 @@ const WebsitePriceCalculator = () => {
           id="calc-type"
           value={typeIndex}
           onChange={e => setTypeIndex(Number(e.target.value))}
-          className="w-full h-12 rounded-xl border bg-background px-3 text-base"
+          className="updro-select w-full h-12 rounded-xl border bg-background pl-3 pr-10 text-base"
         >
           {PROJECT_TYPES.map((t, i) => <option key={t.label} value={i}>{t.label}</option>)}
         </select>
@@ -110,7 +110,7 @@ const WebsitePriceCalculator = () => {
           id="calc-level"
           value={levelIndex}
           onChange={e => setLevelIndex(Number(e.target.value))}
-          className="w-full h-12 rounded-xl border bg-background px-3 text-base"
+          className="updro-select w-full h-12 rounded-xl border bg-background pl-3 pr-10 text-base"
         >
           {LEVELS.map((l, i) => <option key={l.label} value={i}>{l.label}</option>)}
         </select>

@@ -309,6 +309,8 @@
 }
 @layer components {
   .updro-content-page h1 { max-width: 56rem; text-wrap: balance; }
+  /* The capped width must not pull centred headings off-axis. */
+  .updro-content-page :is(.text-center h1, h1.text-center) { margin-inline: auto; }
   .updro-content-page :is(h1,h2) { letter-spacing: -.035em; }
   .updro-content-page > section:first-of-type { @apply border-b border-border pb-12; }
   .updro-content-page .prose { @apply leading-relaxed; }
@@ -319,6 +321,15 @@
   .updro-content-page :is(.rounded-2xl.border,.rounded-xl.border) { border-radius: var(--radius); }
   .updro-workspace-main :is(.rounded-2xl.border,.rounded-xl.border) { border-radius: var(--radius); }
   .updro-workspace-main .text-2xl.font-bold { @apply font-semibold; }
+  /* Native selects keep their accessibility but drop the browser chrome. */
+  .updro-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23607386' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    cursor: pointer;
+  }
 }
 
 /* Fixed banners must never obscure the last controls or footer. */
@@ -326,3 +337,34 @@ body { padding-bottom: calc(var(--cookie-banner-height, 0px) + var(--promo-banne
 html { scroll-padding-top: 7rem; }
 .table-scroll { max-width: 100%; overflow-x: auto; background: linear-gradient(to right, hsl(var(--background)) 30%, transparent), linear-gradient(to left, hsl(var(--background)) 30%, transparent), linear-gradient(to right, rgb(0 0 0 / .15), transparent), linear-gradient(to left, rgb(0 0 0 / .15), transparent); background-position: left center, right center, left center, right center; background-size: 40px 100%, 40px 100%, 12px 100%, 12px 100%; background-repeat: no-repeat; background-attachment: local, local, scroll, scroll; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+/* Disclosures without their own indicator get one consistent chevron instead of the
+   browser's triangle. Summaries marked list-none and the home FAQ draw their own.
+   `details > summary` outranks Tailwind's preflight (display: list-item) but not utilities. */
+details > summary:where(:not(.list-none):not(.updro-home summary)) {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  list-style: none;
+}
+details > summary:where(:not(.list-none):not(.updro-home summary))::-webkit-details-marker { display: none; }
+details > summary:where(:not(.list-none):not(.updro-home summary))::after {
+  content: "";
+  display: block;
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: auto;
+  margin-right: 0.2rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  opacity: 0.55;
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+details[open] > summary:where(:not(.list-none):not(.updro-home summary))::after {
+  transform: translateY(25%) rotate(-135deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(summary)::after { transition: none; }
+}

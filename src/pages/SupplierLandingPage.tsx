@@ -279,7 +279,7 @@ const SupplierLandingPage = () => {
 
         <section className="py-16 bg-foreground text-background border-t border-border">
           <div className="container max-w-3xl text-center">
-            <h2 className="font-display text-3xl md:text-5xl font-bold">Testa med riktiga leads innan ni bestämmer er.</h2>
+            <h2 className="font-display text-3xl md:text-5xl font-bold leading-tight [text-wrap:balance]">Testa med riktiga leads innan ni bestämmer er.</h2>
             <p className="mt-4 text-background/70 text-lg">
               Börja med {TRIAL_LEADS} kostnadsfria krediter under {TRIAL_DAYS} dagar. Inget kreditkort krävs för att skapa kontot.
             </p>
