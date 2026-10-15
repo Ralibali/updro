@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { Check, X, Phone, Mail, Trash2 } from 'lucide-react'
+import { Check, X, Phone, Mail, Trash2, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
@@ -20,6 +20,7 @@ import VerificationChecklist from '@/components/shared/VerificationChecklist'
 import ProjectOutcomeCard from '@/components/buyer/ProjectOutcomeCard'
 import AgreementPanel from '@/components/agreements/AgreementPanel'
 import ReviewCard from '@/components/buyer/ReviewCard'
+import OfferComparison from '@/components/buyer/OfferComparison'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -89,6 +90,12 @@ const ProjectDetail = () => {
 
   const scrollToOffers = () => {
     offersRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const showOffer = (offerId: string) => {
+    const card = document.getElementById(`offer-${offerId}`)
+    card?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    card?.focus({ preventScroll: true })
   }
 
   const handleProjectClosed = () => {
@@ -166,6 +173,17 @@ const ProjectDetail = () => {
             )}
 
 
+            {id && (
+              <OfferComparison
+                projectId={id}
+                budgetRange={project.budget_range}
+                offers={offers}
+                disabled={deciding || loading || !!loadError}
+                onAccept={setConfirmOffer}
+                onShowOffer={showOffer}
+              />
+            )}
+
             <div ref={offersRef}>
               <h2 className="font-display text-lg font-semibold mb-4">
                 Intresserade byråer ({offers.length})
@@ -180,7 +198,7 @@ const ProjectDetail = () => {
                   {offers.map(offer => {
                     const sp = offer.supplier_profiles
                     return (
-                      <div key={offer.id} className="bg-card rounded-xl border p-5">
+                      <div key={offer.id} id={`offer-${offer.id}`} tabIndex={-1} className="bg-card rounded-xl border p-5 scroll-mt-24 outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h3 className="font-semibold">{offer.profiles?.company_name || offer.profiles?.full_name || 'Byrå'}</h3>
@@ -268,7 +286,7 @@ const ProjectDetail = () => {
                           {(offer.status === 'pending' || offer.status === 'accepted') && (
                             <Button asChild size="sm" variant={offer.status === 'accepted' ? 'default' : 'outline'}>
                               <Link to={`/dashboard/buyer/chatt?project=${id}&user=${offer.supplier_id}`}>
-                                💬 Chatta med byrån
+                                <MessageCircle className="mr-1 h-3 w-3" aria-hidden="true" /> Chatta med byrån
                               </Link>
                             </Button>
                           )}
