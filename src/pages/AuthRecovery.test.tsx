@@ -1,12 +1,13 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-const mocks = vi.hoisted(() => ({ signIn: vi.fn(), resend: vi.fn(), verifyOtp: vi.fn(), signUp: vi.fn() }))
+const mocks = vi.hoisted(() => ({ signIn: vi.fn(), resend: vi.fn(), verifyOtp: vi.fn(), signUp: vi.fn(), reset: vi.fn(), onAuthStateChange: vi.fn() }))
 vi.mock('@/hooks/useAuth', () => ({ useAuth: () => ({ signIn: mocks.signIn, signUp: mocks.signUp, profile: null }) }))
-vi.mock('@/integrations/supabase/client', () => ({ supabase: { auth: { resend: mocks.resend, verifyOtp: mocks.verifyOtp } } }))
+vi.mock('@/integrations/supabase/client', () => ({ supabase: { auth: { resend: mocks.resend, verifyOtp: mocks.verifyOtp, resetPasswordForEmail: mocks.reset, onAuthStateChange: mocks.onAuthStateChange } } }))
 vi.mock('@/components/Navbar', () => ({ default: () => <nav /> }))
 vi.mock('@/components/Footer', () => ({ default: () => <footer /> }))
 import LoginPage from './LoginPage'
+import PlaceholderPage from './PlaceholderPage'
 import ConfirmEmailPage from './ConfirmEmailPage'
 import ResendConfirmation from '@/components/ResendConfirmation'
 import RegisterPage from './RegisterPage'
@@ -17,6 +18,8 @@ beforeEach(() => {
   vi.stubGlobal('ResizeObserver', class { observe() {} unobserve() {} disconnect() {} })
   window.history.replaceState({}, '', '/')
   mocks.resend.mockResolvedValue({ error: null })
+  mocks.reset.mockResolvedValue({ data: null, error: null })
+  mocks.onAuthStateChange.mockReturnValue({ data: { subscription: { unsubscribe: vi.fn() } } })
 })
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals() })
 
@@ -87,4 +90,12 @@ it('offers a new confirmation for an expired token', async () => {
 it('rejects non-signup or foreign verification links', () => {
   expect(() => signupConfirmationLink('https://project.supabase.co/auth/v1/verify?token=x&type=recovery', 'https://project.supabase.co')).toThrow()
   expect(() => signupConfirmationLink('https://evil.invalid/auth/v1/verify?token=x&type=signup', 'https://project.supabase.co')).toThrow()
+})
+
+it('sends the password reset to the fixed updro.se address', async () => {
+  render(<PlaceholderPage title="Återställ lösenord" />)
+  fireEvent.change(screen.getByLabelText('E-post'), { target: { value: 'user@example.test' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Skicka återställningslänk' }))
+  await waitFor(() => expect(mocks.reset).toHaveBeenCalledWith('user@example.test', { redirectTo: 'https://updro.se/aterstall-losenord' }))
+  expect(await screen.findByRole('status')).toHaveTextContent('återställningslänk')
 })
