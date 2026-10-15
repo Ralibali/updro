@@ -93,7 +93,7 @@ it('rejects non-signup or foreign verification links', () => {
 })
 
 it('sends the password reset to the fixed updro.se address', async () => {
-  render(<PlaceholderPage title="Återställ lösenord" />)
+  render(<MemoryRouter><PlaceholderPage title="Återställ lösenord" /></MemoryRouter>)
   fireEvent.change(screen.getByLabelText('E-post'), { target: { value: 'user@example.test' } })
   fireEvent.click(screen.getByRole('button', { name: 'Skicka återställningslänk' }))
   await waitFor(() => expect(mocks.reset).toHaveBeenCalledWith('user@example.test', { redirectTo: 'https://updro.se/aterstall-losenord' }))
