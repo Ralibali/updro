@@ -42,7 +42,8 @@ const PasswordRecovery = () => {
     setMessage(null)
 
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-      redirectTo: `${window.location.origin}/aterstall-losenord`,
+      // Fast adress: ska fungera likadant oavsett vilken sajt koden körs på.
+      redirectTo: 'https://updro.se/aterstall-losenord',
     })
 
     setLoading(false)
