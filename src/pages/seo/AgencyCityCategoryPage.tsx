@@ -93,8 +93,8 @@ const AgencyCityCategoryPage = () => {
 
   const priceCopy = serviceData ? getPriceCopy(serviceData.slug, city.name) : null
   const projectExamples = serviceData ? getProjectExamples(serviceData.slug) : []
-  const nearby = getNearbyCities(city.slug, CITIES.length).filter(item => shouldIndexCityService(item.slug, category.slug)).slice(0, 6)
-  const otherCategories = SERVICE_CATEGORIES.filter(c => c.slug !== category.slug && shouldIndexCityService(city.slug, c.slug)).slice(0, 9)
+  const nearby = getNearbyCities(city.slug, 6)
+  const otherCategories = SERVICE_CATEGORIES.filter(c => c.slug !== category.slug).slice(0, 9)
   const faq = deep?.faq ?? buildFaq(city.name, category.name, kategori || '')
 
   return (
