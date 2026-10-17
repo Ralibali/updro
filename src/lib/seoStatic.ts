@@ -8,6 +8,7 @@ export { shouldIndexCityService } from './seoCityIndexing'
 
 import { seoLeadPath } from './seoLeadPath'
 import { SEO_PAGES, getCategoryNavLinks } from './seoData'
+import { PROJECT_PUBLISH_META, projectPublishMeta } from './projectPublishMeta'
 import { CITIES, SERVICE_CATEGORIES } from './seoCities'
 import { COMPARISON_PAGES } from './seoComparisons'
 import { ARTICLES } from './seoArticles'
@@ -239,6 +240,17 @@ const deepEnrichedPaths = new Set([
 export const getAllStaticSeoRoutes = (): StaticSeoRoute[] => {
   const map = new Map<string, StaticSeoRoute>()
   for (const route of [...baseRoutes(), ...serviceRoutes(), ...cityRoutes(), ...categoryRoutes(), ...contentRoutes()]) map.set(route.path, route)
+  // Every category CTA needs its own form landing, even before JavaScript runs.
+  for (const category of SEO_PAGES) {
+    const path = `/publicera/${category.categorySlug}`
+    map.set(path, {
+      path, ...projectPublishMeta(category.categorySlug),
+      intro: 'Beskriv behov, tidplan och önskad budget. Du får granska sammanfattningen innan förfrågan skickas.',
+      priority: 0.1, changefreq: 'monthly', noindex: true,
+      links: [{ href: `/${category.categorySlug}`, label: category.categoryName }, { href: '/publicera', label: 'Välj en annan kategori' }],
+    })
+  }
+  map.set('/publicera', { ...map.get('/publicera')!, ...PROJECT_PUBLISH_META })
   const hubs = hubLinks()
   const noindexPaths = new Set([...map.values()].filter(route => route.noindex).map(route => route.path))
   return [...map.values()].map(route => {
