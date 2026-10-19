@@ -27,6 +27,7 @@ import {
   validateOfferAttachment,
 } from '@/lib/marketplaceActions'
 import { trackFirstOfferReceived, trackLeadUnlocked, trackLeadUnlockStarted, trackLeadViewed, trackOfferSubmitted } from '@/lib/analytics'
+import { markViewedProject } from '@/lib/supplierActivation'
 
 const scoreProject = (project: any) => {
   let score = 0
