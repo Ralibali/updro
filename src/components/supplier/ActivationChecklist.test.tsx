@@ -88,7 +88,7 @@ describe('ActivationChecklist', () => {
     ])
     render(<MemoryRouter><ActivationChecklist /></MemoryRouter>)
     expect(screen.getByText('(frivilligt)')).toBeInTheDocument()
-    expect(screen.getByText(/2 upplåsningskrediter kvar/)).toBeInTheDocument()
+    expect(screen.getByText((_, el) => el?.tagName === 'P' && Boolean(el.textContent?.includes('2 upplåsningskrediter kvar')))).toBeInTheDocument()
   })
 
   it('shows a discreet done state when everything is complete', () => {
@@ -109,6 +109,6 @@ describe('ActivationChecklist', () => {
     mocks.auth.current = { ...authBase, isOnTrial: true, trialLeadsLeft: 1, trialDaysLeft: 3 }
     mocks.activation.current = stateFor([step('categories', false)])
     render(<MemoryRouter><ActivationChecklist /></MemoryRouter>)
-    expect(screen.getByText(/1 gratis lead kvar, 3 dagar kvar/)).toBeInTheDocument()
+    expect(screen.getByText((_, el) => el?.tagName === 'P' && Boolean(el.textContent?.includes('1 gratis lead kvar, 3 dagar kvar')))).toBeInTheDocument()
   })
 })
