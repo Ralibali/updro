@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { computeActivationSteps, type ActivationInput } from '@/lib/supplierActivation'
+import type { Category } from '@/types'
 
 const completeSupplier = {
   contact_name: 'Anna Byrå',
   bio: 'Vi bygger snabba webbplatser och webbshoppar för tillväxtbolag.',
   org_number: '5591234567',
-  categories: ['Webbutveckling'],
+  categories: ['Webbutveckling'] as Category[],
   portfolio_urls: [],
   website_url: 'https://example.se',
   logo_url: null,
