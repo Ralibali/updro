@@ -274,3 +274,27 @@ export const trackLeadUnlockStarted = (props?: { category?: string; city?: strin
     user_type: 'supplier',
   }))
 }
+
+/** Aurora Activate: checklistan visades. En gång per session. */
+export const trackSupplierActivationViewed = () => {
+  trackOnceInSession('supplier_activation_viewed', () => {
+    trackPlausibleEvent('Supplier Activation Viewed', withPlausibleContext({ user_type: 'supplier' }))
+  })
+}
+
+/** Aurora Activate: ett steg blev klart. En gång per steg och session. */
+export const trackSupplierActivationStepCompleted = (stepId: string) => {
+  trackOnceInSession(`supplier_activation_step:${stepId}`, () => {
+    trackPlausibleEvent('Supplier Activation Step Completed', withPlausibleContext({
+      user_type: 'supplier',
+      step: stepId,
+    }))
+  })
+}
+
+/** Aurora Activate: alla obligatoriska steg klara. En gång per session. */
+export const trackSupplierActivationCompleted = () => {
+  trackOnceInSession('supplier_activation_completed', () => {
+    trackPlausibleEvent('Supplier Activation Completed', withPlausibleContext({ user_type: 'supplier' }))
+  })
+}

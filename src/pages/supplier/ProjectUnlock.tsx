@@ -27,6 +27,7 @@ import {
   validateOfferAttachment,
 } from '@/lib/marketplaceActions'
 import { trackFirstOfferReceived, trackLeadUnlocked, trackLeadUnlockStarted, trackLeadViewed, trackOfferSubmitted } from '@/lib/analytics'
+import { markViewedProject } from '@/lib/supplierActivation'
 
 const scoreProject = (project: any) => {
   let score = 0
@@ -155,6 +156,7 @@ const ProjectUnlock = () => {
           if (draft) { setForm(draft); setDraftInfo('Ditt sparade utkast har återställts. Välj eventuell bilaga igen.') }
         }
         try { trackLeadViewed(id, { category: projectResult.data.category, city: projectResult.data.city || undefined }) } catch { /* Best effort */ }
+        markViewedProject()
         if (unlockResult.data) await loadContact(id)
       } catch {
         if (!cancelled) setLoadError(true)

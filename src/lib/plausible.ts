@@ -23,6 +23,9 @@ export type PlausibleEventName =
   | 'Lead Viewed'
   | 'Lead Unlock Started'
   | 'Lead Purchase Completed'
+  | 'Supplier Activation Viewed'
+  | 'Supplier Activation Step Completed'
+  | 'Supplier Activation Completed'
 
 export const PLAUSIBLE_EVENT_NAMES: readonly PlausibleEventName[] = [
   'Uppdrag Started',
@@ -44,6 +47,9 @@ export const PLAUSIBLE_EVENT_NAMES: readonly PlausibleEventName[] = [
   'Lead Viewed',
   'Lead Unlock Started',
   'Lead Purchase Completed',
+  'Supplier Activation Viewed',
+  'Supplier Activation Step Completed',
+  'Supplier Activation Completed',
 ]
 
 export type PlausibleUserType = 'guest' | 'buyer' | 'supplier'
@@ -69,6 +75,8 @@ export interface PlausibleProps {
   project_value_segment?: PlausibleValueSegment
   source?: string
   user_type?: PlausibleUserType
+  /** Aktiveringsstegets ID (t.ex. 'categories'). Aldrig fritext eller PII. */
+  step?: string
 }
 
 const ALLOWED_KEYS: readonly (keyof PlausibleProps)[] = [
@@ -83,6 +91,7 @@ const ALLOWED_KEYS: readonly (keyof PlausibleProps)[] = [
   'project_value_segment',
   'source',
   'user_type',
+  'step',
 ]
 
 const VALUE_SEGMENTS = new Set<PlausibleValueSegment>([
