@@ -274,7 +274,7 @@ const AgencyCityCategoryPage = () => {
       <section className="container pb-12 border-t pt-12">
         <h2 className="font-display text-xl font-semibold mb-4">Andra kategorier i {city.name}</h2>
         <div className="flex flex-wrap gap-2">
-          {otherCategories.map(cat => (
+          {otherCategories.filter(cat => shouldIndexCityService(city.slug, cat.slug)).map(cat => (
             <Link key={cat.slug} to={`/byraer/${city.slug}/${cat.slug}`}
               className="text-sm px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-colors">
               {cat.name} i {city.name}
@@ -287,7 +287,7 @@ const AgencyCityCategoryPage = () => {
       <section className="container pb-16">
         <h2 className="font-display text-xl font-semibold mb-4">{category.name} i andra städer nära {city.name}</h2>
         <div className="flex flex-wrap gap-2">
-          {nearby.map(c => (
+          {nearby.filter(c => shouldIndexCityService(c.slug, category.slug)).map(c => (
             <Link key={c.slug} to={`/byraer/${c.slug}/${category.slug}`}
               className="text-sm px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-colors">
               {category.name} {c.name}

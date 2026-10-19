@@ -170,7 +170,7 @@ const AgencyCityPage = () => {
       <section className="container pb-12">
         <h2 className="font-display text-2xl font-bold mb-6">Tjänster i {city.name}</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {SERVICE_CATEGORIES.map(cat => (
+          {SERVICE_CATEGORIES.filter(cat => shouldIndexCityService(city.slug, cat.slug)).map(cat => (
             <Link key={cat.slug} to={`/byraer/${city.slug}/${cat.slug}`}
               className="group bg-card border rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition-all">
               <h3 className="font-display font-semibold group-hover:text-primary transition-colors">

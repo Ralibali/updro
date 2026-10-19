@@ -146,7 +146,7 @@ const AgencyCategoryPage = () => {
       <section className="container pb-8">
         <h2 className="font-display text-lg font-semibold mb-4">{category.name} per stad</h2>
         <div className="flex flex-wrap gap-2">
-          {SEO_CITIES.slice(0, 10).map(c => (
+          {SEO_CITIES.filter(c => shouldIndexCityService(c.slug, category.slug)).slice(0, 10).map(c => (
             <Link key={c.slug} to={`/byraer/${c.slug}/${category.slug}`}
               className="text-sm px-3 py-1.5 rounded-lg bg-muted hover:bg-primary/10 hover:text-primary transition-colors">
               {category.name} i {c.name}
