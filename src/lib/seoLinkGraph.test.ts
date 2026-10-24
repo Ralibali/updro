@@ -22,8 +22,9 @@ const internalLinks = rendered.flatMap(({ path, html }) =>
 )
 
 describe('production static link graph', () => {
-  it('has no links to noindex pages, including enriched content, navigation and footers', () => {
-    expect(internalLinks.filter(link => noindex.has(link.to))).toEqual([])
+  it('links to noindex pages only for the public project submission forms', () => {
+    const submissionForms = new Set(['/publicera', ...SEO_PAGES.map(page => `/publicera/${page.categorySlug}`)])
+    expect(internalLinks.filter(link => noindex.has(link.to) && !submissionForms.has(link.to))).toEqual([])
   })
   it('gives every indexable page an inbound link', () => {
     const linked = new Set(internalLinks.filter(link => link.from !== link.to).map(link => link.to))
