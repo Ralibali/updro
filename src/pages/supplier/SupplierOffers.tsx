@@ -41,7 +41,7 @@ type OfferCardProps = {
 }
 
 export const OfferCard = ({ o, supplierId, followUp, onFollowUpSaved }: OfferCardProps) => (
-  <article className={`rounded-2xl border bg-card p-4 sm:p-5 ${o.status === 'accepted' ? 'border-emerald-300' : ''}`}>
+  <article id={`offer-${o.id}`} className={`scroll-mt-24 rounded-2xl border bg-card p-4 sm:p-5 ${o.status === 'accepted' ? 'border-emerald-300' : ''}`}>
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div className="min-w-0 flex-1 basis-48">
         <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold mb-2 ${CATEGORY_STYLES[o.projects?.category] || ''}`}>{o.projects?.category}</span>

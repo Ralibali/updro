@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildFollowUpDedupKey,
   buildSupplierPipelineMetrics,
+  getDueFollowUps,
   isSupplierFollowUpDue,
+  nextFollowUpMorningIso,
   type SupplierOfferFollowUp,
 } from '../supplierSalesPipeline'
 
