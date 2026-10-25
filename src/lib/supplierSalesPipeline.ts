@@ -13,6 +13,8 @@ export type SupplierPipelineOffer = {
   status: string | null
   price: number
   payment_plan?: string | null
+  title?: string | null
+  project_id?: string | null
 }
 
 const ACTIVE_STATUSES = new Set(['pending', 'accepted'])
