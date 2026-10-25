@@ -115,6 +115,14 @@ const SupplierOffers = () => {
 
   useEffect(() => { void load() }, [load])
 
+  // Deep link: /dashboard/supplier/offerter#offer-<id> scrolls to the offer.
+  useEffect(() => {
+    if (loading) return
+    const hash = window.location.hash.slice(1)
+    if (!hash.startsWith('offer-')) return
+    document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [loading])
+
   const activeOffers = useMemo(() => offers
     .filter(o => o.status === 'pending' || o.status === 'accepted')
     .sort((a, b) => Number(isSupplierFollowUpDue(followUps[b.id]?.follow_up_at)) - Number(isSupplierFollowUpDue(followUps[a.id]?.follow_up_at))),
