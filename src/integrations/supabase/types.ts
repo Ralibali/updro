@@ -1728,6 +1728,7 @@ export type Database = {
         Row: {
           body: string
           created_at: string
+          dedup_key: string | null
           id: string
           project_id: string | null
           read_at: string | null
@@ -1738,6 +1739,7 @@ export type Database = {
         Insert: {
           body: string
           created_at?: string
+          dedup_key?: string | null
           id?: string
           project_id?: string | null
           read_at?: string | null
@@ -1748,6 +1750,7 @@ export type Database = {
         Update: {
           body?: string
           created_at?: string
+          dedup_key?: string | null
           id?: string
           project_id?: string | null
           read_at?: string | null

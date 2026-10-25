@@ -9,6 +9,7 @@ import TrialBanner from '@/components/TrialBanner'
 import SupplierNotificationsList from '@/components/supplier/SupplierNotificationsList'
 import PushNotificationCard from '@/components/shared/PushNotificationCard'
 import ActivationChecklist from '@/components/supplier/ActivationChecklist'
+import DueFollowUpsCard from '@/components/supplier/DueFollowUpsCard'
 import { Button } from '@/components/ui/button'
 import { CATEGORY_STYLES, BUDGET_LABELS, MAX_OFFERS_PER_PROJECT } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
@@ -74,6 +75,7 @@ const SupplierDashboard = () => {
         <h3 className="mt-2 font-semibold break-words">{p.title}</h3><p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.description}</p><div className="mt-3 flex flex-wrap justify-between gap-2 text-xs text-muted-foreground"><span>{BUDGET_LABELS[p.budget_range] || 'Budget diskuteras'} · {p.city || 'Sverige'} · {timeAgo(p.created_at)}</span><span className="font-medium text-primary">{unlockedIds.has(p.id) ? 'Upplåst · skicka offert →' : 'Visa uppdrag →'}</span></div>
       </Link>)}</div> : <div className="rounded-xl border bg-card p-5"><h3 className="font-semibold">Inga nya uppdrag{categories ? ' inom era kategorier' : ''} just nu</h3><p className="mt-1 hidden text-sm text-muted-foreground sm:block">{categories ? 'Du kan se alla uppdrag eller ändra vilka kategorier byrån arbetar med.' : 'Ange byråns kategorier så blir kommande matchningar mer relevanta.'}</p><div className="mt-3 flex flex-wrap gap-3"><Link to="/dashboard/supplier/uppdrag" className="text-sm font-medium text-primary hover:underline">Se alla uppdrag</Link><Link to="/dashboard/supplier/profil" className="text-sm font-medium text-primary hover:underline">Ändra byråprofil</Link></div></div>}
     </section>
+    <DueFollowUpsCard />
     <ActivationChecklist />
     <SupplierNotificationsList />
     <details className="rounded-xl border p-4"><summary className="cursor-pointer text-sm font-medium">Konto och aviseringar{supplierProfile ? ' · ' + (hasActiveSubscription ? 'Månadskort' : (supplierProfile.lead_credits || 0) + ' upplåsningskrediter') : ''}</summary><div className="mt-4 space-y-4"><PushNotificationCard /><Link to="/dashboard/supplier/fakturering" className="inline-block text-sm text-primary hover:underline">Hantera betalplan och krediter</Link></div></details>

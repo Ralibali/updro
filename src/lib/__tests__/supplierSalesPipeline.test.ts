@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildFollowUpDedupKey,
   buildSupplierPipelineMetrics,
+  getDueFollowUps,
   isSupplierFollowUpDue,
+  nextFollowUpMorningIso,
   type SupplierOfferFollowUp,
 } from '../supplierSalesPipeline'
 
@@ -47,6 +50,70 @@ describe('supplier sales pipeline', () => {
       wonValueSek: 25000,
       dueFollowUps: 1,
       missingNextStep: 2,
+    })
+  })
+
+  describe('getDueFollowUps', () => {
+    const supplierId = '22222222-2222-4222-8222-222222222222'
+    const otherSupplierId = '99999999-9999-4999-8999-999999999999'
+    const now = Date.parse('2026-10-03T12:00:00Z')
+    const offers = [
+      { id: '11111111-1111-4111-8111-111111111111', status: 'pending', price: 12000 },
+      { id: '33333333-3333-4333-8333-333333333333', status: 'accepted', price: 25000 },
+      { id: '44444444-4444-4444-8444-444444444444', status: 'declined', price: 50000 },
+    ]
+
+    it('returns only due follow-ups on the supplier\'s own active offers, oldest first', () => {
+      const items = getDueFollowUps([
+        followUp({ offer_id: '33333333-3333-4333-8333-333333333333', follow_up_at: '2026-10-02T08:00:00Z' }),
+        followUp({ offer_id: '11111111-1111-4111-8111-111111111111', follow_up_at: '2026-10-01T08:00:00Z' }),
+        // Not due yet:
+        followUp({ offer_id: '11111111-1111-4111-8111-111111111111', follow_up_at: '2026-10-05T08:00:00Z' }),
+        // Other tenant's follow-up must never leak in:
+        followUp({ offer_id: '11111111-1111-4111-8111-111111111111', supplier_id: otherSupplierId }),
+        // Lost offer is not actionable:
+        followUp({ offer_id: '44444444-4444-4444-8444-444444444444' }),
+        // Follow-up for an offer the supplier does not own:
+        followUp({ offer_id: '77777777-7777-4777-8777-777777777777' }),
+        // Broken date must not crash or count as due:
+        followUp({ offer_id: '11111111-1111-4111-8111-111111111111', follow_up_at: 'inte-ett-datum' }),
+      ], offers, supplierId, now)
+
+      expect(items.map(item => item.followUp.offer_id)).toEqual([
+        '11111111-1111-4111-8111-111111111111',
+        '33333333-3333-4333-8333-333333333333',
+      ])
+    })
+
+    it('returns nothing for another tenant or a missing supplier id', () => {
+      const followUps = [followUp({})]
+      expect(getDueFollowUps(followUps, offers, otherSupplierId, now)).toEqual([])
+      expect(getDueFollowUps(followUps, offers, '', now)).toEqual([])
+    })
+  })
+
+  describe('buildFollowUpDedupKey', () => {
+    it('is stable per offer and day so reminders never duplicate', () => {
+      const offerId = '11111111-1111-4111-8111-111111111111'
+      const morning = buildFollowUpDedupKey(offerId, '2026-10-03T06:00:00Z')
+      const evening = buildFollowUpDedupKey(offerId, '2026-10-03T21:00:00Z')
+      const nextDay = buildFollowUpDedupKey(offerId, '2026-10-04T06:00:00Z')
+      expect(morning).toBe(evening)
+      expect(morning).not.toBe(nextDay)
+      expect(morning).toBe(`followup:${offerId}:2026-10-03`)
+    })
+
+    it('handles invalid dates without throwing', () => {
+      expect(buildFollowUpDedupKey('abc', 'skräp')).toBe('followup:abc:unknown')
+    })
+  })
+
+  describe('nextFollowUpMorningIso', () => {
+    it('moves the follow-up to 08:00 local time the next day', () => {
+      const result = new Date(nextFollowUpMorningIso(new Date('2026-10-03T15:30:00')))
+      expect(result.getHours()).toBe(8)
+      expect(result.getMinutes()).toBe(0)
+      expect(result.getDate()).toBe(4)
     })
   })
 })
