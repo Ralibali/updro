@@ -43,13 +43,15 @@ async function logCall(admin: AdminClient, entry: { status: number; duration_ms:
 }
 
 async function isAuthorized(request: Request, admin: AdminClient): Promise<boolean> {
-  const cronSecret = Deno.env.get('CRON_SECRET') || ''
+  // Same secrets as send-supplier-lead-alerts: the shared CRON_SECRET and the
+  // dedicated lead_alert_cron_secret stored in Vault for the pg_cron jobs.
+  const cronSecrets = [Deno.env.get('CRON_SECRET') || '', Deno.env.get('LEAD_ALERT_CRON_SECRET') || '']
   const header = request.headers.get('x-cron-secret') || ''
-  if (constantTimeEqual(header, cronSecret)) return true
+  if (cronSecrets.some(secret => constantTimeEqual(header, secret))) return true
 
   const token = bearerToken(request.headers.get('Authorization'))
   if (!token) return false
-  if (constantTimeEqual(token, cronSecret)) return true
+  if (cronSecrets.some(secret => constantTimeEqual(token, secret))) return true
 
   const { data, error } = await admin.auth.getUser(token)
   if (error || !data?.user) return false
