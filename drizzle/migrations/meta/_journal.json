@@ -8,6 +8,13 @@
       "when": 1792914252749,
       "tag": "0000_supplier_notification_dedup",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793295157127,
+      "tag": "0001_supplier_notifications_dedup_full_unique",
+      "breakpoints": true
     }
   ]
 }
