@@ -6,11 +6,13 @@ import { readOfferDraft } from '@/lib/offerDrafts'
 
 const mocks = vi.hoisted(() => ({
   from: vi.fn(), unlock: vi.fn(), contact: vi.fn(), submit: vi.fn(), success: vi.fn(), error: vi.fn(),
-  user: { id: 'supplier' }, refresh: vi.fn(), existing: false, unlocked: false,
+  slots: vi.fn(), user: { id: 'supplier' }, refresh: vi.fn(), existing: false, unlocked: false,
 }))
 vi.mock('@/hooks/useAuth', () => ({ useAuth: () => ({ user: mocks.user, supplierProfile: { lead_credits: 3 }, refreshProfile: mocks.refresh, hasActiveSubscription: false }) }))
 vi.mock('@/integrations/supabase/client', () => ({ supabase: { from: mocks.from } }))
-vi.mock('@/lib/marketplaceActions', () => ({
+vi.mock('@/lib/marketplaceActions', async importOriginal => ({
+  openSlots: (await importOriginal<typeof import('@/lib/marketplaceActions')>()).openSlots,
+  getProjectSlotSummaries: mocks.slots,
   getUnlockedProjectContact: mocks.contact, unlockProject: mocks.unlock, submitProjectOffer: mocks.submit,
   OFFER_ATTACHMENT_ACCEPT: '.pdf', OFFER_ATTACHMENT_BUCKET: 'offer-attachments',
   uploadOfferAttachment: vi.fn(), validateOfferAttachment: vi.fn(),
@@ -26,6 +28,7 @@ beforeEach(() => {
   mocks.existing = false
   mocks.unlocked = false
   mocks.refresh.mockResolvedValue(undefined)
+  mocks.slots.mockResolvedValue(null)
   mocks.from.mockImplementation((table: string) => {
     const chain: Record<string, any> = {}
     const result = () => Promise.resolve({ data: table === 'projects' ? {
@@ -74,6 +77,38 @@ describe('supplier offer flow', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Hämta kontaktuppgifterna igen' }))
     expect(await screen.findByText('qa@example.invalid')).toBeInTheDocument()
     expect(mocks.unlock).toHaveBeenCalledTimes(1)
+  })
+  it('does not offer a paid unlock when every slot is reserved by other agencies', async () => {
+    mocks.slots.mockResolvedValue(new Map([['project', { maxOffers: 3, offerCount: 1, slotsTaken: 3, myReservedUntil: null }]]))
+    renderPage()
+    expect(await screen.findByText(/Alla offertplatser är reserverade av andra byråer just nu/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Lås upp \(/ })).not.toBeInTheDocument()
+    expect(mocks.unlock).not.toHaveBeenCalled()
+  })
+  it('shows how long the unlocked agency keeps its slot and lets it ask the buyer', async () => {
+    mocks.unlocked = true
+    mocks.contact.mockResolvedValue({ full_name: 'Testkund', company_name: null, email: null, phone: null })
+    mocks.slots.mockResolvedValue(new Map([['project', { maxOffers: 3, offerCount: 2, slotsTaken: 3, myReservedUntil: '2026-11-07T12:00:00Z' }]]))
+    mocks.from.mockImplementation((table: string) => {
+      const chain: Record<string, any> = {}
+      const result = () => Promise.resolve({ data: table === 'projects' ? {
+        id: 'project', buyer_id: 'buyer', title: 'Testuppdrag', description: 'Beskrivning av ett syntetiskt testuppdrag.', category: 'Webbutveckling', status: 'active', offer_count: 2, max_offers: 3, created_at: '2026-09-07T12:00:00Z',
+      } : table === 'unlocked_leads' ? { id: 'unlock' } : null, error: null })
+      chain.select = chain.eq = () => chain
+      chain.single = chain.maybeSingle = result
+      return chain
+    })
+    renderPage()
+    expect(await screen.findByText(/Er offertplats är reserverad till och med 7 november/)).toBeInTheDocument()
+    expect(screen.getByLabelText('Offert-titel *')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Ställ en fråga till beställaren' })).toHaveAttribute('href', '/dashboard/supplier/chatt?project=project&user=buyer')
+  })
+  it('explains a refused unlock without charging', async () => {
+    mocks.unlock.mockRejectedValue(new Error('Alla offertplatser är reserverade av andra byråer just nu.'))
+    renderPage()
+    fireEvent.click(await screen.findByRole('button', { name: /Lås upp \(/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'Bekräfta' }))
+    await waitFor(() => expect(mocks.error).toHaveBeenCalledWith('Alla offertplatser är reserverade av andra byråer just nu. Ingen kredit drogs.'))
   })
   it('shows the next step instead of a duplicate offer form', async () => {
     mocks.existing = true

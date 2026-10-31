@@ -28,7 +28,7 @@ describe('browsing supplier projects', () => {
     expect(await screen.findByRole('link', { name: 'Ny webbplats' })).toHaveAttribute('href', '/dashboard/supplier/uppdrag/open')
     expect(screen.queryByText('Fullt uppdrag')).not.toBeInTheDocument()
     expect(screen.queryByText('Tidigare upplåst uppdrag')).not.toBeInTheDocument()
-    expect(screen.getByText('2 offertplatser kvar')).toBeInTheDocument()
+    expect(screen.getByText('två offertplatser kvar')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Upplåsta' }))
     expect(screen.getByRole('link', { name: 'Kontakt och offert' })).toHaveAttribute('href', '/dashboard/supplier/uppdrag/closed')
     expect(screen.getByText('Tar inte emot fler offerter')).toBeInTheDocument()

@@ -1,224 +1,250 @@
-import { useEffect, useState, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { ArrowLeft, Loader2, Send } from 'lucide-react'
+import { toast } from 'sonner'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/integrations/supabase/client'
-import { Send, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { timeAgo } from '@/lib/dateUtils'
-
-
-interface Conversation {
-  otherId: string
-  otherName: string
-  projectTitle: string
-  projectId: string
-  lastMessage: string
-  lastAt: string
-  unread: number
-}
+import { numWord } from '@/lib/numberWords'
+import {
+  MAX_MESSAGE_LENGTH, belongsToConversation, conversationKey, loadChatParty, loadConversations, loadThread,
+  markConversationRead, mergeMessages, sendChatMessage, type ChatMessage, type ChatRole, type Conversation,
+} from '@/lib/chat'
 
 const ChatPage = () => {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
+  const role: ChatRole = profile?.role === 'supplier' ? 'supplier' : 'buyer'
   const [searchParams, setSearchParams] = useSearchParams()
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [activeConvo, setActiveConvo] = useState<Conversation | null>(null)
-  const [messages, setMessages] = useState<any[]>([])
+  const [listState, setListState] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [activeKey, setActiveKey] = useState<string | null>(null)
+  const [draftConversation, setDraftConversation] = useState<Conversation | null>(null)
+  const [openError, setOpenError] = useState('')
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [threadState, setThreadState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const [newMsg, setNewMsg] = useState('')
+  const [sending, setSending] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const userId = user?.id
 
+  const activeConvo = useMemo(() => {
+    if (!activeKey) return null
+    return conversations.find(c => conversationKey(c.projectId, c.otherId) === activeKey)
+      || (draftConversation && conversationKey(draftConversation.projectId, draftConversation.otherId) === activeKey ? draftConversation : null)
+  }, [activeKey, conversations, draftConversation])
+
+  const refreshConversations = useCallback(async () => {
+    if (!userId) return
+    try {
+      setConversations(await loadConversations(userId))
+      setListState('ready')
+    } catch {
+      setListState('error')
+    }
+  }, [userId])
+
+  useEffect(() => { void refreshConversations() }, [refreshConversations])
+
+  // Open a conversation from ?project=X&user=Y (offer cards and notices), also
+  // when a notice is clicked while the chat is already open.
+  const paramProject = searchParams.get('project')
+  const paramUser = searchParams.get('user')
   useEffect(() => {
-    if (!user) return
-    const fetchConvos = async () => {
-      const { data: msgs } = await supabase
-        .from('messages')
-        .select('*, sender:profiles!messages_sender_id_fkey(full_name, company_name), project:projects!messages_project_id_fkey(title)')
-        .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-        .order('created_at', { ascending: false })
-
-      const convoMap = new Map<string, Conversation>()
-      ;(msgs || []).forEach((m: any) => {
-        const otherId = m.sender_id === user.id ? m.receiver_id : m.sender_id
-        const key = `${otherId}-${m.project_id}`
-        if (!convoMap.has(key)) {
-          convoMap.set(key, {
-            otherId,
-            otherName: m.sender_id === user.id ? 'Motpart' : (m.sender?.company_name || m.sender?.full_name || 'Okänd'),
-            projectTitle: m.project?.title || '',
-            projectId: m.project_id,
-            lastMessage: m.content,
-            lastAt: m.created_at,
-            unread: m.receiver_id === user.id && !m.is_read ? 1 : 0,
-          })
-        }
-      })
-
-      // Auto-open a conversation from ?project=X&user=Y (used from offer cards).
-      const paramProject = searchParams.get('project')
-      const paramUser = searchParams.get('user')
-      let opened: Conversation | null = null
-      if (paramProject && paramUser && paramUser !== user.id) {
-        const key = `${paramUser}-${paramProject}`
-        let convo = convoMap.get(key) || null
-        if (!convo) {
-          // No messages yet — synthesize an empty convo so the user can start writing.
-          const [projRes, profRes, spRes] = await Promise.all([
-            supabase.from('projects').select('title').eq('id', paramProject).maybeSingle(),
-            supabase.from('profiles').select('full_name, company_name').eq('id', paramUser).maybeSingle(),
-            supabase.from('supplier_profiles').select('contact_name').eq('id', paramUser).maybeSingle(),
-          ])
-          const proj = projRes.data as { title?: string } | null
-          const prof = profRes.data as { full_name?: string; company_name?: string } | null
-          const sp = spRes.data as { contact_name?: string } | null
-          convo = {
-            otherId: paramUser,
-            otherName: prof?.company_name || sp?.contact_name || prof?.full_name || 'Motpart',
-            projectTitle: proj?.title || '',
-            projectId: paramProject,
-            lastMessage: '',
-            lastAt: new Date().toISOString(),
-            unread: 0,
+    if (!userId || !paramProject || !paramUser || listState === 'loading') return
+    let cancelled = false
+    const key = conversationKey(paramProject, paramUser)
+    void (async () => {
+      setOpenError('')
+      if (paramUser !== userId && !conversations.some(c => conversationKey(c.projectId, c.otherId) === key)) {
+        try {
+          const party = await loadChatParty(paramProject, paramUser)
+          if (cancelled) return
+          if (!party) {
+            setOpenError('Du kan bara chatta med beställare och byråer som är kopplade till samma uppdrag.')
+            setSearchParams({}, { replace: true })
+            return
           }
-
-          convoMap.set(key, convo)
+          setDraftConversation({
+            otherId: paramUser, otherName: party.otherName, projectId: paramProject, projectTitle: party.projectTitle,
+            lastMessage: '', lastAt: new Date().toISOString(), lastFromMe: false, unread: 0,
+          })
+        } catch {
+          if (!cancelled) setOpenError('Konversationen kunde inte öppnas. Försök igen.')
+          return
         }
-        opened = convo
       }
-
-      setConversations(Array.from(convoMap.values()))
-      if (opened) {
-        setActiveConvo(opened)
-        // Clean the URL so a reload doesn't keep re-forcing this convo open.
-        setSearchParams({}, { replace: true })
-      }
-    }
-    fetchConvos()
+      if (cancelled) return
+      if (paramUser !== userId) setActiveKey(key)
+      // Clean the URL so a reload does not keep forcing this conversation open.
+      setSearchParams({}, { replace: true })
+    })()
+    return () => { cancelled = true }
+    // Conversations are read for the lookup only; the URL drives this effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [userId, paramProject, paramUser, listState])
 
-
+  // Load the open thread, mark it read and follow new messages in this thread only.
   useEffect(() => {
-    if (!activeConvo || !user) return
-    const fetchMessages = async () => {
-      const { data } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('project_id', activeConvo.projectId)
-        .or(`and(sender_id.eq.${user.id},receiver_id.eq.${activeConvo.otherId}),and(sender_id.eq.${activeConvo.otherId},receiver_id.eq.${user.id})`)
-        .order('created_at', { ascending: true })
-      if (data) setMessages(data)
-      await supabase.from('messages').update({ is_read: true })
-        .eq('receiver_id', user.id)
-        .eq('sender_id', activeConvo.otherId)
-        .eq('project_id', activeConvo.projectId)
-    }
-    fetchMessages()
+    if (!activeConvo || !userId) return
+    let cancelled = false
+    const { projectId, otherId } = activeConvo
+    setThreadState('loading')
+    setMessages([])
+    void (async () => {
+      try {
+        const thread = await loadThread(projectId, userId, otherId)
+        if (cancelled) return
+        setMessages(thread)
+        setThreadState('ready')
+        await markConversationRead(role, userId, projectId, otherId)
+        if (!cancelled) setConversations(prev => prev.map(c => c.projectId === projectId && c.otherId === otherId ? { ...c, unread: 0 } : c))
+      } catch {
+        if (!cancelled) setThreadState('error')
+      }
+    })()
 
     const channel = supabase
-      .channel('chat-' + activeConvo.projectId)
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `project_id=eq.${activeConvo.projectId}` }, (payload) => {
-        setMessages(prev => [...prev, payload.new])
+      .channel(`chat-${projectId}-${otherId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `project_id=eq.${projectId}` }, payload => {
+        const message = payload.new as ChatMessage
+        if (!belongsToConversation(message, userId, otherId, projectId)) return
+        setMessages(prev => mergeMessages(prev, [message]))
+        if (message.receiver_id === userId) void markConversationRead(role, userId, projectId, otherId)
       })
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
-  }, [activeConvo, user])
+    return () => { cancelled = true; supabase.removeChannel(channel) }
+  }, [activeConvo?.projectId, activeConvo?.otherId, userId, role]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   const sendMessage = async () => {
-    if (!newMsg.trim() || !activeConvo || !user) return
-    await supabase.from('messages').insert({
-      project_id: activeConvo.projectId,
-      sender_id: user.id,
-      receiver_id: activeConvo.otherId,
-      content: newMsg.trim(),
-    })
-    setNewMsg('')
+    if (!activeConvo || !userId || sending) return
+    const text = newMsg.trim()
+    if (!text) return
+    setSending(true)
+    try {
+      const saved = await sendChatMessage(activeConvo.projectId, userId, activeConvo.otherId, text)
+      setMessages(prev => mergeMessages(prev, [saved]))
+      setNewMsg('')
+      setDraftConversation(null)
+      void refreshConversations()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Meddelandet kunde inte skickas. Försök igen.')
+    } finally {
+      setSending(false)
+    }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage() }
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void sendMessage() }
   }
+
+  const listed = draftConversation && !conversations.some(c => conversationKey(c.projectId, c.otherId) === conversationKey(draftConversation.projectId, draftConversation.otherId))
+    ? [draftConversation, ...conversations]
+    : conversations
+  const remaining = MAX_MESSAGE_LENGTH - newMsg.length
+  const findProjectsLink = role === 'supplier' ? '/dashboard/supplier/offerter' : '/dashboard/buyer/uppdrag'
 
   return (
-    <>
-      <div className="flex min-h-[28rem] h-[calc(100dvh-12rem)] bg-card rounded-xl border overflow-hidden">
-        {/* Conversation list - hidden on mobile when a convo is active */}
-        <div className={cn(
-          'w-full md:w-80 border-r flex flex-col bg-surface-alt',
-          activeConvo ? 'hidden md:flex' : 'flex'
-        )}>
-          <div className="p-5 border-b font-display font-semibold text-base">Meddelanden</div>
-          <div className="flex-1 overflow-y-auto">
-            {conversations.length === 0 ? (
-              <p className="p-4 text-sm text-muted-foreground text-center">Inga meddelanden ännu</p>
-            ) : conversations.map(c => (
-              <button
-                key={`${c.otherId}-${c.projectId}`}
-                onClick={() => setActiveConvo(c)}
-                className={cn('w-full text-left p-3 border-b hover:bg-muted/50 transition-colors', activeConvo?.otherId === c.otherId && activeConvo?.projectId === c.projectId ? 'bg-primary/5' : '')}
-              >
-                <p className="text-sm font-medium truncate">{c.otherName}</p>
-                <p className="text-xs text-muted-foreground truncate">{c.projectTitle}</p>
-                <p className="text-xs text-muted-foreground truncate mt-0.5">{c.lastMessage}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Chat window - full width on mobile when active */}
-        <div className={cn(
-          'flex-1 flex flex-col',
-          activeConvo ? 'flex' : 'hidden md:flex'
-        )}>
-          {!activeConvo ? (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-              Välj en konversation
+    <div className="flex min-h-[28rem] h-[calc(100dvh-12rem)] bg-card rounded-xl border overflow-hidden">
+      {/* Conversation list - hidden on mobile when a conversation is open */}
+      <div className={cn('w-full md:w-80 border-r flex flex-col bg-surface-alt', activeConvo ? 'hidden md:flex' : 'flex')}>
+        <div className="p-5 border-b font-display font-semibold text-base">Meddelanden</div>
+        <div className="flex-1 overflow-y-auto">
+          {openError && <p role="alert" className="m-3 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{openError}</p>}
+          {listState === 'loading' ? (
+            <p role="status" className="p-4 text-sm text-muted-foreground text-center">Hämtar konversationer…</p>
+          ) : listState === 'error' ? (
+            <div role="alert" className="p-4 text-sm text-center">
+              <p>Konversationerna kunde inte hämtas.</p>
+              <Button variant="outline" size="sm" className="mt-2" onClick={() => { setListState('loading'); void refreshConversations() }}>Försök igen</Button>
             </div>
-          ) : (
-            <>
-              <div className="p-3 border-b flex items-center gap-2">
-                <button aria-label="Tillbaka till konversationer" onClick={() => setActiveConvo(null)} className="md:hidden p-1 rounded-lg hover:bg-muted">
-                  <ArrowLeft className="h-5 w-5" />
-                </button>
-                <div>
-                  <p className="font-semibold text-sm">{activeConvo.otherName}</p>
-                  <p className="text-xs text-muted-foreground">{activeConvo.projectTitle}</p>
+          ) : listed.length === 0 ? (
+            <div className="p-4 text-sm text-muted-foreground text-center">
+              <p>Inga meddelanden ännu.</p>
+              <p className="mt-1">Starta en konversation från {role === 'supplier' ? 'ett upplåst uppdrag eller en offert' : 'en offert på ditt uppdrag'}.</p>
+              <Button asChild variant="outline" size="sm" className="mt-3"><Link to={findProjectsLink}>{role === 'supplier' ? 'Mina offerter' : 'Mina uppdrag'}</Link></Button>
+            </div>
+          ) : listed.map(c => {
+            const key = conversationKey(c.projectId, c.otherId)
+            return (
+              <button
+                key={key}
+                onClick={() => setActiveKey(key)}
+                aria-current={activeKey === key ? 'true' : undefined}
+                className={cn('w-full text-left p-3 border-b hover:bg-muted/50 transition-colors', activeKey === key ? 'bg-primary/5' : '')}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <p className={cn('text-sm truncate', c.unread ? 'font-semibold' : 'font-medium')}>{c.otherName}</p>
+                  {c.unread > 0 && <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">{numWord(c.unread)} {c.unread === 1 ? 'ny' : 'nya'}</span>}
                 </div>
-              </div>
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {messages.map(m => (
-                  <div key={m.id} className={cn('max-w-[70%]', m.sender_id === user?.id ? 'ml-auto' : '')}>
-                    <div className={cn('rounded-2xl px-4 py-2 text-sm', m.sender_id === user?.id ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
-                      {m.content}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">{timeAgo(m.created_at)}</p>
-                  </div>
-                ))}
-                <div ref={bottomRef} />
-              </div>
-              <div className="p-3 border-t flex gap-2">
-                <Input
-                  value={newMsg}
-                  onChange={e => setNewMsg(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  aria-label="Ditt meddelande"
-                  placeholder="Skriv ett meddelande..."
-                  className="rounded-xl"
-                />
-                <Button aria-label="Skicka meddelande" size="icon" onClick={sendMessage} className="bg-primary hover:bg-primary/90 rounded-xl">
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </>
-          )}
+                <p className="text-xs text-muted-foreground truncate">{c.projectTitle}</p>
+                {c.lastMessage && <p className="text-xs text-muted-foreground truncate mt-0.5">{c.lastFromMe ? 'Du: ' : ''}{c.lastMessage}</p>}
+              </button>
+            )
+          })}
         </div>
       </div>
-    </>
+
+      {/* Thread - full width on mobile when open */}
+      <div className={cn('flex-1 flex flex-col min-w-0', activeConvo ? 'flex' : 'hidden md:flex')}>
+        {!activeConvo ? (
+          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">Välj en konversation</div>
+        ) : (
+          <>
+            <div className="p-3 border-b flex items-center gap-2">
+              <button aria-label="Tillbaka till konversationer" onClick={() => setActiveKey(null)} className="md:hidden p-1 rounded-lg hover:bg-muted">
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div className="min-w-0">
+                <p className="font-semibold text-sm truncate">{activeConvo.otherName}</p>
+                <p className="text-xs text-muted-foreground truncate">{activeConvo.projectTitle}</p>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-3" aria-live="polite">
+              {threadState === 'loading' && <p role="status" className="text-sm text-muted-foreground">Hämtar meddelanden…</p>}
+              {threadState === 'error' && <p role="alert" className="text-sm text-destructive">Meddelandena kunde inte hämtas. Ladda om sidan.</p>}
+              {threadState === 'ready' && messages.length === 0 && (
+                <p className="text-sm text-muted-foreground">Inga meddelanden ännu. Skriv det första – {activeConvo.otherName} får en notis.</p>
+              )}
+              {messages.map(m => (
+                <div key={m.id} className={cn('max-w-[80%]', m.sender_id === userId ? 'ml-auto' : '')}>
+                  <div className={cn('rounded-2xl px-4 py-2 text-sm whitespace-pre-wrap break-words', m.sender_id === userId ? 'bg-primary text-primary-foreground' : 'bg-muted')}>
+                    {m.content}
+                  </div>
+                  <p className={cn('text-xs text-muted-foreground mt-1', m.sender_id === userId ? 'text-right' : '')}>{timeAgo(m.created_at)}</p>
+                </div>
+              ))}
+              <div ref={bottomRef} />
+            </div>
+            <div className="p-3 border-t">
+              <div className="flex gap-2 items-end">
+                <Textarea
+                  value={newMsg}
+                  onChange={e => setNewMsg(e.target.value.slice(0, MAX_MESSAGE_LENGTH))}
+                  onKeyDown={handleKeyDown}
+                  aria-label="Ditt meddelande"
+                  placeholder="Skriv ett meddelande… (Skift + Enter för ny rad)"
+                  rows={1}
+                  className="rounded-xl min-h-[44px] max-h-40 resize-none"
+                  disabled={sending}
+                />
+                <Button aria-label="Skicka meddelande" size="icon" onClick={() => void sendMessage()} disabled={sending || !newMsg.trim()} className="bg-primary hover:bg-primary/90 rounded-xl h-11 w-11 shrink-0">
+                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                </Button>
+              </div>
+              {remaining < 500 && <p className="mt-1 text-xs text-muted-foreground" aria-live="polite">{numWord(remaining)} tecken kvar</p>}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   )
 }
 

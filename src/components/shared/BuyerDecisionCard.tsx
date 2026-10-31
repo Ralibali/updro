@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { closeProjectWithoutOffer } from '@/lib/marketplaceActions'
 import { toast } from 'sonner'
+import { numWord } from '@/lib/numberWords'
 
 interface BuyerDecisionCardProps {
   project: any
@@ -30,7 +31,7 @@ const BuyerDecisionCard = ({ project, offers, onScrollToOffers, onProjectClosed 
     setClosing(true)
     try {
       await closeProjectWithoutOffer(project.id)
-      toast.success(reason === 'external' ? 'Uppdraget markerat som avslutat' : 'Uppdraget har avslutats')
+      toast.success(reason === 'external' ? 'Uppdraget är markerat som avslutat. Byråerna har fått besked.' : 'Uppdraget har avslutats. Byråerna har fått besked.')
       onProjectClosed()
     } catch (cause) {
       toast.error((cause as { message?: string })?.message || 'Kunde inte stänga uppdraget. Försök igen.')
@@ -46,7 +47,7 @@ const BuyerDecisionCard = ({ project, offers, onScrollToOffers, onProjectClosed 
         Har du bestämt dig? 🤔
       </h4>
       <p className="text-sm text-muted-foreground mb-4">
-        Du har fått {offers.length} {offers.length === 1 ? 'intresserad byrå' : 'intresserade byråer'}. Meddela byråerna ditt beslut
+        Du har fått {numWord(offers.length)} {offers.length === 1 ? 'intresserad byrå' : 'intresserade byråer'}. Meddela byråerna ditt beslut
         så slipper de vänta i onödan.
       </p>
       <div className="flex flex-col gap-2">
