@@ -11,6 +11,7 @@ import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 import { Mail, Lock, FileText, MessageSquare, ListChecks } from 'lucide-react'
 import { setSEOMeta } from '@/lib/seoHelpers'
+import { postLoginPath } from '@/lib/authRedirect'
 
 const LoginPage = () => {
   const { signIn, profile } = useAuth()
@@ -31,12 +32,15 @@ const LoginPage = () => {
     })
   }, [])
 
+  // Read once: replaceState below drops the query string from the address bar.
+  const [nextPath] = useState(() => searchParams.get('next'))
+
   useEffect(() => {
     if (searchParams.get('confirmed') === 'true') {
       toast.success('E-postadressen är bekräftad. Logga in för att fortsätta.')
-      window.history.replaceState({}, '', '/logga-in')
+      window.history.replaceState({}, '', nextPath ? `/logga-in?next=${encodeURIComponent(nextPath)}` : '/logga-in')
     }
-  }, [searchParams])
+  }, [searchParams, nextPath])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -55,15 +59,8 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
-    if (profile) {
-      if (profile.role === 'admin') navigate('/admin', { replace: true })
-      else if (profile.role === 'supplier')
-        navigate('/dashboard/supplier', { replace: true })
-      else if (profile.role === 'buyer')
-        navigate('/dashboard/buyer', { replace: true })
-      else navigate('/', { replace: true })
-    }
-  }, [profile, navigate])
+    if (profile) navigate(postLoginPath(profile.role, nextPath), { replace: true })
+  }, [profile, navigate, nextPath])
 
   return (
     <div className="updro-content-page min-h-screen flex flex-col">

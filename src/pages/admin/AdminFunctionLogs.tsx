@@ -20,14 +20,15 @@ type LogRow = {
 
 // Scheduled jobs are expected to run on their own; silence means the cron job
 // or its secret is missing, which looks "healthy" if only errors are counted.
+// maxSilenceMinutes is the longest normal gap between two runs, with margin.
 const WATCHED = [
-  { name: 'submit-guest-lead', schedule: null },
-  { name: 'analyze-brief', schedule: null },
-  { name: 'send-guest-offer-emails', schedule: 'frequent' },
-  { name: 'send-notification-emails', schedule: 'frequent' },
-  { name: 'send-supplier-lead-alerts', schedule: 'frequent' },
-  { name: 'offer-reminder-cron', schedule: 'daily' },
-  { name: 'send-followup-reminders', schedule: 'daily' },
+  { name: 'submit-guest-lead', maxSilenceMinutes: null },
+  { name: 'analyze-brief', maxSilenceMinutes: null },
+  { name: 'send-guest-offer-emails', maxSilenceMinutes: 30 },
+  { name: 'send-notification-emails', maxSilenceMinutes: 30 },
+  { name: 'send-supplier-lead-alerts', maxSilenceMinutes: 30 },
+  { name: 'offer-reminder-cron', maxSilenceMinutes: 26 * 60 },
+  { name: 'send-followup-reminders', maxSilenceMinutes: 26 * 60 },
 ] as const
 const WATCHED_NAMES: string[] = WATCHED.map(item => item.name)
 const WINDOWS = [
@@ -45,8 +46,17 @@ const median = (values: number[]) => {
 const percentile = (values: number[], p: number) => {
   if (!values.length) return 0
   const sorted = [...values].sort((a, b) => a - b)
-  const idx = Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length))
-  return sorted[idx]
+  return sorted[Math.min(sorted.length - 1, Math.floor((p / 100) * sorted.length))]
+}
+
+type Summary = {
+  function_name: string
+  total: number
+  errors: number
+  last_run: string | null
+  avg_ms: number
+  median_ms: number
+  p95_ms: number
 }
 
 const statusPill = (row: LogRow) => {
@@ -58,6 +68,7 @@ const statusPill = (row: LogRow) => {
 
 const AdminFunctionLogs = () => {
   const [rows, setRows] = useState<LogRow[]>([])
+  const [serverSummaries, setServerSummaries] = useState<Summary[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [hours, setHours] = useState<number>(24)
   const [selected, setSelected] = useState<string>('all')
@@ -65,14 +76,18 @@ const AdminFunctionLogs = () => {
   const load = useCallback(async () => {
     setLoading(true)
     const since = new Date(Date.now() - hours * 3600 * 1000).toISOString()
-    const { data, error } = await (supabase as any)
-      .from('edge_function_logs')
-      .select('*')
-      .in('function_name', WATCHED_NAMES)
-      .gte('created_at', since)
-      .order('created_at', { ascending: false })
-      .limit(500)
+    const [{ data, error }, summary] = await Promise.all([
+      (supabase as any)
+        .from('edge_function_logs')
+        .select('*')
+        .in('function_name', WATCHED_NAMES)
+        .gte('created_at', since)
+        .order('created_at', { ascending: false })
+        .limit(500),
+      supabase.rpc('admin_edge_function_summary', { p_since: since, p_names: WATCHED_NAMES }),
+    ])
     setLoading(false)
+    setServerSummaries(summary.error || !Array.isArray(summary.data) ? null : summary.data as Summary[])
     if (error) { console.error(error); return }
     setRows((data as LogRow[]) || [])
   }, [hours])
@@ -80,23 +95,28 @@ const AdminFunctionLogs = () => {
   useEffect(() => { load() }, [load])
 
 
-  const summaries = useMemo(() => WATCHED.map(({ name, schedule }) => {
+  // Counts come from the server so busy jobs cannot push quiet ones out of the
+  // 500-row list below. Before the summary function is deployed, fall back to
+  // the visible rows.
+  const summaries = useMemo(() => WATCHED.map(({ name, maxSilenceMinutes }) => {
+    const server = serverSummaries?.find(item => item.function_name === name)
     const list = rows.filter(row => row.function_name === name)
-    const durations = list.map(row => row.duration_ms)
-    const errors = list.filter(row => !row.ok).length
-    const silent = list.length === 0 && (schedule === 'frequent' || (schedule === 'daily' && hours >= 24))
+    const total = server?.total ?? list.length
+    const errors = server?.errors ?? list.filter(row => !row.ok).length
+    const lastRun = server ? server.last_run : list[0]?.created_at || null
+    const silent = maxSilenceMinutes !== null
+      && (!lastRun || Date.now() - Date.parse(lastRun) > maxSilenceMinutes * 60 * 1000)
     return {
       name,
       silent,
-      lastRun: list[0]?.created_at || null,
-      total: list.length,
+      lastRun,
+      total,
       errors,
-      errorRate: list.length ? (errors / list.length) * 100 : 0,
-      avg: durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0,
-      median: median(durations),
-      p95: percentile(durations, 95),
+      errorRate: total ? (errors / total) * 100 : 0,
+      median: server?.median_ms ?? median(list.map(row => row.duration_ms)),
+      p95: server?.p95_ms ?? percentile(list.map(row => row.duration_ms), 95),
     }
-  }), [rows, hours])
+  }), [rows, serverSummaries])
 
   const filtered = selected === 'all' ? rows : rows.filter(row => row.function_name === selected)
 
@@ -138,7 +158,7 @@ const AdminFunctionLogs = () => {
                   <div><p className="text-xs text-muted-foreground">Median</p><p className="font-semibold text-lg">{summary.median} ms</p></div>
                   <div><p className="text-xs text-muted-foreground">p95</p><p className="font-semibold text-lg">{summary.p95} ms</p></div>
                 </div>
-                <p className="mt-3 text-xs text-muted-foreground">{summary.lastRun ? `Senaste körning ${timeAgo(summary.lastRun)}` : summary.silent ? 'Inga körningar i perioden – kontrollera schemalagt jobb och hemlighet.' : 'Inga anrop i perioden.'}</p>
+                <p className="mt-3 text-xs text-muted-foreground">{summary.silent ? `${summary.lastRun ? `Senaste körning ${timeAgo(summary.lastRun)}` : 'Har aldrig körts'} – kontrollera schemalagt jobb och hemlighet.` : summary.lastRun ? `Senaste körning ${timeAgo(summary.lastRun)}` : 'Inga anrop i perioden.'}</p>
               </button>
             )
           })}

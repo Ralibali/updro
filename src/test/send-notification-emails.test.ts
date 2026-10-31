@@ -114,6 +114,12 @@ it('sends one digest per person and skips chat notices already read in the app',
   expect(body.subject).toBe('Du har två nya händelser på Updro')
   expect(body.text).toContain('https://updro.se/dashboard/buyer/uppdrag/p1')
 
+  // Rows stuck in 'sending' after their last attempt are failed, not retried forever.
+  const recovery = calls.filter(call => call.table === 'notification_email_queue' && call.op === 'update'
+    && (call.payload as { status: string }).status === 'failed')
+  expect(recovery).toHaveLength(1)
+  expect(recovery[0].filters).toContainEqual(['gte', 'attempts', 5])
+
   const updates = statusUpdates(calls)
   expect(updates).toContainEqual({ status: 'skipped', error: 'read_in_app', ids: ['q3'] })
   expect(updates).toContainEqual(expect.objectContaining({ status: 'sent', ids: ['q1', 'q2'] }))

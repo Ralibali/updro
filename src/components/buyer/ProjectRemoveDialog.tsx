@@ -1,34 +1,32 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { supabase } from '@/integrations/supabase/client'
 import { closeProjectWithoutOffer } from '@/lib/marketplaceActions'
+import { removeMode, type OfferState, type RemovableProject, type RemoveMode } from '@/lib/projectRemoval'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
-type RemovableProject = { id: string; title: string; status: string | null }
-type Mode = 'delete' | 'close' | 'kept'
-
 interface ProjectRemoveDialogProps {
   project: RemovableProject | null
-  /** True when the buyer can already see offers; the database also refuses deletes after an agency unlock. */
-  hasOffers: boolean
+  offers: OfferState
   onOpenChange: (open: boolean) => void
   onDeleted: (projectId: string) => void
   onClosed: (projectId: string) => void
 }
 
-const initialMode = (project: RemovableProject | null, hasOffers: boolean): Mode =>
-  !hasOffers ? 'delete' : project?.status === 'active' ? 'close' : 'kept'
-
 /**
  * Agencies may have paid to unlock a project or answered it. Such a project is
  * closed instead of deleted, so the agencies get word and keep their history.
  */
-const ProjectRemoveDialog = ({ project, hasOffers, onOpenChange, onDeleted, onClosed }: ProjectRemoveDialogProps) => {
-  const [mode, setMode] = useState<Mode>(() => initialMode(project, hasOffers))
+const ProjectRemoveDialog = ({ project, offers, onOpenChange, onDeleted, onClosed }: ProjectRemoveDialogProps) => {
+  const [mode, setMode] = useState<RemoveMode>(() => removeMode(project, offers))
   const [busy, setBusy] = useState(false)
+  const { total, pending, accepted } = offers
 
-  useEffect(() => { if (project) setMode(initialMode(project, hasOffers)) }, [project, hasOffers])
+  useEffect(() => {
+    if (project) setMode(removeMode(project, { total, pending, accepted }))
+  }, [project, total, pending, accepted])
 
   const remove = async () => {
     if (!project) return
@@ -54,7 +52,7 @@ const ProjectRemoveDialog = ({ project, hasOffers, onOpenChange, onDeleted, onCl
     setBusy(true)
     try {
       await closeProjectWithoutOffer(project.id)
-      toast.success('Uppdraget är stängt och byråerna har fått besked.')
+      toast.success('Uppdraget är avslutat och byråerna har fått besked.')
       onClosed(project.id)
       onOpenChange(false)
     } catch (cause) {
@@ -64,17 +62,25 @@ const ProjectRemoveDialog = ({ project, hasOffers, onOpenChange, onDeleted, onCl
     }
   }
 
+  const title = mode === 'delete' ? 'Ta bort uppdrag?'
+    : mode === 'close' ? (project?.status === 'active' ? 'Stäng uppdraget i stället?' : 'Avsluta utan att välja?')
+      : 'Uppdraget sparas'
+
   return (
     <Dialog open={!!project} onOpenChange={open => { if (!busy) onOpenChange(open) }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{mode === 'delete' ? 'Ta bort uppdrag?' : mode === 'close' ? 'Stäng uppdraget i stället?' : 'Uppdraget sparas'}</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             {mode === 'delete'
               ? <>Vill du verkligen ta bort "{project?.title}"? Detta kan inte ångras.</>
               : mode === 'close'
-                ? <>Byråer har redan låst upp eller svarat på "{project?.title}", så det kan inte raderas. Om du stänger uppdraget tar det inte emot fler offerter och byråerna får besked direkt.</>
-                : <>Byråer har redan låst upp eller svarat på "{project?.title}". Uppdraget är stängt och sparas så att både du och byråerna har kvar historiken.</>}
+                ? project?.status === 'active'
+                  ? <>Byråer har redan låst upp eller svarat på "{project?.title}", så det kan inte raderas. Om du stänger uppdraget tar det inte emot fler offerter och byråerna får besked direkt.</>
+                  : <>Uppdraget kan inte raderas eftersom byråer har svarat. Du kan avsluta det utan att välja någon offert – byråerna får besked direkt och slipper vänta.</>
+                : mode === 'open'
+                  ? <>Byråer har redan svarat på "{project?.title}", så det kan inte raderas. Öppna uppdraget för att välja en offert eller avsluta utan att välja.</>
+                  : <>Byråer har redan låst upp eller svarat på "{project?.title}". Uppdraget är stängt och sparas så att både du och byråerna har kvar historiken.</>}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-wrap gap-3 mt-4">
@@ -83,7 +89,10 @@ const ProjectRemoveDialog = ({ project, hasOffers, onOpenChange, onDeleted, onCl
             <Button variant="destructive" onClick={remove} disabled={busy}>{busy ? 'Tar bort…' : 'Ta bort'}</Button>
           )}
           {mode === 'close' && (
-            <Button onClick={close} disabled={busy}>{busy ? 'Stänger…' : 'Stäng uppdraget'}</Button>
+            <Button onClick={close} disabled={busy}>{busy ? 'Stänger…' : project?.status === 'active' ? 'Stäng uppdraget' : 'Avsluta utan att välja'}</Button>
+          )}
+          {mode === 'open' && project && (
+            <Button asChild><Link to={`/dashboard/buyer/uppdrag/${project.id}`} onClick={() => onOpenChange(false)}>Öppna uppdraget</Link></Button>
           )}
         </div>
       </DialogContent>

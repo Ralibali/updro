@@ -78,7 +78,7 @@ const MatchedProjectsPage = () => {
   return <div className="max-w-4xl space-y-5">
     <header className="flex flex-wrap items-start justify-between gap-3">
       <div><h1 className="font-display text-2xl font-bold">Hitta uppdrag</h1><p className="mt-2 text-sm text-muted-foreground">Läs brief och budget gratis. Lås upp kontakten när uppdraget passar er.</p></div>
-      <Link to="/dashboard/supplier/fakturering" className="rounded-full border bg-card px-3 py-1.5 text-sm hover:border-primary/50">{hasActiveSubscription ? 'Upplåsning ingår i månadskortet' : trialExpired ? 'Se betalplan' : (supplierProfile?.lead_credits || 0) + ' upplåsningskrediter'}</Link>
+      <Link to="/dashboard/supplier/fakturering" className="rounded-full border bg-card px-3 py-1.5 text-sm hover:border-primary/50">{hasActiveSubscription ? 'Upplåsning ingår i månadskortet' : trialExpired ? 'Se betalplan' : numWord(supplierProfile?.lead_credits || 0) + ' upplåsningskrediter'}</Link>
     </header>
     <TrialBanner />
     <div className="flex flex-wrap gap-2" role="group" aria-label="Vilka uppdrag vill du se?">
@@ -90,7 +90,7 @@ const MatchedProjectsPage = () => {
       <div><Label htmlFor="project-sort">Sortera</Label><Select value={sort} onValueChange={setSort}><SelectTrigger id="project-sort" className="mt-1"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="newest">Senaste först</SelectItem><SelectItem value="match">Bäst matchning</SelectItem></SelectContent></Select></div>
     </div>
     {loading ? <p role="status" className="rounded-xl border p-8 text-sm text-muted-foreground">Hämtar uppdrag…</p> : error ? <div role="alert" className="rounded-xl border p-6"><p>Uppdragen kunde inte hämtas.</p><Button variant="outline" onClick={() => setReload(n => n + 1)} className="mt-3">Försök igen</Button></div> : <>
-      <p className="text-sm text-muted-foreground" role="status">{numWord(visible.length)} uppdrag visas · Högst tre byråer per uppdrag. En upplåsning reserverar en plats i sju dagar.</p>
+      <p className="text-sm text-muted-foreground" role="status">{numWord(visible.length)} uppdrag visas · Högst tre byråer per uppdrag. En upplåsning reserverar en plats i {hasActiveSubscription ? 'tre dagar' : 'sju dagar'}.</p>
       {visible.length === 0 ? <div className="rounded-xl border bg-card p-6">
         <h2 className="font-display text-lg font-semibold">{view === 'unlocked' ? 'Inga upplåsta uppdrag i urvalet' : view === 'matched' && !categorySet.size ? 'Välj vad byrån arbetar med' : 'Inga uppdrag i urvalet just nu'}</h2>
         <p className="mt-2 text-sm text-muted-foreground">{view === 'matched' && !categorySet.size ? 'Lägg till kategorier i byråprofilen för att få ett relevant urval.' : 'Prova en annan kategori eller se alla tillgängliga uppdrag.'}</p>

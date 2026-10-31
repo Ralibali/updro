@@ -8,10 +8,10 @@ Sveriges marknadsplats för digitala uppdrag. Beställaren beskriver sitt projek
 
 1. Beställaren beskriver sitt uppdrag utan att behöva skapa konto.
 2. Uppdraget sparas som väntande och granskas innan det öppnas för byråer.
-3. Relevanta byråer kan låsa upp kontaktuppgifterna och lämna offert. En upplåsning reserverar en av högst tre offertplatser i sju dagar, så en betalande byrå alltid hinner svara.
+3. Relevanta byråer kan låsa upp kontaktuppgifterna och lämna offert. En upplåsning reserverar en av högst tre offertplatser – sju dagar när en kredit dras, tre dagar med månadskort – så en betalande byrå alltid hinner svara. Byrån varnas 48 timmar innan reservationen går ut.
 4. Högst tre byråer får lämna offert på samma uppdrag.
 5. Gäster får e-post när en offert kommer och kan skapa konto med samma verifierade e-postadress för att följa processen.
-6. Inloggade beställare och byråer får notis och e-post om nya offerter, beslut, avtal, påminnelser och chattmeddelanden. Chatten är öppen mellan beställaren och byråer som låst upp eller svarat på uppdraget.
+6. Inloggade beställare och byråer får notis och e-post om nya offerter, beslut, avtal, påminnelser, omdömen och chattmeddelanden. Chatten är öppen mellan beställaren och byråer som svarat på uppdraget; en byrå som bara låst upp kan skriva först.
 7. Ett uppdrag som byråer redan låst upp eller svarat på kan inte raderas av beställaren – det stängs i stället och byråerna får besked.
 
 ## Affärsmodell
@@ -142,7 +142,7 @@ Kör `supabase/operations/offer-notification-runtime.sql` en gång efter deploym
 |---|---|
 | `send-notification-emails` | varannan minut |
 | `send-guest-offer-emails` | varannan minut |
-| `offer-reminder-cron` | dagligen |
+| `offer-reminder-cron` | dagligen (påminnelser till beställare och varningar om platser som går ut) |
 | `send-followup-reminders` | dagligen |
 
 `send-supplier-lead-alerts` schemaläggs av `supabase/operations/notification-runtime.sql` (var femte minut). Alla jobb skickar Vault-hemligheten `lead_alert_cron_secret`, som ska ha samma värde som Edge-hemligheten `LEAD_ALERT_CRON_SECRET`. Under **Admin → Edge-funktioner** syns senaste körning per jobb; "Ingen körning" betyder att jobbet eller hemligheten saknas.

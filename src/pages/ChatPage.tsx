@@ -87,10 +87,20 @@ const ChatPage = () => {
   }, [userId, paramProject, paramUser, listState])
 
   // Load the open thread, mark it read and follow new messages in this thread only.
+  // Messages count as read only while the page is visible, so a thread left
+  // open in a background tab still triggers the e-mail.
   useEffect(() => {
     if (!activeConvo || !userId) return
     let cancelled = false
+    let unseen = false
     const { projectId, otherId } = activeConvo
+    const isVisible = () => typeof document === 'undefined' || document.visibilityState !== 'hidden'
+    const markRead = async () => {
+      if (!isVisible()) { unseen = true; return }
+      unseen = false
+      await markConversationRead(role, userId, projectId, otherId)
+      if (!cancelled) setConversations(prev => prev.map(c => c.projectId === projectId && c.otherId === otherId ? { ...c, unread: 0 } : c))
+    }
     setThreadState('loading')
     setMessages([])
     void (async () => {
@@ -99,12 +109,14 @@ const ChatPage = () => {
         if (cancelled) return
         setMessages(thread)
         setThreadState('ready')
-        await markConversationRead(role, userId, projectId, otherId)
-        if (!cancelled) setConversations(prev => prev.map(c => c.projectId === projectId && c.otherId === otherId ? { ...c, unread: 0 } : c))
+        await markRead()
       } catch {
         if (!cancelled) setThreadState('error')
       }
     })()
+
+    const onVisibility = () => { if (unseen && isVisible()) void markRead() }
+    document.addEventListener('visibilitychange', onVisibility)
 
     const channel = supabase
       .channel(`chat-${projectId}-${otherId}`)
@@ -112,11 +124,15 @@ const ChatPage = () => {
         const message = payload.new as ChatMessage
         if (!belongsToConversation(message, userId, otherId, projectId)) return
         setMessages(prev => mergeMessages(prev, [message]))
-        if (message.receiver_id === userId) void markConversationRead(role, userId, projectId, otherId)
+        if (message.receiver_id === userId) void markRead()
       })
       .subscribe()
 
-    return () => { cancelled = true; supabase.removeChannel(channel) }
+    return () => {
+      cancelled = true
+      document.removeEventListener('visibilitychange', onVisibility)
+      supabase.removeChannel(channel)
+    }
   }, [activeConvo?.projectId, activeConvo?.otherId, userId, role]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

@@ -103,11 +103,15 @@ Deno.serve(async request => {
   }
 
   const now = new Date().toISOString()
-  // Rows left in 'sending' by a run that crashed go back to the queue.
+  // Rows left in 'sending' by a run that crashed go back to the queue, unless
+  // they already used their last attempt.
+  const staleBefore = new Date(Date.now() - STALE_SENDING_MS).toISOString()
+  await admin.from('notification_email_queue')
+    .update({ status: 'failed', updated_at: now, last_error: 'stopped_while_sending' })
+    .eq('status', 'sending').lt('updated_at', staleBefore).gte('attempts', MAX_ATTEMPTS)
   await admin.from('notification_email_queue')
     .update({ status: 'pending', updated_at: now })
-    .eq('status', 'sending')
-    .lt('updated_at', new Date(Date.now() - STALE_SENDING_MS).toISOString())
+    .eq('status', 'sending').lt('updated_at', staleBefore)
 
   const { data: due, error } = await admin.from('notification_email_queue')
     .select('id, notification_id, user_id, type, attempts')

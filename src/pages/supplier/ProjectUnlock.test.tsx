@@ -99,7 +99,7 @@ describe('supplier offer flow', () => {
       return chain
     })
     renderPage()
-    expect(await screen.findByText(/Er offertplats är reserverad till och med 7 november/)).toBeInTheDocument()
+    expect(await screen.findByText(/Er offertplats är reserverad till 7 november kl. 13:00/)).toBeInTheDocument()
     expect(screen.getByLabelText('Offert-titel *')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Ställ en fråga till beställaren' })).toHaveAttribute('href', '/dashboard/supplier/chatt?project=project&user=buyer')
   })

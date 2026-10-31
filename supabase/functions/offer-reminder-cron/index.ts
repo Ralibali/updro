@@ -1,12 +1,14 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.99.0";
 import { hasCronSecret } from "../_shared/auth.ts";
-import { swedishCount } from "../_shared/notification-email.ts";
 
 /**
- * offer-reminder-cron – påminner inloggade beställare om offerter som väntat
- * i minst fem dagar. Gäller även uppdrag som stängts för att alla platser
- * fyllts, eftersom det är där beslutet återstår. Notisen mejlas också via
- * send-notification-emails.
+ * offer-reminder-cron – daglig körning av två notiser som skapas i databasen:
+ *   - send_offer_decision_reminders: påminner inloggade beställare om offerter
+ *     som väntat minst fem dagar, högst var tredje dag och högst tre gånger per
+ *     uppdrag. Gäller även uppdrag som stängts för att alla platser fyllts.
+ *   - notify_expiring_offer_slots: varnar byråer 48 timmar innan deras
+ *     reserverade offertplats går ut.
+ * Notiserna mejlas via send-notification-emails.
  *
  * Anropas av cron en gång per dygn med x-cron-secret (CRON_SECRET eller
  * LEAD_ALERT_CRON_SECRET).
@@ -18,7 +20,6 @@ const corsHeaders = {
 };
 
 const FUNCTION_NAME = "offer-reminder-cron";
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), {
   status,
@@ -51,67 +52,22 @@ Deno.serve(async req => {
   };
 
   try {
-    const fiveDaysAgo = new Date(Date.now() - 5 * DAY_MS).toISOString();
-    const threeDaysAgo = new Date(Date.now() - 3 * DAY_MS).toISOString();
-
-    // Guest buyers are mailed by send-guest-offer-emails. This job covers
-    // registered buyers, also when every slot is filled and the project closed.
-    const { data: projects, error: projectError } = await supabase
-      .from("projects")
-      .select("id, title, buyer_id")
-      .in("status", ["active", "closed"])
-      .not("buyer_id", "is", null)
-      .gt("offer_count", 0)
-      .lt("created_at", fiveDaysAgo)
-      .limit(500);
-    if (projectError) throw projectError;
-
-    let notificationsSent = 0;
-    let skipped = 0;
-
-    for (const project of projects || []) {
-      const { data: offers, error: offerError } = await supabase
-        .from("offers")
-        .select("id, status, created_at")
-        .eq("project_id", project.id);
-      if (offerError) throw offerError;
-
-      const pending = (offers || []).filter(offer => offer.status === "pending");
-      const decided = (offers || []).some(offer => offer.status === "accepted");
-      const oldestPending = pending.reduce<number>((oldest, offer) => Math.min(oldest, Date.parse(offer.created_at)), Infinity);
-      if (decided || !pending.length || oldestPending > Date.now() - 5 * DAY_MS) {
-        skipped++;
-        continue;
-      }
-
-      const link = `/dashboard/buyer/uppdrag/${project.id}`;
-      const { data: recent, error: lookupError } = await supabase
-        .from("notifications")
-        .select("id")
-        .eq("user_id", project.buyer_id)
-        .eq("type", "offer_reminder")
-        .eq("link", link)
-        .gte("created_at", threeDaysAgo)
-        .limit(1);
-      if (lookupError) throw lookupError;
-      if (recent?.length) {
-        skipped++;
-        continue;
-      }
-
-      const agencies = pending.length === 1 ? "en byrå väntar" : `${swedishCount(pending.length)} byråer väntar`;
-      const { error: insertError } = await supabase.from("notifications").insert({
-        user_id: project.buyer_id,
-        type: "offer_reminder",
-        title: "Dina offerter väntar på svar",
-        message: `På "${project.title}" ${agencies} på ditt besked. Välj en offert eller avböj, så vet byråerna var de står.`,
-        link,
-      });
-      if (insertError) throw insertError;
-      notificationsSent++;
+    // Each job runs on its own, so a failure in one does not stop the other.
+    const [reminders, warnings] = await Promise.all([
+      supabase.rpc("send_offer_decision_reminders"),
+      supabase.rpc("notify_expiring_offer_slots"),
+    ]);
+    const meta = {
+      buyerReminders: typeof reminders.data === "number" ? reminders.data : null,
+      slotWarnings: typeof warnings.data === "number" ? warnings.data : null,
+    };
+    const errors = [reminders.error && `reminders: ${reminders.error.message}`, warnings.error && `slots: ${warnings.error.message}`]
+      .filter(Boolean).join("; ");
+    if (errors) {
+      console.error("offer-reminder-cron failed", errors);
+      await log(500, meta, errors.slice(0, 400));
+      return json({ error: "Reminder job failed", ...meta }, 500);
     }
-
-    const meta = { notificationsSent, skipped, checked: projects?.length || 0 };
     await log(200, meta);
     return json({ success: true, ...meta });
   } catch (error) {

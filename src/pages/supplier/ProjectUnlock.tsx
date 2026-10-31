@@ -335,7 +335,9 @@ const ProjectUnlock = () => {
   // for seven days; after that it can still answer while a slot is free.
   const isClosed = !acceptsOffers || (isUnlocked ? Boolean(slots && !reservedUntil && freeSlots <= 0) : freeSlots <= 0)
   const slotsFull = acceptsOffers && !isUnlocked && freeSlots <= 0
-  const formatDay = (date: Date) => date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long' })
+  // Swedish time, since a hold ends at the exact minute it started.
+  const formatDeadline = (date: Date) => `${date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', timeZone: 'Europe/Stockholm' })} kl. ${date.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Stockholm' })}`
+  const holdLength = hasActiveSubscription ? 'tre dagar' : 'sju dagar'
 
   return (
     <div className="max-w-3xl">
@@ -388,7 +390,7 @@ const ProjectUnlock = () => {
             {!existingOffer && reservedUntil && (
               <p className="mt-4 flex items-start gap-2 rounded-lg bg-primary/5 p-3 text-sm">
                 <CalendarClock className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                <span>Er offertplats är reserverad till och med {formatDay(reservedUntil)}. Skicka offerten innan dess, annars kan platsen gå till en annan byrå.</span>
+                <span>Er offertplats är reserverad till {formatDeadline(reservedUntil)}. Skicka offerten innan dess, annars kan platsen gå till en annan byrå.</span>
               </p>
             )}
             {!existingOffer && !reservedUntil && slots && !isClosed && (
@@ -471,7 +473,7 @@ const ProjectUnlock = () => {
           <Lock className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
           <h2 className="font-display text-lg font-semibold mb-2">Lås upp kontaktuppgifter</h2>
           <p className="text-sm text-muted-foreground mb-4">Se beställarens kontaktuppgifter och skicka offert.</p>
-          {isClosed ? <div className="space-y-3"><p className="text-sm">{slotsFull ? 'Alla offertplatser är reserverade av andra byråer just nu. En plats frigörs om en byrå inte svarar inom sju dagar.' : 'Uppdraget tar inte emot fler offerter.'} Du behöver inte använda någon kredit här.</p><Button asChild variant="outline"><Link to="/dashboard/supplier/uppdrag">Hitta ett annat uppdrag</Link></Button></div> : canUnlock ? (
+          {isClosed ? <div className="space-y-3"><p className="text-sm">{slotsFull ? 'Alla offertplatser är reserverade av andra byråer just nu. En plats frigörs om en byrå inte svarar i tid.' : 'Uppdraget tar inte emot fler offerter.'} Du behöver inte använda någon kredit här.</p><Button asChild variant="outline"><Link to="/dashboard/supplier/uppdrag">Hitta ett annat uppdrag</Link></Button></div> : canUnlock ? (
             <Button onClick={() => {
               setConfirmOpen(true)
               trackLeadUnlockStarted({
@@ -506,7 +508,7 @@ const ProjectUnlock = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Lås upp kontaktuppgifter?</DialogTitle>
-            <DialogDescription>{hasActiveSubscription ? 'Ditt månadskort täcker upplåsningen av' : 'Använd en lead-kredit för'} ”{project.title}”. Du har {hasActiveSubscription ? 'obegränsad tillgång' : `${numWord(creditsLeft)} krediter kvar`}. Upplåsningen reserverar en av {numWord(maxOffers)} offertplatser åt er i sju dagar, så lås bara upp uppdrag ni tänker svara på.</DialogDescription>
+            <DialogDescription>{hasActiveSubscription ? 'Ditt månadskort täcker upplåsningen av' : 'Använd en lead-kredit för'} ”{project.title}”. Du har {hasActiveSubscription ? 'obegränsad tillgång' : `${numWord(creditsLeft)} krediter kvar`}. Upplåsningen reserverar en av {numWord(maxOffers)} offertplatser åt er i {holdLength}, så lås bara upp uppdrag ni tänker svara på.</DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 mt-4"><Button variant="outline" onClick={() => setConfirmOpen(false)}>Avbryt</Button><Button onClick={handleUnlock} disabled={unlocking}>{unlocking && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}Bekräfta</Button></div>
         </DialogContent>

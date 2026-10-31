@@ -72,7 +72,8 @@ export type SlotSummary = {
 }
 
 /**
- * Offer slots per project: an unlock reserves a slot for seven days. Returns
+ * Offer slots per project: an unlock reserves a slot for seven days when a
+ * credit was used, three days on the monthly plan. Returns
  * null when the summary is unavailable (for example before the migration is
  * deployed) so callers can fall back to offer counts.
  */

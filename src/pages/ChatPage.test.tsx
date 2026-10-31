@@ -54,6 +54,18 @@ describe('chat', () => {
     expect(screen.getByLabelText('Ditt meddelande')).toHaveValue('')
   })
 
+  it('waits until the page is visible before marking messages read', async () => {
+    const visibility = vi.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden')
+    renderAt()
+    fireEvent.click(await screen.findByText('Acme Webb'))
+    expect(await screen.findByText('Har ni en deadline?')).toBeInTheDocument()
+    expect(mocks.markRead).not.toHaveBeenCalled()
+    visibility.mockReturnValue('visible')
+    document.dispatchEvent(new Event('visibilitychange'))
+    await waitFor(() => expect(mocks.markRead).toHaveBeenCalledWith('buyer', 'buyer', 'p1', 'agency-a'))
+    visibility.mockRestore()
+  })
+
   it('keeps the text and explains when a message cannot be sent', async () => {
     mocks.send.mockRejectedValue(new Error('Meddelandet kunde inte skickas. Försök igen.'))
     renderAt()

@@ -34,6 +34,7 @@ const REQUIRED_RPCS = [
   'get_project_slot_summary',
   'get_my_conversations',
   'get_chat_party',
+  'admin_edge_function_summary',
 ]
 
 let source

@@ -328,7 +328,11 @@ const ProjectDetail = () => {
       {/* Delete, or close when agencies are already involved */}
       <ProjectRemoveDialog
         project={showDeleteConfirm && project ? project : null}
-        hasOffers={offers.length > 0}
+        offers={{
+          total: offers.length,
+          pending: offers.filter(offer => offer.status === 'pending').length,
+          accepted: offers.some(offer => offer.status === 'accepted'),
+        }}
         onOpenChange={setShowDeleteConfirm}
         onDeleted={() => navigate('/dashboard/buyer/uppdrag')}
         onClosed={handleProjectClosed}

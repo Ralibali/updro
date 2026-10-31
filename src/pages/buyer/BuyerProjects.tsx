@@ -73,7 +73,7 @@ const BuyerProjects = () => {
       {/* Delete, or close when agencies are already involved */}
       <ProjectRemoveDialog
         project={deleteTarget}
-        hasOffers={(deleteTarget?.offer_count || 0) > 0}
+        offers={{ total: deleteTarget?.offer_count || 0, pending: null, accepted: null }}
         onOpenChange={open => { if (!open) setDeleteTarget(null) }}
         onDeleted={id => setProjects(prev => prev.filter(p => p.id !== id))}
         onClosed={id => setProjects(prev => prev.map(p => p.id === id ? { ...p, status: 'closed' } : p))}

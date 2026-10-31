@@ -2006,6 +2006,7 @@ export type Database = {
       unlocked_leads: {
         Row: {
           created_at: string | null
+          hold_until: string
           credit_charged: boolean
           id: string
           project_id: string
@@ -2014,6 +2015,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          hold_until?: string
           credit_charged?: boolean
           id?: string
           project_id: string
@@ -2022,6 +2024,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          hold_until?: string
           credit_charged?: boolean
           id?: string
           project_id?: string
@@ -2231,6 +2234,18 @@ export type Database = {
       }
     }
     Functions: {
+      admin_edge_function_summary: {
+        Args: { p_names: string[]; p_since: string }
+        Returns: {
+          avg_ms: number
+          errors: number
+          function_name: string
+          last_run: string
+          median_ms: number
+          p95_ms: number
+          total: number
+        }[]
+      }
       agency_portal_payload: {
         Args: { p_id: string; p_owner: boolean }
         Returns: Json
