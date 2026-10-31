@@ -8,9 +8,10 @@
 --    scoped RPCs instead of opening the profiles table.
 -- 3. A buyer cannot silently delete a project that agencies have paid to
 --    unlock or answered; closing it notifies them instead.
--- 4. Offer, decision, agreement, reminder and chat notifications are queued for
---    e-mail (send-notification-emails). Only types listed in
---    enqueue_notification_email() are e-mailed.
+-- 4. Offer, decision, agreement, reminder, review and chat notifications are
+--    queued for e-mail (send-notification-emails). Only types listed in
+--    enqueue_notification_email() are e-mailed. Agencies are notified of
+--    genuine reviews by a trigger (buyers may not insert notifications).
 -- 5. Removes the June draft debit trigger: replaying the migration folder in
 --    order would otherwise charge two credits per unlock.
 --
@@ -447,7 +448,7 @@ CREATE OR REPLACE FUNCTION public.enqueue_notification_email()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 BEGIN
   IF NEW.type IN ('new_offer', 'offer_accepted', 'offer_declined', 'project_closed',
-    'agreement_update', 'new_message', 'offer_reminder') THEN
+    'agreement_update', 'new_message', 'offer_reminder', 'new_review') THEN
     BEGIN
       INSERT INTO public.notification_email_queue(notification_id, user_id, type, send_after)
       VALUES (NEW.id, NEW.user_id, NEW.type,
@@ -470,11 +471,44 @@ ALTER TABLE public.guest_offer_email_queue DROP CONSTRAINT IF EXISTS guest_offer
 ALTER TABLE public.guest_offer_email_queue ADD CONSTRAINT guest_offer_email_queue_status_check
   CHECK (status IN ('pending', 'sending', 'sent', 'failed', 'skipped'));
 
+-- 5. Reviews reach the agency ---------------------------------------------------
+-- Buyers may not insert notifications, so the notice ReviewCard tried to create
+-- never arrived. Only a review by the project's buyer of the accepted offer
+-- counts, the same rule get_public_agencies() uses for public ratings, so a
+-- review on someone else's project cannot be used to spam an agency.
+CREATE OR REPLACE FUNCTION public.notify_supplier_on_review()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+DECLARE v_title text;
+BEGIN
+  BEGIN
+    SELECT p.title INTO v_title
+    FROM public.projects p
+    JOIN public.offers o ON o.project_id = p.id
+    WHERE p.id = NEW.project_id AND p.buyer_id = NEW.buyer_id
+      AND o.supplier_id = NEW.supplier_id AND o.status = 'accepted';
+    IF FOUND THEN
+      INSERT INTO public.notifications(user_id, type, title, message, link)
+      VALUES (NEW.supplier_id, 'new_review', 'Nytt omdöme mottaget',
+        'Beställaren har gett er betyget ' || (ARRAY['ett', 'två', 'tre', 'fyra', 'fem'])[NEW.rating]
+          || ' av fem för "' || coalesce(v_title, 'uppdraget') || '".',
+        '/dashboard/supplier/profil');
+    END IF;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'notify_supplier_on_review(%) failed: %', NEW.id, SQLERRM;
+  END;
+  RETURN NEW;
+END; $$;
+
+DROP TRIGGER IF EXISTS trg_notify_supplier_on_review ON public.reviews;
+CREATE TRIGGER trg_notify_supplier_on_review
+AFTER INSERT ON public.reviews
+FOR EACH ROW EXECUTE FUNCTION public.notify_supplier_on_review();
+
 -- Privileges ---------------------------------------------------------------
 REVOKE ALL ON FUNCTION public.offer_slot_hold(), public.project_slots_taken(uuid, uuid),
   public.supplier_holds_offer_slot(uuid, uuid), public.chat_display_name(uuid),
   public.notify_message_receiver(), public.enqueue_notification_email(),
-  public.protect_projects_with_agency_activity()
+  public.protect_projects_with_agency_activity(), public.notify_supplier_on_review()
   FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.unlock_project_for_supplier(uuid),
   public.submit_project_offer(uuid, text, text, numeric, integer, text, text),

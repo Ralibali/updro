@@ -202,6 +202,24 @@ RESET ROLE;
 SELECT pg_temp.check_ok((SELECT count(*) = 1 FROM public.notifications WHERE user_id = pg_temp.qa_id(6)
   AND type = 'project_closed' AND link = '/dashboard/supplier/uppdrag/' || pg_temp.qa_id(23)), 'closing notifies unlocked agency exactly once');
 
+-- Reviews -----------------------------------------------------------------------
+SELECT pg_temp.act_as(1);
+SET LOCAL ROLE authenticated;
+INSERT INTO public.reviews(project_id, buyer_id, supplier_id, rating, comment)
+VALUES (pg_temp.qa_id(20), auth.uid(), pg_temp.qa_id(3), 4, 'Synthetic review');
+RESET ROLE;
+SELECT pg_temp.act_as(2);
+SET LOCAL ROLE authenticated;
+INSERT INTO public.reviews(project_id, buyer_id, supplier_id, rating)
+VALUES (pg_temp.qa_id(20), auth.uid(), pg_temp.qa_id(4), 1);
+RESET ROLE;
+SELECT pg_temp.check_ok((SELECT count(*) = 1 AND min(message) LIKE '%betyget fyra av fem%' FROM public.notifications
+  WHERE user_id = pg_temp.qa_id(3) AND type = 'new_review'), 'genuine review notifies the agency');
+SELECT pg_temp.check_ok(NOT EXISTS (SELECT 1 FROM public.notifications WHERE user_id = pg_temp.qa_id(4) AND type = 'new_review'),
+  'review on someone else''s project notifies nobody');
+SELECT pg_temp.check_ok(EXISTS (SELECT 1 FROM public.notification_email_queue WHERE user_id = pg_temp.qa_id(3) AND type = 'new_review'),
+  'review notice is queued for e-mail');
+
 -- Deleting ----------------------------------------------------------------------
 SELECT pg_temp.act_as(7);
 SET LOCAL ROLE authenticated;

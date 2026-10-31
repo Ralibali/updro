@@ -281,7 +281,7 @@ const ProjectDetail = () => {
                         {offer.status === 'accepted' && id && (
                           <>
                             <AgreementPanel projectId={id} offerId={offer.id} role="buyer" />
-                            <ReviewCard projectId={id} />
+                            <ReviewCard projectId={id} supplierName={offer.profiles?.company_name || offer.profiles?.full_name} />
                           </>
                         )}
 

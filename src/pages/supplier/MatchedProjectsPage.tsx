@@ -66,7 +66,8 @@ const MatchedProjectsPage = () => {
 
   const categorySet = new Set<string>(supplierProfile?.categories || [])
   const query = search.trim().toLocaleLowerCase('sv-SE')
-  const available = projects.filter(p => p.status === 'active' && remaining(p) > 0)
+  // An agency's own unlocked project stays listed even when its reservation takes the last slot.
+  const available = projects.filter(p => p.status === 'active' && (unlocked.has(p.id) || remaining(p) > 0))
   const scope = view === 'unlocked' ? projects.filter(p => unlocked.has(p.id))
     : view === 'matched' ? available.filter(p => categorySet.has(p.category)) : available
   const visible = scope.filter(p => (filterCat === 'all' || p.category === filterCat) && (!query || [p.title, p.description, p.city, p.category].join(' ').toLocaleLowerCase('sv-SE').includes(query)))

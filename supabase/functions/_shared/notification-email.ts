@@ -11,7 +11,7 @@ export type NotificationEmailItem = {
 
 export const EMAILED_NOTIFICATION_TYPES = [
   'new_offer', 'offer_accepted', 'offer_declined', 'project_closed',
-  'agreement_update', 'new_message', 'offer_reminder',
+  'agreement_update', 'new_message', 'offer_reminder', 'new_review',
 ] as const
 
 const BRAND = '#1851C3'
@@ -28,6 +28,7 @@ const ACTION_LABELS: Record<string, string> = {
   agreement_update: 'Granska avtalet',
   new_message: 'Läs och svara',
   offer_reminder: 'Jämför offerterna',
+  new_review: 'Se er profil',
 }
 
 export const escapeHtml = (value: string) => value.replace(/[&<>"']/g, character => ({

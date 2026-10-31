@@ -7,6 +7,7 @@
 - **E-post efter offerten.** Ny offert, accepterad/avböjd offert, stängt uppdrag, avtalsändringar, påminnelser och chattmeddelanden mejlas via `send-notification-emails`. Flera händelser till samma person samlas i ett mejl.
 - **Radering.** Ett uppdrag som byråer låst upp eller svarat på kan inte raderas av beställaren. Hen får i stället stänga det, och byråerna får besked – även de som låst upp men inte hunnit svara.
 - **Påminnelser.** `offer-reminder-cron` påminner även när alla platser fyllts och uppdraget stängts, eftersom beslutet återstår där.
+- **Omdömen.** Byrån får notis och mejl när beställaren lämnar omdöme. Notisen skapades tidigare i webbläsaren och stoppades av databasen, så den kom aldrig fram. Omdömeskortet visar nu byråns namn i stället för "byrån".
 - **Gästmejl.** `send-guest-offer-emails` reserverar raden innan mejlet skickas (inga dubbletter vid överlappande körningar) och berättar hur många offerter gästen har.
 - **Övervakning.** Admin → Edge-funktioner visar alla mejl- och påminnelsejobb och flaggar "Ingen körning" när ett schemalagt jobb är tyst.
 - **Städning.** Junimigreringens extra debiteringstrigger tas bort, så en upplåsning kostar alltid exakt en kredit även om de gamla filerna körts.
@@ -28,7 +29,7 @@ Gör exakt följande, i ordning, och ändra ingen annan kod:
 5. Regenerera src/integrations/supabase/types.ts från databasen.
 ```
 
-Förväntat resultat i steg 4: 41, 59 och 12 godkända kontroller. Därefter: tryck **Publish** i Lovable.
+Förväntat resultat i steg 4: 44, 59 och 12 godkända kontroller. Därefter: tryck **Publish** i Lovable.
 
 ## Kontroll efter driftsättning
 
