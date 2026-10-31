@@ -62,7 +62,7 @@ Produktionen får sina migrationer via Lovable Cloud. Senaste migrationen för o
 20261031120000_marketplace_trust_and_notifications.sql
 ```
 
-Handskrivna filer daterade före 2026-07-08 (till exempel `2026042600xx_*`, `2026062*_*` och `20260702*_*`) är utkast som enligt de genererade typerna aldrig nådde produktion. Kör inte hela mappen i ordning mot en ny databas utan att granska dem. Migrationen ovan tar bort den dubbla debiteringstriggern från junifilerna om de ändå har körts.
+Handskrivna filer daterade före 2026-07-08 (till exempel `2026042600xx_*`, `2026062*_*` och `20260702*_*`) är utkast. Flera av dem nådde aldrig produktion – de genererade typerna saknar deras objekt – och några krockar med senare migrationer. Kör inte hela mappen i ordning mot en ny databas utan att granska dem. Migrationen ovan tar bort den dubbla debiteringstriggern från junifilerna om de ändå har körts.
 
 Databastester körs mot produktionen och rullas alltid tillbaka:
 

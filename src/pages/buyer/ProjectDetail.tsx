@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { BUDGET_LABELS, START_TIME_LABELS, CATEGORY_STYLES } from '@/lib/constants'
 import { timeAgo, formatPrice } from '@/lib/dateUtils'
 import { toast } from 'sonner'
-import { closeProjectWithoutOffer, decideProjectOffer } from '@/lib/marketplaceActions'
+import { decideProjectOffer } from '@/lib/marketplaceActions'
 import { PAYMENT_PLAN_LABELS } from '@/lib/agreements'
 import OfferAttachment from '@/components/shared/OfferAttachment'
 import { trackAgencySelected } from '@/lib/analytics'
@@ -21,6 +21,7 @@ import ProjectOutcomeCard from '@/components/buyer/ProjectOutcomeCard'
 import AgreementPanel from '@/components/agreements/AgreementPanel'
 import ReviewCard from '@/components/buyer/ReviewCard'
 import OfferComparison from '@/components/buyer/OfferComparison'
+import ProjectRemoveDialog from '@/components/buyer/ProjectRemoveDialog'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -30,8 +31,6 @@ const ProjectDetail = () => {
   const [offers, setOffers] = useState<any[]>([])
   const [confirmOffer, setConfirmOffer] = useState<any>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [deleteMode, setDeleteMode] = useState<'delete' | 'close' | 'kept'>('delete')
-  const [deleting, setDeleting] = useState(false)
   const offersRef = useRef<HTMLDivElement>(null)
 
   const [loading, setLoading] = useState(true)
@@ -104,47 +103,6 @@ const ProjectDetail = () => {
     setOffers(prev => prev.map(o => o.status === 'pending' ? { ...o, status: 'declined' } : o))
   }
 
-  // Agencies may have paid to unlock or answered. Then the project is closed
-  // instead of deleted, so they are told and keep their history.
-  const openRemoveDialog = () => {
-    setDeleteMode(offers.length === 0 ? 'delete' : project?.status === 'active' ? 'close' : 'kept')
-    setShowDeleteConfirm(true)
-  }
-
-  const handleDeleteProject = async () => {
-    if (!id) return
-    setDeleting(true)
-    const { error } = await supabase.from('projects').delete().eq('id', id).select('id').single()
-    setDeleting(false)
-    if (error) {
-      if (/kan inte raderas/i.test(error.message || '')) {
-        setDeleteMode(project?.status === 'active' ? 'close' : 'kept')
-        return
-      }
-      toast.error(error.message || 'Kunde inte ta bort uppdraget')
-      setShowDeleteConfirm(false)
-    } else {
-      toast.success('Uppdraget har tagits bort')
-      setShowDeleteConfirm(false)
-      navigate('/dashboard/buyer/uppdrag')
-    }
-  }
-
-  const handleCloseInstead = async () => {
-    if (!id) return
-    setDeleting(true)
-    try {
-      await closeProjectWithoutOffer(id)
-      handleProjectClosed()
-      toast.success('Uppdraget är stängt och byråerna har fått besked.')
-      setShowDeleteConfirm(false)
-    } catch (cause) {
-      toast.error((cause as { message?: string })?.message || 'Kunde inte stänga uppdraget. Försök igen.')
-    } finally {
-      setDeleting(false)
-    }
-  }
-
   if (loading && !project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
   if (!project) return <div role="alert" className="rounded-xl border p-6"><p>{loadError || 'Uppdraget kunde inte hittas.'}</p><Button onClick={load} className="mt-3">Försök igen</Button></div>
 
@@ -162,7 +120,7 @@ const ProjectDetail = () => {
                   <h1 className="font-display text-2xl font-bold">{project.title}</h1>
                 </div>
                 <button
-                  onClick={openRemoveDialog}
+                  onClick={() => setShowDeleteConfirm(true)}
                   disabled={offers.some(offer => offer.status === 'accepted')}
                   aria-label="Ta bort uppdrag"
                   className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
@@ -368,33 +326,13 @@ const ProjectDetail = () => {
       </Dialog>
 
       {/* Delete, or close when agencies are already involved */}
-      <Dialog open={showDeleteConfirm} onOpenChange={open => { if (!deleting) setShowDeleteConfirm(open) }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{deleteMode === 'delete' ? 'Ta bort uppdrag?' : deleteMode === 'close' ? 'Stäng uppdraget i stället?' : 'Uppdraget sparas'}</DialogTitle>
-            <DialogDescription>
-              {deleteMode === 'delete'
-                ? <>Vill du verkligen ta bort "{project?.title}"? Detta kan inte ångras.</>
-                : deleteMode === 'close'
-                  ? <>Byråer har redan låst upp eller svarat på "{project?.title}", så det kan inte raderas. Om du stänger uppdraget tar det inte emot fler offerter och byråerna får besked direkt.</>
-                  : <>Byråer har redan svarat på "{project?.title}". Uppdraget är stängt och sparas så att både du och byråerna har kvar historiken.</>}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-wrap gap-3 mt-4">
-            <Button variant="outline" disabled={deleting} onClick={() => setShowDeleteConfirm(false)}>{deleteMode === 'kept' ? 'Stäng' : 'Avbryt'}</Button>
-            {deleteMode === 'delete' && (
-              <Button variant="destructive" onClick={handleDeleteProject} disabled={deleting}>
-                {deleting ? 'Tar bort…' : 'Ta bort'}
-              </Button>
-            )}
-            {deleteMode === 'close' && (
-              <Button onClick={handleCloseInstead} disabled={deleting}>
-                {deleting ? 'Stänger…' : 'Stäng uppdraget'}
-              </Button>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ProjectRemoveDialog
+        project={showDeleteConfirm && project ? project : null}
+        hasOffers={offers.length > 0}
+        onOpenChange={setShowDeleteConfirm}
+        onDeleted={() => navigate('/dashboard/buyer/uppdrag')}
+        onClosed={handleProjectClosed}
+      />
     </>
   )
 }

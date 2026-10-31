@@ -132,7 +132,7 @@ const ChatPage = () => {
       const saved = await sendChatMessage(activeConvo.projectId, userId, activeConvo.otherId, text)
       setMessages(prev => mergeMessages(prev, [saved]))
       setNewMsg('')
-      setDraftConversation(null)
+      // The draft stays until the refreshed list contains the conversation, so the thread never flickers closed.
       void refreshConversations()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Meddelandet kunde inte skickas. Försök igen.')
