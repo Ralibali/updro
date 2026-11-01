@@ -753,63 +753,6 @@ export type Database = {
         }
         Relationships: []
       }
-      notification_email_queue: {
-        Row: {
-          attempts: number
-          created_at: string
-          id: string
-          last_error: string | null
-          notification_id: string
-          send_after: string
-          sent_at: string | null
-          status: string
-          type: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          attempts?: number
-          created_at?: string
-          id?: string
-          last_error?: string | null
-          notification_id: string
-          send_after?: string
-          sent_at?: string | null
-          status?: string
-          type: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          attempts?: number
-          created_at?: string
-          id?: string
-          last_error?: string | null
-          notification_id?: string
-          send_after?: string
-          sent_at?: string | null
-          status?: string
-          type?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notification_email_queue_notification_id_fkey"
-            columns: ["notification_id"]
-            isOneToOne: true
-            referencedRelation: "notifications"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notification_email_queue_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       notifications: {
         Row: {
           created_at: string | null
@@ -2006,7 +1949,6 @@ export type Database = {
       unlocked_leads: {
         Row: {
           created_at: string | null
-          hold_until: string
           credit_charged: boolean
           id: string
           project_id: string
@@ -2015,7 +1957,6 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          hold_until?: string
           credit_charged?: boolean
           id?: string
           project_id: string
@@ -2024,7 +1965,6 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
-          hold_until?: string
           credit_charged?: boolean
           id?: string
           project_id?: string
@@ -2234,18 +2174,6 @@ export type Database = {
       }
     }
     Functions: {
-      admin_edge_function_summary: {
-        Args: { p_names: string[]; p_since: string }
-        Returns: {
-          avg_ms: number
-          errors: number
-          function_name: string
-          last_run: string
-          median_ms: number
-          p95_ms: number
-          total: number
-        }[]
-      }
       agency_portal_payload: {
         Args: { p_id: string; p_owner: boolean }
         Returns: Json
@@ -2335,36 +2263,9 @@ export type Database = {
         Args: { p_project_id: string }
         Returns: Json
       }
-      get_chat_party: {
-        Args: { p_other_id: string; p_project_id: string }
-        Returns: Json
-      }
-      get_my_conversations: {
-        Args: never
-        Returns: {
-          last_at: string
-          last_from_me: boolean
-          last_message: string
-          other_id: string
-          other_name: string
-          project_id: string
-          project_title: string
-          unread_count: number
-        }[]
-      }
       get_project_agreement: {
         Args: { p_offer_id: string; p_project_id: string }
         Returns: Json
-      }
-      get_project_slot_summary: {
-        Args: { p_project_ids: string[] }
-        Returns: {
-          max_offers: number
-          my_reserved_until: string
-          offer_count: number
-          project_id: string
-          slots_taken: number
-        }[]
       }
       get_public_agencies: {
         Args: never
@@ -2393,18 +2294,10 @@ export type Database = {
         Returns: Json
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
-      is_project_chat_pair: {
-        Args: { p_a: string; p_b: string; p_project_id: string }
-        Returns: boolean
-      }
       list_agency_portals: { Args: never; Returns: Json }
       normalize_agreement_delivery_plan: {
         Args: { p_plan: Json }
         Returns: Json
-      }
-      project_has_agency_activity: {
-        Args: { p_project_id: string }
-        Returns: boolean
       }
       report_project_outcome: {
         Args: {
