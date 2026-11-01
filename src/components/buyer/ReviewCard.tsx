@@ -17,6 +17,8 @@ const RATING_LABELS: Record<number, string> = {
 
 interface ReviewCardProps {
   projectId: string
+  /** The accepted agency's name, from the buyer's offer list. */
+  supplierName?: string | null
 }
 
 /**
@@ -24,7 +26,7 @@ interface ReviewCardProps {
  * Ett omdöme per projekt (unik constraint i databasen). Omdömet visas
  * publikt på byråns profilsida och driver dess betyg.
  */
-const ReviewCard = ({ projectId }: ReviewCardProps) => {
+const ReviewCard = ({ projectId, supplierName }: ReviewCardProps) => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -53,7 +55,8 @@ const ReviewCard = ({ projectId }: ReviewCardProps) => {
     const profile = Array.isArray(offer.profiles) ? offer.profiles[0] : offer.profiles
     setSupplier({
       id: offer.supplier_id,
-      name: profile?.company_name || profile?.full_name || 'byrån',
+      // Buyers cannot read agency profiles directly; the offer list passes the name in.
+      name: supplierName || profile?.company_name || profile?.full_name || 'byrån',
     })
 
     const { data: review } = await supabase
@@ -64,7 +67,7 @@ const ReviewCard = ({ projectId }: ReviewCardProps) => {
       .maybeSingle()
     setExisting(review)
     setLoading(false)
-  }, [projectId, user])
+  }, [projectId, supplierName, user])
 
   useEffect(() => {
     load()
@@ -90,14 +93,7 @@ const ReviewCard = ({ projectId }: ReviewCardProps) => {
       return
     }
 
-    await supabase.from('notifications').insert({
-      user_id: supplier.id,
-      type: 'new_review',
-      title: 'Nytt omdöme mottaget',
-      message: `En beställare har gett er ${rating} av 5 stjärnor. Se omdömet på er offentliga profil.`,
-      link: '/dashboard/supplier/profil',
-    })
-
+    // The agency is notified by a database trigger once the review is saved.
     setSaving(false)
     setExisting({ rating, comment: comment.trim() || null })
     toast.success('Tack! Ditt omdöme hjälper andra beställare att välja rätt.')

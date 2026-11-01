@@ -8,9 +8,11 @@ Sveriges marknadsplats för digitala uppdrag. Beställaren beskriver sitt projek
 
 1. Beställaren beskriver sitt uppdrag utan att behöva skapa konto.
 2. Uppdraget sparas som väntande och granskas innan det öppnas för byråer.
-3. Relevanta byråer kan låsa upp kontaktuppgifterna och lämna offert.
+3. Relevanta byråer kan låsa upp kontaktuppgifterna och lämna offert. En upplåsning reserverar en av högst tre offertplatser – sju dagar när en kredit dras, tre dagar med månadskort – så en betalande byrå alltid hinner svara. Byrån varnas 48 timmar innan reservationen går ut.
 4. Högst tre byråer får lämna offert på samma uppdrag.
 5. Gäster får e-post när en offert kommer och kan skapa konto med samma verifierade e-postadress för att följa processen.
+6. Inloggade beställare och byråer får notis och e-post om nya offerter, beslut, avtal, påminnelser, omdömen och chattmeddelanden. Chatten är öppen mellan beställaren och byråer som svarat på uppdraget; en byrå som bara låst upp kan skriva först.
+7. Ett uppdrag som byråer redan låst upp eller svarat på kan inte raderas av beställaren – det stängs i stället och byråerna får besked.
 
 ## Affärsmodell
 
@@ -54,13 +56,20 @@ Privata sidor under `/admin`, `/dashboard`, registrering, inloggning och löseno
 
 ### Migrationer
 
-Migrationerna ska appliceras i tidsordning. De senaste stabiliseringsmigrationerna är:
+Produktionen får sina migrationer via Lovable Cloud. Senaste migrationen för offertflödet är:
 
 ```text
-20260712143000_production_hardening.sql
-20260712180000_product_reliability.sql
-20260712190000_pending_project_notifications.sql
-20260712200000_allow_trusted_system_updates.sql
+20261031120000_marketplace_trust_and_notifications.sql
+```
+
+Handskrivna filer daterade före 2026-07-08 (till exempel `2026042600xx_*`, `2026062*_*` och `20260702*_*`) är utkast. Flera av dem nådde aldrig produktion – de genererade typerna saknar deras objekt – och några krockar med senare migrationer. Kör inte hela mappen i ordning mot en ny databas utan att granska dem. Migrationen ovan tar bort den dubbla debiteringstriggern från junifilerna om de ändå har körts.
+
+Databastester körs mot produktionen och rullas alltid tillbaka:
+
+```text
+supabase/tests/offer_agreement_flow.sql
+supabase/tests/project_guard_and_lead_alerts.sql
+supabase/tests/marketplace_trust_and_notifications.sql
 ```
 
 ### Edge Functions som ska vara deployade
@@ -76,7 +85,9 @@ check-subscription
 customer-portal
 stripe-webhook
 send-guest-offer-emails
+send-notification-emails
 send-supplier-lead-alerts
+send-followup-reminders
 offer-reminder-cron
 send-push
 ```
@@ -125,26 +136,20 @@ customer.subscription.deleted
 
 ### Schemalagda jobb
 
-Kör `send-guest-offer-emails` varannan minut:
+Kör `supabase/operations/offer-notification-runtime.sql` en gång efter deployment. Skriptet skapar de jobb som saknas och låter befintliga vara:
 
-```text
-POST https://opgjoevvlwhsddscqmpe.supabase.co/functions/v1/send-guest-offer-emails
-Header: x-cron-secret: <GUEST_CRON_TOKEN>
-```
+| Funktion | Schema |
+|---|---|
+| `send-notification-emails` | varannan minut |
+| `send-guest-offer-emails` | varannan minut |
+| `offer-reminder-cron` | dagligen (påminnelser till beställare och varningar om platser som går ut) |
+| `send-followup-reminders` | dagligen |
 
-Kör `send-supplier-lead-alerts` var femte minut. Adminpanelen triggar den också direkt när ett uppdrag godkänns, så cron-jobbet är ett säkerhetsnät för omförsök:
+`send-supplier-lead-alerts` schemaläggs av `supabase/operations/notification-runtime.sql` (var femte minut). Alla jobb skickar Vault-hemligheten `lead_alert_cron_secret`, som ska ha samma värde som Edge-hemligheten `LEAD_ALERT_CRON_SECRET`. Under **Admin → Edge-funktioner** syns senaste körning per jobb; "Ingen körning" betyder att jobbet eller hemligheten saknas.
 
-```text
-POST https://opgjoevvlwhsddscqmpe.supabase.co/functions/v1/send-supplier-lead-alerts
-Header: x-cron-secret: <CRON_SECRET>
-```
+### Webbpush (valfritt)
 
-Kör `offer-reminder-cron` en gång per dag:
-
-```text
-POST https://opgjoevvlwhsddscqmpe.supabase.co/functions/v1/offer-reminder-cron
-Header: x-cron-secret: <CRON_SECRET>
-```
+Push kräver ett VAPID-nyckelpar: `VAPID_PRIVATE_KEY` och `VAPID_PUBLIC_KEY` som Edge-hemligheter och samma publika nyckel som `VITE_VAPID_PUBLIC_KEY` i frontend. Generera med `npx web-push generate-vapid-keys`. Utan nycklarna går notiserna fortfarande ut i appen och via e-post.
 
 ### Auth-inställningar
 
@@ -167,7 +172,9 @@ Lovable-previewdomäner kan läggas till separat under utveckling.
 4. Köp ett lead i Stripe testläge och kontrollera att exakt en kredit läggs till.
 5. Starta och avsluta ett testabonnemang och kontrollera att planen växlar mellan `monthly` och `payg`.
 6. Lämna en offert på ett gästuppdrag och kontrollera att offertmejlet skickas.
-7. Testa registrering, e-postbekräftelse, inloggning och lösenordsåterställning.
+7. Lämna en offert på ett uppdrag från en inloggad beställare och kontrollera att `notification_email_queue` visar `sent` inom några minuter.
+8. Skriv i chatten från byrån och kontrollera att beställaren ser byråns namn, får en notis och – om den inte läses inom tio minuter – ett mejl.
+9. Testa registrering, e-postbekräftelse, inloggning och lösenordsåterställning.
 
 ## Kontakt
 

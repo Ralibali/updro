@@ -1,6 +1,7 @@
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import type { UserRole } from '@/types'
+import { loginPathFor } from '@/lib/authRedirect'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -9,6 +10,7 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
   const { isAuthenticated, loading, profile } = useAuth()
+  const location = useLocation()
 
   if (loading) {
     return (
@@ -19,7 +21,9 @@ const ProtectedRoute = ({ children, role }: ProtectedRouteProps) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/logga-in" replace />
+    // Keep the requested page (for example a link in a notification e-mail) so
+    // login can continue there.
+    return <Navigate to={loginPathFor(`${location.pathname}${location.search}${location.hash}`)} replace />
   }
 
   // Admin can access all protected routes

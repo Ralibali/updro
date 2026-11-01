@@ -1,7 +1,7 @@
 import { categoryLabel } from '@/lib/constants'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Building2, CreditCard, Gauge, Loader2, Lock, Mail, Paperclip, Phone, Sparkles, Unlock, User, X } from 'lucide-react'
+import { Building2, CalendarClock, CreditCard, Gauge, Loader2, Lock, Mail, MessageCircle, Paperclip, Phone, Sparkles, Unlock, User, X } from 'lucide-react'
 import { toast } from 'sonner'
 import LeadRefundDialog from '@/components/supplier/LeadRefundDialog'
 import { useAuth } from '@/hooks/useAuth'
@@ -20,12 +20,16 @@ import { numWord } from '@/lib/numberWords'
 import {
   OFFER_ATTACHMENT_ACCEPT,
   OFFER_ATTACHMENT_BUCKET,
+  getProjectSlotSummaries,
   getUnlockedProjectContact,
+  openSlots,
   submitProjectOffer,
   unlockProject,
   uploadOfferAttachment,
   validateOfferAttachment,
+  type SlotSummary,
 } from '@/lib/marketplaceActions'
+import { chatLink } from '@/lib/chat'
 import { trackFirstOfferReceived, trackLeadUnlocked, trackLeadUnlockStarted, trackLeadViewed, trackOfferSubmitted } from '@/lib/analytics'
 import { markViewedProject } from '@/lib/supplierActivation'
 
@@ -110,6 +114,12 @@ const ProjectUnlock = () => {
   const [draftInfo, setDraftInfo] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [form, setForm] = useState(emptyOfferForm)
+  const [slots, setSlots] = useState<SlotSummary | null>(null)
+
+  const loadSlots = useCallback(async (projectId: string) => {
+    const summaries = await getProjectSlotSummaries([projectId])
+    if (currentProjectId.current === projectId) setSlots(summaries?.get(projectId) ?? null)
+  }, [])
 
   const loadContact = useCallback(async (projectId: string) => {
     setContactError(false)
@@ -137,6 +147,7 @@ const ProjectUnlock = () => {
       setFile(null)
       setPreviewOpen(false)
       setDraftInfo('')
+      setSlots(null)
       try {
         const [projectResult, unlockResult, offerResult] = await Promise.all([
           supabase.from('projects').select('*').eq('id', id).single(),
@@ -157,6 +168,7 @@ const ProjectUnlock = () => {
         }
         try { trackLeadViewed(id, { category: projectResult.data.category, city: projectResult.data.city || undefined }) } catch { /* Best effort */ }
         markViewedProject()
+        await loadSlots(id)
         if (unlockResult.data) await loadContact(id)
       } catch {
         if (!cancelled) setLoadError(true)
@@ -166,12 +178,13 @@ const ProjectUnlock = () => {
     }
     void fetchData()
     return () => { cancelled = true }
-  }, [id, user, reload, loadContact])
+  }, [id, user, reload, loadContact, loadSlots])
 
   const translateUnlockError = (error: any): string => {
     const raw = typeof error?.message === 'string' ? error.message : ''
     if (/inga lead-krediter/i.test(raw)) return 'Du har inga lead-krediter kvar.'
     if (/provperiod/i.test(raw)) return 'Din provperiod har gått ut.'
+    if (/reserverade/i.test(raw)) return 'Alla offertplatser är reserverade av andra byråer just nu. Ingen kredit drogs.'
     if (/tar inte emot fler offerter/i.test(raw) || /uppdraget finns inte/i.test(raw)) {
       return 'Uppdraget tar inte emot fler offerter just nu.'
     }
@@ -184,6 +197,9 @@ const ProjectUnlock = () => {
     const raw = typeof error?.message === 'string' ? error.message : ''
     if (error?.code === '23505' || /redan skickat/i.test(raw)) {
       return 'Du har redan skickat en offert på detta uppdrag.'
+    }
+    if (/har gått ut/i.test(raw)) {
+      return 'Er reserverade offertplats har gått ut och de lediga platserna har tagits av andra byråer.'
     }
     if (/tar inte emot fler offerter/i.test(raw) || /max(_| )offerter/i.test(raw) || /stängt/i.test(raw)) {
       return 'Uppdraget är fullt eller stängt och tar inte emot fler offerter.'
@@ -203,7 +219,7 @@ const ProjectUnlock = () => {
       const result = await unlockProject(id)
       setIsUnlocked(true)
       setConfirmOpen(false)
-      await loadContact(id)
+      await Promise.all([loadContact(id), loadSlots(id)])
       try { await refreshProfile() } catch { /* The unlock is already saved. */ }
       if (result?.already_unlocked) {
         toast.info('Uppdraget var redan upplåst – inga krediter drogs.')
@@ -217,6 +233,8 @@ const ProjectUnlock = () => {
     } catch (error: any) {
       console.error(error)
       toast.error(translateUnlockError(error))
+      setConfirmOpen(false)
+      void loadSlots(id)
     } finally {
       unlockingRef.current = false
       setUnlocking(false)
@@ -308,8 +326,18 @@ const ProjectUnlock = () => {
   const leadScore = scoreProject(project)
   const creditsLeft = supplierProfile?.lead_credits || 0
   const canUnlock = hasActiveSubscription || (creditsLeft > 0 && !trialExpired)
-  const maxOffers = project.max_offers || MAX_OFFERS_PER_PROJECT
-  const isClosed = (project.offer_count || 0) >= maxOffers || project.status !== 'active'
+  const maxOffers = slots?.maxOffers ?? (project.max_offers || MAX_OFFERS_PER_PROJECT)
+  const offerCount = slots?.offerCount ?? (project.offer_count || 0)
+  const freeSlots = openSlots(project, slots, MAX_OFFERS_PER_PROJECT)
+  const acceptsOffers = project.status === 'active' && offerCount < maxOffers
+  const reservedUntil = slots?.myReservedUntil ? new Date(slots.myReservedUntil) : null
+  // A new agency needs a free slot. An agency that unlocked keeps its own slot
+  // for seven days; after that it can still answer while a slot is free.
+  const isClosed = !acceptsOffers || (isUnlocked ? Boolean(slots && !reservedUntil && freeSlots <= 0) : freeSlots <= 0)
+  const slotsFull = acceptsOffers && !isUnlocked && freeSlots <= 0
+  // Swedish time, since a hold ends at the exact minute it started.
+  const formatDeadline = (date: Date) => `${date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', timeZone: 'Europe/Stockholm' })} kl. ${date.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Stockholm' })}`
+  const holdLength = hasActiveSubscription ? 'tre dagar' : 'sju dagar'
 
   return (
     <div className="max-w-3xl">
@@ -327,7 +355,8 @@ const ProjectUnlock = () => {
           <span>{START_TIME_LABELS[project.start_time] || 'Flexibel start'}</span>
           <span>{project.city || 'Sverige'}</span>
           <span>{timeAgo(project.created_at)}</span>
-          <span>{project.offer_count || 0} av {maxOffers} offerter</span>
+          <span>{numWord(offerCount)} av {numWord(maxOffers)} offerter</span>
+          {!isUnlocked && acceptsOffers && <span>{freeSlots === 1 ? 'en ledig offertplats' : `${numWord(freeSlots)} lediga offertplatser`}</span>}
         </div>
         {leadScore.reasons.length > 0 && (
           <div className="mt-4 rounded-xl bg-muted/50 p-3 text-xs text-muted-foreground">
@@ -353,6 +382,20 @@ const ProjectUnlock = () => {
             ) : (
               <div className="text-sm text-muted-foreground"><p>{contactError ? 'Uppdraget är upplåst, men kontaktuppgifterna kunde inte läsas.' : 'Kontaktuppgifter saknas.'}</p><Button variant="outline" size="sm" onClick={() => id && loadContact(id)} className="mt-2">Hämta kontaktuppgifterna igen</Button></div>
             )}
+            {id && project.buyer_id && (
+              <Button asChild variant="outline" size="sm" className="mt-4 gap-1.5">
+                <Link to={chatLink('supplier', id, project.buyer_id)}><MessageCircle className="h-4 w-4" aria-hidden="true" />Ställ en fråga till beställaren</Link>
+              </Button>
+            )}
+            {!existingOffer && reservedUntil && (
+              <p className="mt-4 flex items-start gap-2 rounded-lg bg-primary/5 p-3 text-sm">
+                <CalendarClock className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                <span>Er offertplats är reserverad till {formatDeadline(reservedUntil)}. Skicka offerten innan dess, annars kan platsen gå till en annan byrå.</span>
+              </p>
+            )}
+            {!existingOffer && !reservedUntil && slots && !isClosed && (
+              <p className="mt-4 rounded-lg bg-muted p-3 text-sm">Er reservation har gått ut, men det finns fortfarande en ledig plats. Skicka offerten så snart ni kan.</p>
+            )}
             {id && (
               <div className="mt-4 border-t pt-3">
                 <LeadRefundDialog projectId={id} />
@@ -366,6 +409,7 @@ const ProjectUnlock = () => {
             <div className="bg-card rounded-xl border p-6 text-center">
               <Lock className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
               <h2 className="font-display text-lg font-semibold mb-2">Uppdraget tar inte emot fler offerter.</h2>
+              {acceptsOffers && <p className="text-sm text-muted-foreground">Er reserverade plats har gått ut och de lediga platserna har tagits av andra byråer.</p>}
             </div>
           ) : (
             <div className="bg-card rounded-xl border p-5">
@@ -429,7 +473,7 @@ const ProjectUnlock = () => {
           <Lock className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
           <h2 className="font-display text-lg font-semibold mb-2">Lås upp kontaktuppgifter</h2>
           <p className="text-sm text-muted-foreground mb-4">Se beställarens kontaktuppgifter och skicka offert.</p>
-          {isClosed ? <div className="space-y-3"><p className="text-sm">Uppdraget tar inte emot fler offerter. Du behöver inte använda någon kredit här.</p><Button asChild variant="outline"><Link to="/dashboard/supplier/uppdrag">Hitta ett annat uppdrag</Link></Button></div> : canUnlock ? (
+          {isClosed ? <div className="space-y-3"><p className="text-sm">{slotsFull ? 'Alla offertplatser är reserverade av andra byråer just nu. En plats frigörs om en byrå inte svarar i tid.' : 'Uppdraget tar inte emot fler offerter.'} Du behöver inte använda någon kredit här.</p><Button asChild variant="outline"><Link to="/dashboard/supplier/uppdrag">Hitta ett annat uppdrag</Link></Button></div> : canUnlock ? (
             <Button onClick={() => {
               setConfirmOpen(true)
               trackLeadUnlockStarted({
@@ -464,7 +508,7 @@ const ProjectUnlock = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Lås upp kontaktuppgifter?</DialogTitle>
-            <DialogDescription>{hasActiveSubscription ? 'Ditt månadskort täcker upplåsningen av' : 'Använd en lead-kredit för'} ”{project.title}”. Du har {hasActiveSubscription ? 'obegränsad tillgång' : `${numWord(creditsLeft)} krediter kvar`}.</DialogDescription>
+            <DialogDescription>{hasActiveSubscription ? 'Ditt månadskort täcker upplåsningen av' : 'Använd en lead-kredit för'} ”{project.title}”. Du har {hasActiveSubscription ? 'obegränsad tillgång' : `${numWord(creditsLeft)} krediter kvar`}. Upplåsningen reserverar en av {numWord(maxOffers)} offertplatser åt er i {holdLength}, så lås bara upp uppdrag ni tänker svara på.</DialogDescription>
           </DialogHeader>
           <div className="flex gap-3 mt-4"><Button variant="outline" onClick={() => setConfirmOpen(false)}>Avbryt</Button><Button onClick={handleUnlock} disabled={unlocking}>{unlocking && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}Bekräfta</Button></div>
         </DialogContent>

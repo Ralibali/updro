@@ -4,6 +4,7 @@ import { z } from 'zod'
 export type UnlockResult = {
   already_unlocked: boolean
   credits_left: number
+  reserved_until?: string
 }
 
 export const unlockProject = async (projectId: string): Promise<UnlockResult> => {
@@ -12,9 +13,17 @@ export const unlockProject = async (projectId: string): Promise<UnlockResult> =>
   })
 
   if (error) throw error
-  const parsed = z.object({ already_unlocked: z.boolean(), credits_left: z.number().int().nonnegative() }).safeParse(data)
+  const parsed = z.object({
+    already_unlocked: z.boolean(),
+    credits_left: z.number().int().nonnegative(),
+    reserved_until: z.string().optional(),
+  }).safeParse(data)
   if (!parsed.success) throw new Error('Upplåsningen kunde inte bekräftas. Ladda om sidan innan du försöker igen.')
-  const result: UnlockResult = { already_unlocked: parsed.data.already_unlocked, credits_left: parsed.data.credits_left }
+  const result: UnlockResult = {
+    already_unlocked: parsed.data.already_unlocked,
+    credits_left: parsed.data.credits_left,
+    ...(parsed.data.reserved_until ? { reserved_until: parsed.data.reserved_until } : {}),
+  }
   if (!result.already_unlocked) {
     try {
       const { trackClick } = await import('@/hooks/usePageTracking')
@@ -52,6 +61,43 @@ export const submitProjectOffer = async (input: SubmitOfferInput): Promise<strin
     trackClick('offer_submitted', 'Skickade offert', { project_id: input.projectId })
   } catch { /* analytics best effort */ }
   return data
+}
+
+export type SlotSummary = {
+  maxOffers: number
+  offerCount: number
+  slotsTaken: number
+  /** When the current agency's reserved slot expires, if it holds one and has not answered yet. */
+  myReservedUntil: string | null
+}
+
+/**
+ * Offer slots per project: an unlock reserves a slot for seven days when a
+ * credit was used, three days on the monthly plan. Returns
+ * null when the summary is unavailable (for example before the migration is
+ * deployed) so callers can fall back to offer counts.
+ */
+export async function getProjectSlotSummaries(projectIds: string[]): Promise<Map<string, SlotSummary> | null> {
+  if (!projectIds.length) return new Map()
+  try {
+    const { data, error } = await supabase.rpc('get_project_slot_summary', { p_project_ids: projectIds.slice(0, 200) })
+    if (error || !Array.isArray(data)) return null
+    return new Map(data.map(row => [row.project_id, {
+      maxOffers: row.max_offers,
+      offerCount: row.offer_count,
+      slotsTaken: row.slots_taken,
+      myReservedUntil: row.my_reserved_until || null,
+    }]))
+  } catch {
+    return null
+  }
+}
+
+/** Free slots for a new agency. Falls back to offers when no slot summary exists. */
+export function openSlots(project: { max_offers?: number | null; offer_count?: number | null }, summary?: SlotSummary | null, fallbackMax = 3) {
+  const max = summary?.maxOffers ?? project.max_offers ?? fallbackMax
+  const taken = summary ? summary.slotsTaken : project.offer_count || 0
+  return Math.max(0, max - taken)
 }
 
 export async function decideProjectOffer(offerId: string, decision: 'accepted' | 'declined') {

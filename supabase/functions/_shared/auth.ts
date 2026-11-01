@@ -16,3 +16,15 @@ export function constantTimeEqual(provided: string, expected: string): boolean {
 export function bearerToken(header: string | null): string {
   return (header || '').replace(/^Bearer\s+/i, '').trim()
 }
+
+/**
+ * True when the request carries one of the configured cron secrets, either in
+ * x-cron-secret or as a bearer token. Unset secrets never match.
+ */
+export function hasCronSecret(headers: Headers, secrets: Array<string | null | undefined>): boolean {
+  const configured = secrets.filter((secret): secret is string => Boolean(secret))
+  if (!configured.length) return false
+  const header = headers.get('x-cron-secret') || ''
+  const token = bearerToken(headers.get('Authorization'))
+  return configured.some(secret => constantTimeEqual(header, secret) || constantTimeEqual(token, secret))
+}

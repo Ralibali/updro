@@ -21,6 +21,7 @@ import ProjectOutcomeCard from '@/components/buyer/ProjectOutcomeCard'
 import AgreementPanel from '@/components/agreements/AgreementPanel'
 import ReviewCard from '@/components/buyer/ReviewCard'
 import OfferComparison from '@/components/buyer/OfferComparison'
+import ProjectRemoveDialog from '@/components/buyer/ProjectRemoveDialog'
 
 const ProjectDetail = () => {
   const { id } = useParams()
@@ -30,7 +31,6 @@ const ProjectDetail = () => {
   const [offers, setOffers] = useState<any[]>([])
   const [confirmOffer, setConfirmOffer] = useState<any>(null)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [deleting, setDeleting] = useState(false)
   const offersRef = useRef<HTMLDivElement>(null)
 
   const [loading, setLoading] = useState(true)
@@ -101,20 +101,6 @@ const ProjectDetail = () => {
   const handleProjectClosed = () => {
     setProject((prev: any) => prev ? { ...prev, status: 'closed' } : prev)
     setOffers(prev => prev.map(o => o.status === 'pending' ? { ...o, status: 'declined' } : o))
-  }
-
-  const handleDeleteProject = async () => {
-    if (!id) return
-    setDeleting(true)
-    const { error } = await supabase.from('projects').delete().eq('id', id).select('id').single()
-    setDeleting(false)
-    if (error) {
-      toast.error(error.message || 'Kunde inte ta bort uppdraget')
-    } else {
-      toast.success('Uppdraget har tagits bort')
-      navigate('/dashboard/buyer/uppdrag')
-    }
-    setShowDeleteConfirm(false)
   }
 
   if (loading && !project) return <div className="animate-pulse h-40 bg-muted rounded-xl" />
@@ -295,7 +281,7 @@ const ProjectDetail = () => {
                         {offer.status === 'accepted' && id && (
                           <>
                             <AgreementPanel projectId={id} offerId={offer.id} role="buyer" />
-                            <ReviewCard projectId={id} />
+                            <ReviewCard projectId={id} supplierName={offer.profiles?.company_name || offer.profiles?.full_name} />
                           </>
                         )}
 
@@ -339,23 +325,18 @@ const ProjectDetail = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Delete confirm dialog */}
-      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Ta bort uppdrag?</DialogTitle>
-            <DialogDescription>
-              Vill du verkligen ta bort "{project?.title}"? Alla tillhörande offerter tas också bort. Detta kan inte ångras.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-3 mt-4">
-            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>Avbryt</Button>
-            <Button variant="destructive" onClick={handleDeleteProject} disabled={deleting}>
-              {deleting ? 'Tar bort…' : 'Ta bort'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Delete, or close when agencies are already involved */}
+      <ProjectRemoveDialog
+        project={showDeleteConfirm && project ? project : null}
+        offers={{
+          total: offers.length,
+          pending: offers.filter(offer => offer.status === 'pending').length,
+          accepted: offers.some(offer => offer.status === 'accepted'),
+        }}
+        onOpenChange={setShowDeleteConfirm}
+        onDeleted={() => navigate('/dashboard/buyer/uppdrag')}
+        onClosed={handleProjectClosed}
+      />
     </>
   )
 }

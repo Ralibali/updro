@@ -128,7 +128,7 @@ SELECT set_config('request.jwt.claim.sub', pg_temp.qa_id(1)::text, true);
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.expect_error('SELECT public.update_project_agreement(current_setting(''qa.offer_one'')::uuid,''edit'',5,''Changed after signing'','''')', 'låst', 'both confirmed agreement is immutable');
 SELECT pg_temp.check_ok((SELECT content->'delivery_plan'->>'acceptance_criteria' = 'All agreed checks pass' FROM public.project_agreements WHERE id = current_setting('qa.agreement')::uuid), 'both confirmations preserve the agreed delivery plan');
-SELECT pg_temp.expect_error('DELETE FROM public.projects WHERE id=pg_temp.qa_id(10)', 'foreign key constraint', 'agreement prevents accidental project deletion');
+SELECT pg_temp.expect_error('DELETE FROM public.projects WHERE id=pg_temp.qa_id(10)', 'kan inte raderas', 'agency activity prevents accidental project deletion');
 SELECT pg_temp.expect_error('UPDATE public.projects SET buyer_id=pg_temp.qa_id(2) WHERE id=pg_temp.qa_id(10)', 'beställare kan inte ändras', 'buyer cannot transfer agreement identity');
 RESET ROLE;
 SELECT set_config('request.jwt.claim.sub', pg_temp.qa_id(5)::text, true);

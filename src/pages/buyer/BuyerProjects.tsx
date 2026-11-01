@@ -7,34 +7,19 @@ import { Plus, Hand, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CATEGORY_STYLES, BUDGET_LABELS } from '@/lib/constants'
 import { timeAgo } from '@/lib/dateUtils'
-import { toast } from 'sonner'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { numWord } from '@/lib/numberWords'
+import ProjectRemoveDialog from '@/components/buyer/ProjectRemoveDialog'
 
 const BuyerProjects = () => {
   const { user } = useAuth()
   const [projects, setProjects] = useState<any[]>([])
   const [deleteTarget, setDeleteTarget] = useState<any>(null)
-  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     if (!user) return
     supabase.from('projects').select('*').eq('buyer_id', user.id).order('created_at', { ascending: false })
       .then(({ data }) => { if (data) setProjects(data) })
   }, [user])
-
-  const handleDelete = async () => {
-    if (!deleteTarget) return
-    setDeleting(true)
-    const { error } = await supabase.from('projects').delete().eq('id', deleteTarget.id)
-    setDeleting(false)
-    if (error) {
-      toast.error(error.message || 'Kunde inte ta bort uppdraget')
-    } else {
-      setProjects(prev => prev.filter(p => p.id !== deleteTarget.id))
-      toast.success('Uppdraget har tagits bort')
-    }
-    setDeleteTarget(null)
-  }
 
   return (
     <div className="max-w-4xl">
@@ -67,7 +52,7 @@ const BuyerProjects = () => {
                     </span>
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
                       <Hand className="h-3 w-3" />
-                      {p.offer_count || 0} intresserade {(p.offer_count || 0) === 1 ? 'byrå' : 'byråer'} · {p.view_count || 0} visningar
+                      {numWord(p.offer_count || 0)} intresserade {(p.offer_count || 0) === 1 ? 'byrå' : 'byråer'} · {numWord(p.view_count || 0)} visningar
                     </span>
                   </div>
                 </Link>
@@ -75,6 +60,7 @@ const BuyerProjects = () => {
                   onClick={(e) => { e.preventDefault(); setDeleteTarget(p) }}
                   className="shrink-0 p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                   title="Ta bort uppdrag"
+                  aria-label={`Ta bort uppdraget ${p.title}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </button>
@@ -84,23 +70,14 @@ const BuyerProjects = () => {
         </div>
       )}
 
-      {/* Delete confirmation dialog */}
-      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Ta bort uppdrag?</DialogTitle>
-            <DialogDescription>
-              Vill du verkligen ta bort "{deleteTarget?.title}"? Alla tillhörande offerter tas också bort. Detta kan inte ångras.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex gap-3 mt-4">
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Avbryt</Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-              {deleting ? 'Tar bort…' : 'Ta bort'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Delete, or close when agencies are already involved */}
+      <ProjectRemoveDialog
+        project={deleteTarget}
+        offers={{ total: deleteTarget?.offer_count || 0, pending: null, accepted: null }}
+        onOpenChange={open => { if (!open) setDeleteTarget(null) }}
+        onDeleted={id => setProjects(prev => prev.filter(p => p.id !== id))}
+        onClosed={id => setProjects(prev => prev.map(p => p.id === id ? { ...p, status: 'closed' } : p))}
+      />
     </div>
   )
 }

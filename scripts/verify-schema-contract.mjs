@@ -14,6 +14,7 @@ const REQUIRED_TABLES = [
   'project_attribution',
   'project_outcomes',
   'lead_refund_requests',
+  'notification_email_queue',
 ]
 
 const REQUIRED_RPCS = [
@@ -30,6 +31,10 @@ const REQUIRED_RPCS = [
   'report_project_outcome',
   'request_lead_refund',
   'review_lead_refund_request',
+  'get_project_slot_summary',
+  'get_my_conversations',
+  'get_chat_party',
+  'admin_edge_function_summary',
 ]
 
 let source
