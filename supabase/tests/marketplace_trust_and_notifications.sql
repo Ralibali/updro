@@ -1,6 +1,8 @@
 -- Synthetic checks for 20261031120000_marketplace_trust_and_notifications.
 -- Always rolled back; run after migrations. No real users or e-mails: queued
 -- rows disappear with the rollback before any mailer or push worker sees them.
+-- Safe on a live database: every count is limited to the synthetic fixtures,
+-- so real jobs, logs and reminders running at the same time do not matter.
 BEGIN;
 CREATE FUNCTION pg_temp.qa_id(n integer) RETURNS uuid LANGUAGE sql IMMUTABLE AS $$
   SELECT ('d70c0000-0000-4000-8000-' || lpad(n::text, 12, '0'))::uuid;
@@ -306,16 +308,25 @@ SELECT public.unlock_project_for_supplier(pg_temp.qa_id(26));
 SELECT public.submit_project_offer(pg_temp.qa_id(26), 'Synthetic offer E', 'Synthetic offer description, long enough.', 8000);
 RESET ROLE;
 UPDATE public.offers SET created_at = now() - interval '6 days' WHERE project_id = pg_temp.qa_id(26);
-SELECT pg_temp.check_ok(public.send_offer_decision_reminders() = 1, 'undecided buyer is reminded');
-SELECT pg_temp.check_ok(public.send_offer_decision_reminders() = 0, 'at most one reminder every three days');
+-- Count only the synthetic buyer's reminders: in production real buyers can be
+-- due at the same time (their reminders roll back with the test).
+CREATE FUNCTION pg_temp.synthetic_reminders() RETURNS bigint LANGUAGE sql AS $$
+  SELECT count(*) FROM public.notifications
+  WHERE user_id = pg_temp.qa_id(1) AND type = 'offer_reminder' AND link = '/dashboard/buyer/uppdrag/' || pg_temp.qa_id(26)
+$$;
+SELECT public.send_offer_decision_reminders();
+SELECT pg_temp.check_ok(pg_temp.synthetic_reminders() = 1, 'undecided buyer is reminded');
+SELECT public.send_offer_decision_reminders();
+SELECT pg_temp.check_ok(pg_temp.synthetic_reminders() = 1, 'at most one reminder every three days');
 UPDATE public.notifications SET created_at = now() - interval '4 days' WHERE user_id = pg_temp.qa_id(1) AND type = 'offer_reminder';
 SELECT public.send_offer_decision_reminders();
 UPDATE public.notifications SET created_at = now() - interval '4 days' WHERE user_id = pg_temp.qa_id(1) AND type = 'offer_reminder';
 SELECT public.send_offer_decision_reminders();
 UPDATE public.notifications SET created_at = now() - interval '4 days' WHERE user_id = pg_temp.qa_id(1) AND type = 'offer_reminder';
-SELECT pg_temp.check_ok(public.send_offer_decision_reminders() = 0, 'reminders stop after three');
-SELECT pg_temp.check_ok((SELECT count(*) = 3 AND min(message) LIKE '%väntar en byrå%' FROM public.notifications
-  WHERE user_id = pg_temp.qa_id(1) AND type = 'offer_reminder' AND link = '/dashboard/buyer/uppdrag/' || pg_temp.qa_id(26)), 'three reminders in total');
+SELECT public.send_offer_decision_reminders();
+SELECT pg_temp.check_ok(pg_temp.synthetic_reminders() = 3, 'reminders stop after three');
+SELECT pg_temp.check_ok((SELECT min(message) LIKE '%väntar en byrå%' FROM public.notifications
+  WHERE user_id = pg_temp.qa_id(1) AND type = 'offer_reminder' AND link = '/dashboard/buyer/uppdrag/' || pg_temp.qa_id(26)), 'reminder says who is waiting');
 SELECT pg_temp.check_ok(NOT EXISTS (SELECT 1 FROM public.notifications WHERE type = 'offer_reminder'
   AND link IN ('/dashboard/buyer/uppdrag/' || pg_temp.qa_id(20), '/dashboard/buyer/uppdrag/' || pg_temp.qa_id(24))), 'decided or closed projects get no reminder');
 
@@ -336,20 +347,21 @@ SELECT pg_temp.check_ok(NOT EXISTS (SELECT 1 FROM public.projects WHERE id = pg_
 RESET ROLE;
 
 -- Admin job health --------------------------------------------------------------------
+-- Synthetic job names: in production the real jobs log here every few minutes.
 INSERT INTO public.edge_function_logs(function_name, status_code, duration_ms, ok, meta)
-VALUES ('send-notification-emails', 200, 40, true, '{}'), ('send-notification-emails', 500, 90, false, '{}');
+VALUES ('updro-qa-synthetic-job', 200, 40, true, '{}'), ('updro-qa-synthetic-job', 500, 90, false, '{}');
 SELECT pg_temp.act_as(8);
 SET LOCAL ROLE authenticated;
 SELECT pg_temp.check_ok((SELECT total = 2 AND errors = 1 AND last_run IS NOT NULL
-  FROM public.admin_edge_function_summary(now() - interval '1 day', ARRAY['send-notification-emails', 'offer-reminder-cron'])
-  WHERE function_name = 'send-notification-emails'), 'admin summary counts runs and errors');
+  FROM public.admin_edge_function_summary(now() - interval '1 day', ARRAY['updro-qa-synthetic-job', 'updro-qa-silent-job'])
+  WHERE function_name = 'updro-qa-synthetic-job'), 'admin summary counts runs and errors');
 SELECT pg_temp.check_ok((SELECT total = 0 AND last_run IS NULL
-  FROM public.admin_edge_function_summary(now() - interval '1 day', ARRAY['send-notification-emails', 'offer-reminder-cron'])
-  WHERE function_name = 'offer-reminder-cron'), 'admin summary shows silent jobs');
+  FROM public.admin_edge_function_summary(now() - interval '1 day', ARRAY['updro-qa-synthetic-job', 'updro-qa-silent-job'])
+  WHERE function_name = 'updro-qa-silent-job'), 'admin summary shows silent jobs');
 RESET ROLE;
 SELECT pg_temp.act_as(1);
 SET LOCAL ROLE authenticated;
-SELECT pg_temp.expect_error($q$SELECT * FROM public.admin_edge_function_summary(now() - interval '1 day', ARRAY['send-notification-emails'])$q$,
+SELECT pg_temp.expect_error($q$SELECT * FROM public.admin_edge_function_summary(now() - interval '1 day', ARRAY['updro-qa-synthetic-job'])$q$,
   'administratörer', 'only admins read job health');
 RESET ROLE;
 
