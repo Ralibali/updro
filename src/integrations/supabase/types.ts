@@ -665,7 +665,7 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
-          is_read: boolean | null
+          is_read: boolean
           project_id: string
           receiver_id: string
           sender_id: string
@@ -674,7 +674,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
-          is_read?: boolean | null
+          is_read?: boolean
           project_id: string
           receiver_id: string
           sender_id: string
@@ -683,7 +683,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
-          is_read?: boolean | null
+          is_read?: boolean
           project_id?: string
           receiver_id?: string
           sender_id?: string
@@ -752,6 +752,70 @@ export type Database = {
           unsubscribed_at?: string | null
         }
         Relationships: []
+      }
+      notification_email_queue: {
+        Row: {
+          attempts: number
+          created_at: string
+          id: string
+          last_error: string | null
+          notification_id: string
+          send_after: string
+          sent_at: string | null
+          status: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          notification_id: string
+          send_after?: string
+          sent_at?: string | null
+          status?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          notification_id?: string
+          send_after?: string
+          sent_at?: string | null
+          status?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_email_queue_notification_id_fkey"
+            columns: ["notification_id"]
+            isOneToOne: true
+            referencedRelation: "notifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_email_queue_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_email_queue_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -1950,6 +2014,7 @@ export type Database = {
         Row: {
           created_at: string | null
           credit_charged: boolean
+          hold_until: string
           id: string
           project_id: string
           supplier_id: string
@@ -1958,6 +2023,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           credit_charged?: boolean
+          hold_until?: string
           id?: string
           project_id: string
           supplier_id: string
@@ -1966,6 +2032,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           credit_charged?: boolean
+          hold_until?: string
           id?: string
           project_id?: string
           supplier_id?: string
@@ -2174,6 +2241,18 @@ export type Database = {
       }
     }
     Functions: {
+      admin_edge_function_summary: {
+        Args: { p_names: string[]; p_since: string }
+        Returns: {
+          avg_ms: number
+          errors: number
+          function_name: string
+          last_run: string
+          median_ms: number
+          p95_ms: number
+          total: number
+        }[]
+      }
       agency_portal_payload: {
         Args: { p_id: string; p_owner: boolean }
         Returns: Json
@@ -2219,6 +2298,7 @@ export type Database = {
         }
         Returns: Json
       }
+      chat_display_name: { Args: { p_user_id: string }; Returns: string }
       claim_guest_projects: { Args: never; Returns: number }
       close_project_without_offer: {
         Args: { p_project_id: string }
@@ -2263,9 +2343,36 @@ export type Database = {
         Args: { p_project_id: string }
         Returns: Json
       }
+      get_chat_party: {
+        Args: { p_other_id: string; p_project_id: string }
+        Returns: Json
+      }
+      get_my_conversations: {
+        Args: never
+        Returns: {
+          last_at: string
+          last_from_me: boolean
+          last_message: string
+          other_id: string
+          other_name: string
+          project_id: string
+          project_title: string
+          unread_count: number
+        }[]
+      }
       get_project_agreement: {
         Args: { p_offer_id: string; p_project_id: string }
         Returns: Json
+      }
+      get_project_slot_summary: {
+        Args: { p_project_ids: string[] }
+        Returns: {
+          max_offers: number
+          my_reserved_until: string
+          offer_count: number
+          project_id: string
+          slots_taken: number
+        }[]
       }
       get_public_agencies: {
         Args: never
@@ -2294,10 +2401,32 @@ export type Database = {
         Returns: Json
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      is_project_chat_pair: {
+        Args: { p_a: string; p_b: string; p_project_id: string }
+        Returns: boolean
+      }
+      is_reviewable_engagement: {
+        Args: { p_project_id: string; p_supplier_id: string }
+        Returns: boolean
+      }
       list_agency_portals: { Args: never; Returns: Json }
       normalize_agreement_delivery_plan: {
         Args: { p_plan: Json }
         Returns: Json
+      }
+      notify_expiring_offer_slots: { Args: never; Returns: number }
+      notify_unanswered_unlocks: {
+        Args: { p_message: string; p_project_id: string; p_title: string }
+        Returns: number
+      }
+      offer_slot_hold: { Args: { p_paid: boolean }; Returns: string }
+      project_has_agency_activity: {
+        Args: { p_project_id: string }
+        Returns: boolean
+      }
+      project_slots_taken: {
+        Args: { p_except_supplier?: string; p_project_id: string }
+        Returns: number
       }
       report_project_outcome: {
         Args: {
@@ -2343,6 +2472,7 @@ export type Database = {
         Args: { p_first: Json; p_latest: Json; p_project_id: string }
         Returns: undefined
       }
+      send_offer_decision_reminders: { Args: never; Returns: number }
       submit_project_offer: {
         Args: {
           p_attachment_url?: string
@@ -2355,6 +2485,12 @@ export type Database = {
         }
         Returns: string
       }
+      supplier_holds_offer_slot: {
+        Args: { p_project_id: string; p_supplier_id: string }
+        Returns: boolean
+      }
+      swedish_count: { Args: { n: number }; Returns: string }
+      swedish_datetime: { Args: { p_at: string }; Returns: string }
       unlock_project_for_supplier: {
         Args: { p_project_id: string }
         Returns: Json
