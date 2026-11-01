@@ -15,6 +15,13 @@
       "when": 1793295157127,
       "tag": "0001_supplier_notifications_dedup_full_unique",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793537911016,
+      "tag": "0002_marketplace_trust_and_notifications",
+      "breakpoints": true
     }
   ]
 }

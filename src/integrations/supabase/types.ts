@@ -665,7 +665,7 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
-          is_read: boolean | null
+          is_read: boolean
           project_id: string
           receiver_id: string
           sender_id: string
@@ -674,7 +674,7 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: string
-          is_read?: boolean | null
+          is_read?: boolean
           project_id: string
           receiver_id: string
           sender_id: string
@@ -683,7 +683,7 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: string
-          is_read?: boolean | null
+          is_read?: boolean
           project_id?: string
           receiver_id?: string
           sender_id?: string
@@ -806,6 +806,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_email_queue_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2006,8 +2013,8 @@ export type Database = {
       unlocked_leads: {
         Row: {
           created_at: string | null
-          hold_until: string
           credit_charged: boolean
+          hold_until: string
           id: string
           project_id: string
           supplier_id: string
@@ -2015,8 +2022,8 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
-          hold_until?: string
           credit_charged?: boolean
+          hold_until?: string
           id?: string
           project_id: string
           supplier_id: string
@@ -2024,8 +2031,8 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
-          hold_until?: string
           credit_charged?: boolean
+          hold_until?: string
           id?: string
           project_id?: string
           supplier_id?: string
@@ -2291,6 +2298,7 @@ export type Database = {
         }
         Returns: Json
       }
+      chat_display_name: { Args: { p_user_id: string }; Returns: string }
       claim_guest_projects: { Args: never; Returns: number }
       close_project_without_offer: {
         Args: { p_project_id: string }
@@ -2397,14 +2405,28 @@ export type Database = {
         Args: { p_a: string; p_b: string; p_project_id: string }
         Returns: boolean
       }
+      is_reviewable_engagement: {
+        Args: { p_project_id: string; p_supplier_id: string }
+        Returns: boolean
+      }
       list_agency_portals: { Args: never; Returns: Json }
       normalize_agreement_delivery_plan: {
         Args: { p_plan: Json }
         Returns: Json
       }
+      notify_expiring_offer_slots: { Args: never; Returns: number }
+      notify_unanswered_unlocks: {
+        Args: { p_message: string; p_project_id: string; p_title: string }
+        Returns: number
+      }
+      offer_slot_hold: { Args: { p_paid: boolean }; Returns: string }
       project_has_agency_activity: {
         Args: { p_project_id: string }
         Returns: boolean
+      }
+      project_slots_taken: {
+        Args: { p_except_supplier?: string; p_project_id: string }
+        Returns: number
       }
       report_project_outcome: {
         Args: {
@@ -2450,6 +2472,7 @@ export type Database = {
         Args: { p_first: Json; p_latest: Json; p_project_id: string }
         Returns: undefined
       }
+      send_offer_decision_reminders: { Args: never; Returns: number }
       submit_project_offer: {
         Args: {
           p_attachment_url?: string
@@ -2462,6 +2485,12 @@ export type Database = {
         }
         Returns: string
       }
+      supplier_holds_offer_slot: {
+        Args: { p_project_id: string; p_supplier_id: string }
+        Returns: boolean
+      }
+      swedish_count: { Args: { n: number }; Returns: string }
+      swedish_datetime: { Args: { p_at: string }; Returns: string }
       unlock_project_for_supplier: {
         Args: { p_project_id: string }
         Returns: Json
