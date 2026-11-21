@@ -18,3 +18,11 @@ Redaktionen ägs av Codex-uppgift `01a07855-4957-73c2-85a1-3c1980378daf`. Använ
 Första artikeln i den egna kön publiceras den 7 september 2026. Nästa nya artikel får därför publiceras tidigast den 9 september, efter verifierad livekontroll. Den faktiska publiceringsloggen är styrande om lanseringen försenas.
 
 De äldre cron-jobben `process-article-queue-6h` (2) och `process-article-queue-weekly` (5) pausades och lästes tillbaka 7 september. De ska inte återaktiveras parallellt med denna redaktion. Kundernas mejl- och offertjobb är oförändrade. Den gamla processfunktionen publicerar direkt trots kommentaren om utkast; den används inte av den nya publiceringsvägen.
+
+## Publicerad databasinventering i bygget
+
+`src/content/editorial/database-published.json` är en explicit export av de publika artikelkolumnerna från `public.articles` där `status = 'published'`. Den används tillsammans med den befintliga statiska samlingen av listan, HTML-bygget och samtliga webbplatskartor. Databasversionen har samma företräde vid slugkollision som den befintliga läsaren. Publicerings- och ändringsdatum bevaras vid export; flytten räknas inte som en ny originalartikel.
+
+Före varje publicering: läs hela publicerade databaslistan via projektets autentiserade anslutning, jämför slug, titel, text och datum med exporten och uppdatera endast den publika artikelkopian. Exportera aldrig författarkonton, kontaktuppgifter, nycklar eller utkast. Rader som har avpublicerats ska också tas bort ur den publika byggkopian. Cron-jobb 2 och 5 förblir pausade. Kontrollera både sid-HTML och artikelwebbplatskartan efter bygget.
+
+Ögonblicksbilden från 21 november 2026 har 15 artiklar. Den är en teknisk återgivning av redan publicerat innehåll, inte ett intyg om faktagranskning. Inlägget `case-study-ehandel-seo-malmo-200-procent` innehåller ett ej styrkt kundresultat och ska granskas eller rättas före publicering av denna ändring. Den äldre texten bevaras i PR:n för jämförelse.
