@@ -1,4 +1,5 @@
 import editorialArticles from '../content/editorial/articles.json'
+import databaseArticles from '../content/editorial/database-published.json'
 
 export type ArticleType = 'guide' | 'news' | 'comparison' | 'case-study'
 
@@ -31,7 +32,7 @@ export const ARTICLE_TYPE_LABEL: Record<ArticleType, string> = {
   'case-study': 'Case',
 }
 
-export const ARTICLES: ArticlePage[] = [
+const STATIC_ARTICLES: ArticlePage[] = [
   ...editorialArticles,
   {
     slug: 'vad-kostar-en-hemsida-2026',
@@ -564,6 +565,14 @@ export const ARTICLES: ArticlePage[] = [
       { label: 'Publicera ditt uppdrag gratis', href: '/publicera' },
     ],
   },
+]
+
+// Match the live reader's DB-first precedence while giving prerender and sitemaps
+// the same published inventory. Refresh the reviewed snapshot before each release.
+const databaseSlugs = new Set(databaseArticles.map(article => article.slug))
+export const ARTICLES: ArticlePage[] = [
+  ...(databaseArticles as ArticlePage[]),
+  ...STATIC_ARTICLES.filter(article => !databaseSlugs.has(article.slug)),
 ]
 
 /** Mark a few existing articles as the comparison type */

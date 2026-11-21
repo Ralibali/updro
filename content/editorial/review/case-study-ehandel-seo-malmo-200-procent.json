@@ -1,0 +1,39 @@
+{
+  "status": "proposal_not_published",
+  "reviewed_at": "2026-11-21",
+  "slug": "case-study-ehandel-seo-malmo-200-procent",
+  "reason": "Current article states exact customer, traffic and revenue results without supporting source material in the record. Owner clarification requested. Absence of evidence does not establish falsity.",
+  "proposed_if_no_case_documentation": {
+    "h1": "Räkneexempel: skilj försäljningsökning från effekten av SEO",
+    "meta_title": "Räkneexempel: försäljningsökning och SEO | Updro",
+    "meta_desc": "Ett hypotetiskt räkneexempel visar hur procentuell försäljningsökning beräknas och varför den inte i sig bevisar effekten av SEO.",
+    "article_type": "guide",
+    "intro": "Det här är ett hypotetiskt räkneexempel, inte ett kundfall eller ett uppmätt resultat från Updro. Den tidigare versionen beskrev ett kundresultat utan redovisat underlag. Exemplen nedan hjälper dig att ställa tydligare frågor om en resultatrapport.",
+    "sections": [
+      {
+        "heading": "Räkna med samma definition",
+        "content": "Anta i exemplet att försäljningen är 50 000 kronor under en period och 150 000 kronor under en lika lång jämförelseperiod. Ökningen är 100 000 kronor. Dividerat med startvärdet 50 000 ger det 2, alltså 200 procent. Slutvärdet är tre gånger startvärdet. Beloppen är påhittade för att visa beräkningen.\n\nAnvänd samma definition av försäljning i båda perioderna. Kontrollera hur returer, moms och avbrutna köp hanteras. Saknas en jämförbar mätning ska den inte ersättas med en uppskattning som presenteras som ett uppmätt resultat."
+      },
+      {
+        "heading": "Ökningen fastställer inte orsaken",
+        "content": "Beräkningen visar hur två tal förhåller sig till varandra. Den visar inte hur mycket av förändringen som beror på SEO. Priser, kampanjer, sortiment och andra trafikkanaler kan också ha ändrats. Be rapportens avsändare beskriva vad som har mätts, vilken period den gäller och vilka andra förändringar som är kända.\n\nSkilj klick från sökresultat, besök på webbplatsen, registrerade köp och försäljning. De är olika mått och kan inte ersätta varandra."
+      },
+      {
+        "heading": "Bestäm vad rapporteringen ska besvara",
+        "content": "Kom överens om datakällor, jämförelseperioder och vilka osäkerheter som ska redovisas. Be om åtkomst till underlaget och förklaringar till ändrade mätmetoder. Ett räkneexempel är inte ett löfte om vad ditt företag kommer att uppnå.\n\n[Beskriv ditt digitala projekt](/publicera) om du vill förbereda ett byråunderlag. Ange vilka frågor rapporteringen ska besvara. AI-assisterat räkneexempel; inga verkliga kunder eller verifierade kundresultat presenteras."
+      }
+    ],
+    "faq": [],
+    "related_links": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      }
+    ]
+  },
+  "release_requirements": [
+    "Resolve whether authentic case material exists; otherwise review explicit hypothetical correction.",
+    "Preserve original DB row and dates in evidence; record correction time separately.",
+    "Correct both DB source and build snapshot together; DB-first rendering otherwise restores old claims."
+  ]
+}
