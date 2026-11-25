@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "status": "draft",
+  "writtenAt": "2026-09-27T09:59:39.112836+00:00",
+  "repository": "Ralibali/updro",
+  "publicationGate": "Earliest 2026-10-01, and at least two calendar days after the preceding article is actually published and fully verified. Require current main, full inventory and fresh source review. Do not assign publication dates while draft. Resolve pending product deployment dependencies before any frontend release.",
+  "sourceReview": {
+    "checkedAt": "2026-09-27T09:59:39.112836+00:00",
+    "publishedInventoryReviewed": 43,
+    "distinctIntent": "Beställarens inventering av ansvar och åtkomstbehov inför webbprojektet, skilt från materialöverlämning och teknisk behörighetskonfiguration.",
+    "note": "Owned product entry reviewed; article is an original procedural template. No invented outcomes, prices or automatic product features. Fresh source review required before publication."
+  },
+  "article": {
+    "slug": "behorighetslista-infor-webbprojekt",
+    "h1": "Gör en behörighetslista inför webbprojektet",
+    "metaTitle": "Gör en behörighetslista inför webbprojektet",
+    "metaDesc": "Samla roller, systemägare och behov i en behörighetslista inför webbprojektet. En enkel arbetsmall utan att sprida inloggningar i projektunderlaget.",
+    "category": "Webbutveckling",
+    "readTimeMinutes": 4,
+    "intro": "Ett webbprojekt kan stanna upp när ingen vet vem som får bjuda in en ny medarbetare eller godkänna en ändring i en tjänst. Innan byrån börjar arbeta är det därför användbart att samla vilka konton projektet behöver beröra, vem som ansvarar för dem och vilken åtkomst som faktiskt behövs.\n\nBehörighetslistan är ett arbetsunderlag för beställaren. Den ska inte innehålla lösenord, återställningskoder eller andra inloggningsuppgifter. Utgå från verksamhetens befintliga rutiner och låt ansvarig för varje tjänst bestämma hur åtkomst ska ges och följas upp.\n",
+    "editorialNote": "AI-assisterad originalguide. Arbetsmallen är ett redaktionellt förslag.",
+    "sections": [
+      {
+        "heading": "Börja med arbetet som ska utföras",
+        "content": "Be byrån beskriva uppgiften bakom varje önskemål om åtkomst. Att läsa statistik, ändra en text och administrera ett abonnemang kan kräva olika roller. Skriv därför vad personen ska kunna göra, inte bara att byrån behöver tillgång till ”allt som hör till hemsidan”.\n\nKnyt behovet till en avgränsad del av projektet. Om uppgiften ännu är oklar kan den stå som en fråga tills omfattningen har bestämts. Beställaren och tjänstens ansvariga behöver förstå syftet innan de kan ta ställning till en lämplig behörighet."
+      },
+      {
+        "heading": "Skilj ansvar för kontot från tillgång till det",
+        "content": "Anteckna vem i verksamheten som ansvarar för kontot och vem som kan hantera en inbjudan eller ändring. Det är inte alltid samma person som utför arbetet i tjänsten. Skriv också var verksamheten hittar sin egen dokumentation om kontot, utan att kopiera känsliga uppgifter till projektlistan.\n\nOm en tidigare leverantör står som enda kontakt behöver situationen redas ut med rätt parter. Markera frågan öppet och bestäm vem som tar den vidare. Utgå inte från att ett konto automatiskt kan överlåtas eller att en viss roll finns i alla plattformar."
+      },
+      {
+        "heading": "Använd en rad per åtkomstbehov",
+        "content": "Listan kan innehålla följande fält:\n\n- Tjänst eller konto som berörs.\n- Projektuppgift som åtkomsten ska användas till.\n- Verksamhetens ansvariga kontakt.\n- Namngiven person eller roll som behöver arbeta.\n- Behörighet som tjänstens ansvariga har beslutat om.\n- När behovet börjar och när det ska omprövas.\n- Status: efterfrågat, beslutat, ordnat eller avslutat.\n\nKontrollera att listan beskriver verkliga behov och inte en standardlista som kopierats från ett annat projekt. En uppgift som hör till löpande förvaltning kan behöva hanteras separat från den tillfälliga projektåtkomsten. Låt verksamhetens ansvariga avgöra gränsen."
+      },
+      {
+        "heading": "Bekräfta åtkomst genom den avsedda vägen",
+        "content": "Använd respektive tjänsts och verksamhets fastställda arbetssätt för att bjuda in rätt person. När åtkomsten är ordnad ska den som ska utföra uppgiften bekräfta att rätt del går att nå. Det är ett annat besked än att någon har skickat en inbjudan.\n\nOm något saknas, beskriv vilken arbetsuppgift som stoppas och lämna frågan till ansvarig. Låt inte listan bli en kanal för att dela gemensamma inloggningar. Den ska visa beslut, kontakter och status så att nästa steg går att följa."
+      },
+      {
+        "heading": "Ta med listan i projektets avslut",
+        "content": "Gå igenom vilka tillfälliga behov som upphör och vilka som hör till en ny överenskommelse om förvaltning. Koppla genomgången till [överlämningen av hemsidan](/artiklar/overlamning-hemsida-material-ansvar) och [briefen för löpande webbunderhåll](/artiklar/brief-lopande-webbunderhall).\n\nNär du [beskriver ditt projekt på Updro](/publicera) kan du ange vilka åtkomstfrågor som behöver planeras, utan att lämna inloggningsuppgifter. AI-assisterad originalguide med en beställarmall; texten beskriver ingen automatisk behörighetsfunktion i Updro."
+      }
+    ],
+    "faq": [],
+    "relatedLinks": [
+      {
+        "label": "Beskriv ditt projekt",
+        "href": "/publicera"
+      },
+      {
+        "label": "Överlämning av hemsida",
+        "href": "/artiklar/overlamning-hemsida-material-ansvar"
+      }
+    ],
+    "sources": [
+      {
+        "label": "Updro – beskriv ditt projekt",
+        "href": "https://updro.se/publicera"
+      }
+    ],
+    "editorial": {
+      "createdWith": "ChatGPT",
+      "aiAssisted": true,
+      "searchIntent": "Beställarens inventering av ansvar och åtkomstbehov inför webbprojektet, skilt från materialöverlämning och teknisk behörighetskonfiguration.",
+      "sourceUrls": [
+        "https://updro.se/publicera"
+      ],
+      "sourceCheckedAt": "2026-09-27T09:59:39.112836+00:00"
+    }
+  }
+}
